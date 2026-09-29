@@ -1,0 +1,22 @@
+/* variables.css — дизайн-токены: цвета, шрифты, размеры, отступы.
+   Значения снимаются из PSD (01_исходники/макеты_psd). Пока плейсхолдеры. */
+:root {
+  /* Цвета — уточнить по макетам */
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-muted: #6b6b6b;
+  --color-accent: #c8102e;      /* акцент бренда — заменить по PSD */
+  --color-border: #e5e5e5;
+
+  /* Типографика (по правилам дома: веса 400/500/700) */
+  --font-base: "Inter", system-ui, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+
+  /* Сетка/отступы — шаг ×4 */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;
+  --container: 1440px;
+  --radius: 8px;
+}
