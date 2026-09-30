@@ -190,7 +190,7 @@
 
 .p-details {
   background: #f6f5f8;
-  padding-block: clamp(24px, 1.37vw, 35px) clamp(12px, 0.63vw, 16px);
+  padding-block: clamp(24px, 1.37vw, 35px) clamp(32px, 2.19vw, 56px);
 }
 
 .p-details__grid {
@@ -288,7 +288,7 @@
   }
 
   .p-details {
-    padding-block: 32px;
+    padding-block: 32px 48px;
   }
 }
 
