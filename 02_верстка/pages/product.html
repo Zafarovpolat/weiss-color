@@ -10,28 +10,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Карточка товара — Weiss Color</title>
+  <title>Acrilux краска для стен и потолков — Weiss Color</title>
+  <meta name="description" content="Высокоукрывистая матовая краска Acrilux для стен и потолков: латексная, на водной основе, для внутренних работ. Объёмы 1,1 л, 2,75 л и 10 л.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-600-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-400-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/catalog.css">
+  <link rel="stylesheet" href="../css/product.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Карточка товара» (М05) по PSD -->
-    <p style="padding:24px;color:#888">[М05] Карточка товара — заготовка</p>
+  <!-- Шапка: общий блок п.3.1 -->
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="54" height="54" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 0">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Герой карточки: фото фона, банка, название, фасовки, цена -->
+    <section class="p-hero" aria-labelledby="product-title">
+      <div class="container p-hero__inner">
+        <nav class="breadcrumbs p-hero__breadcrumbs" aria-label="Хлебные крошки">
+          <ol class="breadcrumbs__list">
+            <li><a href="../index.html">Главная</a></li>
+            <li class="breadcrumbs__sep" aria-hidden="true">&gt;</li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li class="breadcrumbs__sep" aria-hidden="true">&gt;</li>
+            <li><a href="catalog.html">Краски для внутренних работ</a></li>
+            <li class="breadcrumbs__sep" aria-hidden="true">&gt;</li>
+            <li aria-current="page">Краска для стен и потолков</li>
+          </ol>
+        </nav>
+
+        <div class="p-hero__grid">
+          <figure class="p-hero__can">
+            <img src="../assets/img/product-can.png" width="326" height="480"
+                 alt="Банка краски Acrilux — матовая краска для стен и потолков, интерьерная"
+                 fetchpriority="high" decoding="async">
+          </figure>
+
+          <div class="p-hero__copy">
+            <h1 class="p-hero__title" id="product-title">ACRILUX<br>КРАСКА ДЛЯ СТЕН И ПОТОЛКОВ</h1>
+
+            <p class="p-hero__lead">
+              Высокоукрывистая матовая краска для стен и потолков.<br>
+              Латексная, на водной основе. Для внутренних работ.
+            </p>
+
+            <div class="p-volumes" role="group" aria-label="Объём упаковки">
+              <button class="p-volumes__item" type="button" aria-pressed="false">1,1л</button>
+              <button class="p-volumes__item" type="button" aria-pressed="false">2,75л</button>
+              <button class="p-volumes__item" type="button" aria-pressed="true">10л</button>
+            </div>
+
+            <a class="p-coloring" href="coloring-guide.html">
+              <span>Колеровка онлайн</span>
+              <img src="../assets/img/product-coloring-icon.png" width="34" height="34" alt="" aria-hidden="true">
+            </a>
+
+            <p class="p-color"><b>Цвет:</b> Белый (без колеровки)</p>
+
+            <div class="p-price-box">
+              <p class="p-price tabular">3&nbsp;900₽</p>
+              <p class="p-price__note">
+                Цена указана за базовую краску, итоговая стоимость рассчитывается при выбранном объёме
+              </p>
+              <button class="btn p-price__btn" type="button">В корзину</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Описание и технические характеристики -->
+    <section class="p-details">
+      <div class="container p-details__grid">
+        <div class="p-details__col">
+          <h2 class="p-tab">Описание товара</h2>
+          <div class="p-desc">
+            <p>
+              Интерьерная краска для внутренних помещений. Отсутствие запаха и простота в применении,
+              специально подобранная консистенция, 100% матовый антибликовый эффект никого не оставят
+              равнодушным. Ремонт будет в радость, а обновление интерьера станет увлекательным процессом.
+            </p>
+            <p>
+              Предназначена для стен и потолков в спальнях и гостиной, детских учреждений,
+              административных зданий, лечебно-профилактических учреждений.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-details__col">
+          <h2 class="p-tab">Технические характеристики</h2>
+          <ul class="p-specs">
+            <li class="p-specs__row">
+              <span class="p-specs__label">Расход</span>
+              <span class="p-specs__value">150-180 г/м² на 1 слой, в зависимости от типа и впитывающей способности основани</span>
+            </li>
+            <li class="p-specs__row">
+              <span class="p-specs__label">Степень блеска</span>
+              <span class="p-specs__value">Матовая</span>
+            </li>
+            <li class="p-specs__row">
+              <span class="p-specs__label">Краткое описание</span>
+              <span class="p-specs__value">Интерьерная краска на основе акриловой дисперсии с микронизированным мраморным наполнителем</span>
+            </li>
+            <li class="p-specs__row">
+              <span class="p-specs__label">Тип работ</span>
+              <span class="p-specs__value">Для внутренних работ</span>
+            </li>
+            <li class="p-specs__row">
+              <span class="p-specs__label">Область применения</span>
+              <span class="p-specs__value">Потолки, стены (сухие помещения)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <!-- Подвал: общий блок п.3.1 -->
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo-white.png" width="192" height="52" alt="Weiss Color">
+      </a>
 
-  <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/cart.js"></script>
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <!-- Окно «Заказать звонок» (М25, п.9.3) -->
+  <dialog class="modal" id="callback-dialog" aria-labelledby="callback-title">
+    <div class="modal__header">
+      <h2 class="modal__title" id="callback-title">Заказать звонок</h2>
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть окно">&times;</button>
+    </div>
+    <p class="modal__text">Оставьте контакты — перезвоним в рабочее время.</p>
+    <form id="callback-form">
+      <div class="field">
+        <label for="callback-name">Имя</label>
+        <input id="callback-name" name="name" type="text" autocomplete="name"
+               placeholder="Как к вам обращаться…" required minlength="2">
+      </div>
+      <div class="field">
+        <label for="callback-phone">Телефон</label>
+        <input id="callback-phone" name="phone" type="tel" autocomplete="tel"
+               inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </div>
+      <button class="btn btn--teal" type="submit">Отправить заявку</button>
+      <p class="modal__note">
+        Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
+      </p>
+    </form>
+  </dialog>
+
+  <script src="../js/main.js" defer></script>
 </body>
 </html>
