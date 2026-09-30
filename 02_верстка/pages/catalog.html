@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  Экран: М15 — Каталог товаров
+  Экран: М02 — Каталог товаров
   Исходник PSD: 01_исходники/макеты_psd/Каталог товаров .psd
   Пункт ТЗ: п.4.1–4.3
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
@@ -11,27 +11,351 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Каталог товаров — Weiss Color</title>
+  <meta name="description" content="Каталог красок, лаков и пропиток Weiss Color: подбор по категории и цене, актуальные цены и оформление в корзину.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-600-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-400-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/catalog.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Каталог товаров» (М15) по PSD -->
-    <p style="padding:24px;color:#888">[М15] Каталог товаров — заготовка</p>
+  <!-- Шапка: общий блок п.3.1 (как на экране «Главная») -->
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html" aria-current="page">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="54" height="54" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 0">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Полоса экрана: хлебные крошки, H1, преимущества, фоновое растение -->
+    <section class="page-head">
+      <div class="container page-head__inner">
+        <div>
+          <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <ol class="breadcrumbs__list">
+              <li><a href="../index.html">Главная</a></li>
+              <li class="breadcrumbs__sep" aria-hidden="true">&gt;</li>
+              <li aria-current="page">Каталог</li>
+            </ol>
+          </nav>
+          <h1 class="page-head__title">Каталог</h1>
+        </div>
+
+        <ul class="features">
+          <li class="features__item">
+            <img src="../assets/img/cat-ico-leaf.png" width="53" height="60" alt="" aria-hidden="true">
+            <span>Безопасные составы</span>
+          </li>
+          <li class="features__item">
+            <img src="../assets/img/cat-ico-shield.png" width="53" height="60" alt="" aria-hidden="true">
+            <span>Высокое качество</span>
+          </li>
+          <li class="features__item">
+            <img src="../assets/img/cat-ico-truck.png" width="93" height="54" alt="" aria-hidden="true">
+            <span>Быстрая доставка</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Каталог: фильтр + сетка товаров (п.4.1–4.3) -->
+    <section class="catalog container" aria-label="Каталог продукции">
+      <!-- Фильтр подбора (п.4.2) -->
+      <aside class="filter" aria-labelledby="filter-title">
+        <h2 class="filter__title" id="filter-title">Подбор продукции</h2>
+
+        <fieldset class="filter__group">
+          <legend class="visually-hidden">Категория продукции</legend>
+          <ul class="filter__list">
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="all" checked>
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Вся продукция</span>
+              </label>
+            </li>
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="interior">
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Краски для внутренних работ</span>
+              </label>
+            </li>
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="exterior">
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Краски для наружных работ</span>
+              </label>
+            </li>
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="furniture">
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Краски для мебели</span>
+              </label>
+            </li>
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="acrylic-lacquer">
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Лаки акриловые</span>
+              </label>
+            </li>
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="polyurethane-lacquer">
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Лаки полиуретановые</span>
+              </label>
+            </li>
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="wood-preservative">
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Пропитки для дерева</span>
+              </label>
+            </li>
+            <li>
+              <label class="check">
+                <input type="checkbox" name="category" value="wood-oil">
+                <span class="check__box" aria-hidden="true"></span>
+                <span class="check__label">Масло для дерева</span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+
+        <div class="filter__price">
+          <h3 class="filter__subtitle" id="price-label">Цена</h3>
+
+          <div class="range" role="group" aria-labelledby="price-label">
+            <span class="range__track" aria-hidden="true"></span>
+            <span class="range__fill" aria-hidden="true"></span>
+            <input type="range" min="0" max="100" value="20" step="1" aria-label="Цена от">
+            <input type="range" min="0" max="100" value="60" step="1" aria-label="Цена до">
+          </div>
+
+          <p class="filter__prices">
+            <span>от <output>700</output> ₽</span>
+            <span>до <output>12 000</output> ₽</span>
+          </p>
+        </div>
+
+        <button class="btn btn--teal filter__apply" type="button">Применить</button>
+        <button class="btn filter__reset" type="button">Сбросить</button>
+      </aside>
+
+      <!-- Сетка товаров -->
+      <div class="catalog__main">
+        <div class="sort">
+          <label for="sort-select">Сортировать:</label>
+          <select class="sort__select" id="sort-select">
+            <option value="popular" selected>по популярности</option>
+            <option value="price-asc">по возрастанию цены</option>
+            <option value="price-desc">по убыванию цены</option>
+            <option value="new">по новизне</option>
+          </select>
+        </div>
+
+        <ul class="products">
+          <li class="product">
+            <div class="product__media">
+              <img src="../assets/img/cat-can-1.png" width="136" height="200" alt="Acrilux — краска для стен и потолков" loading="lazy" decoding="async">
+            </div>
+            <div class="product__body">
+              <h3 class="product__title">Acrilux краска для стен<br>и потолков</h3>
+              <p class="product__desc">Интерьерная краска на основе акриловой<br class="d-br"> дисперсии с микронизированным мраморным наполнителем</p>
+              <p class="product__price tabular">от 3 500 руб.</p>
+              <button class="btn product__btn" type="button">В корзину</button>
+            </div>
+          </li>
+
+          <li class="product">
+            <div class="product__media">
+              <img src="../assets/img/cat-can-4.png" width="134" height="195" alt="Acrilux — краска для кухни и ванной" loading="lazy" decoding="async">
+            </div>
+            <div class="product__body">
+              <h3 class="product__title">Acrilux краска для стен<br>и потолков</h3>
+              <p class="product__desc">Интерьерная краска на основе акриловой<br class="d-br"> дисперсии с микронизированным мраморным наполнителем</p>
+              <p class="product__price tabular">от 3 500 руб.</p>
+              <button class="btn product__btn" type="button">В корзину</button>
+            </div>
+          </li>
+
+          <li class="product product--active">
+            <div class="product__media">
+              <img src="../assets/img/cat-can-2.png" width="137" height="198" alt="Acrilux — краска фасадная" loading="lazy" decoding="async">
+            </div>
+            <div class="product__body">
+              <h3 class="product__title">Acrilux краска для стен<br>и потолков</h3>
+              <p class="product__desc">Интерьерная краска на основе акриловой<br class="d-br"> дисперсии с микронизированным мраморным наполнителем</p>
+              <p class="product__price tabular">от 3 500 руб.</p>
+              <button class="btn product__btn" type="button">В корзину</button>
+            </div>
+          </li>
+
+          <li class="product">
+            <div class="product__media">
+              <img src="../assets/img/cat-can-5.png" width="137" height="198" alt="Acrilux — краска фасадная" loading="lazy" decoding="async">
+            </div>
+            <div class="product__body">
+              <h3 class="product__title">Acrilux краска для стен<br>и потолков</h3>
+              <p class="product__desc">Интерьерная краска на основе акриловой<br class="d-br"> дисперсии с микронизированным мраморным наполнителем</p>
+              <p class="product__price tabular">от 3 500 руб.</p>
+              <button class="btn product__btn" type="button">В корзину</button>
+            </div>
+          </li>
+
+          <li class="product">
+            <div class="product__media">
+              <img src="../assets/img/cat-can-3.png" width="136" height="195" alt="Acrilux — краска для кухни и ванной" loading="lazy" decoding="async">
+            </div>
+            <div class="product__body">
+              <h3 class="product__title">Acrilux краска для стен<br>и потолков</h3>
+              <p class="product__desc">Интерьерная краска на основе акриловой<br class="d-br"> дисперсии с микронизированным мраморным наполнителем</p>
+              <p class="product__price tabular">от 3 500 руб.</p>
+              <button class="btn product__btn" type="button">В корзину</button>
+            </div>
+          </li>
+
+          <li class="product">
+            <div class="product__media">
+              <img src="../assets/img/cat-can-6.png" width="136" height="200" alt="Acrilux — краска для стен и потолков" loading="lazy" decoding="async">
+            </div>
+            <div class="product__body">
+              <h3 class="product__title">Acrilux краска для стен<br>и потолков</h3>
+              <p class="product__desc">Интерьерная краска на основе акриловой<br class="d-br"> дисперсии с микронизированным мраморным наполнителем</p>
+              <p class="product__price tabular">от 3 500 руб.</p>
+              <button class="btn product__btn" type="button">В корзину</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Постраничная навигация (п.4.3) -->
+    <nav class="pagination container" aria-label="Страницы каталога">
+      <span class="pagination__item" aria-disabled="true">Назад</span>
+      <a class="pagination__item" href="#" aria-label="Страница 1">1</a>
+      <a class="pagination__item" href="#" aria-label="Страница 2">2</a>
+      <a class="pagination__item" href="#" aria-label="Страница 3">3</a>
+      <a class="pagination__item" href="#" aria-label="Страница 4" aria-current="page">4</a>
+      <a class="pagination__item" href="#" aria-label="Страница 5">5</a>
+      <a class="pagination__item" href="#" aria-label="Страница 6">6</a>
+      <a class="pagination__item" href="#" aria-label="Страница 7">7</a>
+      <a class="pagination__item" href="#">Вперед</a>
+    </nav>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <!-- Подвал: общий блок п.3.1 -->
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo-white.png" width="192" height="52" alt="Weiss Color">
+      </a>
 
-  <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/catalog.js"></script>
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <!-- Окно «Заказать звонок» (М25, п.9.3) -->
+  <dialog class="modal" id="callback-dialog" aria-labelledby="callback-title">
+    <div class="modal__header">
+      <h2 class="modal__title" id="callback-title">Заказать звонок</h2>
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть окно">&times;</button>
+    </div>
+    <p class="modal__text">Оставьте контакты — перезвоним в рабочее время.</p>
+    <form id="callback-form">
+      <div class="field">
+        <label for="callback-name">Имя</label>
+        <input id="callback-name" name="name" type="text" autocomplete="name"
+               placeholder="Как к вам обращаться…" required minlength="2">
+      </div>
+      <div class="field">
+        <label for="callback-phone">Телефон</label>
+        <input id="callback-phone" name="phone" type="tel" autocomplete="tel"
+               inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </div>
+      <button class="btn btn--teal" type="submit">Отправить заявку</button>
+      <p class="modal__note">
+        Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
+      </p>
+    </form>
+  </dialog>
+
+  <script src="../js/main.js" defer></script>
+  <script src="../js/catalog.js" defer></script>
 </body>
 </html>
