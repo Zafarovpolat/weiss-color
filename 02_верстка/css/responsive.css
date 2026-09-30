@@ -1,6 +1,207 @@
-/* responsive.css — адаптив (п.3.3 ТЗ).
+/* ==========================================================================
+   responsive.css — адаптив (п.3.3 ТЗ).
    Проверяемые ширины: 360 / 390 / 768 / 1024 / 1440 / 1920 / 2560.
-   Mobile-first: базовые стили — узкий экран, media-запросы вверх. */
-/* @media (min-width: 768px)  {} */
-/* @media (min-width: 1024px) {} */
-/* @media (min-width: 1440px) {} */
+   Mobile-first: база — узкий экран, далее min-width запросы вверх.
+   Fluid-величины (clamp) уже привязаны к макету 2560 (1:2560).
+   ========================================================================== */
+
+/* ---------- Планшет: две колонки там, где есть смысл ---------- */
+@media (min-width: 768px) {
+  /* Преимущества: сетка 2×2 с разделителями-линиями сверху */
+  .benefits__list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-lg); }
+  .benefits__item { border-top: 1px solid var(--color-line); padding-top: var(--space-md); }
+  .benefits__item:first-child { border-top: 1px solid var(--color-line); padding-top: var(--space-md); }
+  .benefits__item:nth-child(2) { border-top: 1px solid var(--color-line); padding-top: var(--space-md); }
+
+  /* Колеровка: копирайт + веер в ряд, фото ниже */
+  .coloring__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; }
+  .coloring__photo { grid-column: 1 / -1; }
+
+  /* Подвал: строкой с переносами */
+  .footer__inner { justify-content: space-between; }
+}
+
+/* ---------- Более широкий планшет/малый десктоп ---------- */
+@media (min-width: 900px) {
+  /* Герой: банка слева от копирайта (композиция макета) */
+  .hero__inner {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: clamp(24px, 5.94vw, 152px);
+    padding-block-start: clamp(40px, 2.97vw, 76px);
+    padding-block-end: clamp(24px, 1.7vw, 43px);
+  }
+  .hero__product {
+    order: 0;
+    flex: none;
+    margin-left: clamp(0px, 4.65vw, 119px);
+  }
+  .hero__copy {
+    order: 1;
+    flex: none;
+    width: clamp(320px, 21.9vw, 560px);
+    max-width: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Колеровка: три колонки, фото у правого края экрана (как в макете).
+     Как в PSD, веер и фото выходят за пределы контентной зоны секции —
+     компенсируем отрицательными полями, оставаясь в потоке. */
+  .coloring__inner {
+    grid-template-columns: minmax(300px, 16.4vw) minmax(0, 1fr) clamp(320px, 40.5vw, 1038px);
+    align-items: start;
+    column-gap: 0;
+    padding-right: 0;
+    padding-block: clamp(40px, 3.44vw, 88px) clamp(32px, 1.37vw, 35px);
+  }
+  .coloring__photo {
+    grid-column: auto;
+    align-self: start;
+    border-radius: 0;
+    margin-top: -2.93vw;   /* фото начинается на 13px ниже края секции */
+    margin-bottom: -1.37vw; /* и заканчивается ровно по её нижнему краю */
+  }
+  .coloring__fan {
+    justify-self: start;
+    align-self: start;
+    width: max-content;
+    max-width: none;
+    margin-left: -9.22vw;
+    margin-top: -4.06vw;
+    margin-bottom: -3.01vw;
+  }
+  .coloring__fan img {
+    max-width: none;
+  }
+}
+
+/* ---------- Десктоп: раскрываем навигацию вместо бургера ---------- */
+@media (min-width: 1100px) {
+  .burger { display: none; }
+
+  .header__inner {
+    flex-wrap: nowrap;
+    gap: 0;
+    min-height: clamp(84px, 4.4vw, 113px);
+    padding-block: 0;
+  }
+
+  .logo {
+    align-self: flex-start;
+    margin-top: clamp(16px, 1vw, 26px);
+    margin-right: clamp(24px, 7.27vw, 186px);
+  }
+
+  .site-nav {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: 0;
+    border: none;
+  }
+
+  .site-nav__list {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(24px, 3.18vw, 81.5px);
+  }
+  .site-nav__list a { padding: 0; }
+  .site-nav__list a:hover { color: var(--color-teal); text-decoration: none; }
+
+  .header__contacts {
+    flex-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+    border: none;
+    gap: clamp(12px, 0.74vw, 19px);
+  }
+  .header__phone { margin-right: clamp(12px, 1.21vw, 31px); }
+
+  .cart { margin-left: clamp(8px, 2.97vw, 76px); }
+
+  /* В макете кнопка подвала не «прижата» к краю, а продолжает ряд */
+  .footer__inner > .btn { margin-right: clamp(0px, 3.9vw, 100px); }
+}
+
+/* Макетные переносы строк в описаниях — только на десктопе (как в PSD),
+   на узких экранах абзацы переносятся свободно */
+.d-br { display: none; }
+
+/* ---------- Полный дизайн-макет: преимущества в 4 колонки с
+             вертикальными разделителями (как в PSD) ---------- */
+@media (min-width: 1400px) {
+  .d-br { display: inline; }
+
+  .benefits__inner {
+    grid-template-columns: minmax(240px, 411px) minmax(0, 1fr);
+    gap: 0;
+    align-items: start;
+    /* в макете правый отступ секции меньше левого (135 против 224) */
+    padding-right: clamp(48px, 5.27vw, 135px);
+  }
+  /* PSD-границы текста — tight-bbox: компенсируем ведущие браузера,
+     чтобы ink совпадал с макетом (y=1120/1121) */
+  .benefits__list { margin-top: -4px; }
+  .benefits__heading { max-width: 290px; margin-top: -6px; }
+  .benefits__num { width: clamp(36px, 1.72vw, 44px); margin-top: 8px; }
+  .benefits__list { grid-template-columns: 0.868fr repeat(3, minmax(0, 1fr)); column-gap: 0; }
+  /* секция короче на 4px: отступ описаний вниз (макет ink y=1179) */
+  .benefits { padding-bottom: clamp(28px, 1.21vw, 31px); }
+
+  .benefits__item {
+    border-top: none;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: var(--space-md);
+    row-gap: calc(var(--space-xs) + 4px);
+  }
+  .benefits__item:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+  .benefits__item + .benefits__item {
+    border-top: none;
+    padding-top: 0;
+    padding-left: clamp(20px, 1.72vw, 44px);
+    /* разделитель как в макете: начинается на ink заголовка (y=1121),
+       высота строки карточки; фоном вместо border — без absolute */
+    border-left: none;
+    background: linear-gradient(var(--color-line), var(--color-line))
+      no-repeat left 6px / 2px calc(100% - 6px);
+  }
+  .benefits__title { max-width: clamp(150px, 8.4vw, 215px); }
+
+  /* Подвал: точная строка макета — фиксированные зазоры как в PSD
+     (logo→nav 188, nav→copy 155, copy→btn 67 при gap 40) */
+  .footer__inner {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    min-height: clamp(80px, 3.8vw, 97px);
+    padding-block: 0;
+    gap: clamp(16px, 1.6vw, 40px);
+  }
+  .footer__nav {
+    margin-left: clamp(24px, 5.78vw, 148px);
+    margin-bottom: 6px;
+  }
+  .footer__copy {
+    margin-left: clamp(20px, 4.49vw, 115px);
+    margin-bottom: 10px;
+    color: var(--color-white);
+    font-size: clamp(14px, 0.594vw, 15.21px);
+  }
+  .footer__cta {
+    margin-left: clamp(8px, 1.05vw, 27px);
+    padding-block: 16px;
+  }
+}
+
+/* ---------- Ширина макета 2560 ---------- */
+@media (min-width: 2000px) {
+  /* На очень широких экранах придерживаемся макетных пропорций */
+  .benefits__item { padding-right: clamp(24px, 1.8vw, 46px); }
+}

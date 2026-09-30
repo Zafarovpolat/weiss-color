@@ -1,22 +1,144 @@
-/* variables.css — дизайн-токены: цвета, шрифты, размеры, отступы.
-   Значения снимаются из PSD (01_исходники/макеты_psd). Пока плейсхолдеры. */
-:root {
-  /* Цвета — уточнить по макетам */
-  --color-bg: #ffffff;
-  --color-text: #1a1a1a;
-  --color-muted: #6b6b6b;
-  --color-accent: #c8102e;      /* акцент бренда — заменить по PSD */
-  --color-border: #e5e5e5;
+/* ==========================================================================
+   variables.css — дизайн-токены Weiss Color
+   Источник: точный замер PSD «Главная страница.psd» (canvas 2560×1440)
+   через psd-extract (ag-psd): fills, text styles, effects, layer bounds.
+   Значения в px соответствуют макету при ширине экрана 2560 CSS px;
+   fluid-величины заданы clamp() с долей vw от макета (1:2560).
+   ========================================================================== */
 
-  /* Типографика (по правилам дома: веса 400/500/700) */
-  --font-base: "Inter", system-ui, sans-serif;
+/* ---------- Шрифты (self-host, files/assets/fonts) ---------- */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/montserrat-cyrillic-400-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/montserrat-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/montserrat-cyrillic-500-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/montserrat-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/montserrat-cyrillic-600-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/montserrat-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/open-sans-cyrillic-400-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/open-sans-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/open-sans-cyrillic-600-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/open-sans-latin-600-normal.woff2") format("woff2");
+}
+
+:root {
+  /* ---------- Цвета (сняты с PSD: fills, effects, пиксельные пробы) ---------- */
+  --color-ink: #253346;          /* основной тёмно-синий текст, навигация */
+  --color-ink-deep: #061e3f;     /* заголовок H1, цифры преимуществ */
+  --color-lead: #43484f;         /* подзаголовок героя */
+  --color-muted: #6e6f75;        /* описания, телефон */
+  --color-eyebrow: #233146;      /* надзаголовок «Идеальное решение» */
+  --color-surface: #f1f1f5;      /* секция «Почему стоит обратиться» */
+  --color-surface-alt: #e8eaee;  /* секция «Колеровка онлайн» */
+  --color-footer: #2e2e2d;       /* фон подвала */
+  --color-white: #ffffff;
+  --color-line: #dcdcdc;         /* разделители колонок преимуществ */
+  --color-brown: #62381e;        /* CTA «Подробнее» (с тенью rgba .35) */
+  --color-teal: #39757d;         /* CTA «Подобрать цвет» */
+  --color-badge: #fe701a;        /* бейдж счётчика корзины */
+  --color-border-btn: #a0a0a0;   /* контур кнопки «Заказать звонок» */
+
+  --shadow-brown: 0 0 27px 3px rgba(98, 56, 30, 0.35);
+  --shadow-teal: 0 0 27px 3px rgba(57, 117, 125, 0.35);
+
+  /* ---------- Шрифты ---------- */
+  --font-main: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-aux: "Open Sans", var(--font-main);
+  --font-num: "Times New Roman", Times, Georgia, serif;
+
   --fw-regular: 400;
   --fw-medium: 500;
-  --fw-bold: 700;
+  --fw-semibold: 600;
 
-  /* Сетка/отступы — шаг ×4 */
-  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
-  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;
-  --container: 1440px;
-  --radius: 8px;
+  /* ---------- Типографика (clamp от макета 2560) ---------- */
+  --fs-h1: clamp(38px, 2.93vw, 75px);
+  --lh-h1: 1.27;
+  --fs-lead: clamp(17px, 1.07vw, 27.4px);
+  --fs-eyebrow: clamp(13px, 0.78vw, 20px);
+  --fs-section-title: clamp(24px, 1.25vw, 32px);
+  --fs-benefits-title: clamp(19px, 0.9vw, 23px);
+  --fs-num: clamp(30px, 1.72vw, 44px);
+  --fs-body: 15px;
+  --fs-small: 14px;
+  --fs-nav: 16px;
+  --fs-btn: clamp(13px, 0.575vw, 14.7px);
+  --fs-phone: clamp(16px, 0.78vw, 20px);
+
+  /* ---------- Сетка и отступы ---------- */
+  --container-pad: clamp(20px, 8.75vw, 224px); /* макет: 224px при 2560 */
+  --header-pad: clamp(20px, 2.5vw, 64px);      /* макет: 64px */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: clamp(32px, 2vw, 48px);
+  --radius-btn: 4px;
+  --radius-sm: 2px;
+
+  /* ---------- Прочее ---------- */
+  --focus-ring: 2px solid var(--color-teal);
+  --focus-offset: 3px;
+  --header-z: 50;
+  --menu-z: 40;
 }

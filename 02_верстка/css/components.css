@@ -1,3 +1,211 @@
-/* components.css — переиспользуемые компоненты:
-   кнопки, поля форм, карточки товаров, плашки цвета, модальные окна,
-   счётчик корзины, чипы фильтров, пагинация и т.д. */
+/* ==========================================================================
+   components.css — переиспользуемые компоненты:
+   кнопки, формы/модальное окно, текстовые атомы секций.
+   ========================================================================== */
+
+/* ---------- Кнопки ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2vw, 51px);
+  padding: clamp(13px, 0.59vw, 15px) clamp(18px, 1.8vw, 46px);
+  font-family: inherit;
+  font-size: var(--fs-btn);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-white);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  text-decoration: none;
+  transition: box-shadow 0.25s ease, background-color 0.2s ease,
+    border-color 0.2s ease, color 0.2s ease, filter 0.2s ease;
+}
+.btn:hover { text-decoration: none; }
+.btn:active { filter: brightness(0.93); }
+
+.btn__arrow {
+  flex: none;
+  width: clamp(24px, 1.64vw, 42px);
+  height: auto;
+}
+
+/* Первичная CTA героя — коричневая (макет: #62381e + свечение .35) */
+.btn--brown {
+  background: var(--color-brown);
+  box-shadow: var(--shadow-brown);
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-regular);
+  gap: clamp(20px, 1.95vw, 50px);
+  padding-inline: clamp(18px, 1.37vw, 35px);
+}
+.btn--brown:hover { background: #734426; box-shadow: 0 0 34px 4px rgba(98, 56, 30, 0.45); }
+.btn--brown:focus-visible { outline-color: var(--color-brown); }
+
+/* Вторичная CTA — бирюзовая (макет: #39757d + свечение .35) */
+.btn--teal {
+  background: var(--color-teal);
+  box-shadow: var(--shadow-teal);
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.04em;
+  gap: clamp(8px, 0.4vw, 10px);
+  padding-inline: clamp(18px, 1.1vw, 28px);
+}
+.btn--teal:hover { background: #44858e; box-shadow: 0 0 34px 4px rgba(57, 117, 125, 0.45); }
+.btn--teal:focus-visible { outline-color: var(--color-teal); }
+.btn--teal .btn__arrow { width: clamp(20px, 1.64vw, 42px); }
+
+/* Контурная кнопка «Заказать звонок» (шапка/подвал) */
+.btn--outline {
+  color: var(--color-ink);
+  background: var(--color-white);
+  border-color: var(--color-border-btn);
+  box-shadow: none;
+  padding-inline: clamp(20px, 1.68vw, 43px);
+}
+.btn--outline:hover {
+  border-color: var(--color-ink);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Контурная на тёмном (подвал) — в макете более узкий «дышащий» контур */
+.btn--ghost {
+  color: var(--color-white);
+  background: transparent;
+  border-color: var(--color-white);
+  box-shadow: none;
+  padding-inline: clamp(18px, 1.1vw, 28px);
+}
+.btn--ghost:hover { background: rgba(255, 255, 255, 0.1); }
+
+/* ---------- Текстовые атомы героя ---------- */
+.hero__eyebrow {
+  margin: 0;
+  font-family: var(--font-aux);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-eyebrow);
+}
+.hero__title {
+  margin: clamp(10px, 0.86vw, 22px) 0 0;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-h1);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-ink-deep);
+  max-width: 600px;
+}
+.hero__lead {
+  margin: clamp(16px, 1.25vw, 32px) 0 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-regular);
+  line-height: 1.5;
+  color: var(--color-lead);
+  max-width: 410px;
+}
+.hero .btn { margin-top: clamp(18px, 1.84vw, 47px); }
+
+/* ---------- Текстовые атомы секции колеровки ---------- */
+.coloring__title {
+  margin: 3px 0 clamp(12px, 1.05vw, 27px);
+  font-size: var(--fs-section-title);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
+  line-height: 0.6;
+  color: var(--color-ink);
+}
+.coloring__text {
+  margin: 0;
+  font-size: clamp(15px, 0.742vw, 19px);
+  font-weight: var(--fw-medium);
+  line-height: 1.4;
+  color: var(--color-muted);
+  max-width: 420px;
+}
+.coloring .btn { margin-top: clamp(16px, 1.05vw, 27px); }
+
+/* ---------- Заголовок секции преимуществ ---------- */
+.benefits__heading {
+  margin: 0;
+  font-size: var(--fs-benefits-title);
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  max-width: 290px;
+}
+
+/* ---------- Модальное окно «Заказать звонок» (М25) ---------- */
+.modal {
+  width: min(440px, calc(100vw - 32px));
+  padding: clamp(24px, 3vw, 40px);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 24px 64px rgba(6, 30, 63, 0.28);
+  color: var(--color-ink);
+}
+.modal::backdrop { background: rgba(6, 30, 63, 0.55); }
+
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+.modal__title { margin: 0; font-size: 22px; }
+.modal__close {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--color-muted);
+  border-radius: var(--radius-btn);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.modal__close:hover { color: var(--color-ink); background: var(--color-surface); }
+
+.modal__text {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+}
+
+/* Поля формы */
+.field { display: grid; gap: 6px; margin-bottom: var(--space-sm); }
+.field label { font-size: var(--fs-small); font-weight: var(--fw-medium); }
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 16px; /* 16px — iOS не зумит поле */
+  color: var(--color-ink);
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-btn);
+  transition: border-color 0.2s ease;
+}
+.field input:hover { border-color: #b9b9c0; }
+.field input:user-invalid { border-color: #c0392b; }
+.field input:focus-visible { border-color: var(--color-teal); }
+
+.modal .btn { width: 100%; margin-top: var(--space-xs); }
+.modal__note {
+  margin-top: var(--space-sm);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-muted);
+}

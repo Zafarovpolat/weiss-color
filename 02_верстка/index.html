@@ -2,7 +2,7 @@
 <!--
   Экран: М10 — Главная
   Исходник PSD: 01_исходники/макеты_psd/Главная страница.psd
-  Пункт ТЗ: п.9.1
+  Пункт ТЗ: п.9.1 (а также п.3.1 — общие элементы, п.3.3 — адаптивность)
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
   Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
 -->
@@ -10,7 +10,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Главная — Weiss Color</title>
+  <title>Weiss Color — краски, лаки и пропитки для вашего интерьера</title>
+  <meta name="description" content="Интернет-магазин красок, лаков и пропиток Weiss Color: каталог, колеровка онлайн, визуализатор цвета и доставка по России.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/montserrat-cyrillic-600-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/montserrat-cyrillic-400-normal.woff2" crossorigin>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
@@ -19,19 +23,216 @@
   <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Главная» (М10) по PSD -->
-    <p style="padding:24px;color:#888">[М10] Главная — заготовка</p>
+  <!-- Шапка: логотип, меню, телефон, мессенджеры, кнопка звонка, корзина (п.3.1) -->
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="index.html" aria-label="Weiss Color — на главную">
+        <img src="assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="pages/catalog.html">Каталог</a></li>
+          <li><a href="pages/where-to-buy.html">Где купить</a></li>
+          <li><a href="pages/about.html">О компании</a></li>
+          <li><a href="pages/contacts.html">Контакты</a></li>
+          <li><a href="pages/coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <!-- ссылки-заглушки: заменяются по п.12.2 ТЗ (утверждённые Заказчиком) -->
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="assets/img/social-telegram.png" width="54" height="54" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="pages/cart.html" aria-label="Корзина, товаров: 0">
+        <img src="assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Герой «Для вашего интерьера» (п.9.1) -->
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero__bg" src="assets/img/hero-bg.jpg" width="2565" height="811"
+           alt="" aria-hidden="true" fetchpriority="high" decoding="async">
+      <div class="container hero__inner">
+        <img class="hero__product" src="assets/img/hero-can.png" width="317" height="468"
+             alt="Банка краски Acrilux — краска для стен и потолков интерьерная, матовая"
+             decoding="async" fetchpriority="high">
+        <div class="hero__copy">
+          <p class="hero__eyebrow">Идеальное решение</p>
+          <h1 class="hero__title" id="hero-title">Для вашего интерьера</h1>
+          <p class="hero__lead">Краска для стен и потолков интерьерная, матовая</p>
+          <a class="btn btn--brown" href="pages/catalog.html">
+            Подробнее
+            <svg class="btn__arrow" viewBox="0 0 52 19" fill="none" aria-hidden="true">
+              <path d="M1 9.5h46M41 2l9 7.5-9 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Колеровка онлайн (п.5.4–5.5, п.9.1) -->
+    <section class="coloring" aria-labelledby="coloring-title">
+      <div class="coloring__inner">
+        <div class="coloring__copy">
+          <h2 class="coloring__title" id="coloring-title">Колеровка онлайн</h2>
+          <p class="coloring__text">
+            Подберите идеальный цвет для вашего интерьера с помощью каталога ведущих производителей красок
+          </p>
+          <a class="btn btn--teal" href="pages/visualizer.html">
+            Подобрать цвет
+            <svg class="btn__arrow" viewBox="0 0 44 16" fill="none" aria-hidden="true">
+              <path d="M1 8h38M34 2l7 6-7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <figure class="coloring__fan">
+          <img src="assets/img/coloring-fan.png" width="1137" height="393"
+               alt="" aria-hidden="true" loading="lazy" decoding="async">
+        </figure>
+
+        <figure class="coloring__photo">
+          <img src="assets/img/coloring-scene.jpg" width="1038" height="322"
+               alt="Интерьер с окрашенной стеной из каталога цветов Weiss Color"
+               loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </section>
+
+    <!-- Почему стоит обратиться к профессионалам (п.9.1) -->
+    <section class="benefits" aria-labelledby="benefits-title">
+      <div class="container benefits__inner">
+        <h2 class="benefits__heading" id="benefits-title">
+          Почему стоит обратиться к профессионалам
+        </h2>
+
+        <ul class="benefits__list">
+          <li class="benefits__item">
+            <span class="benefits__num" aria-hidden="true">01</span>
+            <h3 class="benefits__title">Оригинальная продукция</h3>
+            <p class="benefits__text">
+              Мы предоставляем только<br class="d-br"> оригинальную продукцию<br class="d-br">
+              от ведущих производителей,<br class="d-br"> гарантируем соответствие<br class="d-br">
+              стандартам качества
+            </p>
+          </li>
+          <li class="benefits__item">
+            <span class="benefits__num" aria-hidden="true">02</span>
+            <h3 class="benefits__title">Индивидуальный подход</h3>
+            <p class="benefits__text">
+              Наши менеджеры<br class="d-br"> и цвет-эксперты помогают<br class="d-br">
+              в подборе цвета, предлагая<br class="d-br"> индивидуальные решения,<br class="d-br">
+              разработанные с учетом ваших<br class="d-br"> вкусов и потребностей
+            </p>
+          </li>
+          <li class="benefits__item">
+            <span class="benefits__num" aria-hidden="true">03</span>
+            <h3 class="benefits__title">Широкий ассортимент</h3>
+            <p class="benefits__text">
+              Предлагаем краски и лаки<br class="d-br"> на водной и органической<br class="d-br">
+              основе, наборы из большого<br class="d-br"> каталога ведущих брендов<br class="d-br">
+              нашего ассортимента
+            </p>
+          </li>
+          <li class="benefits__item">
+            <span class="benefits__num" aria-hidden="true">04</span>
+            <h3 class="benefits__title">Профессиональная консультация</h3>
+            <p class="benefits__text">
+              Наши эксперты всегда готовы<br class="d-br"> предоставить профессиональный<br class="d-br">
+              совет и помочь при выборе, сделать<br class="d-br"> правильный выбор
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <!-- Подвал: навигация, правовые ссылки, кнопка звонка (п.3.1) -->
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="index.html" aria-label="Weiss Color — на главную">
+        <img src="assets/img/logo-white.png" width="192" height="52" alt="Weiss Color">
+      </a>
 
-  <script src="js/main.js"></script>
-    <script src="js/modal.js"></script>
-    <script src="js/catalog.js"></script>
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="pages/catalog.html">Каталог</a>
+        <a href="pages/where-to-buy.html">Где купить</a>
+        <a href="pages/about.html">О компании</a>
+        <a href="pages/contacts.html">Контакты</a>
+        <a href="pages/coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="pages/legal.html">
+        Политика конфиденциальности и обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <!-- Окно «Заказать звонок» (М25, п.9.3) -->
+  <dialog class="modal" id="callback-dialog" aria-labelledby="callback-title">
+    <div class="modal__header">
+      <h2 class="modal__title" id="callback-title">Заказать звонок</h2>
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть окно">&times;</button>
+    </div>
+    <p class="modal__text">Оставьте контакты — перезвоним в рабочее время.</p>
+    <form id="callback-form">
+      <div class="field">
+        <label for="callback-name">Имя</label>
+        <input id="callback-name" name="name" type="text" autocomplete="name"
+               placeholder="Как к вам обращаться…" required minlength="2">
+      </div>
+      <div class="field">
+        <label for="callback-phone">Телефон</label>
+        <input id="callback-phone" name="phone" type="tel" autocomplete="tel"
+               inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </div>
+      <button class="btn btn--teal" type="submit">Отправить заявку</button>
+      <p class="modal__note">
+        Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
+      </p>
+    </form>
+  </dialog>
+
+  <script src="js/main.js" defer></script>
 </body>
 </html>
