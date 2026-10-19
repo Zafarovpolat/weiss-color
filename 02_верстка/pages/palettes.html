@@ -1,37 +1,243 @@
 <!DOCTYPE html>
 <!--
-  Экран: М13 — Обзор палитр (28)
-  Исходник PSD: 01_исходники/макеты_psd/Восемь палитр psd.psd
-  Пункт ТЗ: п.5.1
-  Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
+  Экран: М13 — Обзор палитр (28), «Колеровка цвета»
+  Исходник PSD: 01_исходники/макеты_psd/Восемь палитр.psd
+  Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS на демо-данных.
   Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Обзор палитр (28) — Weiss Color</title>
+  <title>Колеровка цвета — обзор палитр | Weiss Color</title>
+  <meta name="description" content="Обзор палитр красок Weiss Color: Acrilux, Ace Paint, Little Greene, Flugger, NCS, Benjamin Moore, Farrow &amp; Ball, RAL — выберите каталог цветов.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-400-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/catalog.css">
+  <link rel="stylesheet" href="../css/palettes.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Обзор палитр (28)» (М13) по PSD -->
-    <p style="padding:24px;color:#888">[М13] Обзор палитр (28) — заготовка</p>
+  <!-- Шапка: общий блок п.3.1 -->
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="54" height="54" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 0">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="palettes-page">
+    <div class="palettes-head">
+      <nav class="breadcrumbs" aria-label="Хлебные крошки">
+        <ol class="breadcrumbs__list">
+          <li><a href="../index.html">Главная</a></li>
+          <li class="breadcrumbs__sep" aria-hidden="true">&gt;</li>
+          <li aria-current="page">Колеровка цвета</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="palettes-main">
+      <h1 class="palettes-title">Колеровка цвета</h1>
+
+      <ul class="palettes-grid" aria-label="Палитры колеровки">
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <span class="palette-brand">
+              <span class="palette-brand__name">Acrilux</span>
+              <span class="palette-brand__tag">Краска с микромрамором<br>для стен и потолков</span>
+            </span>
+          </div>
+            <span class="palette-card__label">Acrilux</span>
+          </a>
+        </li>
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <img src="../assets/img/palette-ace.png" width="431" height="328"
+                 alt="Палитра красок Ace Paint" loading="lazy" decoding="async">
+          </div>
+            <span class="palette-card__label">Ace Paint</span>
+          </a>
+        </li>
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <img src="../assets/img/palette-little.png" width="431" height="328"
+                 alt="Веер палитры Little Greene" loading="lazy" decoding="async">
+          </div>
+            <span class="palette-card__label">Little Greene</span>
+          </a>
+        </li>
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <img src="../assets/img/palette-flugger.png" width="431" height="328"
+                 alt="Веер палитры Flugger 900" loading="lazy" decoding="async">
+          </div>
+            <span class="palette-card__label">Flugger 900</span>
+          </a>
+        </li>
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <img src="../assets/img/palette-ncs.png" width="431" height="328"
+                 alt="Веер палитры NCS Index" loading="lazy" decoding="async">
+          </div>
+            <span class="palette-card__label">NCS Index</span>
+          </a>
+        </li>
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <img src="../assets/img/palette-benjamin.png" width="431" height="328"
+                 alt="Веер палитры Benjamin Moore Preview" loading="lazy" decoding="async">
+          </div>
+            <span class="palette-card__label">Benjamin Moore Preview</span>
+          </a>
+        </li>
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <img src="../assets/img/palette-farrow.png" width="431" height="328"
+                 alt="Веер палитры Farrow & Ball" loading="lazy" decoding="async">
+          </div>
+            <span class="palette-card__label">Farrow & Ball</span>
+          </a>
+        </li>
+        <li>
+          <a class="palette-card" href="palette-selector.html">
+          <div class="palette-card__media">
+            <img src="../assets/img/palette-ral.png" width="431" height="328"
+                 alt="Веер палитры RAL Classic" loading="lazy" decoding="async">
+          </div>
+            <span class="palette-card__label">RAL Classic</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Постраничная навигация (компактная, как на экране «Список оттенков») -->
+      <nav class="pagination pagination--compact palettes-pagination" aria-label="Страницы обзора палитр">
+        <span class="pagination__item" aria-disabled="true">Назад</span>
+        <a class="pagination__item" href="#" aria-label="Страница 1">1</a>
+        <a class="pagination__item" href="#" aria-label="Страница 2">2</a>
+        <a class="pagination__item" href="#" aria-label="Страница 3">3</a>
+        <a class="pagination__item" href="#" aria-label="Страница 4" aria-current="page">4</a>
+        <a class="pagination__item" href="#" aria-label="Страница 5">5</a>
+        <a class="pagination__item" href="#" aria-label="Страница 6">6</a>
+        <a class="pagination__item" href="#" aria-label="Страница 7">7</a>
+        <a class="pagination__item" href="#">Вперед</a>
+      </nav>
+    </div>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <!-- Подвал: общий блок п.3.1 -->
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo-white.png" width="192" height="52" alt="Weiss Color">
+      </a>
 
-  <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/palette.js"></script>
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <!-- Окно «Заказать звонок» (М25, п.9.3) -->
+  <dialog class="modal" id="callback-dialog" aria-labelledby="callback-title">
+    <div class="modal__header">
+      <h2 class="modal__title" id="callback-title">Заказать звонок</h2>
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть окно">&times;</button>
+    </div>
+    <p class="modal__text">Оставьте контакты — перезвоним в рабочее время.</p>
+    <form id="callback-form">
+      <div class="field">
+        <label for="callback-name">Имя</label>
+        <input id="callback-name" name="name" type="text" autocomplete="name"
+               placeholder="Как к вам обращаться…" required minlength="2">
+      </div>
+      <div class="field">
+        <label for="callback-phone">Телефон</label>
+        <input id="callback-phone" name="phone" type="tel" autocomplete="tel"
+               inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </div>
+      <button class="btn btn--teal" type="submit">Отправить заявку</button>
+      <p class="modal__note">
+        Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
+      </p>
+    </form>
+  </dialog>
+
+  <script src="../js/main.js" defer></script>
 </body>
-</html>
