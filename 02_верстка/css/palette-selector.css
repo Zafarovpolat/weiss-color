@@ -1,0 +1,113 @@
+/* Сцена занимает весь остаток экрана — футер всегда внизу (без белой полосы) */
+body.page-fill {
+  display: flex;
+  flex-direction: column;
+}
+
+body.page-fill main {
+  flex: 1 0 auto;
+}
+
+/* ==========================================================================
+   М19 «Селектор палитры» — выпадающий выбор палитры (раскрытое состояние).
+   Геометрия снята с PSD-фрагмента 2048×1060 (spec/Селектор_палитры):
+   сцена чёрная, компонент по центру: поле 766×61, строки списка 50px.
+   ========================================================================== */
+
+.selector-page {
+  background: #000000;
+}
+
+/* Сцена под демонстрацию компонента (в макете фрагмент 2048×1060) */
+.selector-stage {
+  display: grid;
+  place-items: center;
+  min-height: clamp(640px, 51.76vw, 1060px); /* 1060/2048 = 51.76vw */
+  padding: clamp(24px, 2vw, 40px) clamp(16px, 2vw, 40px);
+}
+
+/* --- Компонент --- */
+
+.pselect {
+  width: min(766px, 100%);
+  font-size: clamp(17px, 1.22vw, 25px);
+  color: #515257;
+}
+
+.pselect__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: clamp(44px, 2.98vw, 61px);
+  padding: 0 clamp(16px, 1.86vw, 38px);
+  background: var(--color-white);
+  border: 1px solid #bdbcbc;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.pselect__control:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+.pselect__icon {
+  width: clamp(20px, 1.46vw, 30px);
+  height: clamp(12px, 0.88vw, 18px);
+  transition: transform 0.2s ease;
+}
+
+.pselect:not(.is-open) .pselect__icon {
+  transform: rotate(180deg);
+}
+
+.pselect__list {
+  margin: 0;
+  padding: 0;
+  background: var(--color-white);
+  border: 1px solid #bdbcbc;
+  border-top: 0;
+  list-style: none;
+}
+
+.pselect:not(.is-open) .pselect__list {
+  display: none;
+}
+
+.pselect__option {
+  display: flex;
+  align-items: center;
+  height: clamp(36px, 2.44vw, 50px);
+  padding-inline: clamp(16px, 1.37vw, 28px);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.pselect__option:hover,
+.pselect__option:focus-visible {
+  background: #f2f8fe;
+  outline: none;
+}
+
+.pselect__option[aria-selected="true"] {
+  background: #e7f2fc;
+}
+
+/* --- Адаптив (проверяем до 1024) --- */
+
+@media (max-width: 1024px) {
+  .selector-stage {
+    min-height: clamp(480px, 70vh, 720px);
+  }
+
+  .pselect {
+    font-size: clamp(15px, 2.2vw, 20px);
+  }
+
+  .pselect__option {
+    height: clamp(40px, 5vw, 48px);
+  }
+}
