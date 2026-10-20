@@ -2,36 +2,48 @@
 <!--
   Экран: М23 — Товар добавлен (окно)
   Исходник PSD: 01_исходники/макеты_psd/Подтверждение добавления товараpsd.psd
-  Пункт ТЗ: п.6.6
+  Пункт ТЗ: п.6.6 — подтверждение добавления товара в корзину
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  Окно 916×677; открывается на карточке товара после «В корзину» (js/modal.js).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Товар добавлен (окно) — Weiss Color</title>
+  <title>Товар добавлен — Weiss Color</title>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/modals.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <main class="mcard-demo">
+    <section class="mcard mcard-add" role="dialog" aria-modal="true" aria-labelledby="modal-add-title">
+      <button class="mcard__close" type="button" aria-label="Закрыть окно">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M3 3l18 18M21 3 3 21" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Товар добавлен (окно)» (М23) по PSD -->
-    <p style="padding:24px;color:#888">[М23] Товар добавлен (окно) — заготовка</p>
+      <h1 class="mcard__title" id="modal-add-title">Товар успешно добавлен в корзину</h1>
+
+      <img class="mcard-add__image" src="../assets/img/modal-can.png" width="198" height="291"
+           alt="Краска Acrilux, матовая интерьерная, 2,5 л" loading="lazy">
+
+      <p class="mcard-add__name">Acrilux краска для стен и потолков</p>
+
+      <div class="mcard__actions">
+        <a class="btn btn--brown" href="cart.html">В корзину</a>
+        <a class="btn btn--outline" href="catalog.html">Продолжить покупку</a>
+      </div>
+    </section>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
-
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/cart.js"></script>
 </body>
 </html>

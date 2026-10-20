@@ -1,0 +1,106 @@
+/* ==========================================================================
+   modals.css — модальные окна (п.3.4 ТЗ): М23 «Товар добавлен»,
+   М06 «Пробник», М25 «Заказать звонок», М17 «Результат отправки формы»,
+   М20 «Cookie-настройки».
+   Размеры сняты с PSD: окно М23 — 916×677, фон #f7f6fa, радиус 10.
+   ========================================================================== */
+
+/* --- Демо-подложка страниц-витрин модальных окон --- */
+
+.mcard-demo {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: clamp(16px, 2vw, 40px);
+  background: #e7e9ee;
+}
+
+/* --- Каркас окна --- */
+
+.mcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 916px;
+  padding: clamp(24px, 5vw, 68px) clamp(16px, 4.37vw, 40px)
+    clamp(24px, 3.5vw, 48px);
+  border-radius: 10px;
+  background: #f7f6fa;
+  box-shadow: 0 24px 64px rgba(23, 30, 49, 0.16);
+}
+
+.mcard__close {
+  position: absolute;
+  top: clamp(12px, 1.8vw, 24px);
+  right: clamp(12px, 2.34vw, 31px);
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: #252b37;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.mcard__close:hover { color: #62381e; }
+
+.mcard__close svg { width: 24px; height: 24px; }
+
+.mcard__title {
+  margin: 0;
+  font-size: clamp(16px, 1.48vw, 24px);
+  line-height: 1.15;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #252b37;
+}
+
+.mcard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(12px, 4.18vw, 107px);
+  margin-top: clamp(24px, 3.9vw, 60px);
+}
+
+.mcard__actions .btn {
+  min-width: clamp(190px, 10.94vw, 280px);
+  min-height: clamp(48px, 3.75vw, 60px);
+  padding-inline: clamp(10px, 0.78vw, 20px);
+  font-size: clamp(13px, 0.68vw, 17px);
+  letter-spacing: 0.04em;
+}
+
+/* --- М23 «Товар добавлен в корзину» --- */
+
+.mcard-add__image {
+  width: clamp(120px, 12.4vw, 198px);
+  height: auto;
+  margin-top: clamp(20px, 3.26vw, 50px);
+}
+
+.mcard-add__name {
+  margin: clamp(20px, 3.46vw, 53px) 0 0;
+  font-size: clamp(14px, 1.56vw, 25px);
+  line-height: 1.2;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+/* --- Адаптив --- */
+
+@media (max-width: 720px) {
+  .mcard { border-radius: 8px; }
+  .mcard__actions { flex-direction: column; width: 100%; }
+  .mcard__actions .btn { width: 100%; min-width: 0; }
+}

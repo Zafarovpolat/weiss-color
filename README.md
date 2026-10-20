@@ -81,7 +81,7 @@ Weiss Color/
 | М11 | Правовой документ (шаблон)     | pages/legal.html                 | 9.4 | ✅ готов |
 | М02 | Страница ошибки 404            | pages/404.html                   | 9.4 | ✅ готов |
 | М06 | Пробник 300 мл (окно)          | pages/modal-sampler.html         | 6.6 | —        |
-| М23 | Товар добавлен (окно)          | pages/modal-add-to-cart.html     | 6.6 | —        |
+| М23 | Товар добавлен (окно)          | pages/modal-add-to-cart.html     | 6.6 | ✅ готов |
 | М25 | Заказать звонок (окно)         | pages/modal-callback.html        | 9.3 | —        |
 | М17 | Результат отправки формы (окно)| pages/modal-form-result.html     | 9.3 | —        |
 | М20 | Cookie-настройки (окно)        | pages/modal-cookie.html          | 9.5 | —        |
