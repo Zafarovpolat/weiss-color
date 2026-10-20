@@ -1,37 +1,55 @@
 <!DOCTYPE html>
 <!--
-  Экран: М20 — Cookie-настройки (окно)
+  Экран: М20 — Уведомление и настройки cookie
   Исходник PSD: 01_исходники/макеты_psd/Уведомление и настройки cookie.psd
-  Пункт ТЗ: п.9.5
+  Пункт ТЗ: п.9.5 — cookie-уведомление и согласие
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  «Настроить» на этапе 2 раскрывает категории (необходимые/аналитика/реклама),
+  необязательные скрипты не запускаются до согласия (js/cookie.js).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cookie-настройки (окно) — Weiss Color</title>
+  <title>Файлы cookie — Weiss Color</title>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/modals.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <main class="cookie-demo">
+    <aside class="cookie-bar" id="cookie-bar" role="region" aria-labelledby="cookie-title">
+      <img class="cookie-bar__img" src="../assets/img/cookie.png" width="261" height="229" alt="" loading="lazy">
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Cookie-настройки (окно)» (М20) по PSD -->
-    <p style="padding:24px;color:#888">[М20] Cookie-настройки (окно) — заготовка</p>
+      <div>
+        <h1 class="cookie-bar__title" id="cookie-title">Мы используем cookie</h1>
+        <p class="cookie-bar__text">
+          Файлы cookie помогают нам делать сайт удобнее для вас:
+          запоминать настройки, показывать актуальные предложения и анализировать посещаемость.
+        </p>
+        <a class="cookie-bar__link" href="legal.html">
+          Подробнее в Политике конфиденциальности
+          <svg viewBox="0 0 26 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <path d="M1 8h23M18 2l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="cookie-bar__actions">
+        <button class="btn btn--brown" type="button" data-cookie="accept">Принять все</button>
+        <button class="btn btn--outline" type="button" data-cookie="settings">Настроить</button>
+      </div>
+
+      <img class="cookie-bar__leaf" src="../assets/img/cookie-leaf.png" width="210" height="216" alt="" loading="lazy">
+    </aside>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
-
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/cookie.js"></script>
 </body>
 </html>

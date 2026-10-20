@@ -1,36 +1,56 @@
 <!DOCTYPE html>
 <!--
-  Экран: М17 — Результат отправки (окно)
+  Экран: М17 — Результат отправки формы (окно)
   Исходник PSD: 01_исходники/макеты_psd/Результат отправки формы.psd
-  Пункт ТЗ: п.9.3
+  Пункт ТЗ: п.9.3 — подтверждение отправки обращения
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Результат отправки (окно) — Weiss Color</title>
+  <title>Спасибо за обращение — Weiss Color</title>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/modals.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <main class="mcard-demo">
+    <section class="mcard mcard-callback mcard-result" role="dialog" aria-modal="true"
+             aria-labelledby="result-title">
+      <button class="mcard__close" type="button" aria-label="Закрыть окно">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M3 3l18 18M21 3 3 21" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Результат отправки (окно)» (М17) по PSD -->
-    <p style="padding:24px;color:#888">[М17] Результат отправки (окно) — заготовка</p>
+      <div class="callback-photo">
+        <img class="callback-photo__logo" src="../assets/img/logo.png" width="193" height="52"
+             alt="Weiss Color" loading="lazy">
+        <hr class="callback-photo__rule">
+        <p class="callback-photo__slogan">Вдохновляем<br>на красивые<br>интерьеры</p>
+      </div>
+
+      <div class="callback-result" role="status" aria-live="polite">
+        <p class="callback-result__icon" aria-hidden="true">
+          <svg viewBox="0 0 72 51" fill="none" stroke="currentColor" stroke-width="6">
+            <path d="M5 26 26 46 67 5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </p>
+        <h1 class="callback-result__title" id="result-title">Спасибо!</h1>
+        <p class="callback-result__text">
+          Мы получили ваше обращение и в ближайшее время свяжемся с вами
+        </p>
+      </div>
+    </section>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
-
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
 </body>
 </html>

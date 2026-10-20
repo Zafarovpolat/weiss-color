@@ -1,38 +1,229 @@
 <!DOCTYPE html>
 <!--
-  Экран: М06 — Пробник 300 мл (окно)
+  Экран: М06 — Заказ пробного образца цвета (страница)
   Исходник PSD: 01_исходники/макеты_psd/Пробник выбранного цвета.psd
-  Пункт ТЗ: п.6.6
+  Пункт ТЗ: п.6.6 — пробник 300 мл выбранного цвета
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  Цвет-квадрат и цена на этапе 2 подставляются из каталога (демо: F316).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Пробник 300 мл (окно) — Weiss Color</title>
+  <title>Пробный образец цвета F316 — Weiss Color</title>
+  <meta name="description" content="Закажите пробный образец краски WEISS 300 мл в цвете F316, чтобы оценить оттенок в своём интерьере.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/cart.css">
+  <link rel="stylesheet" href="../css/sampler.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="page-fill">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Пробник 300 мл (окно)» (М06) по PSD -->
-    <p style="padding:24px;color:#888">[М06] Пробник 300 мл (окно) — заготовка</p>
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 0">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="sampler-page">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+      <a href="../index.html">Главная</a> &gt;
+      <a href="catalog.html">Каталог</a> &gt;
+      <a href="catalog.html">Краски для внутренних работ</a> &gt;
+      <span aria-current="page">Краска для стен и потолков</span>
+    </nav>
+
+    <h1 class="sampler-title">
+      Заказ пробного образца
+      <span class="sampler-title__color">Цвет F316</span>
+    </h1>
+
+    <div class="sampler-layout">
+      <!-- цвет-квадрат: в проде подставляется цвет выбранного оттенка -->
+      <div class="sampler-swatch" role="img" aria-label="Цвет F316 — светло-розовый беж"></div>
+
+      <div class="sampler-photo">
+        <img src="../assets/img/sampler-can.png" width="392" height="531"
+             alt="Баночка пробного образца краски 300 мл в цвете F316" loading="lazy">
+      </div>
+
+      <aside class="sampler-aside" aria-labelledby="sampler-title">
+        <div class="sampler-head">
+          <a class="sampler-back" href="color.html">
+            <svg viewBox="0 0 28 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+              <path d="M27 8H1M7 2 1 8l6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Назад к выбору цвета
+          </a>
+        </div>
+
+        <h2 class="sampler-aside__title" id="sampler-title">Пробный образец цвета F316</h2>
+        <p class="sampler-aside__text">
+          Баночка краски 300 мл в цвете F316 — идеальное решение, чтобы оценить,
+          как оттенок выглядит именно в вашем интерьере. Нанесите на стену и посмотрите
+          на цвет при разном освещении в течение дня.
+        </p>
+
+        <ul class="sampler-benefits">
+          <li class="sampler-benefit">
+            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M20 3 37 11v18L20 37 3 29V11Z" stroke-linejoin="round"/>
+              <path d="M3 11l17 8 17-8M20 19v18" stroke-linejoin="round"/>
+            </svg>
+            <span>Реальный цвет<br>в вашем интерьере</span>
+          </li>
+          <li class="sampler-benefit">
+            <svg viewBox="0 0 44 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M4 17 22 3l18 14v20H4Z" stroke-linejoin="round"/>
+              <path d="M16 37V24h12v13" stroke-linejoin="round"/>
+            </svg>
+            <span>Удобно<br>тестировать</span>
+          </li>
+          <li class="sampler-benefit">
+            <svg viewBox="0 0 77 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M2 8h34v24H2zM36 16h18l12 10v6H36z" stroke-linejoin="round"/>
+              <circle cx="14" cy="32" r="4"/>
+              <circle cx="55" cy="32" r="4"/>
+            </svg>
+            <span>Быстрая доставка<br>от 3 до 7 дней</span>
+          </li>
+        </ul>
+
+        <div class="sampler-price-row">
+          <p class="sampler-price">350 ₽</p>
+          <span class="sampler-stock">В наличии</span>
+        </div>
+
+        <form class="sampler-buy" action="modal-add-to-cart.html" method="get">
+          <div class="sampler-qty">
+            <label class="sampler-qty__label" for="sampler-qty">Количество</label>
+            <div class="qty">
+              <button class="qty__btn qty__btn--minus" type="button" data-qty="dec"
+                      aria-label="Уменьшить количество" aria-controls="sampler-qty">−</button>
+              <input class="qty__input" id="sampler-qty" name="qty" type="number"
+                     inputmode="numeric" min="1" step="1" value="1" aria-label="Количество, шт.">
+              <button class="qty__btn" type="button" data-qty="inc"
+                      aria-label="Увеличить количество" aria-controls="sampler-qty">+</button>
+            </div>
+          </div>
+
+          <button class="btn btn--brown sampler-add" type="submit">Добавить в корзину</button>
+          <a class="btn btn--outline sampler-continue" href="catalog.html">Продолжить покупки</a>
+        </form>
+
+        <div class="sampler-notice">
+          <svg viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="25" cy="25" r="22"/>
+            <path d="M25 12v16M25 35v3" stroke-linecap="round"/>
+          </svg>
+          <p>
+            <strong>Цвет на экране отличается от реального.</strong><br>
+            Рекомендуем заказывать пробный образец, чтобы оценить цвет в вашем интерьере.
+          </p>
+        </div>
+      </aside>
+    </div>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и&nbsp;обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
+    <form class="dialog__form" id="callback-form" method="dialog">
+      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
+      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
+      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
+      <label class="field">
+        <span class="field__label">Имя</span>
+        <input class="field__input" type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </label>
+      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
+    </form>
+  </dialog>
 
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/palette.js"></script>
-    <script src="../js/cart.js"></script>
+  <script src="../js/cart.js"></script>
 </body>
 </html>
