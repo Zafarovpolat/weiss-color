@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--
+  Корневой редирект для статического хостинга (Vercel/Netlify/GitHub Pages).
+  Сам сайт лежит в папке «02_верстка». Без этого файла на «/» отдаётся 404.
+  Рекомендуемая настройка Vercel: Settings → General → Root Directory = 02_верстка
+  (тогда страница открывается сразу, без редиректа).
+-->
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=02_верстка/index.html">
+  <meta name="robots" content="noindex">
+  <title>Weiss Color — переадресация</title>
+  <script>location.replace('02_верстка/index.html');</script>
+</head>
+<body>
+  <p style="font-family:system-ui,sans-serif;padding:24px">
+    Открываем сайт… Если переход не произошёл —
+    <a href="02_верстка/index.html">перейдите на главную</a>.
+  </p>
+</body>
+</html>
