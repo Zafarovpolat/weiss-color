@@ -16,15 +16,15 @@
 /* ---------- Герой главной: на узких экранах высота по контенту ----------
    Фиксированный min-height 420px при узком вьюпорте обрезал банку
    (overflow: hidden у .hero). */
-@media (max-width: 900px) {
+/* до 1023 герой в одну колонку: фото-подложка только мешает (кресло
+   оказывается прямо под банкой), высота — по контенту */
+@media (max-width: 1023px) {
   .hero__inner {
     min-height: 0;
     padding-block: clamp(28px, 5vw, 44px) clamp(20px, 4vw, 32px);
   }
-  .hero__product { width: clamp(180px, 42vw, 260px); }
-
-  /* при узкой колонке cover «взумивает» фото до неузнаваемости — оставляем
-     чистый фон секции, композиция держится на банке и тексте */
+  .hero__product { width: clamp(180px, 34vw, 260px); }
+  .hero__copy { max-width: min(100%, 34ch); }
   .hero__bg { display: none; }
 }
 
