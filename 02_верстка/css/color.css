@@ -117,8 +117,11 @@
 
 /* Кнопка заказа образца */
 .c-hero__cta {
-  width: clamp(340px, 19.22vw, 492px);
-  height: clamp(52px, 2.5vw, 64px);
+  /* width вместо фиксированного clamp(340…) — иначе на узких экранах
+     кнопка шире колонки и налезает на соседний заголовок */
+  width: min(492px, 100%);
+  max-width: 100%;
+  height: clamp(48px, 2.5vw, 64px);
   margin-top: clamp(16px, 0.9vw, 23px);
   padding: 0;
   justify-content: center;
