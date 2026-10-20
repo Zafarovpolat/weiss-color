@@ -1,0 +1,84 @@
+/* ==========================================================================
+   error.css — экран М02 «Страница ошибки 404».
+   Геометрия снята с PSD 2560w (spec/Страница_ошибки):
+   контент от x=363; eyebrow y239, «404» y363 (496×221), H2 y641 (801×133),
+   текст y804 (655×149); кнопки y1004: «На главную» 355×63 и «В каталог» 269×67.
+   ========================================================================== */
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: clamp(600px, 48.2vw, 1234px);
+  padding: clamp(24px, 4.3vw, 110px) clamp(16px, 8.79vw, 225px)
+    clamp(24px, 2.4vw, 62px) clamp(16px, 14.18vw, 363px);
+  background: #f4f5f7 url("../assets/img/404-bg.jpg") right bottom / cover no-repeat;
+}
+
+.error-page__eyebrow {
+  margin: 0;
+  font-size: clamp(11px, 0.82vw, 21px);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.error-page__code {
+  margin: clamp(4px, 0.6vw, 15px) 0 0;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: clamp(90px, 14.2vw, 363px);
+  line-height: 0.86;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.02em;
+  color: #233146;
+}
+
+.error-page__title {
+  max-width: clamp(280px, 30.5vw, 781px);
+  margin: clamp(10px, 1.4vw, 36px) 0 0;
+  font-size: clamp(22px, 2.09vw, 53px);
+  line-height: 1.24;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: #233146;
+  /* base.css балансирует строки заголовков — здесь нужен перенос как в макете */
+  text-wrap: wrap;
+}
+
+.error-page__text {
+  max-width: clamp(280px, 25.6vw, 655px);
+  margin: clamp(10px, 1.02vw, 26px) 0 0;
+  font-size: clamp(14px, 1.05vw, 27px);
+  line-height: 1.36;
+  font-weight: var(--fw-medium);
+  color: #43484f;
+}
+
+.error-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(12px, 2.07vw, 53px);
+  margin-top: clamp(20px, 2.11vw, 54px);
+}
+
+.error-page .btn { min-height: clamp(48px, 2.46vw, 63px); }
+
+/* в макете вторая кнопка шире первой по паддингам (269 против 355) */
+.error-page__actions .btn--outline {
+  min-width: clamp(160px, 10.5vw, 269px);
+}
+
+@media (max-width: 1024px) {
+  .error-page {
+    min-height: 0;
+    padding-bottom: clamp(40px, 6vw, 80px);
+    background-size: auto 62%;
+    background-position: right bottom;
+  }
+}
+
+@media (max-width: 640px) {
+  .error-page { background-image: none; }
+  .error-page__actions .btn { width: 100%; }
+}
