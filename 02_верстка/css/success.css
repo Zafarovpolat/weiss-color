@@ -1,0 +1,218 @@
+/* ==========================================================================
+   success.css — экран М08 «Спасибо за заказ».
+   Геометрия снята с PSD 2560w (spec/Подтверждение_добавления_товара,
+   слой «спасибо за заказ»). Белая карточка 2110×1074 на фоне #f3f3f5.
+   ========================================================================== */
+
+.success-page {
+  background: #f3f3f5;
+  padding-inline: clamp(16px, 8.2vw, 210px) clamp(16px, 9.38vw, 240px);
+  padding-block: clamp(20px, 1.46vw, 37px) clamp(20px, 7.19vw, 184px);
+}
+
+.success-card {
+  padding: clamp(20px, 1.99vw, 51px) clamp(20px, 3.28vw, 84px)
+    clamp(24px, 1.56vw, 40px);
+  background: var(--color-white);
+  border-radius: clamp(8px, 0.55vw, 14px);
+}
+
+.success-card .crumbs {
+  width: max-content;
+  max-width: 100%;
+  font-size: clamp(13px, 0.63vw, 16px);
+  font-weight: var(--fw-medium);
+  color: #6f7684;
+}
+
+.success-card .crumbs a { color: #6f7684; }
+.success-card .crumbs a:hover { color: var(--color-brown); }
+
+/* --- Знак успеха --- */
+
+.success-badge {
+  display: grid;
+  place-items: center;
+  width: clamp(96px, 7.27vw, 186px);
+  height: clamp(96px, 7.27vw, 186px);
+  margin: clamp(14px, 0.63vw, 16px) auto 0;
+  background: #e6f3ea;
+  border-radius: 50%;
+}
+
+.success-badge svg {
+  width: 38%;
+  height: auto;
+  color: #2f9e63;
+}
+
+/* --- Заголовок и текст --- */
+
+.success-title {
+  margin: clamp(16px, 1.21vw, 31px) 0 0;
+  font-size: clamp(30px, 2.15vw, 55px);
+  line-height: 1.05;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  text-align: center;
+  color: #233146;
+}
+
+.success-lead {
+  max-width: clamp(320px, 40.9vw, 1047px);
+  margin: clamp(6px, 0.31vw, 8px) auto 0;
+  font-size: clamp(16px, 0.98vw, 25px);
+  line-height: 1.44;
+  font-weight: var(--fw-medium);
+  text-align: center;
+  color: #485770;
+}
+
+/* Номер заказа */
+
+.success-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 0.55vw, 14px);
+  width: clamp(260px, 35.94vw, 460px);
+  max-width: 100%;
+  margin: clamp(14px, 1.17vw, 30px) auto 0;
+  padding-block: clamp(8px, 0.47vw, 12px);
+  font-size: clamp(14px, 0.94vw, 24px);
+  font-weight: var(--fw-medium);
+  color: #485770;
+  background: #f4f4f6;
+  border-radius: 2px;
+}
+
+.success-number strong {
+  font-weight: var(--fw-semibold);
+  color: #061e3f;
+  white-space: nowrap;
+}
+
+/* --- Разделитель и список подсказок --- */
+
+.success-divider {
+  margin: clamp(18px, 1.56vw, 40px) 0 0;
+  border: 0;
+  border-top: 1px solid #dcdcdc;
+}
+
+.success-tips {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.21vw, 31px);
+  max-width: clamp(320px, 40.9vw, 1047px);
+  margin: clamp(18px, 1.56vw, 40px) auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.success-tip {
+  display: grid;
+  grid-template-columns: clamp(52px, 3.17vw, 81px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(10px, 1.68vw, 43px);
+}
+
+.success-tip__icon {
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 3.17vw, 81px);
+  height: clamp(52px, 3.24vw, 83px);
+  color: #2f3f52;
+  background: #e6f3ea;
+  border-radius: 50%;
+}
+
+.success-tip__icon svg {
+  width: 42%;
+  height: auto;
+}
+
+.success-tip__title {
+  max-width: clamp(260px, 25.3vw, 648px);
+  margin: 0;
+  padding-top: clamp(0px, 0.55vw, 14px);
+  font-size: clamp(15px, 0.94vw, 24px);
+  line-height: 1.25;
+  font-weight: var(--fw-medium);
+  color: #2a3848;
+}
+
+.success-tip__text {
+  margin: clamp(2px, 0.16vw, 4px) 0 0;
+  font-size: clamp(13px, 0.74vw, 19px);
+  line-height: 1.35;
+  font-weight: var(--fw-medium);
+  color: #9aa1ad;
+}
+
+/* --- Кнопки --- */
+
+.success-actions {
+  display: flex;
+  justify-content: center;
+  gap: clamp(14px, 2.15vw, 55px);
+  margin-top: clamp(20px, 2.11vw, 54px);
+}
+
+.success-actions a {
+  display: grid;
+  place-items: center;
+  width: clamp(220px, 18.01vw, 461px);
+  max-width: 100%;
+  height: clamp(48px, 2.54vw, 65px);
+  font-size: clamp(13px, 0.7vw, 18px);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.success-actions__primary {
+  color: var(--color-white);
+  background: var(--color-brown);
+  border: 1px solid var(--color-brown);
+}
+
+.success-actions__primary:hover { background: #7a4a26; border-color: #7a4a26; }
+
+.success-actions__link {
+  color: #061e3f;
+  background: var(--color-white);
+  border: 1px solid #b9babf;
+}
+
+.success-actions__link:hover {
+  color: var(--color-brown);
+  border-color: var(--color-brown);
+}
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 900px) {
+  .success-card { padding-inline: clamp(20px, 4vw, 60px); }
+  .success-tips { max-width: none; }
+}
+
+@media (max-width: 640px) {
+  .success-card { padding: 24px 16px 28px; }
+
+  .success-tip {
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+
+  .success-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .success-actions a { width: 100%; }
+}

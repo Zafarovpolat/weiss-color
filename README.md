@@ -74,7 +74,7 @@ Weiss Color/
 | М01 | Оформление заказа              | pages/checkout.html              | раздел 8 | ✅ готов |
 | М24 | Оплата (безопасный сценарий)   | pages/payment.html               | 8.3 | —        |
 | М22 | Реквизиты для счёта            | pages/invoice.html               | 8.2 | —        |
-| М08 | Спасибо за заказ               | pages/order-success.html         | 8.7 | —        |
+| М08 | Спасибо за заказ               | pages/order-success.html         | 8.7 | ✅ готов |
 | М04 | Контакты и форма обращения     | pages/contacts.html              | 9.3 | —        |
 | М03 | Где купить                     | pages/where-to-buy.html          | 9.2 | —        |
 | М14 | О компании и партнёрах         | pages/about.html                 | 9.1 | —        |
