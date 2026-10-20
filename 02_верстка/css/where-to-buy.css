@@ -1,0 +1,199 @@
+/* ==========================================================================
+   where-to-buy.css — экран М03 «Где купить».
+   Геометрия снята с PSD 2560w (spec/Внешние_торговые_площадки):
+   герой-фото 0,77 2561×923; карточки 388×427 на y517 (шаг 400);
+   блок преимуществ y1040–1315 на фоне #f2f4f7.
+   ========================================================================== */
+
+.buy-hero {
+  position: relative;
+  min-height: clamp(420px, 36.05vw, 923px);
+  padding: clamp(24px, 4.52vw, 116px) clamp(16px, 8.79vw, 225px)
+    clamp(24px, 5.55vw, 142px) clamp(16px, 11.95vw, 306px);
+  /* фото макета содержит и карточки, и блок преимуществ — показываем только
+     верхние 923px (небо + интерьер + банка), остальное собираем разметкой */
+  background: #eceff4 url("../assets/img/buy-hero.png") center top / 100% auto no-repeat;
+  background-size: 100% clamp(620px, 58.67vw, 1502px);
+}
+
+.buy-hero__title {
+  margin: 0;
+  max-width: clamp(280px, 30.3vw, 775px);
+  font-size: clamp(28px, 2.35vw, 60px);
+  line-height: 1.08;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.buy-hero__lead {
+  max-width: clamp(280px, 30.8vw, 788px);
+  margin: clamp(14px, 1.91vw, 49px) 0 0;
+  font-size: clamp(16px, 1.07vw, 27px);
+  line-height: 1.28;
+  font-weight: var(--fw-medium);
+  color: #061e3f;
+}
+
+/* --- Карточки маркетплейсов --- */
+
+.buy-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 388px));
+  gap: clamp(12px, 0.66vw, 17px);
+  margin-top: clamp(20px, 1.8vw, 46px);
+  padding: 0;
+  list-style: none;
+}
+
+.buy-card {
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(320px, 16.68vw, 427px);
+  padding: clamp(16px, 1.25vw, 32px) clamp(16px, 1.44vw, 37px)
+    clamp(16px, 1.25vw, 32px) clamp(16px, 1.13vw, 29px);
+  background: var(--color-white);
+}
+
+/* Логотип: высота зоны у всех карточек одинаковая (94px в макете) */
+.buy-card__logo {
+  display: flex;
+  align-items: center;
+  height: clamp(64px, 3.67vw, 94px);
+}
+
+.buy-card__logo img {
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  width: auto;
+}
+
+.buy-card__name {
+  margin: clamp(16px, 1.17vw, 30px) 0 0;
+  font-size: clamp(17px, 0.94vw, 24px);
+  line-height: 1.2;
+  font-weight: var(--fw-semibold);
+  color: #252b37;
+}
+
+.buy-card__text {
+  margin: clamp(10px, 0.7vw, 18px) 0 0;
+  font-size: clamp(14px, 0.78vw, 20px);
+  line-height: 1.35;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+.buy-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 0.78vw, 20px);
+  align-self: flex-start;
+  margin-top: auto;
+  padding: clamp(8px, 0.47vw, 12px) clamp(14px, 1.4vw, 36px);
+  font-size: clamp(14px, 0.78vw, 20px);
+  font-weight: var(--fw-regular);
+  text-decoration: none;
+  border-radius: 2px;
+  transition: filter 0.2s ease;
+}
+
+.buy-card__link:hover { filter: brightness(0.92); }
+
+.buy-card__link svg {
+  width: clamp(24px, 1.87vw, 48px);
+  height: auto;
+  transition: transform 0.2s ease;
+}
+
+.buy-card__link:hover svg { transform: translateX(4px); }
+
+.buy-card__link--wb { color: var(--color-white); background: #8e2880; }
+.buy-card__link--ozon { color: var(--color-white); background: #0059ff; }
+.buy-card__link--lm { color: var(--color-white); background: #71bf44; }
+.buy-card__link--ym { color: #000; background: #ffe133; }
+
+/* --- Блок преимуществ --- */
+
+.buy-features {
+  background: #f2f4f7;
+  padding: clamp(24px, 2.15vw, 55px) clamp(16px, 8.79vw, 225px)
+    clamp(24px, 2.15vw, 55px) clamp(16px, 11.95vw, 306px);
+}
+
+.buy-features__inner {
+  display: grid;
+  grid-template-columns: clamp(200px, 21.13vw, 541px) repeat(3, minmax(0, 1fr));
+  column-gap: 0;
+  align-items: start;
+}
+
+.buy-features__head {
+  padding-right: clamp(16px, 1.5vw, 38px);
+}
+
+.buy-features__title {
+  margin: 0;
+  font-size: clamp(22px, 1.64vw, 42px);
+  line-height: 1.15;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: #061e3f;
+}
+
+.buy-features__lead {
+  margin: clamp(10px, 0.86vw, 22px) 0 0;
+  max-width: clamp(240px, 12.77vw, 327px);
+  font-size: clamp(14px, 0.78vw, 20px);
+  line-height: 1.4;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+.buy-feature {
+  display: grid;
+  grid-template-columns: clamp(32px, 2.34vw, 60px) minmax(0, 1fr);
+  gap: clamp(10px, 0.94vw, 24px);
+  padding-left: clamp(16px, 1.56vw, 40px);
+  background: linear-gradient(#848ea0, #848ea0) no-repeat left 0 / 1px 100%;
+}
+
+.buy-feature svg {
+  width: 100%;
+  height: auto;
+  color: #252b37;
+}
+
+.buy-feature__title {
+  margin: 0;
+  font-size: clamp(14px, 0.7vw, 18px);
+  line-height: 1.25;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: #252b37;
+}
+
+.buy-feature__text {
+  margin: clamp(8px, 1.02vw, 26px) 0 0;
+  font-size: clamp(13px, 0.74vw, 19px);
+  line-height: 1.4;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 1200px) {
+  .buy-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .buy-features__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+  .buy-features__head { grid-column: 1 / -1; }
+  .buy-feature { padding-left: 20px; }
+}
+
+@media (max-width: 640px) {
+  .buy-cards { grid-template-columns: minmax(0, 1fr); }
+  .buy-card { min-height: 0; }
+  .buy-features__inner { grid-template-columns: minmax(0, 1fr); }
+  .buy-feature { padding-left: 16px; }
+}

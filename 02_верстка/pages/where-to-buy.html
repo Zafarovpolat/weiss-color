@@ -2,35 +2,230 @@
 <!--
   Экран: М03 — Где купить
   Исходник PSD: 01_исходники/макеты_psd/Внешние торговые площадки.psd
-  Пункт ТЗ: п.9.2
+  Пункт ТЗ: п.9.2 — внешние торговые площадки и магазины-партнёры
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  Функционал/сервер — этап 2 (натяжка на WordPress).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Где купить — Weiss Color</title>
+  <meta name="description" content="Купить краски WEISS можно у официальных партнёров: Wildberries, Ozon, Леруа Мерлен, Яндекс Маркет.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/cart.css">
+  <link rel="stylesheet" href="../css/where-to-buy.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="page-fill">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Где купить» (М03) по PSD -->
-    <p style="padding:24px;color:#888">[М03] Где купить — заготовка</p>
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 0">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="buy-hero" aria-labelledby="buy-title">
+      <h1 class="buy-hero__title" id="buy-title">Где купить продукцию WEISS</h1>
+      <p class="buy-hero__lead">
+        Приобретайте краски WEISS у наших официальных партнеров на ведущих маркетплейсах и в магазинах.
+      </p>
+
+      <ul class="buy-cards">
+        <li class="buy-card">
+          <span class="buy-card__logo">
+            <img src="../assets/img/buy-wb.png" width="325" height="94" alt="Логотип Wildberries" loading="lazy">
+          </span>
+          <h3 class="buy-card__name">Wildberries</h3>
+          <p class="buy-card__text">Широкий ассортимент красок WEISS с удобной доставкой по всей России.</p>
+          <a class="buy-card__link buy-card__link--wb" href="https://www.wildberries.ru/" target="_blank" rel="noopener noreferrer">
+            Перейти
+            <svg viewBox="0 0 48 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8h44M38 2l7 6-7 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </li>
+        <li class="buy-card">
+          <span class="buy-card__logo">
+            <img src="../assets/img/buy-ozon.png" width="285" height="64" alt="Логотип Ozon" loading="lazy">
+          </span>
+          <h3 class="buy-card__name">Ozon</h3>
+          <p class="buy-card__text">Официальная продукция WEISS на маркетплейсе Ozon. Быстро и удобно.</p>
+          <a class="buy-card__link buy-card__link--ozon" href="https://www.ozon.ru/" target="_blank" rel="noopener noreferrer">
+            Перейти
+            <svg viewBox="0 0 48 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8h44M38 2l7 6-7 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </li>
+        <li class="buy-card">
+          <span class="buy-card__logo">
+            <img src="../assets/img/buy-lm.png" width="185" height="118" alt="Логотип Леруа Мерлен" loading="lazy">
+          </span>
+          <h3 class="buy-card__name">Леруа Мерлен</h3>
+          <p class="buy-card__text">Краски WEISS в магазинах и онлайн-каталоге Леруа Мерлен рядом с вами.</p>
+          <a class="buy-card__link buy-card__link--lm" href="https://leroymerlin.ru/" target="_blank" rel="noopener noreferrer">
+            Перейти
+            <svg viewBox="0 0 48 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8h44M38 2l7 6-7 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </li>
+        <li class="buy-card">
+          <span class="buy-card__logo">
+            <img src="../assets/img/buy-ym.png" width="345" height="82" alt="Логотип Яндекс Маркет" loading="lazy">
+          </span>
+          <h3 class="buy-card__name">Яндекс Маркет</h3>
+          <p class="buy-card__text">Покупайте продукцию WEISS на Яндекс Маркете с быстрой доставкой и выгодными предложениями.</p>
+          <a class="buy-card__link buy-card__link--ym" href="https://market.yandex.ru/" target="_blank" rel="noopener noreferrer">
+            Перейти
+            <svg viewBox="0 0 48 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8h44M38 2l7 6-7 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="buy-features" aria-labelledby="buy-features-title">
+      <div class="buy-features__inner">
+        <div class="buy-features__head">
+          <h2 class="buy-features__title" id="buy-features-title">Покупайте удобно</h2>
+          <p class="buy-features__lead">
+            Мы сотрудничаем с надежными площадками, чтобы сделать ваши покупки еще проще
+          </p>
+        </div>
+
+        <div class="buy-feature">
+          <svg viewBox="0 0 52 58" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M26 2 50 10v20c0 13-10 22-24 26C12 52 2 43 2 30V10Z" stroke-linejoin="round"/>
+            <path d="m15 28 8 8 14-16" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <h3 class="buy-feature__title">Официальная<br>продукция</h3>
+            <p class="buy-feature__text">Только оригинальные краски WEISS от производителя</p>
+          </div>
+        </div>
+
+        <div class="buy-feature">
+          <svg viewBox="0 0 58 38" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M2 6h36v24H2zM38 14h12l6 8v8H38z" stroke-linejoin="round"/>
+            <circle cx="13" cy="32" r="4.5"/>
+            <circle cx="46" cy="32" r="4.5"/>
+            <path d="M4 2h16M4 8h12" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h3 class="buy-feature__title">Удобная<br>доставка</h3>
+            <p class="buy-feature__text">Быстрая и надежная доставка по всей России</p>
+          </div>
+        </div>
+
+        <div class="buy-feature">
+          <svg viewBox="0 0 58 38" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="15" cy="11" r="6"/>
+            <circle cx="43" cy="11" r="6"/>
+            <path d="M2 32c0-7 5.8-12 13-12s13 5 13 12M30 32c0-7 5.8-12 13-12s13 5 13 12" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h3 class="buy-feature__title">Надежные<br>партнеры</h3>
+            <p class="buy-feature__text">Сотрудничаем с крупнейшими и проверенными маркетплейсами и магазинами</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и&nbsp;обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
+    <form class="dialog__form" id="callback-form" method="dialog">
+      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
+      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
+      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
+      <label class="field">
+        <span class="field__label">Имя</span>
+        <input class="field__input" type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </label>
+      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
+    </form>
+  </dialog>
 
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
 </body>
 </html>

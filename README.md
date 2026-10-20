@@ -76,7 +76,7 @@ Weiss Color/
 | М22 | Реквизиты для счёта            | pages/invoice.html               | 8.2 | ✅ готов |
 | М08 | Спасибо за заказ               | pages/order-success.html         | 8.7 | ✅ готов |
 | М04 | Контакты и форма обращения     | pages/contacts.html              | 9.3 | ✅ готов |
-| М03 | Где купить                     | pages/where-to-buy.html          | 9.2 | —        |
+| М03 | Где купить                     | pages/where-to-buy.html          | 9.2 | ✅ готов |
 | М14 | О компании и партнёрах         | pages/about.html                 | 9.1 | —        |
 | М11 | Правовой документ (шаблон)     | pages/legal.html                 | 9.4 | —        |
 | М02 | Страница ошибки 404            | pages/404.html                   | 9.4 | —        |
