@@ -121,7 +121,7 @@
   }
   .header__phone { margin-right: clamp(12px, 1.21vw, 31px); }
 
-  .cart { margin-left: clamp(8px, 2.97vw, 76px); }
+  .cart { margin-left: clamp(8px, 1.88vw, 48px); }
 
   /* В макете кнопка подвала не «прижата» к краю, а продолжает ряд */
   .footer__inner > .btn { margin-right: clamp(0px, 3.9vw, 100px); }
