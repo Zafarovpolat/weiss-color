@@ -236,7 +236,7 @@
   .sampler-swatch, .sampler-photo { min-height: clamp(220px, 34vw, 420px); }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .sampler-layout { grid-template-columns: minmax(0, 1fr); }
   .sampler-swatch, .sampler-photo { min-height: 260px; }
   .sampler-benefits { grid-template-columns: minmax(0, 1fr); }

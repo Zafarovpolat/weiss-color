@@ -409,7 +409,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .viz-head {
     flex-direction: column;
     gap: 8px;

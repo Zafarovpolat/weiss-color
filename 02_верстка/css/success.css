@@ -194,12 +194,12 @@
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .success-card { padding-inline: clamp(20px, 4vw, 60px); }
   .success-tips { max-width: none; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .success-card { padding: 24px 16px 28px; }
 
   .success-tip {

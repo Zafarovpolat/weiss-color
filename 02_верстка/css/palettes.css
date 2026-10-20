@@ -145,7 +145,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .palettes-grid {
     grid-template-columns: minmax(0, 1fr);
   }

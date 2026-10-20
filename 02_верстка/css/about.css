@@ -105,7 +105,7 @@
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
   .about-page {
     background-position: right -140px top;
     background-size: auto 100%;
@@ -115,7 +115,7 @@
   .about-partners { gap: clamp(16px, 3vw, 40px); }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .about-page {
     min-height: 0;
     padding-bottom: 40px;

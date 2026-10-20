@@ -22,7 +22,7 @@
 }
 
 /* ---------- Более широкий планшет/малый десктоп ---------- */
-@media (min-width: 900px) {
+@media (min-width: 1024px) {
   /* Герой: банка слева от копирайта (композиция макета) */
   .hero__inner {
     flex-direction: row;
@@ -78,7 +78,7 @@
 }
 
 /* ---------- Десктоп: раскрываем навигацию вместо бургера ---------- */
-@media (min-width: 1100px) {
+@media (min-width: 1280px) {
   .burger { display: none; }
 
   .header__inner {
@@ -133,7 +133,7 @@
 
 /* ---------- Полный дизайн-макет: преимущества в 4 колонки с
              вертикальными разделителями (как в PSD) ---------- */
-@media (min-width: 1400px) {
+@media (min-width: 1440px) {
   .d-br { display: inline; }
 
   .benefits__inner {
@@ -201,7 +201,115 @@
 }
 
 /* ---------- Ширина макета 2560 ---------- */
-@media (min-width: 2000px) {
+@media (min-width: 1920px) {
   /* На очень широких экранах придерживаемся макетных пропорций */
   .benefits__item { padding-right: clamp(24px, 1.8vw, 46px); }
+}
+
+/* ==========================================================================
+   Адаптив: системные правила для всех экранов (п.3.3 ТЗ).
+   Брейкпоинты: 1920 / 1440 / 1280 / 1024 / 768 / 540.
+   Ниже — не композиция конкретного макета, а общие требования к мобильной
+   версии: тач-таргеты, минимальный кегль, читаемость и поведение оверлеев.
+   ========================================================================== */
+
+/* Закрытый <dialog> не занимает места: display:grid в .mcard перебивает
+   пользовательский стиль браузера (иначе окно видно в потоке страницы) */
+dialog.mcard:not([open]) { display: none; }
+
+/* --- Минимальный кегль: подписи не должны мельче 12px --- */
+.legal-hero__eyebrow,
+.error-page__eyebrow,
+.callback-form__eyebrow,
+.callback-form__note,
+.sampler-benefit,
+.sampler-notice p,
+.viz-swatch__label {
+  font-size: max(12px, 1em);
+}
+
+/* --- Тач-таргеты: минимальная зона нажатия 44px (WCAG 2.5.5) --- */
+
+/* крестики окон */
+.mcard__close,
+.invoice-card__close {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+
+.mcard__close svg,
+.invoice-card__close svg { width: 24px; height: 24px; }
+
+/* навигационные «назад» */
+.cart-back,
+.sampler-back,
+.viz-help {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* кнопки-иконки в строках */
+.tip__btn,
+.cart-item__del {
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+}
+
+/* сортировка и пагинация */
+.sort__select { min-height: 44px; padding-block: 10px; }
+.pagination__item {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* табы цвета */
+.c-tabs__item { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* кнопки-ссылки в карточках партнёров */
+.buy-card__link { min-height: 44px; }
+
+/* поля ввода: не ниже 44px и 16px — iOS не зумит страницу */
+.promo__input,
+.field__input,
+.callback-field input,
+.contacts-form .field__input,
+.search-form input {
+  min-height: 44px;
+  font-size: max(16px, 1em);
+}
+
+/* --- Заголовки преимуществ: не режем по max-width на узких экранах --- */
+@media (max-width: 1024px) {
+  .benefits__title { max-width: none; }
+  .benefits__text { max-width: none; }
+}
+
+/* --- Подсказка «?» не должна уезжать за экран --- */
+@media (max-width: 768px) {
+  .tip__pop {
+    top: calc(100% + 8px);
+    left: auto;
+    right: 0;
+    transform: none;
+    width: min(280px, calc(100vw - 40px));
+  }
+}
+
+/* --- Формы на мобильных: один столбец и удобные кнопки --- */
+@media (max-width: 540px) {
+  .form-row,
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .checkout-actions .btn,
+  .payment-actions .btn,
+  .invoice-actions .btn,
+  .cart-summary .btn { width: 100%; }
 }

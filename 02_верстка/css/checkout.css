@@ -590,21 +590,23 @@
   .choice-row { grid-template-columns: minmax(0, 1fr); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .checkout-layout { grid-template-columns: minmax(0, 1fr); }
   .checkout-panel { order: -1; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .form-grid,
   .invoice-dialog__grid { grid-template-columns: minmax(0, 1fr); }
 
   .checkout-item { grid-template-columns: 48px minmax(0, 1fr) auto; }
 
+  /* 3 колонки (радио / иконка / текст) — иначе текст уезжает в 20px */
   .choice {
-    grid-template-columns: 20px minmax(0, 1fr);
-    row-gap: 4px;
+    grid-template-columns: 20px 30px minmax(0, 1fr);
+    gap: 10px 12px;
+    padding: 14px 16px;
   }
 
-  .choice__icon { grid-column: 2; width: 30px; }
+  .choice__icon { grid-column: auto; width: 30px; }
 }

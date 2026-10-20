@@ -117,7 +117,7 @@
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
-@media (max-width: 1100px) {
+@media (max-width: 1280px) {
   .legal-hero::before { background-position: right -120px top; }
 
   .legal-columns { column-gap: 32px; }
@@ -126,11 +126,11 @@
   .legal-hero__lead { max-width: 100%; }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .legal-hero::before { display: none; }
   .legal-columns { grid-template-columns: minmax(0, 1fr); }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .legal-section { grid-template-columns: 48px minmax(0, 1fr); }
 }

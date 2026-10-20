@@ -184,14 +184,14 @@
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
   .buy-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .buy-features__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
   .buy-features__head { grid-column: 1 / -1; }
   .buy-feature { padding-left: 20px; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .buy-cards { grid-template-columns: minmax(0, 1fr); }
   .buy-card { min-height: 0; }
   .buy-features__inner { grid-template-columns: minmax(0, 1fr); }

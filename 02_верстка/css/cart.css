@@ -639,12 +639,12 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .cart-layout { grid-template-columns: minmax(0, 1fr); }
   .order-panel { order: 2; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .cart-head { flex-wrap: wrap; }
 
   /* ссылка уходит отдельной строкой под заголовок */

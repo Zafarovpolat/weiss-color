@@ -134,7 +134,7 @@
   color: #9098a8;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .payment-card { padding: 24px 16px 28px; }
 
   .payment-actions { grid-template-columns: minmax(0, 1fr); }

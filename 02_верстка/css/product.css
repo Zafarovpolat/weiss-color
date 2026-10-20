@@ -308,7 +308,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 540px) {
   .p-volumes__item {
     min-width: 76px;
     height: 42px;

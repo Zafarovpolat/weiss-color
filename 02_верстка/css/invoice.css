@@ -182,7 +182,7 @@
 /* Поле КПП скрывается для ИП (ТЗ 8.2) */
 .field[data-for="legal"][hidden] { display: none; }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .invoice-card { padding: 24px 16px 28px; }
   .invoice-form__grid { grid-template-columns: minmax(0, 1fr); }
   .invoice-form__actions { grid-template-columns: minmax(0, 1fr); }

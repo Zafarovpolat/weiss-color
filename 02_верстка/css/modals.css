@@ -33,12 +33,13 @@
 
 .mcard__close {
   position: absolute;
-  top: clamp(12px, 1.8vw, 24px);
-  right: clamp(12px, 2.34vw, 31px);
+  top: clamp(8px, 1.4vw, 16px);
+  right: clamp(8px, 1.9vw, 22px);
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  /* зона нажатия 44×44 (WCAG 2.5.5), иконка внутри — 24px */
+  width: 44px;
+  height: 44px;
   padding: 0;
   color: #252b37;
   background: none;
@@ -99,7 +100,7 @@
 
 /* --- Адаптив --- */
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .mcard { border-radius: 8px; }
   .mcard__actions { flex-direction: column; width: 100%; }
   .mcard__actions .btn { width: 100%; min-width: 0; }
@@ -243,7 +244,7 @@
 
 .callback-form__note svg { width: clamp(12px, 0.66vw, 17px); height: auto; flex: none; }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .callback-form__note { white-space: normal; align-items: flex-start; }
   .callback-form__note svg { margin-top: 2px; }
   .mcard-callback { grid-template-columns: minmax(0, 1fr); }
@@ -251,7 +252,7 @@
   .callback-photo__slogan { display: none; }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .callback-photo__logo { width: 120px; }
 }
 
@@ -303,7 +304,7 @@
   color: #4a4f5b;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .mcard-result .callback-result { padding-block: clamp(32px, 6vw, 64px); }
   .callback-result__text { max-width: 26ch; }
 }
@@ -370,7 +371,11 @@
   padding-bottom: 3px;
 }
 
-.cookie-bar__link { width: fit-content; align-self: start; }
+.cookie-bar__link {
+  width: fit-content;
+  align-self: start;
+  min-height: 44px;
+}
 
 .cookie-bar__link:hover { color: #62381e; border-color: #62381e; }
 .cookie-bar__link svg { width: clamp(16px, 1.02vw, 26px); height: auto; }
@@ -399,14 +404,14 @@
   pointer-events: none;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1280px) {
   .cookie-bar { grid-template-columns: clamp(70px, 12vw, 120px) minmax(0, 1fr); }
   .cookie-bar__actions { grid-column: 1 / -1; grid-auto-flow: column; justify-content: start; }
   .cookie-bar__actions .btn { width: auto; min-width: 180px; }
   .cookie-bar__leaf { display: none; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   /* на узких экранах подчёркиваем сам текст, а не всю строку */
   .cookie-bar__link {
     border-bottom: 0;
@@ -440,6 +445,6 @@ dialog.mcard-callback {
 
 dialog.mcard-callback::backdrop { background: rgba(23, 30, 49, 0.45); }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   dialog.mcard-callback { width: min(560px, 94vw); }
 }

@@ -78,7 +78,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .error-page { background-image: none; }
   .error-page__actions .btn { width: 100%; }
 }
