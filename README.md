@@ -67,7 +67,7 @@ Weiss Color/
 | М07 | Список оттенков                | pages/shades.html                | 5.4      | ✅ готов  |
 | М13 | Обзор палитр (28)              | pages/palettes.html              | 5.1 | ✅ готов  |
 | М19 | Селектор палитры | pages/palette-selector.html | 5.1 | ✅ готов  |
-| М09 | Выбор цвета и визуализатор     | pages/visualizer.html            | раздел 6 | —        |
+| М09 | Выбор цвета и визуализатор     | pages/visualizer.html            | раздел 6 | ✅ готов  |
 | М18 | Четыре интерьерные сцены       | → assets/img + assets/masks      | 6.2 | —        |
 | М21 | Инструкция колеровки           | pages/coloring-guide.html        | 6.4 | —        |
 | М16 | Корзина и расчёт заказа        | pages/cart.html                  | раздел 7 | —        |

@@ -2,38 +2,235 @@
 <!--
   Экран: М09 — Выбор цвета и визуализатор
   Исходник PSD: 01_исходники/макеты_psd/Выбор цвета и визуализатор.psd
-  Пункт ТЗ: раздел 6
-  Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  Пункт ТЗ: п.2.4/5.1 (карточка товара, палитра оттенков, визуализатор интерьера)
+  Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS.
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Выбор цвета и визуализатор — Weiss Color</title>
+  <title>Колеровка цвета — Weiss Color</title>
+  <meta name="description" content="Выбор оттенка краски ACRILUX и визуализатор интерьера — колеровка Weiss Color.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/catalog.css">
+  <link rel="stylesheet" href="../css/visualizer.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="page-fill">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Выбор цвета и визуализатор» (М09) по PSD -->
-    <p style="padding:24px;color:#888">[М09] Выбор цвета и визуализатор — заготовка</p>
+  <!-- Шапка: общий блок п.3.1 -->
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="viz-page">
+    <div class="viz-main">
+
+      <!-- Заголовок экрана + подсказка -->
+      <div class="viz-head">
+        <h1 class="viz-title">Колеровка цвета<span>ACE&nbsp;PAINT</span></h1>
+        <button class="viz-help" type="button">Как это работает?</button>
+      </div>
+
+      <div class="viz-cols">
+
+        <!-- ============ Левая колонка: карточка товара и оттенки ============ -->
+        <div class="viz-left">
+          <article class="viz-product">
+            <img class="viz-product__img" src="../assets/img/viz-can.png" width="158" height="226" alt="Банка краски ACRILUX">
+            <div class="viz-product__body">
+              <h2 class="viz-product__title">
+                <span class="viz-product__brand">ACRILUX</span>
+                Краска для стен и потолков
+              </h2>
+              <p class="viz-product__desc">
+                Интерьерная краска на основе<br>
+                акриловой дисперсии<br>
+                с микронизированным<br>
+                мраморным наполнителем.
+              </p>
+              <p class="viz-product__price">от 3&nbsp;500&nbsp;₽</p>
+            </div>
+          </article>
+
+          <h2 class="viz-choose">Выберите цвет</h2>
+
+          <button class="viz-select" type="button" aria-haspopup="listbox" aria-expanded="false">
+            Каталог ACE PAINT
+            <svg viewBox="0 0 30 18" fill="none" aria-hidden="true">
+              <path d="M2 2l13 13L28 2" stroke="currentColor" stroke-width="3" stroke-linecap="square"/>
+            </svg>
+          </button>
+
+          <ul class="viz-swatches" aria-label="Оттенки каталога ACE PAINT">
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f31616"></span><span class="viz-swatch__label">F316</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f4f0dd"></span><span class="viz-swatch__label">F4F0</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#fbfae7"></span><span class="viz-swatch__label">FBFA</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f5e6e1"></span><span class="viz-swatch__label">F5E6</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#fae2e4"></span><span class="viz-swatch__label">FAE2</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f7c2ba"></span><span class="viz-swatch__label">F7C2</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#ebf5fb"></span><span class="viz-swatch__label">EBF5</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#fdf5ec"></span><span class="viz-swatch__label">FDF5</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#faf2d9"></span><span class="viz-swatch__label">FAF2</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f4d3ca"></span><span class="viz-swatch__label">F4D3</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f1c6c4"></span><span class="viz-swatch__label">F1C6</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f3b9b4"></span><span class="viz-swatch__label">F3B9</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f1dad7"></span><span class="viz-swatch__label">F1DA</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#d9d0cb"></span><span class="viz-swatch__label">D9D0</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#d1f5f1"></span><span class="viz-swatch__label">D1F5</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f4f4f4"></span><span class="viz-swatch__label">F4F4</span></button></li>
+            <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#fcffff"></span><span class="viz-swatch__label">FCFF</span></button></li>
+            <li><button class="viz-swatch viz-swatch--active" type="button" aria-pressed="true"><span class="viz-swatch__fill" style="background:#f4e7e1"></span><span class="viz-swatch__label">F4E7</span></button></li>
+          </ul>
+
+          <nav class="pagination pagination--compact viz-pagination" aria-label="Страницы оттенков">
+            <span class="pagination__item" aria-disabled="true">Назад</span>
+            <a class="pagination__item" href="#" aria-label="Страница 1">1</a>
+            <a class="pagination__item" href="#" aria-label="Страница 2">2</a>
+            <a class="pagination__item" href="#" aria-label="Страница 3">3</a>
+            <a class="pagination__item" href="#" aria-label="Страница 4" aria-current="page">4</a>
+            <a class="pagination__item" href="#" aria-label="Страница 5">5</a>
+            <a class="pagination__item" href="#" aria-label="Страница 6">6</a>
+            <a class="pagination__item" href="#" aria-label="Страница 7">7</a>
+            <a class="pagination__item" href="#">Вперед</a>
+          </nav>
+        </div>
+
+        <!-- ============ Правая колонка: визуализатор ============ -->
+        <div class="viz-right">
+          <figure class="viz-hero">
+            <img class="viz-hero__img" src="../assets/img/viz-hero.png" width="1337" height="722" alt="Интерьер гостиной, окрашенной в выбранный оттенок">
+
+            <ul class="viz-thumbs" aria-label="Превью интерьеров">
+              <li><button class="viz-thumb viz-thumb--active" type="button" aria-current="true"><img src="../assets/img/viz-thumb1.png" width="199" height="119" alt="Интерьер 1 — гостиная"></button></li>
+              <li><button class="viz-thumb" type="button"><img src="../assets/img/viz-thumb2.png" width="199" height="119" alt="Интерьер 2 — кухня"></button></li>
+              <li><button class="viz-thumb" type="button"><img src="../assets/img/viz-thumb3.png" width="199" height="119" alt="Интерьер 3 — спальня"></button></li>
+              <li><button class="viz-thumb" type="button"><img src="../assets/img/viz-thumb4.png" width="199" height="119" alt="Интерьер 4 — детская"></button></li>
+            </ul>
+
+            <button class="viz-next" type="button" aria-label="Следующий интерьер">
+              <img src="../assets/img/viz-next.png" width="45" height="54" alt="">
+            </button>
+          </figure>
+
+          <aside class="viz-info">
+            <svg class="viz-info__icon" viewBox="0 0 40 39" aria-hidden="true">
+              <circle cx="20" cy="19.5" r="19" fill="#68aae4"/>
+              <rect x="18.2" y="8" width="3.6" height="15" rx="1.8" fill="#ffffff"/>
+              <circle cx="20" cy="29.5" r="2.4" fill="#ffffff"/>
+            </svg>
+            <p class="viz-info__text">
+              Цвет на экране отличается от реального.<br>
+              Рекомендуем проверять цвет в печатном каталоге или сделать пробный выкрас
+            </p>
+            <a class="viz-info__btn" href="#">Заказать пробный образец</a>
+          </aside>
+
+          <div class="viz-buy">
+            <span class="viz-price">от 3&nbsp;500&nbsp;₽</span>
+            <button class="btn viz-cart" type="button">В корзину</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <!-- Подвал: общий блок п.3.3 -->
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">© Weiss Color, 2020–2025. Все права защищены.</a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <!-- Модалка обратного звонка (общая, п.4.6) -->
+  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
+    <form class="dialog__form" id="callback-form" method="dialog">
+      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
+      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
+      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
+      <label class="field">
+        <span class="field__label">Имя</span>
+        <input class="field__input" type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </label>
+      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
+    </form>
+  </dialog>
 
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/palette.js"></script>
-    <script src="../js/visualizer.js"></script>
-    <script src="../js/cart.js"></script>
+  <script src="../js/palette.js"></script>
 </body>
 </html>
