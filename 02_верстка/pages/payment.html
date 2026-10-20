@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <!--
-  Экран: М24 — Оплата (безопасный сценарий)
+  Экран: М24 — Оплата заказа (безопасный сценарий)
   Исходник PSD: 01_исходники/макеты_psd/Заменяется безопасным сценарием оплаты.psd
-  Пункт ТЗ: п.8.3
+  Пункт ТЗ: п.8.3 — экран переработан в выбор/подтверждение способа оплаты
+  и переход на защищённую страницу Сбербанка. Номер карты, срок действия
+  и CVV/CVC на сайте не вводятся и не сохраняются.
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
   Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
 -->
@@ -10,28 +12,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Оплата (безопасный сценарий) — Weiss Color</title>
+  <title>Оплата заказа — Weiss Color</title>
+  <meta name="description" content="Оплата заказа Weiss Color: выбор способа оплаты и переход на защищённую страницу банка.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/checkout.css">
+  <link rel="stylesheet" href="../css/payment.css">
 </head>
 <body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Оплата (безопасный сценарий)» (М24) по PSD -->
-    <p style="padding:24px;color:#888">[М24] Оплата (безопасный сценарий) — заготовка</p>
+  <main id="main" class="payment-page">
+    <section class="payment-card" aria-labelledby="payment-title">
+      <h1 class="payment-card__title" id="payment-title">Оплата заказа</h1>
+
+      <p class="payment-card__lead">
+        Заказ <strong>№ 245781</strong> на сумму <strong>19 500 ₽</strong> создан.
+        Выберите способ оплаты — после подтверждения мы переведём вас
+        на защищённую страницу банка.
+      </p>
+
+      <fieldset class="payment-methods">
+        <legend class="visually-hidden">Способ оплаты</legend>
+
+        <label class="choice">
+          <input class="choice__input" type="radio" name="payment-method" value="card" checked>
+          <span class="choice__radio" aria-hidden="true">
+            <svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
+              <path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <svg class="choice__icon" viewBox="0 0 51 51" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <rect x="4" y="12" width="43" height="27" rx="3"/>
+            <path d="M4 21h43M9 31h9"/>
+          </svg>
+          <span>
+            <span class="choice__title">Банковской картой онлайн</span>
+            <span class="choice__note">Visa, MasterCard, Мир — на странице Сбербанка</span>
+          </span>
+        </label>
+
+        <label class="choice">
+          <input class="choice__input" type="radio" name="payment-method" value="invoice">
+          <span class="choice__radio" aria-hidden="true">
+            <svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
+              <path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <svg class="choice__icon" viewBox="0 0 51 51" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path d="M9 4h24l9 9v34H9z" stroke-linejoin="round"/>
+            <path d="M32 4v10h10M16 22h18M16 30h18M16 38h11"/>
+          </svg>
+          <span>
+            <span class="choice__title">По счету для юр. лиц</span>
+            <span class="choice__note">Счёт выставит менеджер после проверки заказа</span>
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="payment-note">
+        <svg viewBox="0 0 38 44" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M19 2 35 8v14c0 10-7 17-16 20C10 39 3 32 3 22V8Z" stroke-linejoin="round"/>
+          <path d="m11 21 6 6 10-12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>
+          Оплата проходит на защищённой странице Сбербанка. Номер карты, срок действия
+          и CVV/CVC на сайте не вводятся и не сохраняются. Ваши данные в безопасности.
+        </p>
+      </div>
+
+      <div class="payment-actions">
+        <button class="payment-actions__submit" type="button" id="pay-submit">Перейти к оплате</button>
+        <a class="payment-actions__cancel" href="checkout.html">Отменить</a>
+      </div>
+
+      <p class="payment-card__footnote">
+        Статус оплаты придёт на указанный e-mail. Если платёж не прошёл, ссылку
+        на повторную попытку можно запросить у менеджера.
+      </p>
+    </section>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
-
-  <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/forms.js"></script>
+  <script src="../js/payment.js"></script>
 </body>
 </html>
