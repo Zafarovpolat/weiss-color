@@ -71,7 +71,7 @@ Weiss Color/
 | М18 | Четыре интерьерные сцены       | → assets/img + assets/masks      | 6.2 | ✅ готов  |
 | М21 | Инструкция колеровки           | pages/coloring-guide.html        | 6.4 | ✅ готов |
 | М16 | Корзина и расчёт заказа        | pages/cart.html                  | раздел 7 | ✅ готов |
-| М01 | Оформление заказа              | pages/checkout.html              | раздел 8 | —        |
+| М01 | Оформление заказа              | pages/checkout.html              | раздел 8 | ✅ готов |
 | М24 | Оплата (безопасный сценарий)   | pages/payment.html               | 8.3 | —        |
 | М22 | Реквизиты для счёта            | pages/invoice.html               | 8.2 | —        |
 | М08 | Спасибо за заказ               | pages/order-success.html         | 8.7 | —        |

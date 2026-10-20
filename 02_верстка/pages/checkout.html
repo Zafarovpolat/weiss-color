@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
-  Экран: М01 — Оформление заказа
+  Экран: М01 — Оформление заказа (с окном реквизитов для счёта, М22)
   Исходник PSD: 01_исходники/макеты_psd/Оформление и выбор доставки и оплаты.psd
-  Пункт ТЗ: раздел 8
+  Пункт ТЗ: раздел 8 (8.1 форма без регистрации, 8.2 счёт для юрлиц, 8.3 без карты на сайте)
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
   Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
 -->
@@ -11,28 +11,443 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Оформление заказа — Weiss Color</title>
+  <meta name="description" content="Оформление заказа Weiss Color без регистрации: контактные данные, способ получения и оплаты, комментарий.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/cart.css">
+  <link rel="stylesheet" href="../css/checkout.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="page-fill">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Оформление заказа» (М01) по PSD -->
-    <p style="padding:24px;color:#888">[М01] Оформление заказа — заготовка</p>
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 3">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">3</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="checkout-page">
+    <nav class="crumbs crumbs--checkout" aria-label="Хлебные крошки">
+      <a href="../index.html">Главная</a> &gt; <a href="cart.html">Корзина</a> &gt;
+      <span aria-current="page">Оформление заказа</span>
+    </nav>
+
+    <h1 class="checkout-title">Оформление заказа</h1>
+
+    <div class="checkout-layout">
+      <!-- Форма: поля по ТЗ 8.1, без регистрации -->
+      <form class="checkout-form" id="checkout-form" novalidate>
+        <section class="form-card" aria-labelledby="contact-title">
+          <h2 class="form-card__title" id="contact-title">Контактные данные</h2>
+
+          <div class="form-grid">
+            <label class="field">
+              <span class="field__label">Ваше имя*</span>
+              <input class="field__input" type="text" name="name" autocomplete="name" placeholder="Иванов Иван" required>
+            </label>
+
+            <label class="field">
+              <span class="field__label">Телефон*</span>
+              <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+            </label>
+
+            <label class="field">
+              <span class="field__label">E-mail*</span>
+              <input class="field__input" type="email" name="email" autocomplete="email" inputmode="email" placeholder="info@ooo-nort.ru" required>
+            </label>
+          </div>
+        </section>
+
+        <section class="form-card" aria-labelledby="delivery-title">
+          <h2 class="form-card__title" id="delivery-title">Способ доставки</h2>
+
+          <div class="choice-row" role="radiogroup" aria-labelledby="delivery-title">
+            <label class="choice">
+              <input class="choice__input" type="radio" name="delivery" value="pickup" checked>
+              <span class="choice__radio" aria-hidden="true">
+                <svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
+                  <path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <svg class="choice__icon" viewBox="0 0 51 51" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                <path d="M8 23 25.5 8 43 23v20H8V23Z" stroke-linejoin="round"/>
+                <path d="M21 43V31h9v12" stroke-linejoin="round"/>
+              </svg>
+              <span>
+                <span class="choice__title">Самовывоз</span>
+                <span class="choice__note">Бесплатно</span>
+              </span>
+            </label>
+
+            <label class="choice">
+              <input class="choice__input" type="radio" name="delivery" value="courier">
+              <span class="choice__radio" aria-hidden="true">
+                <svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
+                  <path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <svg class="choice__icon" viewBox="0 0 67 35" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                <path d="M2 6h34v20H2zM36 12h12l8 8v6H36z" stroke-linejoin="round"/>
+                <circle cx="12" cy="29" r="4.5"/>
+                <circle cx="46" cy="29" r="4.5"/>
+                <path d="M4 3h14M4 8h10" stroke-linecap="round"/>
+              </svg>
+              <span>
+                <span class="choice__title">Курьерская доставка</span>
+                <span class="choice__note">от 300₽</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <section class="form-card form-card--address" aria-labelledby="address-title">
+          <h2 class="form-card__title" id="address-title">Адрес доставки</h2>
+          <p class="visually-hidden" id="address-hint">Адрес понадобится при курьерской доставке.</p>
+
+          <div class="form-grid">
+            <label class="field">
+              <span class="field__label">Регион*</span>
+              <select class="field__select" name="region" required>
+                <option value="" selected disabled>Выберите регион</option>
+                <option>Москва и Московская область</option>
+                <option>Санкт-Петербург и Ленинградская область</option>
+                <option>Тверская область</option>
+                <option>Тульская область</option>
+                <option>Другой регион</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field__label">Город*</span>
+              <select class="field__select" name="city" required>
+                <option value="" selected disabled>Выберите город</option>
+                <option>Москва</option>
+                <option>Санкт-Петербург</option>
+                <option>Тверь</option>
+                <option>Тула</option>
+                <option>Другой город</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field__label">Улица*</span>
+              <input class="field__input" type="text" name="street" autocomplete="address-line1" placeholder="Выберите улицу" required>
+            </label>
+
+            <label class="field">
+              <span class="field__label">Дом*</span>
+              <input class="field__input" type="text" name="house" placeholder="Например, 10" required>
+            </label>
+
+            <label class="field">
+              <span class="field__label">Квартира / офис</span>
+              <input class="field__input" type="text" name="flat" placeholder="Например, 25">
+            </label>
+
+            <label class="field">
+              <span class="field__label">Индекс</span>
+              <input class="field__input" type="text" name="postcode" inputmode="numeric" autocomplete="postal-code" placeholder="Например, 123456" pattern="[0-9]{6}" maxlength="6">
+            </label>
+          </div>
+        </section>
+
+        <section class="form-card" aria-labelledby="payment-title">
+          <h2 class="form-card__title" id="payment-title">Способ оплаты</h2>
+
+          <div class="choice-row" role="radiogroup" aria-labelledby="payment-title">
+            <label class="choice">
+              <input class="choice__input" type="radio" name="payment" value="online">
+              <span class="choice__radio" aria-hidden="true">
+                <svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
+                  <path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <svg class="choice__icon" viewBox="0 0 51 51" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                <rect x="4" y="12" width="43" height="27" rx="3"/>
+                <path d="M4 21h43M9 31h9"/>
+              </svg>
+              <span>
+                <span class="choice__title">Банковской картой онлайн</span>
+                <span class="choice__note">Visa, MasterCard, Мир</span>
+              </span>
+            </label>
+
+            <label class="choice">
+              <input class="choice__input" type="radio" name="payment" value="invoice">
+              <span class="choice__radio" aria-hidden="true">
+                <svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
+                  <path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <svg class="choice__icon" viewBox="0 0 51 51" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                <path d="M9 4h24l9 9v34H9z" stroke-linejoin="round"/>
+                <path d="M32 4v10h10M16 22h18M16 30h18M16 38h11"/>
+              </svg>
+              <span>
+                <span class="choice__title">По счету для юр. лиц</span>
+                <span class="choice__note">С НДС или без НДС</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- ТЗ 8.3: карта вводится только на защищённой странице банка -->
+          <p class="pay-note" id="pay-note" role="status">
+            Оплата проходит на защищённой странице Сбербанка. Номер карты и CVV на сайте не вводятся и не сохраняются — после подтверждения заказа вы перейдёте в банковскую форму.
+          </p>
+
+          <!-- ТЗ 8.2: реквизиты для счёта запрашиваются отдельным окном -->
+          <button class="invoice-dialog__open" type="button" id="invoice-open" hidden>
+            Указать реквизиты для счёта
+          </button>
+        </section>
+
+        <section class="form-card" aria-labelledby="comment-title">
+          <h2 class="form-card__title" id="comment-title">Комментарий к заказу</h2>
+
+          <label class="field comment-field">
+            <span class="visually-hidden">Комментарий к заказу</span>
+            <textarea class="field__input" name="comment" rows="2" placeholder="Напишите комментарий, если нужно (напимер, удобное время доставки)"></textarea>
+          </label>
+
+          <label class="consent">
+            <input type="checkbox" name="consent" id="consent" required aria-describedby="consent-error">
+            <span>
+              Я согласен с <a href="legal.html">политикой конфиденциальности и обработкой персональных данных</a>
+            </span>
+          </label>
+          <p class="consent__error" id="consent-error" role="alert">Отметьте согласие на обработку персональных данных.</p>
+        </section>
+      </form>
+
+      <!-- Панель заказа -->
+      <aside class="checkout-panel" aria-labelledby="checkout-panel-title">
+        <div class="checkout-panel__head">
+          <h2 class="checkout-panel__title" id="checkout-panel-title">Ваш заказ</h2>
+          <span class="checkout-panel__count">3 товара</span>
+        </div>
+
+        <ul class="checkout-items">
+          <li class="checkout-item">
+            <img class="checkout-item__img" src="../assets/img/cart-can.png" width="68" height="100" alt="" loading="lazy">
+            <div>
+              <h3 class="checkout-item__name">Acrilux краска для стен<br>и потолков</h3>
+              <p class="checkout-item__spec">Объем 1,1 л &nbsp;|&nbsp; Цвет F316</p>
+              <p class="checkout-item__qty">1 &nbsp;×&nbsp; 3 500 ₽</p>
+            </div>
+            <p class="checkout-item__sum">3 500 ₽</p>
+          </li>
+
+          <li class="checkout-item">
+            <img class="checkout-item__img" src="../assets/img/cart-can.png" width="68" height="100" alt="" loading="lazy">
+            <div>
+              <h3 class="checkout-item__name">Acrilux краска для стен<br>и потолков</h3>
+              <p class="checkout-item__spec">Объем 1,1 л &nbsp;|&nbsp; Цвет F316</p>
+              <p class="checkout-item__qty">2 &nbsp;×&nbsp; 3 500 ₽</p>
+            </div>
+            <p class="checkout-item__sum">7 000 ₽</p>
+          </li>
+
+          <li class="checkout-item">
+            <img class="checkout-item__img" src="../assets/img/cart-can.png" width="68" height="100" alt="" loading="lazy">
+            <div>
+              <h3 class="checkout-item__name">Acrilux краска для стен<br>и потолков</h3>
+              <p class="checkout-item__spec">Объем 1,1 л &nbsp;|&nbsp; Цвет F316</p>
+              <p class="checkout-item__qty">1 &nbsp;×&nbsp; 3 500 ₽</p>
+            </div>
+            <p class="checkout-item__sum">3 500 ₽</p>
+          </li>
+        </ul>
+
+        <p class="checkout-delivery">
+          Доставка
+          <span class="tip">
+            <button class="tip__btn" type="button" aria-label="Подробнее о сроках доставки" aria-describedby="delivery-tip">?</button>
+            <span class="tip__pop" id="delivery-tip" role="tooltip">
+              Доставка занимает от 3 до 7 дней, в зависимости от удаленности вашего региона
+            </span>
+          </span>
+          <span class="checkout-delivery__value" id="delivery-value">Бесплатно</span>
+        </p>
+
+        <dl class="checkout-total">
+          <dt>Итого</dt>
+          <dd>19 500 ₽</dd>
+        </dl>
+
+        <div class="checkout-actions">
+          <button class="checkout-actions__submit" type="submit" form="checkout-form">Подтвердить заказ</button>
+          <a class="checkout-actions__back" href="cart.html">Вернуться в корзину</a>
+        </div>
+
+        <p class="checkout-note">
+          <svg viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="2" y="9" width="16" height="11" rx="2"/>
+            <path d="M6 9V6a4 4 0 1 1 8 0v3"/>
+          </svg>
+          Ваши данные защищены и не будут переданы третьим лицам
+        </p>
+      </aside>
+    </div>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и&nbsp;обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <!-- Окно реквизитов юрлица (М22, ТЗ 8.2) -->
+  <dialog class="invoice-dialog" id="invoice-dialog" aria-labelledby="invoice-title">
+    <form class="invoice-dialog__body" id="invoice-form" method="dialog">
+      <h2 class="invoice-dialog__title" id="invoice-title">Реквизиты юридического лица</h2>
+      <p class="invoice-dialog__hint">Заполните данные компании для выставления счета</p>
+
+      <div class="invoice-dialog__grid">
+        <label class="field field--full">
+          <span class="field__label">Название организации *</span>
+          <input class="field__input" type="text" name="org" autocomplete="organization" placeholder="Например, ООО «СтройГрупп»" required>
+        </label>
+
+        <label class="field">
+          <span class="field__label">ИНН *</span>
+          <input class="field__input" type="text" name="inn" inputmode="numeric" pattern="[0-9]{10}|[0-9]{12}" placeholder="Например, 7701234567" required>
+        </label>
+
+        <label class="field">
+          <span class="field__label">КПП *</span>
+          <input class="field__input" type="text" name="kpp" inputmode="numeric" pattern="[0-9]{9}" placeholder="Например, 770101001">
+        </label>
+
+        <label class="field">
+          <span class="field__label">ОГРН *</span>
+          <input class="field__input" type="text" name="ogrn" inputmode="numeric" pattern="[0-9]{13}|[0-9]{15}" placeholder="Например, 1027700132195" required>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Юридический адрес *</span>
+          <input class="field__input" type="text" name="legal-address" autocomplete="street-address" placeholder="Например, 123456, г. Москва, ул. Лесная, д. 10" required>
+        </label>
+
+        <label class="field">
+          <span class="field__label">E-mail для счета *</span>
+          <input class="field__input" type="email" name="invoice-email" inputmode="email" placeholder="example@company.ru" required>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Телефон*</span>
+          <input class="field__input" type="tel" name="invoice-phone" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+        </label>
+
+        <label class="field field--full">
+          <span class="field__label">Дополнительные реквизиты / комментарий</span>
+          <textarea class="field__input" name="invoice-comment" rows="2" placeholder="Укажите дополнительные реквизиты, банковские данные или комментарий для менеджера"></textarea>
+        </label>
+      </div>
+
+      <p class="invoice-dialog__note">
+        Указанные данные будут использованы для формирования и отправки счета. Счёт выставляет менеджер после проверки заказа.
+      </p>
+
+      <div class="invoice-dialog__actions">
+        <button class="invoice-dialog__btn invoice-dialog__btn--ghost" type="submit" value="cancel">Отменить</button>
+        <button class="invoice-dialog__btn invoice-dialog__btn--primary" type="submit" value="save">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
+    <form class="dialog__form" id="callback-form" method="dialog">
+      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
+      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
+      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
+      <label class="field">
+        <span class="field__label">Имя</span>
+        <input class="field__input" type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </label>
+      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
+    </form>
+  </dialog>
 
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/forms.js"></script>
-    <script src="../js/cart.js"></script>
+  <script src="../js/checkout.js"></script>
 </body>
 </html>
