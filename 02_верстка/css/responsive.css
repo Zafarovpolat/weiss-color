@@ -133,7 +133,22 @@
 
 /* ---------- Полный дизайн-макет: преимущества в 4 колонки с
              вертикальными разделителями (как в PSD) ---------- */
-@media (min-width: 1440px) {
+/* 1440–1919: преимущества в 2×2 — макетные 4 колонки здесь дают
+   столбики по ~200px и слипшиеся заголовки */
+@media (min-width: 1280px) and (max-width: 1919px) {
+  .d-br { display: inline; }
+  .benefits__inner { grid-template-columns: minmax(0, 1fr); row-gap: 40px; }
+  .benefits__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 40px;
+    row-gap: 32px;
+  }
+  .benefits__title { max-width: none; }
+  .benefits__text { max-width: none; }
+}
+
+/* Полная макетная композиция — только на широких экранах */
+@media (min-width: 1920px) {
   .d-br { display: inline; }
 
   .benefits__inner {

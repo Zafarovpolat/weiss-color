@@ -405,9 +405,20 @@
 }
 
 @media (max-width: 1280px) {
-  .cookie-bar { grid-template-columns: clamp(70px, 12vw, 120px) minmax(0, 1fr); }
-  .cookie-bar__actions { grid-column: 1 / -1; grid-auto-flow: column; justify-content: start; }
-  .cookie-bar__actions .btn { width: auto; min-width: 180px; }
+  /* 2 колонки: картинка + текст; кнопки — отдельной строкой на всю ширину */
+  .cookie-bar {
+    grid-template-columns: clamp(70px, 12vw, 120px) minmax(0, 1fr);
+    row-gap: 16px;
+  }
+
+  .cookie-bar__actions {
+    grid-column: 1 / -1;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    margin-top: 4px;
+  }
+
+  .cookie-bar__actions .btn { width: 100%; min-width: 0; }
   .cookie-bar__leaf { display: none; }
 }
 

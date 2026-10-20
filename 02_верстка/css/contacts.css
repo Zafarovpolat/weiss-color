@@ -5,9 +5,11 @@
    ========================================================================== */
 
 .contacts-page {
-  /* фоновое фото макета: ваза с ветвью и пиала в левом нижнем углу */
-  padding: clamp(20px, 1.68vw, 43px) clamp(16px, 15.7vw, 402px)
-    clamp(24px, 1.5vw, 38px) clamp(16px, 8.67vw, 222px);
+  /* фоновое фото макета: ваза с ветвью и пиала в левом нижнем углу.
+     Боковые поля: на широких — как в макете (222/402), ниже 1440 —
+     приводятся к общему контейнеру, иначе контент сжимается в узкую колонку */
+  padding: clamp(20px, 1.68vw, 43px) clamp(16px, 6.25vw, 160px)
+    clamp(24px, 1.5vw, 38px) clamp(16px, 6.25vw, 160px);
   background: #f0eff2 url("../assets/img/contacts-bg.png") left bottom / cover no-repeat;
 }
 
@@ -185,4 +187,13 @@
 
 @media (max-width: 540px) {
   .contacts-form-card { padding: 24px 16px 28px; }
+}
+
+
+/* Широкие экраны: макетные поля 222px слева и 402px справа */
+@media (min-width: 1920px) {
+  .contacts-page {
+    padding-left: clamp(160px, 11.56vw, 222px);
+    padding-right: clamp(160px, 20.94vw, 402px);
+  }
 }

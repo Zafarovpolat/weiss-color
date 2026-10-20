@@ -327,11 +327,13 @@
 
 
 /* Ссылки-тексты в подвале: высота строки мала для тач-таргета (мин. 44px) */
-.footer__copy,
-.footer__nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
+@media (max-width: 1919px) {
+  .footer__copy,
+  .footer__nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 
 
