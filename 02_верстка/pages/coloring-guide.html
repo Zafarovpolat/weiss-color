@@ -1,36 +1,180 @@
 <!DOCTYPE html>
 <!--
-  Экран: М21 — Инструкция колеровки
+  Экран: М21 — Инструкция колеровки («Как это работает?»)
   Исходник PSD: 01_исходники/макеты_psd/Инструкция колеровки.psd
-  Пункт ТЗ: п.6.4
-  Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  Пункт ТЗ: п.6.4 (фактический маршрут подбора; обещания вне объёма удалены)
+  Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS.
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Инструкция колеровки — Weiss Color</title>
+  <meta name="description" content="Как это работает: выбираете каталог и оттенок, проверяете цвет в интерьере, мы заколеруем краску и доставляем готовый продукт.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/coloring-guide.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="page-fill">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Инструкция колеровки» (М21) по PSD -->
-    <p style="padding:24px;color:#888">[М21] Инструкция колеровки — заготовка</p>
+  <!-- Шапка: общий блок п.3.1 -->
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html" aria-current="page">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="guide-page">
+    <article class="guide-card">
+      <h1 class="guide-title">Как это работает?</h1>
+      <p class="guide-sub">Выберите цвет, и мы заколеруем краску специально для вас</p>
+
+      <ol class="guide-steps">
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h2 class="guide-step__title">Выберите каталог</h2>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step1.png" width="326" height="390" alt="Веер образцов каталогов цветов Weiss" loading="lazy">
+          <p class="guide-step__text">Выберите удобный каталог цветов: ACE PAINT, NCS, RAL, Pantone или фирменную палитру WEISS.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h2 class="guide-step__title">Найдите нужный оттенок</h2>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step2.png" width="325" height="387" alt="Сетка оттенков с выбранным цветом" loading="lazy">
+          <p class="guide-step__text">Просматривайте палитру и выберите понравившийся цвет. Каждый оттенок имеет код и название.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h2 class="guide-step__title">Проверьте на интерьере</h2>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step3.png" width="326" height="388" alt="Визуализация окрашенной гостиной до и после" loading="lazy">
+          <p class="guide-step__text">Используйте визуализацию, чтобы посмотреть, как цвет будет выглядеть в интерьере.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h2 class="guide-step__title">Мы заколеруем краску</h2>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step4.png" width="330" height="391" alt="Банка краски ACRILUX с мазком выбранного цвета" loading="lazy">
+          <p class="guide-step__text">После оформления заказа мы заколеруем краску на профессиональном оборудовании точно в выбранный цвет.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h2 class="guide-step__title">Получите готовый продукт</h2>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step5.png" width="328" height="386" alt="Упаковка заказа Weiss Color" loading="lazy">
+          <p class="guide-step__text">Вы получаете краску, готовую к применению, с указанием цвета и кода на этикетке.</p>
+        </li>
+      </ol>
+
+      <div class="guide-cta">
+        <a class="guide-cta__primary" href="visualizer.html">Выбрать цвет</a>
+        <a class="guide-cta__secondary" href="visualizer.html">Заказать пробный образец</a>
+      </div>
+    </article>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <!-- Подвал: общий блок п.3.3 -->
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">© Weiss Color, 2020–2025. Все права защищены.</a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <!-- Модалка обратного звонка (общая, п.4.6) -->
+  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
+    <form class="dialog__form" id="callback-form" method="dialog">
+      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
+      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
+      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
+      <label class="field">
+        <span class="field__label">Имя</span>
+        <input class="field__input" type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </label>
+      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
+    </form>
+  </dialog>
 
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
 </body>
 </html>

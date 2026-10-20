@@ -69,7 +69,7 @@ Weiss Color/
 | М19 | Селектор палитры | pages/palette-selector.html | 5.1 | ✅ готов  |
 | М09 | Выбор цвета и визуализатор     | pages/visualizer.html            | раздел 6 | ✅ готов  |
 | М18 | Четыре интерьерные сцены       | → assets/img + assets/masks      | 6.2 | ✅ готов  |
-| М21 | Инструкция колеровки           | pages/coloring-guide.html        | 6.4 | —        |
+| М21 | Инструкция колеровки           | pages/coloring-guide.html        | 6.4 | ✅ готов |
 | М16 | Корзина и расчёт заказа        | pages/cart.html                  | раздел 7 | —        |
 | М01 | Оформление заказа              | pages/checkout.html              | раздел 8 | —        |
 | М24 | Оплата (безопасный сценарий)   | pages/payment.html               | 8.3 | —        |
