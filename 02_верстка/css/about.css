@@ -1,0 +1,128 @@
+/* ==========================================================================
+   about.css — экран М14 «О компании и партнёрах».
+   Геометрия снята с PSD 2560w (spec/О_компании_и_партнёрах):
+   фото 2573×1444 справа на всю высоту экрана; текст 223,334 шириной 1326;
+   преимущества y≈802 (4 колонки, шаг ~346); логотипы партнёров y≈1052–1096.
+   ========================================================================== */
+
+.about-page {
+  position: relative;
+  min-height: clamp(600px, 52.6vw, 1347px);
+  padding: clamp(20px, 1.6vw, 41px) clamp(16px, 8.71vw, 223px)
+    clamp(24px, 2.5vw, 64px) clamp(16px, 8.63vw, 221px);
+  background: #f8f8fa url("../assets/img/about-hero.png") right top / auto 100% no-repeat;
+}
+
+.about-title {
+  margin: 0;
+  font-size: clamp(28px, 2.07vw, 53px);
+  line-height: 1.1;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: #233146;
+}
+
+.about-text {
+  max-width: clamp(320px, 58vw, 1485px);
+  margin: clamp(16px, 2.07vw, 53px) 0 0;
+}
+
+.about-text p {
+  margin: 0;
+  font-size: clamp(14px, 1.05vw, 27px);
+  line-height: 1.32;
+  font-weight: var(--fw-medium);
+  color: #2a323a;
+}
+
+.about-text p + p { margin-top: clamp(6px, 0.78vw, 20px); }
+
+/* --- Преимущества (4 колонки) --- */
+
+.about-features {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 268px));
+  gap: clamp(16px, 2.46vw, 63px);
+  max-width: clamp(320px, 51.5vw, 1318px);
+  margin: clamp(20px, 2.73vw, 70px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-feature {
+  display: grid;
+  grid-template-columns: clamp(24px, 2.15vw, 55px) minmax(0, 1fr);
+  gap: clamp(8px, 0.94vw, 24px);
+  align-items: start;
+}
+
+.about-feature svg {
+  width: 100%;
+  height: auto;
+  margin-top: 3px;
+  color: #252b37;
+}
+
+.about-feature__title {
+  margin: 0;
+  font-size: clamp(13px, 0.7vw, 18px);
+  line-height: 1.25;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: #252b37;
+}
+
+.about-feature__text {
+  margin: clamp(4px, 0.26vw, 6px) 0 0;
+  font-size: clamp(13px, 0.7vw, 18px);
+  line-height: 1.35;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+/* --- Логотипы партнёров --- */
+
+.about-partners {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(16px, 3.05vw, 78px);
+  max-width: clamp(320px, 83vw, 2125px);
+  margin: clamp(20px, 2.35vw, 60px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-partners img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-height: clamp(40px, 4.45vw, 114px);
+  max-width: clamp(70px, 7.3vw, 187px);
+  object-fit: contain;
+}
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 1200px) {
+  .about-page {
+    background-position: right -140px top;
+    background-size: auto 100%;
+  }
+
+  .about-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-partners { gap: clamp(16px, 3vw, 40px); }
+}
+
+@media (max-width: 860px) {
+  .about-page {
+    min-height: 0;
+    padding-bottom: 40px;
+    background-image: none;
+  }
+
+  .about-features { grid-template-columns: minmax(0, 1fr); }
+  .about-partners { gap: 20px; }
+  .about-partners img { max-width: 120px; max-height: 60px; }
+}

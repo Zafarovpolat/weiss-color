@@ -1,36 +1,202 @@
 <!DOCTYPE html>
 <!--
-  Экран: М14 — О компании
+  Экран: М14 — О компании и партнёрах
   Исходник PSD: 01_исходники/макеты_psd/О компании и партнёрах.psd
-  Пункт ТЗ: п.9.1
+  Пункт ТЗ: п.9.1 — информационная страница о компании
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  Функционал/сервер — этап 2 (натяжка на WordPress).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>О компании — Weiss Color</title>
+  <meta name="description" content="WEISS COLOR — российский производитель лакокрасочной продукции для профессионального и бытового применения.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/cart.css">
+  <link rel="stylesheet" href="../css/about.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="page-fill">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «О компании» (М14) по PSD -->
-    <p style="padding:24px;color:#888">[М14] О компании — заготовка</p>
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 0">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="about-page">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+      <a href="../index.html">Главная</a> &gt; <span aria-current="page">О компании</span>
+    </nav>
+
+    <h1 class="about-title">О компании</h1>
+
+    <div class="about-text">
+      <p>WEISS COLOR — российский производитель лакокрасочной продукции для профессионального и бытового применения.</p>
+      <p>Мы создаём высококачественные краски и декоративные покрытия, сочетающие современные технологии, экологичность и эстетику.</p>
+      <p>Наша миссия — делать мир ярче и безопаснее, предлагая материалы, которые вдохновляют на создание красивых и долговечных интерьеров.</p>
+      <p>Производство организовано на современном оборудовании с многоступенчатым контролем качества на всех этапах — от отбора сырья до упаковки готовой продукции.</p>
+      <p>Мы постоянно развиваемся, расширяем ассортимент и совершенствуем формулы, чтобы соответствовать потребностям наших клиентов и высоким стандартам рынка.</p>
+      <p>Продукция WEISS COLOR используется в жилых и коммерческих интерьерах, рекомендована профессиональными малярами, дизайнерами и архитекторами.</p>
+    </div>
+
+    <ul class="about-features">
+      <li class="about-feature">
+        <svg viewBox="0 0 55 56" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M27.5 2 52 10v20C52 43 41 52 27.5 54 14 52 3 43 3 28V10Z" stroke-linejoin="round"/>
+          <path d="m16 27 8 8 15-16" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <h2 class="about-feature__title">Качество<br>и безопасность</h2>
+          <p class="about-feature__text">Сырьё от проверенных поставщиков и строгий контроль качества</p>
+        </div>
+      </li>
+
+      <li class="about-feature">
+        <svg viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M25 44c0-14 6-24 20-30-1 16-8 28-20 30Z" stroke-linejoin="round"/>
+          <path d="M25 44C12 41 5 30 4 14c14 5 21 16 21 30ZM14 33c3-5 7-9 12-12" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <h2 class="about-feature__title">Экологичность</h2>
+          <p class="about-feature__text">Продукция соответствует экологическим стандартам и безопасна для здоровья</p>
+        </div>
+      </li>
+
+      <li class="about-feature">
+        <svg viewBox="0 0 50 52" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M8 20 2 48l28-7Z" stroke-linejoin="round"/>
+          <path d="M42 4 14 34M42 4c2 10-4 22-14 26-8 3-14-1-14-1S14 18 22 12c7-5 20-8 20-8Z" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <h2 class="about-feature__title">Широкий ассортимент</h2>
+          <p class="about-feature__text">Краски для стен и потолков, декоративные покрытия, составы и сопутствующие товары</p>
+        </div>
+      </li>
+
+      <li class="about-feature">
+        <svg viewBox="0 0 64 41" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M2 12v18l10 4V8ZM14 8c4 6 10 9 18 9l12 6c6 3 12-1 16-9-8-4-16-6-24-6-8 0-14 0-22 0Z" stroke-linejoin="round"/>
+          <path d="M30 21v6" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <h2 class="about-feature__title">Поддержка клиентов</h2>
+          <p class="about-feature__text">Профессиональные консультации и помощь на всех этапах выбора</p>
+        </div>
+      </li>
+    </ul>
+
+    <ul class="about-partners" aria-label="Партнёры компании">
+        <li><img src="../assets/img/partner-rzd.png" width="126" height="86" alt="Логотип РЖД" loading="lazy"></li>
+        <li><img src="../assets/img/partner-x5.png" width="118" height="82" alt="Логотип X5 Retail Group" loading="lazy"></li>
+        <li><img src="../assets/img/partner-evrohim.png" width="147" height="92" alt="Логотип ЕвроХим" loading="lazy"></li>
+        <li><img src="../assets/img/partner-magnit.png" width="70" height="92" alt="Логотип Магнит" loading="lazy"></li>
+        <li><img src="../assets/img/partner-tatneft.png" width="112" height="114" alt="Логотип Татнефть" loading="lazy"></li>
+        <li><img src="../assets/img/partner-holz.png" width="147" height="66" alt="Логотип Holz House" loading="lazy"></li>
+        <li><img src="../assets/img/partner-ultralam.png" width="174" height="59" alt="Логотип Ultralam" loading="lazy"></li>
+        <li><img src="../assets/img/partner-segezha.png" width="187" height="40" alt="Логотип Segezha Group" loading="lazy"></li>
+    </ul>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и&nbsp;обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
+    <form class="dialog__form" id="callback-form" method="dialog">
+      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
+      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
+      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
+      <label class="field">
+        <span class="field__label">Имя</span>
+        <input class="field__input" type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </label>
+      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
+    </form>
+  </dialog>
 
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
 </body>
 </html>
