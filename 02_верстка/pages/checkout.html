@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/modals.css">
   <link rel="stylesheet" href="../css/cart.css">
   <link rel="stylesheet" href="../css/checkout.css">
 </head>
@@ -430,22 +431,61 @@
     </form>
   </dialog>
 
-  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
-    <form class="dialog__form" id="callback-form" method="dialog">
-      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
-      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
-      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
-      <label class="field">
-        <span class="field__label">Имя</span>
-        <input class="field__input" type="text" name="name" autocomplete="name" required>
-      </label>
-      <label class="field">
-        <span class="field__label">Телефон</span>
-        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
-      </label>
-      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
-    </form>
-  </dialog>
+  <dialog class="mcard mcard-callback" id="callback-dialog" aria-labelledby="callback-title">
+      <button class="mcard__close" type="button" data-modal-close aria-label="Закрыть окно">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M3 3l18 18M21 3 3 21" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="callback-photo">
+        <img class="callback-photo__logo" src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+        <hr class="callback-photo__rule">
+        <p class="callback-photo__slogan">Вдохновляем<br>на красивые<br>интерьеры</p>
+      </div>
+
+      <form class="callback-form" id="callback-form" novalidate>
+        <p class="callback-form__eyebrow">Заказать звонок</p>
+        <h2 class="callback-form__title" id="callback-title">Мы свяжемся<br>с вами</h2>
+        <p class="callback-form__text">
+          Оставьте номер телефона и наш специалист перезвонит вам в ближайшее время,
+          чтобы ответить на все вопросы.
+        </p>
+
+        <label class="callback-field">
+          <span class="visually-hidden">Ваше имя</span>
+          <svg viewBox="0 0 32 33" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="16" cy="10" r="6.5"/>
+            <path d="M3 31c0-7.2 5.8-13 13-13s13 5.8 13 13" stroke-linecap="round"/>
+          </svg>
+          <input type="text" name="name" autocomplete="name" placeholder="Ваше имя" required>
+        </label>
+
+        <label class="callback-field">
+          <span class="visually-hidden">Телефон</span>
+          <svg viewBox="0 0 32 33" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M8 3h5l3 7-3.5 2.5a16 16 0 0 0 8 8L22 17l7 3v5c0 2.2-1.8 4-4 4C13.6 29 4 19.4 4 8c0-2.2 1.8-5 4-5Z" stroke-linejoin="round"/>
+          </svg>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel"
+                 placeholder="+7 ( _ _ _ )_ _ _-_ _-_ _" required>
+        </label>
+
+        <button class="btn btn--brown" type="submit">
+          Заказать звонок
+          <svg class="btn__arrow" viewBox="0 0 48 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M1 8h44M38 2l7 6-7 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <p class="callback-form__note">
+          <svg viewBox="0 0 17 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="1" y="10" width="15" height="13" rx="2"/>
+            <path d="M4 10V7a4.5 4.5 0 0 1 9 0v3"/>
+          </svg>
+          Ваши данные защищены и не будут переданы третьим лицам
+        </p>
+      </form>
+    </dialog>
 
   <script src="../js/main.js"></script>
   <script src="../js/checkout.js"></script>

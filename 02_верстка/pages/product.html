@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/modals.css">
   <link rel="stylesheet" href="../css/catalog.css">
   <link rel="stylesheet" href="../css/product.css">
 </head>
@@ -213,29 +214,61 @@
   </footer>
 
   <!-- Окно «Заказать звонок» (М25, п.9.3) -->
-  <dialog class="modal" id="callback-dialog" aria-labelledby="callback-title">
-    <div class="modal__header">
-      <h2 class="modal__title" id="callback-title">Заказать звонок</h2>
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть окно">&times;</button>
-    </div>
-    <p class="modal__text">Оставьте контакты — перезвоним в рабочее время.</p>
-    <form id="callback-form">
-      <div class="field">
-        <label for="callback-name">Имя</label>
-        <input id="callback-name" name="name" type="text" autocomplete="name"
-               placeholder="Как к вам обращаться…" required minlength="2">
+  <dialog class="mcard mcard-callback" id="callback-dialog" aria-labelledby="callback-title">
+      <button class="mcard__close" type="button" data-modal-close aria-label="Закрыть окно">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M3 3l18 18M21 3 3 21" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="callback-photo">
+        <img class="callback-photo__logo" src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+        <hr class="callback-photo__rule">
+        <p class="callback-photo__slogan">Вдохновляем<br>на красивые<br>интерьеры</p>
       </div>
-      <div class="field">
-        <label for="callback-phone">Телефон</label>
-        <input id="callback-phone" name="phone" type="tel" autocomplete="tel"
-               inputmode="tel" placeholder="+7 (___) ___-__-__" required>
-      </div>
-      <button class="btn btn--teal" type="submit">Отправить заявку</button>
-      <p class="modal__note">
-        Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
-      </p>
-    </form>
-  </dialog>
+
+      <form class="callback-form" id="callback-form" novalidate>
+        <p class="callback-form__eyebrow">Заказать звонок</p>
+        <h2 class="callback-form__title" id="callback-title">Мы свяжемся<br>с вами</h2>
+        <p class="callback-form__text">
+          Оставьте номер телефона и наш специалист перезвонит вам в ближайшее время,
+          чтобы ответить на все вопросы.
+        </p>
+
+        <label class="callback-field">
+          <span class="visually-hidden">Ваше имя</span>
+          <svg viewBox="0 0 32 33" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="16" cy="10" r="6.5"/>
+            <path d="M3 31c0-7.2 5.8-13 13-13s13 5.8 13 13" stroke-linecap="round"/>
+          </svg>
+          <input type="text" name="name" autocomplete="name" placeholder="Ваше имя" required>
+        </label>
+
+        <label class="callback-field">
+          <span class="visually-hidden">Телефон</span>
+          <svg viewBox="0 0 32 33" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M8 3h5l3 7-3.5 2.5a16 16 0 0 0 8 8L22 17l7 3v5c0 2.2-1.8 4-4 4C13.6 29 4 19.4 4 8c0-2.2 1.8-5 4-5Z" stroke-linejoin="round"/>
+          </svg>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel"
+                 placeholder="+7 ( _ _ _ )_ _ _-_ _-_ _" required>
+        </label>
+
+        <button class="btn btn--brown" type="submit">
+          Заказать звонок
+          <svg class="btn__arrow" viewBox="0 0 48 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M1 8h44M38 2l7 6-7 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <p class="callback-form__note">
+          <svg viewBox="0 0 17 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="1" y="10" width="15" height="13" rx="2"/>
+            <path d="M4 10V7a4.5 4.5 0 0 1 9 0v3"/>
+          </svg>
+          Ваши данные защищены и не будут переданы третьим лицам
+        </p>
+      </form>
+    </dialog>
 
   <script src="../js/main.js" defer></script>
 </body>
