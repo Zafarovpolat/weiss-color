@@ -1,37 +1,118 @@
 <!DOCTYPE html>
 <!--
-  Экран: М22 — Реквизиты для счёта
+  Экран: М22 — Реквизиты юридического лица (окно для счёта)
   Исходник PSD: 01_исходники/макеты_psd/Реквизиты для счёта.psd
-  Пункт ТЗ: п.8.2
+  Пункт ТЗ: п.8.2 — юрлица и ИП, КПП/ОГРН обязательны для юрлица,
+  для ИП — ОГРНИП без обязательного КПП; счёт выставляет менеджер.
+  Отдельная страница нужна, чтобы удобно верстать и показывать окно;
+  в работе используется <dialog id="invoice-dialog"> на pages/checkout.html.
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Реквизиты для счёта — Weiss Color</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/checkout.css">
+  <link rel="stylesheet" href="../css/invoice.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="invoice-page">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Реквизиты для счёта» (М22) по PSD -->
-    <p style="padding:24px;color:#888">[М22] Реквизиты для счёта — заготовка</p>
+  <main id="main" class="invoice-page__center">
+    <section class="invoice-card" aria-labelledby="invoice-title">
+      <div class="invoice-card__head">
+        <h1 class="invoice-card__title" id="invoice-title">Реквизиты юридического лица</h1>
+        <a class="invoice-card__close" href="checkout.html" aria-label="Закрыть окно">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M5 5l14 14M19 5 5 19" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <p class="invoice-card__hint">Заполните данные компании для выставления счета</p>
+
+      <form class="invoice-form" id="invoice-page-form" novalidate>
+        <!-- Тип плательщика: для ИП КПП не обязательно, обязателен ОГРНИП (ТЗ 8.2) -->
+        <fieldset class="invoice-type">
+          <legend class="visually-hidden">Тип плательщика</legend>
+
+          <label class="invoice-type__item">
+            <input type="radio" name="payer" value="legal" checked>
+            <span>Юридическое лицо</span>
+          </label>
+
+          <label class="invoice-type__item">
+            <input type="radio" name="payer" value="ip">
+            <span>ИП</span>
+          </label>
+        </fieldset>
+
+        <div class="invoice-form__grid">
+          <label class="field field--full">
+            <span class="field__label">Название организации <b aria-hidden="true">*</b></span>
+            <input class="field__input" type="text" name="org" autocomplete="organization" placeholder="Например, ООО «СтройГрупп»" required>
+          </label>
+
+          <label class="field">
+            <span class="field__label">ИНН <b aria-hidden="true">*</b></span>
+            <input class="field__input" type="text" name="inn" inputmode="numeric" pattern="[0-9]{10}|[0-9]{12}" placeholder="Например, 7701234567" required>
+          </label>
+
+          <label class="field" data-for="legal">
+            <span class="field__label">КПП <b aria-hidden="true">*</b></span>
+            <input class="field__input" type="text" name="kpp" inputmode="numeric" pattern="[0-9]{9}" placeholder="Например, 770101001" required>
+          </label>
+
+          <label class="field">
+            <span class="field__label" data-label-legal="ОГРН <b aria-hidden='true'>*</b>" data-label-ip="ОГРНИП <b aria-hidden='true'>*</b>">ОГРН <b aria-hidden="true">*</b></span>
+            <input class="field__input" type="text" name="ogrn" inputmode="numeric" pattern="[0-9]{13}|[0-9]{15}" placeholder="Например, 1027700132195" required>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Юридический адрес <b aria-hidden="true">*</b></span>
+            <input class="field__input" type="text" name="legal-address" autocomplete="street-address" placeholder="Например, 123456, г. Москва, ул. Лесная, д. 10" required>
+          </label>
+
+          <label class="field">
+            <span class="field__label">E-mail для счета <b aria-hidden="true">*</b></span>
+            <input class="field__input" type="email" name="invoice-email" inputmode="email" autocomplete="email" placeholder="example@company.ru" required>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Телефон <b aria-hidden="true">*</b></span>
+            <input class="field__input" type="tel" name="invoice-phone" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required>
+          </label>
+
+          <label class="field field--full">
+            <span class="field__label">Дополнительные реквизиты / комментарий</span>
+            <textarea class="field__input" name="invoice-comment" rows="3" placeholder="Укажите дополнительные реквизиты, банковские данные или комментарий для выставления счета"></textarea>
+          </label>
+        </div>
+
+        <p class="invoice-form__note">
+          <span class="invoice-form__info" aria-hidden="true">i</span>
+          Указанные данные будут использованы для формирования и отправки счета на оплату.
+          Мы не передаем их третьим лицам.
+        </p>
+
+        <div class="invoice-form__actions">
+          <button class="invoice-form__btn invoice-form__btn--primary" type="submit">Сохранить</button>
+          <a class="invoice-form__btn invoice-form__btn--ghost" href="checkout.html">Отменить</a>
+        </div>
+      </form>
+    </section>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
-
-  <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/forms.js"></script>
+  <script src="../js/invoice.js"></script>
 </body>
 </html>
