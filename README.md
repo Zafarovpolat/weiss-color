@@ -78,7 +78,7 @@ Weiss Color/
 | М04 | Контакты и форма обращения     | pages/contacts.html              | 9.3 | ✅ готов |
 | М03 | Где купить                     | pages/where-to-buy.html          | 9.2 | ✅ готов |
 | М14 | О компании и партнёрах         | pages/about.html                 | 9.1 | ✅ готов |
-| М11 | Правовой документ (шаблон)     | pages/legal.html                 | 9.4 | —        |
+| М11 | Правовой документ (шаблон)     | pages/legal.html                 | 9.4 | ✅ готов |
 | М02 | Страница ошибки 404            | pages/404.html                   | 9.4 | —        |
 | М06 | Пробник 300 мл (окно)          | pages/modal-sampler.html         | 6.6 | —        |
 | М23 | Товар добавлен (окно)          | pages/modal-add-to-cart.html     | 6.6 | —        |
