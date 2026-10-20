@@ -1,37 +1,204 @@
 <!DOCTYPE html>
 <!--
-  Экран: М04 — Контакты
+  Экран: М04 — Контакты и форма обращения
   Исходник PSD: 01_исходники/макеты_psd/Контакты и форма обращения.psd
-  Пункт ТЗ: п.9.3
+  Пункт ТЗ: п.9.3 — контакты и форма обращения
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
-  Функционал/сервер/оплата — этап 2 (натяжка на WordPress).
+  Функционал/сервер — этап 2 (натяжка на WordPress).
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Контакты — Weiss Color</title>
+  <meta name="description" content="Контакты Weiss Color: адрес, телефон, e-mail и форма обращения — напишите нам, и мы перезвоним.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/catalog.css">
+  <link rel="stylesheet" href="../css/checkout.css">
+  <link rel="stylesheet" href="../css/contacts.css">
 </head>
-<body>
-  <!-- TODO(header): логотип, меню, телефон, корзина — общий блок п.3.1 -->
-  <header class="site-header"></header>
+<body class="page-fill">
+  <a class="skip-link" href="#main">К основному содержанию</a>
 
-  <main class="container">
-    <!-- TODO: вёрстка экрана «Контакты» (М04) по PSD -->
-    <p style="padding:24px;color:#888">[М04] Контакты — заготовка</p>
+  <header class="site-header">
+    <div class="header__inner">
+      <a class="logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Показать меню</span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+        <span class="burger__line" aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <ul class="site-nav__list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="where-to-buy.html">Где купить</a></li>
+          <li><a href="about.html">О компании</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+        </ul>
+
+        <div class="header__contacts">
+          <a class="header__phone" href="tel:+79502553015" translate="no">+7(950)&nbsp;255-30-15</a>
+
+          <ul class="socials" aria-label="Связаться в мессенджере">
+            <li>
+              <a href="viber://chat?number=%2B79502553015" aria-label="Viber">
+                <img src="../assets/img/social-viber.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://t.me/weisscolor" aria-label="Telegram" rel="noopener">
+                <img src="../assets/img/social-telegram.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/79502553015" aria-label="WhatsApp" rel="noopener">
+                <img src="../assets/img/social-whatsapp.png" width="60" height="60" alt="" aria-hidden="true">
+              </a>
+            </li>
+          </ul>
+
+          <button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">
+            Заказать звонок
+          </button>
+        </div>
+      </nav>
+
+      <a class="cart" href="cart.html" aria-label="Корзина, товаров: 0">
+        <img src="../assets/img/cart.png" width="89" height="89" alt="" aria-hidden="true">
+        <span class="cart__count tabular" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="contacts-page">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+      <a href="../index.html">Главная</a> &gt; <span aria-current="page">Контакты</span>
+    </nav>
+
+    <div class="contacts-layout">
+      <section aria-labelledby="contacts-title">
+        <h1 class="contacts-title" id="contacts-title">Контакты</h1>
+
+        <p class="contacts-org">
+          <span class="contacts-org__name">ООО «WEISS NATURAL PRODUCT»</span>
+          <span>Удмуртская респ., г. Ижевск, ул. Пойма, д. 57</span>
+        </p>
+
+        <p class="contacts-list">
+          <span>т. : <a href="tel:+79502553015" translate="no">+7 (950) 255-30-15</a></span>
+          <span>e. : <a href="mailto:info@ooonort.ru">info@ooonort.ru</a></span>
+        </p>
+
+        <p class="contacts-place">
+          Продукцию компании можно приобрести<br>
+          у региональных представителей или на маркетплейсах
+        </p>
+      </section>
+
+      <aside class="contacts-form-card" aria-labelledby="contacts-form-title">
+        <h2 class="contacts-form-card__title" id="contacts-form-title">Есть вопросы?</h2>
+        <p class="contacts-form-card__lead">Напишите нам и мы Вам перезвоним</p>
+
+        <form class="contacts-form" id="contacts-form" novalidate>
+          <label class="field">
+            <span class="visually-hidden">Ваше имя</span>
+            <input class="field__input" type="text" name="name" autocomplete="name" placeholder="Ваше имя" required>
+          </label>
+
+          <label class="field">
+            <span class="visually-hidden">Регион</span>
+            <select class="field__select" name="region" required>
+              <option value="" selected disabled>Выберите регион</option>
+              <option>Москва</option>
+              <option>Санкт-Петербург</option>
+              <option>Московская область</option>
+              <option>Ленинградская область</option>
+              <option>Удмуртская Республика</option>
+              <option>Другой регион</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="visually-hidden">Телефон</span>
+            <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+          </label>
+
+          <label class="field">
+            <span class="visually-hidden">Сообщение</span>
+            <textarea class="field__input" name="message" rows="4" placeholder="Сообщение"></textarea>
+          </label>
+
+          <p class="contacts-form__error" id="contacts-error" role="alert">
+            Заполните имя, регион и телефон — иначе мы не сможем перезвонить.
+          </p>
+
+          <p class="contacts-consent">
+            Оставляя свои персональные данные, Вы соглашаетесь с<br>
+            <a href="legal.html">Политикой конфиденциальности</a><br>
+            <a href="legal.html">Пользовательское соглашение</a>
+          </p>
+
+          <button class="contacts-submit" type="submit">Отправить</button>
+        </form>
+      </aside>
+    </div>
   </main>
 
-  <!-- TODO(footer): навигация, правовые ссылки, кнопка звонка — п.3.1 -->
-  <footer class="site-footer"></footer>
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
+        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      </a>
+
+      <nav class="footer__nav" aria-label="Навигация в подвале">
+        <a href="catalog.html">Каталог</a>
+        <a href="where-to-buy.html">Где купить</a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="coloring-guide.html">Колеровка цвета</a>
+      </nav>
+
+      <a class="footer__copy" href="legal.html">
+        Политика конфиденциальности и&nbsp;обработки персональных данных
+      </a>
+
+      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+        Заказать звонок
+      </button>
+    </div>
+  </footer>
+
+  <dialog class="dialog" id="callback-dialog" aria-labelledby="callback-title">
+    <form class="dialog__form" id="callback-form" method="dialog">
+      <button class="dialog__close" type="submit" value="cancel" aria-label="Закрыть окно">&times;</button>
+      <h2 class="dialog__title" id="callback-title">Заказать звонок</h2>
+      <p class="dialog__hint">Оставьте номер — перезвоним в рабочее время.</p>
+      <label class="field">
+        <span class="field__label">Имя</span>
+        <input class="field__input" type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+      </label>
+      <button class="btn btn--primary dialog__submit" type="submit" value="send">Отправить</button>
+    </form>
+  </dialog>
 
   <script src="../js/main.js"></script>
-    <script src="../js/modal.js"></script>
-    <script src="../js/forms.js"></script>
+  <script src="../js/contacts.js"></script>
 </body>
 </html>
