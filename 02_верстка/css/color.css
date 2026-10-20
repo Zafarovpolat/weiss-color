@@ -281,6 +281,12 @@
     grid-template-columns: 1fr;
   }
 
+  /* в одну колонку CTA прилипает к заголовку следующей секции */
+  .c-materials { padding-top: clamp(32px, 4.4vw, 56px); }
+
+  /* одна колонка — кнопка на всю ширину, как остальные блоки */
+  .c-hero__cta { width: 100%; }
+
   .c-swatch__fill {
     height: clamp(120px, 22vw, 200px);
   }

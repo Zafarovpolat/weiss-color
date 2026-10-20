@@ -33,6 +33,7 @@
 
 .mcard__close {
   position: absolute;
+  z-index: 3; /* фото-панель .callback-photo тоже positioned — иначе перекрывает */
   top: clamp(8px, 1.4vw, 16px);
   right: clamp(8px, 1.9vw, 22px);
   display: grid;
@@ -161,7 +162,7 @@
 
 .callback-form__eyebrow {
   margin: 0;
-  font-size: clamp(11px, 0.59vw, 15px);
+  font-size: max(12px, clamp(11px, 0.59vw, 15px));
   font-weight: var(--fw-semibold);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -236,7 +237,7 @@
   align-items: center;
   gap: clamp(6px, 0.7vw, 18px);
   margin: clamp(10px, 1.09vw, 28px) 0 0;
-  font-size: clamp(10px, 0.66vw, 17px);
+  font-size: max(12px, clamp(10px, 0.66vw, 17px));
   font-weight: var(--fw-medium);
   color: #9fa5b3;
   white-space: nowrap;

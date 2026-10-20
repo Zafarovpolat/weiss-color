@@ -396,16 +396,15 @@
   background: var(--color-white);
   border-radius: 4px;
   box-shadow: 0 4px 18px rgba(23, 30, 49, 0.16);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
+  /* скрытая подсказка не участвует в раскладке: иначе на узких экранах
+     она шире вьюпорта и даёт горизонтальный скролл */
+  display: none;
 }
 
 .tip__btn:hover + .tip__pop,
 .tip__btn:focus-visible + .tip__pop,
 .tip__pop:hover, .tip__pop:focus-within {
-  opacity: 1;
-  visibility: visible;
+  display: block;
 }
 
 /* Инфо-плашка о бесплатной доставке */

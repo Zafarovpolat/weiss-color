@@ -5,6 +5,29 @@
    Fluid-величины (clamp) уже привязаны к макету 2560 (1:2560).
    ========================================================================== */
 
+/* ---------- Герой: пока ширина < 1834px, min-height 420px выше расчётной
+   (22.9vw) — кроп съезжает и в кадр попадает белая полоса фотографии.
+   Прижимаем кадр к верху, макетная посадка (25%) остаётся для ≥1834. ---------- */
+@media (max-width: 1833px) {
+  /* кадр «шире» блока — держим в кадре кресло и растение справа */
+  .hero__bg { object-position: 72% top; }
+}
+
+/* ---------- Герой главной: на узких экранах высота по контенту ----------
+   Фиксированный min-height 420px при узком вьюпорте обрезал банку
+   (overflow: hidden у .hero). */
+@media (max-width: 900px) {
+  .hero__inner {
+    min-height: 0;
+    padding-block: clamp(28px, 5vw, 44px) clamp(20px, 4vw, 32px);
+  }
+  .hero__product { width: clamp(180px, 42vw, 260px); }
+
+  /* при узкой колонке cover «взумивает» фото до неузнаваемости — оставляем
+     чистый фон секции, композиция держится на банке и тексте */
+  .hero__bg { display: none; }
+}
+
 /* ---------- Планшет: две колонки там, где есть смысл ---------- */
 @media (min-width: 768px) {
   /* Преимущества: сетка 2×2 с разделителями-линиями сверху */
@@ -125,6 +148,40 @@
 
   /* В макете кнопка подвала не «прижата» к краю, а продолжает ряд */
   .footer__inner > .btn { margin-right: clamp(0px, 3.9vw, 100px); }
+}
+
+/* ---------- 1280–1919: шапка в одну строку ----------
+   В этом диапазоне макетные 2560-е отступы уже не влезают: ссылки
+   переносились по словам, CTA — на две строки. Ужимаем пропорционально. */
+@media (min-width: 1280px) and (max-width: 2299px) {
+  .logo { margin-right: clamp(20px, 3.2vw, 60px); }
+
+  .site-nav__list { gap: clamp(14px, 1.85vw, 35px); }
+  .site-nav__list a {
+    white-space: nowrap;
+    font-size: clamp(12px, 0.78vw, 15px);
+    letter-spacing: 0.01em;
+  }
+
+  .header__contacts { gap: 8px; flex-wrap: nowrap; }
+  .header__phone {
+    margin-right: 6px;
+    font-size: clamp(12px, 0.85vw, 16px);
+  }
+
+  .socials { gap: 5px; }
+  .socials img { height: clamp(30px, 2.2vw, 42px); }
+
+  .header__cta {
+    white-space: nowrap;
+    min-height: 44px;
+    padding: 10px clamp(14px, 1.5vw, 26px);
+    font-size: clamp(11px, 0.68vw, 13px);
+    letter-spacing: 0.04em;
+  }
+
+  .cart { margin-left: clamp(6px, 1.1vw, 20px); }
+  .cart img { width: clamp(50px, 3.9vw, 74px); }
 }
 
 /* Макетные переносы строк в описаниях — только на десктопе (как в PSD),
