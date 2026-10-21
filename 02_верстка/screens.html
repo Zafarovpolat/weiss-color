@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!--
+  Служебная страница приёмки: макет ↔ вёрстка.
+  Для каждого экрана — картинка макета (assets/mockups) и ссылка на свёрстанную страницу.
+  Нужна, чтобы сверять «1 к 1» без поиска файлов на диске. Не индексируется.
+-->
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Макеты и вёрстка — Weiss Color</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    .sv { max-width: 1520px; margin-inline: auto; padding: clamp(20px, 3vw, 48px) clamp(14px, 3vw, 32px) 80px; }
+
+    .sv-head { border-bottom: 1px solid #e2e4e8; padding-bottom: 22px; margin-bottom: 8px; }
+    .sv-logo { display: block; width: 160px; height: auto; margin-bottom: 20px; }
+    .sv-title { margin: 0; font-size: clamp(22px, 2.4vw, 34px); font-weight: 600; text-transform: uppercase; color: #233146; line-height: 1.15; }
+    .sv-sub { margin: 12px 0 0; font-size: 14.5px; line-height: 1.55; color: #6e6f75; max-width: 92ch; }
+    .sv-sub b { color: #253346; }
+
+    .sv-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .sv-nav a {
+      padding: 8px 14px; font-size: 13px; font-weight: 500; color: #253346;
+      background: #f4f5f7; border: 1px solid #e2e4e8; border-radius: 40px; text-decoration: none;
+      transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .sv-nav a:hover { color: #62381e; border-color: #62381e; background: #fff; }
+
+    .sv-group { margin-top: 44px; }
+    .sv-group__title {
+      margin: 0 0 16px; font-size: 12.5px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: #7d8695;
+    }
+
+    .sv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 22px; }
+
+    .sv-card {
+      display: flex; flex-direction: column; background: #fff;
+      border: 1px solid #e2e4e8; border-radius: 8px; overflow: hidden;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    .sv-card:hover { border-color: #c9cbd2; box-shadow: 0 4px 18px rgba(23,30,49,.08); }
+
+    .sv-card__media { display: block; background: #eef0f3; line-height: 0; }
+    .sv-card__media img { display: block; width: 100%; height: auto; }
+
+    .sv-card__body { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid #eef0f3; }
+    .sv-card__code { flex: none; padding: 3px 7px; font-size: 11.5px; font-weight: 600; color: #6e6f75; background: #f1f1f5; border-radius: 3px; }
+    .sv-card__name { flex: 1 1 auto; font-size: 14.5px; font-weight: 500; line-height: 1.3; color: #253346; }
+    .sv-card__go {
+      flex: none; padding: 7px 13px; font-size: 12.5px; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; color: #fff; background: #62381e; border-radius: 3px; text-decoration: none;
+      transition: background-color .18s ease;
+    }
+    .sv-card__go:hover { background: #7a4a26; }
+
+    .sv-warn { margin-top: 18px; padding: 14px 16px; font-size: 13px; line-height: 1.55; color: #6b4b2c; background: #fdf6ef; border-left: 3px solid #c98b4b; border-radius: 4px; }
+    .sv-warn b { color: #62381e; }
+
+    .sv-note { margin-top: 40px; padding: 18px 20px; font-size: 13.5px; line-height: 1.6; color: #43484f; background: #f7f8fa; border-left: 3px solid #62381e; border-radius: 4px; }
+    .sv-note b { color: #253346; }
+
+    @media (max-width: 900px) { .sv-grid { grid-template-columns: minmax(0, 1fr); } }
+  </style>
+</head>
+<body>
+  <main class="sv">
+    <header class="sv-head">
+      <img class="sv-logo" src="assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      <h1 class="sv-title">Макеты и вёрстка</h1>
+      <p class="sv-sub">
+        <b>25 экранов</b>: под каждым макетом — кнопка «открыть вёрстку» этой же страницы.
+        Сверяйте 1 к 1, кликая по кнопке. Картинки макетов — из исходных PSD (сжаты до 1400px по ширине).
+      </p>
+      <nav class="sv-nav" aria-label="Быстрый переход">
+        <a href="index.html">← Все экраны списком</a>
+        <a href="#g1">Основные</a>
+        <a href="#g2">Колеровка</a>
+        <a href="#g3">Заказ</a>
+        <a href="#g4">Информационные</a>
+        <a href="#g5">Модальные окна</a>
+      </nav>
+    </header>
+
+    <section class="sv-group" id="g1" aria-labelledby="t1">
+      <h2 class="sv-group__title" id="t1">Основные страницы</h2>
+      <div class="sv-grid">
+        <article class="sv-card">
+          <a class="sv-card__media" href="index.html"><img src="assets/mockups/М10.jpg" alt="Макет: Главная" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М10</span><span class="sv-card__name">Главная</span><a class="sv-card__go" href="index.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/catalog.html"><img src="assets/mockups/М15.jpg" alt="Макет: Каталог товаров" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М15</span><span class="sv-card__name">Каталог товаров</span><a class="sv-card__go" href="pages/catalog.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/product.html"><img src="assets/mockups/М05.jpg" alt="Макет: Карточка товара" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М05</span><span class="sv-card__name">Карточка товара</span><a class="sv-card__go" href="pages/product.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/color.html"><img src="assets/mockups/М12.jpg" alt="Макет: Цвет и совместимые материалы" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М12</span><span class="sv-card__name">Цвет и совместимые материалы</span><a class="sv-card__go" href="pages/color.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/shades.html"><img src="assets/mockups/М07.jpg" alt="Макет: Список оттенков" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М07</span><span class="sv-card__name">Список оттенков</span><a class="sv-card__go" href="pages/shades.html">Открыть</a></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sv-group" id="g2" aria-labelledby="t2">
+      <h2 class="sv-group__title" id="t2">Колеровка и палитры</h2>
+      <div class="sv-grid">
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/visualizer.html"><img src="assets/mockups/М09.jpg" alt="Макет: Выбор цвета и визуализатор" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М09</span><span class="sv-card__name">Выбор цвета и визуализатор</span><a class="sv-card__go" href="pages/visualizer.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/palettes.html"><img src="assets/mockups/М13.jpg" alt="Макет: Обзор палитр" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М13</span><span class="sv-card__name">Обзор палитр (28)</span><a class="sv-card__go" href="pages/palettes.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/palette-selector.html"><img src="assets/mockups/М19.jpg" alt="Макет: Селектор палитры" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М19</span><span class="sv-card__name">Селектор палитры</span><a class="sv-card__go" href="pages/palette-selector.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/coloring-guide.html"><img src="assets/mockups/М21.jpg" alt="Макет: Инструкция колеровки" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М21</span><span class="sv-card__name">Инструкция колеровки</span><a class="sv-card__go" href="pages/coloring-guide.html">Открыть</a></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sv-group" id="g3" aria-labelledby="t3">
+      <h2 class="sv-group__title" id="t3">Корзина и заказ</h2>
+      <div class="sv-grid">
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/cart.html"><img src="assets/mockups/М16.jpg" alt="Макет: Корзина и расчёт заказа" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М16</span><span class="sv-card__name">Корзина и расчёт заказа</span><a class="sv-card__go" href="pages/cart.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/checkout.html"><img src="assets/mockups/М01.jpg" alt="Макет: Оформление заказа" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М01</span><span class="sv-card__name">Оформление заказа</span><a class="sv-card__go" href="pages/checkout.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/payment.html"><img src="assets/mockups/М24.jpg" alt="Макет: Реквизиты для оплаты (старый вариант)" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М24</span><span class="sv-card__name">Оплата (безопасный сценарий)</span><a class="sv-card__go" href="pages/payment.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/invoice.html"><img src="assets/mockups/М22.jpg" alt="Макет: Реквизиты для счёта" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М22</span><span class="sv-card__name">Реквизиты для счёта</span><a class="sv-card__go" href="pages/invoice.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/order-success.html"><img src="assets/mockups/М08.jpg" alt="Макет: Спасибо за заказ" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М08</span><span class="sv-card__name">Спасибо за заказ</span><a class="sv-card__go" href="pages/order-success.html">Открыть</a></div>
+        </article>
+      </div>
+
+      <p class="sv-warn">
+        <b>М24 «Оплата» — единственный экран без собственного макета.</b>
+        В исходниках лежит файл «Заменяется безопасным сценарием оплаты» — это старая модалка
+        с полем номера карты. По ТЗ п.8.3 такой сценарий запрещён (карту вводить нельзя),
+        поэтому страница свёрстана по тексту ТЗ: выбор способа оплаты + уведомление о безопасной оплате.
+        Если нужен макет именно этого экрана — его надо запросить у дизайнера.
+      </p>
+    </section>
+
+    <section class="sv-group" id="g4" aria-labelledby="t4">
+      <h2 class="sv-group__title" id="t4">Информационные страницы</h2>
+      <div class="sv-grid">
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/contacts.html"><img src="assets/mockups/М04.jpg" alt="Макет: Контакты и форма обращения" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М04</span><span class="sv-card__name">Контакты и форма обращения</span><a class="sv-card__go" href="pages/contacts.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/where-to-buy.html"><img src="assets/mockups/М03.jpg" alt="Макет: Где купить" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М03</span><span class="sv-card__name">Где купить</span><a class="sv-card__go" href="pages/where-to-buy.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/about.html"><img src="assets/mockups/М14.jpg" alt="Макет: О компании и партнёрах" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М14</span><span class="sv-card__name">О компании и партнёрах</span><a class="sv-card__go" href="pages/about.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/legal.html"><img src="assets/mockups/М11.jpg" alt="Макет: Правовой документ" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М11</span><span class="sv-card__name">Правовой документ (политика)</span><a class="sv-card__go" href="pages/legal.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/404.html"><img src="assets/mockups/М02.jpg" alt="Макет: Страница ошибки 404" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М02</span><span class="sv-card__name">Страница ошибки 404</span><a class="sv-card__go" href="pages/404.html">Открыть</a></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sv-group" id="g5" aria-labelledby="t5">
+      <h2 class="sv-group__title" id="t5">Модальные окна</h2>
+      <div class="sv-grid">
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/modal-sampler.html"><img src="assets/mockups/М06.jpg" alt="Макет: Пробник 300 мл" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М06</span><span class="sv-card__name">Пробник 300 мл</span><a class="sv-card__go" href="pages/modal-sampler.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/modal-add-to-cart.html"><img src="assets/mockups/М23.jpg" alt="Макет: Товар добавлен в корзину" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М23</span><span class="sv-card__name">Товар добавлен в корзину</span><a class="sv-card__go" href="pages/modal-add-to-cart.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/modal-callback.html"><img src="assets/mockups/М25.jpg" alt="Макет: Заказать звонок" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М25</span><span class="sv-card__name">Заказать звонок</span><a class="sv-card__go" href="pages/modal-callback.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/modal-form-result.html"><img src="assets/mockups/М17.jpg" alt="Макет: Результат отправки формы" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М17</span><span class="sv-card__name">Результат отправки формы</span><a class="sv-card__go" href="pages/modal-form-result.html">Открыть</a></div>
+        </article>
+        <article class="sv-card">
+          <a class="sv-card__media" href="pages/modal-cookie.html"><img src="assets/mockups/М20.jpg" alt="Макет: Cookie-уведомление" loading="lazy"></a>
+          <div class="sv-card__body"><span class="sv-card__code">М20</span><span class="sv-card__name">Cookie-уведомление</span><a class="sv-card__go" href="pages/modal-cookie.html">Открыть</a></div>
+        </article>
+      </div>
+    </section>
+
+    <p class="sv-note">
+      <b>М18 «Четыре интерьерные сцены»</b> — отдельного экрана нет: это набор изображений для
+      визуализатора (assets/img/viz-hero.png + viz-thumb1…3.png), они видны на странице М09.<br>
+      <b>Масштаб:</b> макеты нарисованы под 2560 px. Чтобы сравнение было честным, откройте вёрстку
+      на мониторе 2560 px или уменьшите масштаб браузера так, чтобы ширина страницы совпала
+      с шириной картинки макета.
+    </p>
+  </main>
+</body>
+</html>
