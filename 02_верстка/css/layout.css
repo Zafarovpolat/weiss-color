@@ -100,6 +100,8 @@
 }
 
 .header__phone {
+  /* в макете Sovest-Medium, файлов нет — осознанно Montserrat, см. FONTS.md */
+  font-family: var(--font-main);
   font-size: var(--fs-phone);
   font-weight: var(--fw-medium);
   color: var(--color-lead);
@@ -133,6 +135,7 @@
 }
 .cart:hover img { transform: scale(1.05); }
 .cart__count {
+  font-family: var(--font-main);   /* в макете Sovest-Regular, см. FONTS.md */
   position: absolute;
   /* кружок бейджа запечён в иконке (58,11 30×30 из 89) — цифра только
      центрируется на нём, без своего фона */
