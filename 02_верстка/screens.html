@@ -1,234 +1,495 @@
 <!DOCTYPE html>
 <!--
-  Служебная страница приёмки: макет ↔ вёрстка.
-  Для каждого экрана — картинка макета (assets/mockups) и ссылка на свёрстанную страницу.
-  Нужна, чтобы сверять «1 к 1» без поиска файлов на диске. Не индексируется.
+  СЛУЖЕБНАЯ СТРАНИЦА. Доступна только по прямому URL, из сайта не линкуется, noindex.
+  Назначение: сверка «макет ↔ вёрстка». Слева фотография макета, справа код,
+  название и кнопка перехода на свёрстанную страницу.
+  Картинки: assets/mockups/М01.jpg … М25.jpg — пережатые composite из PSD (эталон).
+  Описание расхождений в исходниках — 02_верстка/СВЕРКА_С_МАКЕТАМИ.md
 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Макеты и вёрстка — Weiss Color</title>
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#ffffff">
+  <title>Сверка: макет ↔ вёрстка — Weiss Color</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="googlebot" content="noindex, nofollow">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <style>
-    .sv { max-width: 1520px; margin-inline: auto; padding: clamp(20px, 3vw, 48px) clamp(14px, 3vw, 32px) 80px; }
+    :root { --ink: #233146; --muted: #6e6f75; --line: #e2e4e8; --brown: #62381e; }
 
-    .sv-head { border-bottom: 1px solid #e2e4e8; padding-bottom: 22px; margin-bottom: 8px; }
-    .sv-logo { display: block; width: 160px; height: auto; margin-bottom: 20px; }
-    .sv-title { margin: 0; font-size: clamp(22px, 2.4vw, 34px); font-weight: 600; text-transform: uppercase; color: #233146; line-height: 1.15; }
-    .sv-sub { margin: 12px 0 0; font-size: 14.5px; line-height: 1.55; color: #6e6f75; max-width: 92ch; }
-    .sv-sub b { color: #253346; }
+    body { background: #f7f8fa; }
 
-    .sv-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-    .sv-nav a {
-      padding: 8px 14px; font-size: 13px; font-weight: 500; color: #253346;
-      background: #f4f5f7; border: 1px solid #e2e4e8; border-radius: 40px; text-decoration: none;
-      transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+    .cmp { max-width: 1680px; margin-inline: auto; padding: clamp(16px, 2.4vw, 38px) clamp(12px, 2.4vw, 30px) 90px; }
+
+    /* ── шапка ── */
+    .cmp-head {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px;
+      padding: 12px clamp(12px, 2vw, 22px); margin: 0 calc(clamp(12px, 2.4vw, 30px) * -1) 26px;
+      background: rgba(255,255,255,.94); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
     }
-    .sv-nav a:hover { color: #62381e; border-color: #62381e; background: #fff; }
+    .cmp-head__logo { display: block; width: 132px; height: auto; flex: none; }
+    .cmp-head__title { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); }
+    .cmp-head__count { margin: 0 0 0 auto; font-size: 12.5px; font-weight: 500; color: var(--muted); white-space: nowrap; }
 
-    .sv-group { margin-top: 44px; }
-    .sv-group__title {
-      margin: 0 0 16px; font-size: 12.5px; font-weight: 600; letter-spacing: .12em;
-      text-transform: uppercase; color: #7d8695;
+    /* ── индекс кодов ── */
+    .cmp-index { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 26px; }
+    .cmp-index a {
+      min-width: 42px; padding: 6px 0; font-size: 12px; font-weight: 600; text-align: center;
+      color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 3px;
+      text-decoration: none; transition: background-color .16s ease, color .16s ease, border-color .16s ease;
+    }
+    .cmp-index a:hover { color: #fff; background: var(--brown); border-color: var(--brown); }
+
+    /* ── строка сравнения ── */
+    .cmp-row {
+      display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start;
+      margin-bottom: 26px; padding: 16px; background: #fff;
+      border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 78px;
+    }
+    .cmp-row__shot { display: block; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; background: #eef0f3; line-height: 0; }
+    .cmp-row__shot img { display: block; width: 100%; height: auto; }
+
+    .cmp-row__side { display: flex; flex-direction: column; gap: 10px; padding-top: 2px; }
+    .cmp-row__code {
+      align-self: flex-start; padding: 4px 9px; font-size: 12px; font-weight: 600;
+      letter-spacing: .04em; color: #fff; background: var(--ink); border-radius: 3px;
+    }
+    .cmp-row__name { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.3; color: var(--ink); }
+    .cmp-row__group { margin: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #9aa0aa; }
+
+    .cmp-row__go {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 16px; font-size: 13px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+      color: #fff; background: var(--brown); border-radius: 3px; text-decoration: none;
+      transition: background-color .16s ease;
+    }
+    .cmp-row__go:hover { background: #7d4a27; }
+    .cmp-row__go svg { flex: none; }
+
+    .cmp-row__url {
+      display: block; font-family: var(--font-num, monospace); font-size: 11.5px; line-height: 1.5;
+      color: var(--muted); word-break: break-all; text-decoration: none;
+    }
+    .cmp-row__url:hover { color: var(--brown); text-decoration: underline; }
+
+    .cmp-row__note { margin: 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12px; line-height: 1.5; color: #8a6b4a; }
+    .cmp-row__note b { color: var(--brown); }
+
+    .cmp-row__empty {
+      display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 8;
+      padding: 20px; font-size: 13px; line-height: 1.5; color: var(--muted);
+      text-align: center; background: #f4f5f7; border: 1px dashed #cfd3da; border-radius: 4px;
     }
 
-    .sv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 22px; }
+    /* ── подвал-пояснение ── */
+    .cmp-foot { margin-top: 44px; padding: 18px 20px; font-size: 13px; line-height: 1.65; color: #43484f; background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--brown); border-radius: 4px; }
+    .cmp-foot b { color: var(--ink); }
+    .cmp-foot ul { margin: 10px 0 0; padding-left: 20px; }
+    .cmp-foot li { margin-bottom: 6px; }
 
-    .sv-card {
-      display: flex; flex-direction: column; background: #fff;
-      border: 1px solid #e2e4e8; border-radius: 8px; overflow: hidden;
-      transition: border-color .18s ease, box-shadow .18s ease;
+    @media (max-width: 1100px) {
+      .cmp-row { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .cmp-row__side { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+      .cmp-row__name { flex: 1 1 200px; font-size: 15px; }
+      .cmp-row__group { display: none; }
+      .cmp-row__go { flex: 0 0 auto; padding: 10px 14px; }
+      .cmp-row__note { flex: 1 1 100%; }
     }
-    .sv-card:hover { border-color: #c9cbd2; box-shadow: 0 4px 18px rgba(23,30,49,.08); }
-
-    .sv-card__media { display: block; background: #eef0f3; line-height: 0; }
-    .sv-card__media img { display: block; width: 100%; height: auto; }
-
-    .sv-card__body { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid #eef0f3; }
-    .sv-card__code { flex: none; padding: 3px 7px; font-size: 11.5px; font-weight: 600; color: #6e6f75; background: #f1f1f5; border-radius: 3px; }
-    .sv-card__name { flex: 1 1 auto; font-size: 14.5px; font-weight: 500; line-height: 1.3; color: #253346; }
-    .sv-card__go {
-      flex: none; padding: 7px 13px; font-size: 12.5px; font-weight: 600; letter-spacing: .04em;
-      text-transform: uppercase; color: #fff; background: #62381e; border-radius: 3px; text-decoration: none;
-      transition: background-color .18s ease;
+    @media (max-width: 640px) {
+      .cmp-head__count { width: 100%; margin-left: 0; }
+      .cmp-row { padding: 10px; }
+      .cmp-row__url { display: none; }
+      .cmp-index a { min-width: 38px; }
     }
-    .sv-card__go:hover { background: #7a4a26; }
-
-    .sv-warn { margin-top: 18px; padding: 14px 16px; font-size: 13px; line-height: 1.55; color: #6b4b2c; background: #fdf6ef; border-left: 3px solid #c98b4b; border-radius: 4px; }
-    .sv-warn b { color: #62381e; }
-
-    .sv-note { margin-top: 40px; padding: 18px 20px; font-size: 13.5px; line-height: 1.6; color: #43484f; background: #f7f8fa; border-left: 3px solid #62381e; border-radius: 4px; }
-    .sv-note b { color: #253346; }
-
-    @media (max-width: 900px) { .sv-grid { grid-template-columns: minmax(0, 1fr); } }
   </style>
 </head>
 <body>
-  <main class="sv">
-    <header class="sv-head">
-      <img class="sv-logo" src="assets/img/logo.png" width="193" height="52" alt="Weiss Color">
-      <h1 class="sv-title">Макеты и вёрстка</h1>
-      <p class="sv-sub">
-        <b>25 экранов</b>: под каждым макетом — кнопка «открыть вёрстку» этой же страницы.
-        Сверяйте 1 к 1, кликая по кнопке. Картинки макетов — из исходных PSD (сжаты до 1400px по ширине).
-      </p>
-      <nav class="sv-nav" aria-label="Быстрый переход">
-        <a href="index.html">← Все экраны списком</a>
-        <a href="#g1">Основные</a>
-        <a href="#g2">Колеровка</a>
-        <a href="#g3">Заказ</a>
-        <a href="#g4">Информационные</a>
-        <a href="#g5">Модальные окна</a>
-      </nav>
+  <main class="cmp">
+    <header class="cmp-head">
+      <img class="cmp-head__logo" src="assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      <h1 class="cmp-head__title">Сверка: макет ↔ вёрстка</h1>
+      <p class="cmp-head__count">25 экранов · слева макет, справа ссылка</p>
     </header>
 
-    <section class="sv-group" id="g1" aria-labelledby="t1">
-      <h2 class="sv-group__title" id="t1">Основные страницы</h2>
-      <div class="sv-grid">
-        <article class="sv-card">
-          <a class="sv-card__media" href="index.html"><img src="assets/mockups/М10.jpg" alt="Макет: Главная" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М10</span><span class="sv-card__name">Главная</span><a class="sv-card__go" href="index.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/catalog.html"><img src="assets/mockups/М15.jpg" alt="Макет: Каталог товаров" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М15</span><span class="sv-card__name">Каталог товаров</span><a class="sv-card__go" href="pages/catalog.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/product.html"><img src="assets/mockups/М05.jpg" alt="Макет: Карточка товара" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М05</span><span class="sv-card__name">Карточка товара</span><a class="sv-card__go" href="pages/product.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/color.html"><img src="assets/mockups/М12.jpg" alt="Макет: Цвет и совместимые материалы" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М12</span><span class="sv-card__name">Цвет и совместимые материалы</span><a class="sv-card__go" href="pages/color.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/shades.html"><img src="assets/mockups/М07.jpg" alt="Макет: Список оттенков" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М07</span><span class="sv-card__name">Список оттенков</span><a class="sv-card__go" href="pages/shades.html">Открыть</a></div>
-        </article>
+    <nav class="cmp-index" aria-label="Перейти к экрану">
+      <a href="#m01">М01</a><a href="#m02">М02</a><a href="#m03">М03</a><a href="#m04">М04</a><a href="#m05">М05</a>
+      <a href="#m06">М06</a><a href="#m07">М07</a><a href="#m08">М08</a><a href="#m09">М09</a><a href="#m10">М10</a>
+      <a href="#m11">М11</a><a href="#m12">М12</a><a href="#m13">М13</a><a href="#m14">М14</a><a href="#m15">М15</a>
+      <a href="#m16">М16</a><a href="#m17">М17</a><a href="#m18">М18</a><a href="#m19">М19</a><a href="#m20">М20</a>
+      <a href="#m21">М21</a><a href="#m22">М22</a><a href="#m23">М23</a><a href="#m24">М24</a><a href="#m25">М25</a>
+    </nav>
+
+    <!-- 01 -->
+    <article class="cmp-row" id="m01">
+      <a class="cmp-row__shot" href="pages/checkout.html"><img src="assets/mockups/М01.jpg" alt="Макет М01 — Оформление заказа" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М01</span>
+        <h2 class="cmp-row__name">Оформление заказа</h2>
+        <p class="cmp-row__group">Корзина и заказ</p>
+        <a class="cmp-row__go" href="pages/checkout.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/checkout.html">/pages/checkout.html</a>
       </div>
-    </section>
+    </article>
 
-    <section class="sv-group" id="g2" aria-labelledby="t2">
-      <h2 class="sv-group__title" id="t2">Колеровка и палитры</h2>
-      <div class="sv-grid">
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/visualizer.html"><img src="assets/mockups/М09.jpg" alt="Макет: Выбор цвета и визуализатор" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М09</span><span class="sv-card__name">Выбор цвета и визуализатор</span><a class="sv-card__go" href="pages/visualizer.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/palettes.html"><img src="assets/mockups/М13.jpg" alt="Макет: Обзор палитр" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М13</span><span class="sv-card__name">Обзор палитр (28)</span><a class="sv-card__go" href="pages/palettes.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/palette-selector.html"><img src="assets/mockups/М19.jpg" alt="Макет: Селектор палитры" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М19</span><span class="sv-card__name">Селектор палитры</span><a class="sv-card__go" href="pages/palette-selector.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/coloring-guide.html"><img src="assets/mockups/М21.jpg" alt="Макет: Инструкция колеровки" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М21</span><span class="sv-card__name">Инструкция колеровки</span><a class="sv-card__go" href="pages/coloring-guide.html">Открыть</a></div>
-        </article>
+    <!-- 02 -->
+    <article class="cmp-row" id="m02">
+      <a class="cmp-row__shot" href="pages/404.html"><img src="assets/mockups/М02.jpg" alt="Макет М02 — Страница ошибки 404" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М02</span>
+        <h2 class="cmp-row__name">Страница ошибки 404</h2>
+        <p class="cmp-row__group">Информационные</p>
+        <a class="cmp-row__go" href="pages/404.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/404.html">/pages/404.html</a>
       </div>
-    </section>
+    </article>
 
-    <section class="sv-group" id="g3" aria-labelledby="t3">
-      <h2 class="sv-group__title" id="t3">Корзина и заказ</h2>
-      <div class="sv-grid">
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/cart.html"><img src="assets/mockups/М16.jpg" alt="Макет: Корзина и расчёт заказа" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М16</span><span class="sv-card__name">Корзина и расчёт заказа</span><a class="sv-card__go" href="pages/cart.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/checkout.html"><img src="assets/mockups/М01.jpg" alt="Макет: Оформление заказа" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М01</span><span class="sv-card__name">Оформление заказа</span><a class="sv-card__go" href="pages/checkout.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/payment.html"><img src="assets/mockups/М24.jpg" alt="Макет: Реквизиты для оплаты (старый вариант)" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М24</span><span class="sv-card__name">Оплата (безопасный сценарий)</span><a class="sv-card__go" href="pages/payment.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/invoice.html"><img src="assets/mockups/М22.jpg" alt="Макет: Реквизиты для счёта" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М22</span><span class="sv-card__name">Реквизиты для счёта</span><a class="sv-card__go" href="pages/invoice.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/order-success.html"><img src="assets/mockups/М08.jpg" alt="Макет: Спасибо за заказ" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М08</span><span class="sv-card__name">Спасибо за заказ</span><a class="sv-card__go" href="pages/order-success.html">Открыть</a></div>
-        </article>
+    <!-- 03 -->
+    <article class="cmp-row" id="m03">
+      <a class="cmp-row__shot" href="pages/where-to-buy.html"><img src="assets/mockups/М03.jpg" alt="Макет М03 — Где купить" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М03</span>
+        <h2 class="cmp-row__name">Где купить</h2>
+        <p class="cmp-row__group">Информационные</p>
+        <a class="cmp-row__go" href="pages/where-to-buy.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/where-to-buy.html">/pages/where-to-buy.html</a>
       </div>
+    </article>
 
-      <p class="sv-warn">
-        <b>М24 «Оплата» — единственный экран без собственного макета.</b>
-        В исходниках лежит файл «Заменяется безопасным сценарием оплаты» — это старая модалка
-        с полем номера карты. По ТЗ п.8.3 такой сценарий запрещён (карту вводить нельзя),
-        поэтому страница свёрстана по тексту ТЗ: выбор способа оплаты + уведомление о безопасной оплате.
-        Если нужен макет именно этого экрана — его надо запросить у дизайнера.
-      </p>
-    </section>
-
-    <section class="sv-group" id="g4" aria-labelledby="t4">
-      <h2 class="sv-group__title" id="t4">Информационные страницы</h2>
-      <div class="sv-grid">
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/contacts.html"><img src="assets/mockups/М04.jpg" alt="Макет: Контакты и форма обращения" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М04</span><span class="sv-card__name">Контакты и форма обращения</span><a class="sv-card__go" href="pages/contacts.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/where-to-buy.html"><img src="assets/mockups/М03.jpg" alt="Макет: Где купить" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М03</span><span class="sv-card__name">Где купить</span><a class="sv-card__go" href="pages/where-to-buy.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/about.html"><img src="assets/mockups/М14.jpg" alt="Макет: О компании и партнёрах" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М14</span><span class="sv-card__name">О компании и партнёрах</span><a class="sv-card__go" href="pages/about.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/legal.html"><img src="assets/mockups/М11.jpg" alt="Макет: Правовой документ" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М11</span><span class="sv-card__name">Правовой документ (политика)</span><a class="sv-card__go" href="pages/legal.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/404.html"><img src="assets/mockups/М02.jpg" alt="Макет: Страница ошибки 404" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М02</span><span class="sv-card__name">Страница ошибки 404</span><a class="sv-card__go" href="pages/404.html">Открыть</a></div>
-        </article>
+    <!-- 04 -->
+    <article class="cmp-row" id="m04">
+      <a class="cmp-row__shot" href="pages/contacts.html"><img src="assets/mockups/М04.jpg" alt="Макет М04 — Контакты и форма обращения" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М04</span>
+        <h2 class="cmp-row__name">Контакты и форма обращения</h2>
+        <p class="cmp-row__group">Информационные</p>
+        <a class="cmp-row__go" href="pages/contacts.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/contacts.html">/pages/contacts.html</a>
       </div>
-    </section>
+    </article>
 
-    <section class="sv-group" id="g5" aria-labelledby="t5">
-      <h2 class="sv-group__title" id="t5">Модальные окна</h2>
-      <div class="sv-grid">
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/modal-sampler.html"><img src="assets/mockups/М06.jpg" alt="Макет: Пробник 300 мл" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М06</span><span class="sv-card__name">Пробник 300 мл</span><a class="sv-card__go" href="pages/modal-sampler.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/modal-add-to-cart.html"><img src="assets/mockups/М23.jpg" alt="Макет: Товар добавлен в корзину" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М23</span><span class="sv-card__name">Товар добавлен в корзину</span><a class="sv-card__go" href="pages/modal-add-to-cart.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/modal-callback.html"><img src="assets/mockups/М25.jpg" alt="Макет: Заказать звонок" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М25</span><span class="sv-card__name">Заказать звонок</span><a class="sv-card__go" href="pages/modal-callback.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/modal-form-result.html"><img src="assets/mockups/М17.jpg" alt="Макет: Результат отправки формы" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М17</span><span class="sv-card__name">Результат отправки формы</span><a class="sv-card__go" href="pages/modal-form-result.html">Открыть</a></div>
-        </article>
-        <article class="sv-card">
-          <a class="sv-card__media" href="pages/modal-cookie.html"><img src="assets/mockups/М20.jpg" alt="Макет: Cookie-уведомление" loading="lazy"></a>
-          <div class="sv-card__body"><span class="sv-card__code">М20</span><span class="sv-card__name">Cookie-уведомление</span><a class="sv-card__go" href="pages/modal-cookie.html">Открыть</a></div>
-        </article>
+    <!-- 05 -->
+    <article class="cmp-row" id="m05">
+      <a class="cmp-row__shot" href="pages/product.html"><img src="assets/mockups/М05.jpg" alt="Макет М05 — Карточка товара" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М05</span>
+        <h2 class="cmp-row__name">Карточка товара</h2>
+        <p class="cmp-row__group">Основные</p>
+        <a class="cmp-row__go" href="pages/product.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/product.html">/pages/product.html</a>
       </div>
-    </section>
+    </article>
 
-    <p class="sv-note">
-      <b>М18 «Четыре интерьерные сцены»</b> — отдельного экрана нет: это набор изображений для
-      визуализатора (assets/img/viz-hero.png + viz-thumb1…3.png), они видны на странице М09.<br>
-      <b>Масштаб:</b> макеты нарисованы под 2560 px. Чтобы сравнение было честным, откройте вёрстку
-      на мониторе 2560 px или уменьшите масштаб браузера так, чтобы ширина страницы совпала
-      с шириной картинки макета.
-    </p>
+    <!-- 06 -->
+    <article class="cmp-row" id="m06">
+      <a class="cmp-row__shot" href="pages/modal-sampler.html"><img src="assets/mockups/М06.jpg" alt="Макет М06 — Пробник 300 мл" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М06</span>
+        <h2 class="cmp-row__name">Пробник 300 мл</h2>
+        <p class="cmp-row__group">Модальные окна</p>
+        <a class="cmp-row__go" href="pages/modal-sampler.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/modal-sampler.html">/pages/modal-sampler.html</a>
+      </div>
+    </article>
+
+    <!-- 07 -->
+    <article class="cmp-row" id="m07">
+      <a class="cmp-row__shot" href="pages/shades.html"><img src="assets/mockups/М07.jpg" alt="Макет М07 — Список оттенков" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М07</span>
+        <h2 class="cmp-row__name">Список оттенков</h2>
+        <p class="cmp-row__group">Колеровка</p>
+        <a class="cmp-row__go" href="pages/shades.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/shades.html">/pages/shades.html</a>
+      </div>
+    </article>
+
+    <!-- 08 -->
+    <article class="cmp-row" id="m08">
+      <a class="cmp-row__shot" href="pages/order-success.html"><img src="assets/mockups/М08.jpg" alt="Макет М08 — Спасибо за заказ" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М08</span>
+        <h2 class="cmp-row__name">Спасибо за заказ</h2>
+        <p class="cmp-row__group">Корзина и заказ</p>
+        <a class="cmp-row__go" href="pages/order-success.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/order-success.html">/pages/order-success.html</a>
+      </div>
+    </article>
+
+    <!-- 09 -->
+    <article class="cmp-row" id="m09">
+      <a class="cmp-row__shot" href="pages/visualizer.html"><img src="assets/mockups/М09.jpg" alt="Макет М09 — Выбор цвета и визуализатор" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М09</span>
+        <h2 class="cmp-row__name">Выбор цвета и визуализатор</h2>
+        <p class="cmp-row__group">Колеровка</p>
+        <a class="cmp-row__go" href="pages/visualizer.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/visualizer.html">/pages/visualizer.html</a>
+        <p class="cmp-row__note"><b>Внимание:</b> PNG «Выбор цвета и визуализатор.png» в исходниках неверный — там сетка оттенков. Сверяйте по этой картинке.</p>
+      </div>
+    </article>
+
+    <!-- 10 -->
+    <article class="cmp-row" id="m10">
+      <a class="cmp-row__shot" href="index.html"><img src="assets/mockups/М10.jpg" alt="Макет М10 — Главная" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М10</span>
+        <h2 class="cmp-row__name">Главная</h2>
+        <p class="cmp-row__group">Основные</p>
+        <a class="cmp-row__go" href="index.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="index.html">/index.html</a>
+      </div>
+    </article>
+
+    <!-- 11 -->
+    <article class="cmp-row" id="m11">
+      <a class="cmp-row__shot" href="pages/legal.html"><img src="assets/mockups/М11.jpg" alt="Макет М11 — Правовой документ" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М11</span>
+        <h2 class="cmp-row__name">Правовой документ (политика)</h2>
+        <p class="cmp-row__group">Информационные</p>
+        <a class="cmp-row__go" href="pages/legal.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/legal.html">/pages/legal.html</a>
+      </div>
+    </article>
+
+    <!-- 12 -->
+    <article class="cmp-row" id="m12">
+      <a class="cmp-row__shot" href="pages/color.html"><img src="assets/mockups/М12.jpg" alt="Макет М12 — Цвет и совместимые материалы" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М12</span>
+        <h2 class="cmp-row__name">Цвет и совместимые материалы</h2>
+        <p class="cmp-row__group">Основные</p>
+        <a class="cmp-row__go" href="pages/color.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/color.html">/pages/color.html</a>
+      </div>
+    </article>
+
+    <!-- 13 -->
+    <article class="cmp-row" id="m13">
+      <a class="cmp-row__shot" href="pages/palettes.html"><img src="assets/mockups/М13.jpg" alt="Макет М13 — Обзор палитр" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М13</span>
+        <h2 class="cmp-row__name">Обзор палитр (28)</h2>
+        <p class="cmp-row__group">Колеровка</p>
+        <a class="cmp-row__go" href="pages/palettes.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/palettes.html">/pages/palettes.html</a>
+      </div>
+    </article>
+
+    <!-- 14 -->
+    <article class="cmp-row" id="m14">
+      <a class="cmp-row__shot" href="pages/about.html"><img src="assets/mockups/М14.jpg" alt="Макет М14 — О компании и партнёрах" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М14</span>
+        <h2 class="cmp-row__name">О компании и партнёрах</h2>
+        <p class="cmp-row__group">Информационные</p>
+        <a class="cmp-row__go" href="pages/about.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/about.html">/pages/about.html</a>
+      </div>
+    </article>
+
+    <!-- 15 -->
+    <article class="cmp-row" id="m15">
+      <a class="cmp-row__shot" href="pages/catalog.html"><img src="assets/mockups/М15.jpg" alt="Макет М15 — Каталог товаров" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М15</span>
+        <h2 class="cmp-row__name">Каталог товаров</h2>
+        <p class="cmp-row__group">Основные</p>
+        <a class="cmp-row__go" href="pages/catalog.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/catalog.html">/pages/catalog.html</a>
+      </div>
+    </article>
+
+    <!-- 16 -->
+    <article class="cmp-row" id="m16">
+      <a class="cmp-row__shot" href="pages/cart.html"><img src="assets/mockups/М16.jpg" alt="Макет М16 — Корзина и расчёт заказа" loading="lazy" width="1400" height="788"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М16</span>
+        <h2 class="cmp-row__name">Корзина и расчёт заказа</h2>
+        <p class="cmp-row__group">Корзина и заказ</p>
+        <a class="cmp-row__go" href="pages/cart.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/cart.html">/pages/cart.html</a>
+      </div>
+    </article>
+
+    <!-- 17 -->
+    <article class="cmp-row" id="m17">
+      <a class="cmp-row__shot" href="pages/modal-form-result.html"><img src="assets/mockups/М17.jpg" alt="Макет М17 — Результат отправки формы" loading="lazy" width="1400" height="725"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М17</span>
+        <h2 class="cmp-row__name">Результат отправки формы</h2>
+        <p class="cmp-row__group">Модальные окна</p>
+        <a class="cmp-row__go" href="pages/modal-form-result.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/modal-form-result.html">/pages/modal-form-result.html</a>
+      </div>
+    </article>
+
+    <!-- 18 -->
+    <article class="cmp-row" id="m18">
+      <img class="cmp-row__shot" src="assets/mockups/М18.jpg" alt="Макет М18 — Четыре интерьерные сцены" loading="lazy" width="1334" height="746">
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М18</span>
+        <h2 class="cmp-row__name">Четыре интерьерные сцены</h2>
+        <p class="cmp-row__group">Ассеты, не экран</p>
+        <a class="cmp-row__go" href="pages/visualizer.html">Где используются
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/visualizer.html">сцены на /pages/visualizer.html</a>
+        <p class="cmp-row__note">Отдельной страницы нет — это 4 изображения для визуализатора.</p>
+      </div>
+    </article>
+
+    <!-- 19 -->
+    <article class="cmp-row" id="m19">
+      <a class="cmp-row__shot" href="pages/palette-selector.html"><img src="assets/mockups/М19.jpg" alt="Макет М19 — Селектор палитры" loading="lazy" width="1400" height="725"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М19</span>
+        <h2 class="cmp-row__name">Селектор палитры</h2>
+        <p class="cmp-row__group">Колеровка</p>
+        <a class="cmp-row__go" href="pages/palette-selector.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/palette-selector.html">/pages/palette-selector.html</a>
+      </div>
+    </article>
+
+    <!-- 20 -->
+    <article class="cmp-row" id="m20">
+      <a class="cmp-row__shot" href="pages/modal-cookie.html"><img src="assets/mockups/М20.jpg" alt="Макет М20 — Cookie-уведомление" loading="lazy" width="1400" height="158"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М20</span>
+        <h2 class="cmp-row__name">Cookie-уведомление</h2>
+        <p class="cmp-row__group">Модальные окна</p>
+        <a class="cmp-row__go" href="pages/modal-cookie.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/modal-cookie.html">/pages/modal-cookie.html</a>
+      </div>
+    </article>
+
+    <!-- 21 -->
+    <article class="cmp-row" id="m21">
+      <a class="cmp-row__shot" href="pages/coloring-guide.html"><img src="assets/mockups/М21.jpg" alt="Макет М21 — Инструкция колеровки" loading="lazy" width="1400" height="741"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М21</span>
+        <h2 class="cmp-row__name">Инструкция колеровки</h2>
+        <p class="cmp-row__group">Колеровка</p>
+        <a class="cmp-row__go" href="pages/coloring-guide.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/coloring-guide.html">/pages/coloring-guide.html</a>
+      </div>
+    </article>
+
+    <!-- 22 -->
+    <article class="cmp-row" id="m22">
+      <a class="cmp-row__shot" href="pages/invoice.html"><img src="assets/mockups/М22.jpg" alt="Макет М22 — Реквизиты для счёта" loading="lazy" width="1129" height="1060"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М22</span>
+        <h2 class="cmp-row__name">Реквизиты для счёта</h2>
+        <p class="cmp-row__group">Корзина и заказ</p>
+        <a class="cmp-row__go" href="pages/invoice.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/invoice.html">/pages/invoice.html</a>
+      </div>
+    </article>
+
+    <!-- 23 -->
+    <article class="cmp-row" id="m23">
+      <a class="cmp-row__shot" href="pages/modal-add-to-cart.html"><img src="assets/mockups/М23.jpg" alt="Макет М23 — Товар добавлен в корзину" loading="lazy" width="916" height="677"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М23</span>
+        <h2 class="cmp-row__name">Товар добавлен в корзину</h2>
+        <p class="cmp-row__group">Модальные окна</p>
+        <a class="cmp-row__go" href="pages/modal-add-to-cart.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/modal-add-to-cart.html">/pages/modal-add-to-cart.html</a>
+      </div>
+    </article>
+
+    <!-- 24 -->
+    <article class="cmp-row" id="m24">
+      <div class="cmp-row__empty">
+        Макета этой страницы в исходниках нет.<br>
+        Есть только старая модалка с полем «Номер карты» — она заменена по ТЗ.
+      </div>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М24</span>
+        <h2 class="cmp-row__name">Оплата (безопасный сценарий)</h2>
+        <p class="cmp-row__group">Корзина и заказ</p>
+        <a class="cmp-row__go" href="pages/payment.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/payment.html">/pages/payment.html</a>
+        <p class="cmp-row__note"><b>Макета нет.</b> Свёрстано по ТЗ п. 8.3: ввод карты на сайте запрещён, оплата через платёжный шлюз. Подробнее — в СВЕРКА_С_МАКЕТАМИ.md</p>
+      </div>
+    </article>
+
+    <!-- 25 -->
+    <article class="cmp-row" id="m25">
+      <a class="cmp-row__shot" href="pages/modal-callback.html"><img src="assets/mockups/М25.jpg" alt="Макет М25 — Заказать звонок" loading="lazy" width="1400" height="820"></a>
+      <div class="cmp-row__side">
+        <span class="cmp-row__code">М25</span>
+        <h2 class="cmp-row__name">Заказать звонок</h2>
+        <p class="cmp-row__group">Модальные окна</p>
+        <a class="cmp-row__go" href="pages/modal-callback.html">Открыть вёрстку
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cmp-row__url" href="pages/modal-callback.html">/pages/modal-callback.html</a>
+      </div>
+    </article>
+
+    <section class="cmp-foot">
+      <b>Как пользоваться.</b> Слева — макет, справа — кнопка «Открыть вёрстку» этой же страницы.
+      Открывайте в новой вкладке (Ctrl/Cmd + клик), чтобы не терять эту страницу.
+      <ul>
+        <li>Макеты нарисованы под ширину <b>2560 px</b>. Чтобы сравнение было честным, смотрите вёрстку на такой же ширине либо уменьшите масштаб браузера.</li>
+        <li>Эталон — композиты из PSD. Часть PNG в <code>01_исходники/макеты_png</code> — фрагменты или устаревшие версии; какие именно и почему, расписано в <code>02_верстка/СВЕРКА_С_МАКЕТАМИ.md</code>.</li>
+        <li>У <b>М24 «Оплата»</b> макета нет: страница сделана по ТЗ (без ввода карты). Это единственный экран без картинки.</li>
+        <li>Страница служебная: <code>noindex</code>, из сайта не линкуется, открывается только по прямому адресу <code>/screens.html</code>.</li>
+      </ul>
+    </section>
   </main>
 </body>
 </html>
