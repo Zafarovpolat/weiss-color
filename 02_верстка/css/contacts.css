@@ -15,7 +15,9 @@
 
 .contacts-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 859px);
+  /* вторая колонка — доля вьюпорта (859px при 2560), иначе на 1440–1920
+     панель формы отбирала у текста почти всю ширину */
+  grid-template-columns: minmax(0, 1fr) minmax(0, clamp(400px, 33.5vw, 859px));
   justify-content: space-between;
   gap: clamp(24px, 2vw, 48px);
   align-items: start;
@@ -66,7 +68,11 @@
 
 .contacts-place {
   margin: clamp(16px, 1.91vw, 49px) 0 0;
-  max-width: clamp(320px, 30vw, 768px);
+  /* перенос на две строки задаётся шириной, а не <br> в разметке:
+     29em ≈ 47 символов в строке — текст делится на две строки
+     (при 2560 это 783px, в макете блок 768px) */
+  max-width: 29em;
+  text-wrap: balance;
   font-size: clamp(16px, 1.05vw, 27px);
   line-height: 1.28;
   font-weight: var(--fw-medium);
@@ -76,6 +82,12 @@
 /* --- Панель формы --- */
 
 .contacts-form-card {
+  /* на широких экранах панель тянется на всю колонку (859px при 2560 — 44% ширины),
+     из-за чего на 1440–1920 форма выглядит непропорционально большой:
+     ограничиваем долей вьюпорта и прижимаем к правому краю */
+  width: 100%;
+  max-width: clamp(400px, 33.5vw, 859px);
+  justify-self: end;
   padding: clamp(24px, 2.42vw, 62px) clamp(18px, 4.38vw, 112px)
     clamp(24px, 1.6vw, 41px);
   background: #f8f8fa;
@@ -182,7 +194,7 @@
 
 @media (max-width: 1024px) {
   .contacts-layout { grid-template-columns: minmax(0, 1fr); }
-  .contacts-place { max-width: none; }
+  .contacts-form-card { max-width: none; justify-self: stretch; }
 }
 
 @media (max-width: 540px) {

@@ -53,13 +53,69 @@
     if (e.target === dialog) dialog.close();
   });
 
-  // Демо-отправка: на этапе 1 бэкенда нет, форма проверяется браузером (required).
+  // Демо-отправка: на этапе 1 бэкенда нет. Поля проверяет validation.js
+  // (сообщения под полями), здесь — закрытие окна и очистка формы.
   // Фокус после закрытия возвращается на вызвавший элемент автоматически.
   const form = document.getElementById('callback-form');
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (!form.reportValidity()) return;
+    const valid = window.WCForm ? window.WCForm.validate(form) : form.checkValidity();
+    if (!valid) return;
     dialog.close();
     form.reset();
+    window.WCForm?.clear(form);
+  });
+})();
+
+/* ---------- Счётчик количества вне корзины (М06 «Пробник») ----------
+   cart.js работает только при наличии .cart-list и на этой странице
+   выходит сразу, поэтому кнопки «−»/«+» обрабатываются здесь.
+   Правила те же: целое число не меньше min (по умолчанию 1). */
+(() => {
+  const LIMITS = (input) => ({
+    min: input.min === '' ? 1 : Number(input.min),
+    max: input.max === '' ? Infinity : Number(input.max),
+    step: Number(input.step) || 1
+  });
+
+  /* Приводит любое число к допустимому: целое, в границах, кратно шагу */
+  const normalize = (input, value) => {
+    const { min, max, step } = LIMITS(input);
+    let result = Math.round(value);
+    if (!Number.isFinite(result)) result = min;
+    result = Math.min(Math.max(result, min), max);
+    // выравнивание по шагу от min, как у нативного input[type=number]
+    if (step > 0) result = min + Math.round((result - min) / step) * step;
+    return result;
+  };
+
+  const currentValue = (input) => normalize(input, Number(String(input.value).replace(',', '.')));
+
+  const setValue = (input, value) => {
+    if (input.value === String(value)) return;
+    input.value = String(value);
+    // событие нужно, чтобы validation.js снял ошибку под полем
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-qty]');
+    // в корзине счётчиком управляет cart.js — не дублируем
+    if (!button || button.closest('.cart-list')) return;
+
+    const input = button.closest('.qty')?.querySelector('.qty__input');
+    if (!input || input.disabled) return;
+
+    const { step } = LIMITS(input);
+    const direction = button.getAttribute('data-qty') === 'inc' ? 1 : -1;
+    // границы применяем к результату, иначе «−» на минимуме уводит в 0
+    setValue(input, normalize(input, currentValue(input) + direction * step));
+  });
+
+  // ручной ввод: приводим к допустимому значению при подтверждении
+  document.addEventListener('change', (event) => {
+    const input = event.target.closest?.('.qty__input');
+    if (!input || input.closest('.cart-list')) return;
+    setValue(input, normalize(input, Number(String(input.value).replace(',', '.'))));
   });
 })();

@@ -120,10 +120,12 @@
     window.location.href = 'order-success.html';
   });
 
-  /* Ошибка снимается, как только поле исправлено — данные не теряются */
+  /* Ошибка снимается, как только поле исправлено — данные не теряются.
+     Подсветку полей ведёт js/validation.js; здесь — только запасной путь
+     на случай, если он не подключён. */
   form.addEventListener('input', function (event) {
     var field = event.target;
-    if (field.matches('.field__input, .field__select')) {
+    if (field.matches('.field__input, .field__select') && !window.WCForm) {
       markInvalid(field, false);
     }
     if (field === consent && field.checked && consentError) {

@@ -71,8 +71,12 @@
     window.location.href = 'checkout.html';
   });
 
+  /* Подсветку полей ведёт js/validation.js; здесь — запасной путь,
+     если он не подключён */
   form.addEventListener('input', function (event) {
-    if (event.target.matches('.field__input')) event.target.removeAttribute('aria-invalid');
+    if (event.target.matches('.field__input') && !window.WCForm) {
+      event.target.removeAttribute('aria-invalid');
+    }
   });
 
   syncPayer();

@@ -47,7 +47,7 @@
           <li><a href="where-to-buy.html">Где купить</a></li>
           <li><a href="about.html">О компании</a></li>
           <li><a href="contacts.html">Контакты</a></li>
-          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+          <li><a href="palettes.html">Колеровка цвета</a></li>
         </ul>
 
         <div class="header__contacts">
@@ -104,8 +104,7 @@
         </p>
 
         <p class="contacts-place">
-          Продукцию компании можно приобрести<br>
-          у региональных представителей или на маркетплейсах
+          Продукцию компании можно приобрести у региональных представителей или на маркетплейсах
         </p>
       </section>
 
@@ -121,7 +120,7 @@
 
           <label class="field">
             <span class="visually-hidden">Регион</span>
-            <select class="field__select" name="region" required>
+            <select class="field__select" name="region" required data-error="Выберите регион">
               <option value="" selected disabled>Выберите регион</option>
               <option>Москва</option>
               <option>Санкт-Петербург</option>
@@ -139,12 +138,8 @@
 
           <label class="field">
             <span class="visually-hidden">Сообщение</span>
-            <textarea class="field__input" name="message" rows="4" placeholder="Сообщение"></textarea>
+            <textarea class="field__input" name="message" rows="4" maxlength="500" placeholder="Сообщение"></textarea>
           </label>
-
-          <p class="contacts-form__error" id="contacts-error" role="alert">
-            Заполните имя, регион и телефон — иначе мы не сможем перезвонить.
-          </p>
 
           <p class="contacts-consent">
             Оставляя свои персональные данные, Вы соглашаетесь с<br>
@@ -161,7 +156,7 @@
   <footer class="site-footer">
     <div class="footer__inner">
       <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
-        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+        <img src="../assets/img/logo-white.png" width="192" height="52" alt="Weiss Color">
       </a>
 
       <nav class="footer__nav" aria-label="Навигация в подвале">
@@ -169,7 +164,7 @@
         <a href="where-to-buy.html">Где купить</a>
         <a href="about.html">О компании</a>
         <a href="contacts.html">Контакты</a>
-        <a href="coloring-guide.html">Колеровка цвета</a>
+        <a href="palettes.html">Колеровка цвета</a>
       </nav>
 
       <a class="footer__copy" href="legal.html">
@@ -240,5 +235,6 @@
 
   <script src="../js/main.js"></script>
   <script src="../js/contacts.js"></script>
+  <script src="../js/validation.js" defer></script>
 </body>
 </html>

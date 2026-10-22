@@ -162,15 +162,52 @@
 
   var promo = document.querySelector('.promo__btn');
   if (promo) {
+    var promoRow = promo.closest('.promo__row') || promo.parentNode;
+    var promoError = null;
+
+    function promoMessage(input) {
+      if (!input.value.trim()) return 'Введите промокод';
+      /* pattern из разметки: латинские буквы, цифры и дефис, 2–24 символа */
+      return input.checkValidity() ? '' : (input.dataset.error || 'Проверьте промокод');
+    }
+
     promo.addEventListener('click', function () {
       var input = document.getElementById('promo-code');
       if (!input) return;
-      if (!input.value.trim()) {
+
+      var message = promoMessage(input);
+
+      if (message) {
+        if (!promoError) {
+          promoError = document.createElement('span');
+          promoError.className = 'promo__error';
+          promoError.id = 'promo-error';
+          promoRow.parentNode.insertBefore(promoError, promoRow.nextSibling);
+          input.setAttribute('aria-describedby', 'promo-error');
+        }
+        promoError.textContent = message;
         input.setAttribute('aria-invalid', 'true');
         input.focus();
         return;
       }
+
       input.removeAttribute('aria-invalid');
+      if (promoError) promoError.remove();
+      promoError = null;
+    });
+
+    /* ошибка снимается, как только промокод исправлен */
+    document.getElementById('promo-code')?.addEventListener('input', function () {
+      if (!promoError) return;
+      var message = promoMessage(this);
+      if (message) {
+        promoError.textContent = message;
+        return;
+      }
+      promoError.remove();
+      promoError = null;
+      this.removeAttribute('aria-invalid');
+      this.removeAttribute('aria-describedby');
     });
   }
 

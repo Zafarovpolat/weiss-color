@@ -47,7 +47,7 @@
           <li><a href="where-to-buy.html">Где купить</a></li>
           <li><a href="about.html">О компании</a></li>
           <li><a href="contacts.html">Контакты</a></li>
-          <li><a href="coloring-guide.html">Колеровка цвета</a></li>
+          <li><a href="palettes.html">Колеровка цвета</a></li>
         </ul>
 
         <div class="header__contacts">
@@ -165,7 +165,7 @@
           <div class="form-grid">
             <label class="field">
               <span class="field__label">Регион*</span>
-              <select class="field__select" name="region" required>
+              <select class="field__select" name="region" required data-error="Выберите регион">
                 <option value="" selected disabled>Выберите регион</option>
                 <option>Москва и Московская область</option>
                 <option>Санкт-Петербург и Ленинградская область</option>
@@ -177,7 +177,7 @@
 
             <label class="field">
               <span class="field__label">Город*</span>
-              <select class="field__select" name="city" required>
+              <select class="field__select" name="city" required data-error="Выберите город">
                 <option value="" selected disabled>Выберите город</option>
                 <option>Москва</option>
                 <option>Санкт-Петербург</option>
@@ -199,12 +199,12 @@
 
             <label class="field">
               <span class="field__label">Квартира / офис</span>
-              <input class="field__input" type="text" name="flat" placeholder="Например, 25">
+              <input class="field__input" type="text" name="flat" inputmode="numeric" maxlength="6" pattern="[0-9]{1,6}" data-error="Номер квартиры или офиса — только цифры" placeholder="Например, 25">
             </label>
 
             <label class="field">
               <span class="field__label">Индекс</span>
-              <input class="field__input" type="text" name="postcode" inputmode="numeric" autocomplete="postal-code" placeholder="Например, 123456" pattern="[0-9]{6}" maxlength="6">
+              <input class="field__input" type="text" name="postcode" inputmode="numeric" autocomplete="postal-code" placeholder="Например, 123456" pattern="[0-9]{6}" maxlength="6" data-error="Индекс — 6 цифр">
             </label>
           </div>
         </section>
@@ -264,7 +264,7 @@
 
           <label class="field comment-field">
             <span class="visually-hidden">Комментарий к заказу</span>
-            <textarea class="field__input" name="comment" rows="2" placeholder="Напишите комментарий, если нужно (напимер, удобное время доставки)"></textarea>
+            <textarea class="field__input" name="comment" rows="2" maxlength="300" placeholder="Напишите комментарий, если нужно (напимер, удобное время доставки)"></textarea>
           </label>
 
           <label class="consent">
@@ -351,7 +351,7 @@
   <footer class="site-footer">
     <div class="footer__inner">
       <a class="footer__logo" href="../index.html" aria-label="Weiss Color — на главную">
-        <img src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+        <img src="../assets/img/logo-white.png" width="192" height="52" alt="Weiss Color">
       </a>
 
       <nav class="footer__nav" aria-label="Навигация в подвале">
@@ -359,7 +359,7 @@
         <a href="where-to-buy.html">Где купить</a>
         <a href="about.html">О компании</a>
         <a href="contacts.html">Контакты</a>
-        <a href="coloring-guide.html">Колеровка цвета</a>
+        <a href="palettes.html">Колеровка цвета</a>
       </nav>
 
       <a class="footer__copy" href="legal.html">
@@ -374,7 +374,7 @@
 
   <!-- Окно реквизитов юрлица (М22, ТЗ 8.2) -->
   <dialog class="invoice-dialog" id="invoice-dialog" aria-labelledby="invoice-title">
-    <form class="invoice-dialog__body" id="invoice-form" method="dialog">
+    <form class="invoice-dialog__body" id="invoice-form" method="dialog" novalidate>
       <h2 class="invoice-dialog__title" id="invoice-title">Реквизиты юридического лица</h2>
       <p class="invoice-dialog__hint">Заполните данные компании для выставления счета</p>
 
@@ -386,17 +386,17 @@
 
         <label class="field">
           <span class="field__label">ИНН *</span>
-          <input class="field__input" type="text" name="inn" inputmode="numeric" pattern="[0-9]{10}|[0-9]{12}" placeholder="Например, 7701234567" required>
+          <input class="field__input" type="text" name="inn" inputmode="numeric" pattern="[0-9]{10}|[0-9]{12}" placeholder="Например, 7701234567" data-error="ИНН — 10 цифр у юрлица или 12 у ИП" required>
         </label>
 
         <label class="field">
           <span class="field__label">КПП *</span>
-          <input class="field__input" type="text" name="kpp" inputmode="numeric" pattern="[0-9]{9}" placeholder="Например, 770101001">
+          <input class="field__input" type="text" name="kpp" inputmode="numeric" pattern="[0-9]{9}" placeholder="Например, 770101001" data-error="КПП — 9 цифр">
         </label>
 
         <label class="field">
           <span class="field__label">ОГРН *</span>
-          <input class="field__input" type="text" name="ogrn" inputmode="numeric" pattern="[0-9]{13}|[0-9]{15}" placeholder="Например, 1027700132195" required>
+          <input class="field__input" type="text" name="ogrn" inputmode="numeric" pattern="[0-9]{13}|[0-9]{15}" placeholder="Например, 1027700132195" data-error="ОГРН — 13 цифр, ОГРНИП — 15" required>
         </label>
 
         <label class="field">
@@ -416,7 +416,7 @@
 
         <label class="field field--full">
           <span class="field__label">Дополнительные реквизиты / комментарий</span>
-          <textarea class="field__input" name="invoice-comment" rows="2" placeholder="Укажите дополнительные реквизиты, банковские данные или комментарий для менеджера"></textarea>
+          <textarea class="field__input" name="invoice-comment" rows="2" maxlength="300" placeholder="Укажите дополнительные реквизиты, банковские данные или комментарий для менеджера"></textarea>
         </label>
       </div>
 
@@ -489,5 +489,6 @@
 
   <script src="../js/main.js"></script>
   <script src="../js/checkout.js"></script>
+  <script src="../js/validation.js" defer></script>
 </body>
 </html>

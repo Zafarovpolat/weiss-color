@@ -81,7 +81,9 @@
 }
 
 .legal-section__num {
-  font-family: "Times New Roman", Times, serif;
+  /* как и номера 01–09: Tinos (self-host, метрический клон Times) — Times
+     нельзя вшивать, а на Android/Linux его нет, см. FONTS.md */
+  font-family: var(--font-num);
   font-size: clamp(20px, 1.21vw, 31px);
   line-height: 1;
   font-weight: 400;

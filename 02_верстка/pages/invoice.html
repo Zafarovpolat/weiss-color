@@ -65,17 +65,17 @@
 
           <label class="field">
             <span class="field__label">ИНН <b aria-hidden="true">*</b></span>
-            <input class="field__input" type="text" name="inn" inputmode="numeric" pattern="[0-9]{10}|[0-9]{12}" placeholder="Например, 7701234567" required>
+            <input class="field__input" type="text" name="inn" inputmode="numeric" pattern="[0-9]{10}|[0-9]{12}" placeholder="Например, 7701234567" data-error="ИНН — 10 цифр у юрлица или 12 у ИП" required>
           </label>
 
           <label class="field" data-for="legal">
             <span class="field__label">КПП <b aria-hidden="true">*</b></span>
-            <input class="field__input" type="text" name="kpp" inputmode="numeric" pattern="[0-9]{9}" placeholder="Например, 770101001" required>
+            <input class="field__input" type="text" name="kpp" inputmode="numeric" pattern="[0-9]{9}" placeholder="Например, 770101001" data-error="КПП — 9 цифр" required>
           </label>
 
           <label class="field">
             <span class="field__label" data-label-legal="ОГРН <b aria-hidden='true'>*</b>" data-label-ip="ОГРНИП <b aria-hidden='true'>*</b>">ОГРН <b aria-hidden="true">*</b></span>
-            <input class="field__input" type="text" name="ogrn" inputmode="numeric" pattern="[0-9]{13}|[0-9]{15}" placeholder="Например, 1027700132195" required>
+            <input class="field__input" type="text" name="ogrn" inputmode="numeric" pattern="[0-9]{13}|[0-9]{15}" placeholder="Например, 1027700132195" data-error="ОГРН — 13 цифр, ОГРНИП — 15" required>
           </label>
 
           <label class="field">
@@ -95,7 +95,7 @@
 
           <label class="field field--full">
             <span class="field__label">Дополнительные реквизиты / комментарий</span>
-            <textarea class="field__input" name="invoice-comment" rows="3" placeholder="Укажите дополнительные реквизиты, банковские данные или комментарий для выставления счета"></textarea>
+            <textarea class="field__input" name="invoice-comment" rows="3" maxlength="300" placeholder="Укажите дополнительные реквизиты, банковские данные или комментарий для выставления счета"></textarea>
           </label>
         </div>
 
@@ -114,5 +114,6 @@
   </main>
 
   <script src="../js/invoice.js"></script>
+  <script src="../js/validation.js" defer></script>
 </body>
 </html>
