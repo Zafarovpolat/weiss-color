@@ -188,6 +188,11 @@
   color: #4a4f5b;
 }
 
+/* стрелка ближе к тексту, чем в базовой кнопке */
+.callback-form .btn {
+  gap: clamp(6px, 0.55vw, 14px);
+}
+
 .callback-field {
   position: relative;
   display: flex;
@@ -243,7 +248,7 @@
   white-space: nowrap;
 }
 
-.callback-form__note svg { width: clamp(12px, 0.66vw, 17px); height: auto; flex: none; }
+.callback-form__note svg { width: clamp(14px, 0.86vw, 22px); height: auto; flex: none; }
 
 @media (max-width: 1024px) {
   .callback-form__note { white-space: normal; align-items: flex-start; }
@@ -302,6 +307,7 @@
   line-height: 1.5;
   font-weight: var(--fw-regular);
   text-transform: uppercase;
+  text-align: left;
   color: #4a4f5b;
 }
 
@@ -328,8 +334,8 @@
   align-items: start;
   width: 100%;
   padding: clamp(14px, 1.17vw, 30px) clamp(16px, 1.56vw, 40px)
-    clamp(14px, 1.17vw, 30px) clamp(12px, 1.29vw, 33px);
-  border-radius: 6px;
+    clamp(6px, 0.63vw, 16px) clamp(12px, 1.29vw, 33px);
+  border-radius: 16px;
   background: #fff;
   box-shadow: 0 10px 30px rgba(23, 30, 49, 0.12);
 }
@@ -356,7 +362,7 @@
   font-size: clamp(12px, 0.7vw, 18px);
   line-height: 1.35;
   font-weight: var(--fw-medium);
-  color: #94969a;
+  color: #6e6f75;
 }
 
 .cookie-bar__link {
@@ -368,14 +374,14 @@
   font-weight: var(--fw-medium);
   color: #4c4d51;
   text-decoration: none;
-  border-bottom: 1px solid #c9cace;
-  padding-bottom: 3px;
+  border-bottom: 0;
+  border-radius: 2px;
+  padding-bottom: 0;
 }
 
 .cookie-bar__link {
   width: fit-content;
   align-self: start;
-  min-height: 44px;
 }
 
 .cookie-bar__link:hover { color: #62381e; border-color: #62381e; }
@@ -384,7 +390,7 @@
 .cookie-bar__actions {
   display: grid;
   gap: clamp(6px, 0.47vw, 12px);
-  margin-top: clamp(4px, 0.35vw, 9px);
+  align-self: center;
 }
 
 .cookie-bar__actions .btn {
@@ -416,7 +422,6 @@
     grid-column: 1 / -1;
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
-    margin-top: 4px;
   }
 
   .cookie-bar__actions .btn { width: 100%; min-width: 0; }

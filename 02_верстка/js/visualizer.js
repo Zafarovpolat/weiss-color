@@ -14,6 +14,7 @@
   const heroImg = root.querySelector('.viz-hero__img');
   const thumbs = Array.from(root.querySelectorAll('.viz-thumb'));
   const nextBtn = root.querySelector('.viz-next');
+  const prevBtn = root.querySelector('.viz-prev');
 
   /* ---------- Данные ---------- */
   const COLORS = Array.isArray(window.ACE_COLORS) ? window.ACE_COLORS : [];
@@ -131,6 +132,7 @@
   });
 
   nextBtn?.addEventListener('click', () => setScene(scene + 1));
+  prevBtn?.addEventListener('click', () => setScene(scene - 1));
 
   /* ---------- Старт ---------- */
   renderSwatches();

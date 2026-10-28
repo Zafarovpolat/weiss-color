@@ -301,10 +301,13 @@
 
 .viz-thumbs {
   position: absolute;
-  left: 31.26%;
-  right: 6.2%; /* 1337-2276+1022 → место под кнопку */
-  bottom: 0;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: 62.5%;
+  bottom: clamp(10px, 0.83vw, 21px);
   display: flex;
+  justify-content: center;
   gap: clamp(4px, 0.31vw, 8px);
   margin: 0;
   padding: 0;
@@ -332,11 +335,11 @@
   outline-offset: -3px;
 }
 
-/* Кнопка «следующий интерьер» */
+/* Кнопки «предыдущий / следующий интерьер» */
 
+.viz-prev,
 .viz-next {
   position: absolute;
-  right: clamp(12px, 1.13vw, 29px);
   bottom: clamp(16px, 1.33vw, 34px);
   width: clamp(36px, 1.76vw, 45px);
   height: clamp(42px, 2.11vw, 54px);
@@ -346,10 +349,25 @@
   cursor: pointer;
 }
 
+/* лента по центру кадра — кнопки симметрично по её краям */
+.viz-prev {
+  left: calc(18.75% - clamp(36px, 1.76vw, 45px) - clamp(6px, 0.47vw, 12px));
+}
+
+.viz-next {
+  right: calc(18.75% - clamp(36px, 1.76vw, 45px) - clamp(6px, 0.47vw, 12px));
+}
+
+.viz-prev img,
 .viz-next img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+/* стрелка одна и та же — левую зеркалим */
+.viz-prev img {
+  transform: scaleX(-1);
 }
 
 /* Инфо-плашка 1333×87 */
@@ -456,20 +474,69 @@
     gap: clamp(24px, 3vw, 32px);
   }
 
+  /* сначала визуализатор, под ним — выбор цвета */
+  .viz-right {
+    order: -1;
+    margin-bottom: clamp(24px, 3.5vw, 40px);
+  }
+
+  .viz-left {
+    order: 1;
+    /* сначала выбор цвета, карточка товара — под ним */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .viz-product {
+    order: 2;
+    margin-top: clamp(20px, 3vw, 32px);
+    margin-bottom: clamp(24px, 3.5vw, 40px);
+  }
+
+  .viz-choose,
+  .viz-palette,
+  .viz-swatches,
+  .viz-pagination {
+    order: 1;
+  }
+
   .viz-swatches {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: clamp(6px, 1vw, 10px);
   }
 
   .viz-swatch {
-    height: auto;
-    aspect-ratio: 121 / 146;
+    /* на планшете колонки широкие — пропорция 121/146 делала карточку
+       высотой под 280px, поэтому высоту ограничиваем */
+    height: clamp(92px, 9vw, 118px);
+    aspect-ratio: auto;
+  }
+
+  .viz-swatch__fill {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* .viz-page .pagination задаёт flex-start — перебиваем той же силой */
+  .viz-page .viz-pagination {
+    justify-content: center;
+    padding-bottom: 0;
   }
 
   .viz-thumbs {
-    left: auto;
-    right: 8%;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
     width: min(60%, 520px);
+  }
+
+  /* кнопки — по краям центрированной ленты */
+  .viz-prev {
+    left: calc(50% - min(60%, 520px) / 2 - clamp(36px, 1.76vw, 45px) - clamp(6px, 0.47vw, 12px));
+  }
+
+  .viz-next {
+    right: calc(50% - min(60%, 520px) / 2 - clamp(36px, 1.76vw, 45px) - clamp(6px, 0.47vw, 12px));
   }
 
   .viz-info {
@@ -478,6 +545,11 @@
 
   .viz-info__btn {
     width: 100%;
+  }
+
+  /* цена и «В корзину» — по левому краю */
+  .viz-buy {
+    justify-content: flex-start;
   }
 }
 
@@ -499,7 +571,25 @@
   }
 
   .viz-swatches {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(4px, 1.2vw, 8px);
+  }
+
+  .viz-swatch {
+    height: auto;
+    aspect-ratio: 100 / 132;
+    padding: 3px;
+  }
+
+  .viz-swatch__fill {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .viz-swatch__label {
+    padding-right: 0;
+    justify-content: center;
+    font-size: clamp(9px, 2.6vw, 12px);
   }
 
   .viz-buy {

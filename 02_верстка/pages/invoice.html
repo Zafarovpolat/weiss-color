@@ -2,8 +2,8 @@
 <!--
   Экран: М22 — Реквизиты юридического лица (окно для счёта)
   Исходник PSD: 01_исходники/макеты_psd/Реквизиты для счёта.psd
-  Пункт ТЗ: п.8.2 — юрлица и ИП, КПП/ОГРН обязательны для юрлица,
-  для ИП — ОГРНИП без обязательного КПП; счёт выставляет менеджер.
+  Пункт ТЗ: п.8.2 — счёт выставляет менеджер по реквизитам компании;
+  по макету окно только для юрлица (переключатель «Юрлицо / ИП» убран).
   Отдельная страница нужна, чтобы удобно верстать и показывать окно;
   в работе используется <dialog id="invoice-dialog"> на pages/checkout.html.
   Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
@@ -42,21 +42,6 @@
       <p class="invoice-card__hint">Заполните данные компании для выставления счета</p>
 
       <form class="invoice-form" id="invoice-page-form" novalidate>
-        <!-- Тип плательщика: для ИП КПП не обязательно, обязателен ОГРНИП (ТЗ 8.2) -->
-        <fieldset class="invoice-type">
-          <legend class="visually-hidden">Тип плательщика</legend>
-
-          <label class="invoice-type__item">
-            <input type="radio" name="payer" value="legal" checked>
-            <span>Юридическое лицо</span>
-          </label>
-
-          <label class="invoice-type__item">
-            <input type="radio" name="payer" value="ip">
-            <span>ИП</span>
-          </label>
-        </fieldset>
-
         <div class="invoice-form__grid">
           <label class="field field--full">
             <span class="field__label">Название организации <b aria-hidden="true">*</b></span>
@@ -113,6 +98,7 @@
     </section>
   </main>
 
+  <script src="../js/phone-mask.js"></script>
   <script src="../js/invoice.js"></script>
   <script src="../js/validation.js" defer></script>
 </body>

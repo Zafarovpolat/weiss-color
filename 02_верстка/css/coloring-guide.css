@@ -163,9 +163,19 @@
 /* --- Адаптив (проверяем до 1024) --- */
 
 @media (max-width: 1024px) {
+  /* сетка на 6 колонок: шаги 1–3 по 2, шаги 4–5 по 3 — второй ряд без дырки */
   .guide-steps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: clamp(16px, 2.4vw, 24px);
+  }
+
+  .guide-step {
+    grid-column: span 2;
+  }
+
+  .guide-step:nth-child(4),
+  .guide-step:nth-child(5) {
+    grid-column: span 3;
   }
 
   .guide-step__img {
@@ -173,15 +183,23 @@
   }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 768px) {
+  /* по две карточки в ряд */
   .guide-steps {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .guide-step__img {
-    margin-top: 12px;
+  .guide-step,
+  .guide-step:nth-child(4) {
+    grid-column: auto;
   }
 
+  /* пятая карточка одна в ряду — тянем на две ширины */
+  .guide-step:nth-child(5) {
+    grid-column: span 2;
+  }
+
+  /* кнопки — по одной в строке на всю ширину */
   .guide-cta {
     flex-direction: column;
     align-items: stretch;
@@ -190,5 +208,19 @@
   .guide-cta__primary,
   .guide-cta__secondary {
     width: 100%;
+  }
+}
+
+@media (max-width: 540px) {
+  .guide-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guide-step:nth-child(5) {
+    grid-column: auto;
+  }
+
+  .guide-step__img {
+    margin-top: 12px;
   }
 }

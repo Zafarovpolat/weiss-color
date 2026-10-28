@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--
+  Экран: модалка «Реквизиты для оплаты» — номер карты для возврата/ссылки на оплату.
+  Пункт ТЗ: п.8.3 — своих полей карты не храним, оплата уходит на защищённый
+  сервис банка; здесь физлицо указывает карту, на которую менеджер пришлёт ссылку.
+  Отдельная страница нужна, чтобы удобно верстать и показывать окно;
+  в работе тот же набор полей открывается как <dialog> на pages/checkout.html.
+  Этап 1 (вёрстка): статическая адаптивная разметка HTML/CSS/JS на демо-данных.
+-->
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Реквизиты для оплаты — Weiss Color</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/payment-card.css">
+</head>
+<body class="pcard-page">
+  <a class="skip-link" href="#main">К основному содержанию</a>
+
+  <main id="main" class="pcard-page__center">
+    <section class="pcard-card" aria-labelledby="pcard-title">
+      <h1 class="pcard-card__title" id="pcard-title">Реквизиты для оплаты</h1>
+
+      <p class="pcard-card__lead">
+        Вы выбрали оплату как физическое лицо. Пожалуйста, укажите номер карты,
+        на которую мы вышлем ссылку для оплаты.
+      </p>
+
+      <form class="pcard-form" id="pcard-form" novalidate>
+        <label class="field pcard-field">
+          <span class="pcard-field__label">Номер карты <b aria-hidden="true">*</b></span>
+
+          <span class="pcard-input">
+            <svg class="pcard-input__icon" viewBox="0 0 44 30" fill="none" stroke="currentColor"
+                 stroke-width="2" aria-hidden="true">
+              <rect x="1" y="1" width="42" height="28" rx="3"/>
+              <path d="M1 9.5h42" stroke-width="4.4"/>
+              <path d="M7.5 18h14M7.5 23h9" stroke-linecap="round"/>
+            </svg>
+
+            <input type="text" name="card" inputmode="numeric" autocomplete="cc-number"
+                   placeholder="0000 0000 0000 0000" maxlength="19"
+                   pattern="[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}"
+                   data-error="Введите 16 цифр номера карты" required>
+          </span>
+        </label>
+
+        <p class="pcard-hint">Введите 16 цифр номера карты</p>
+
+        <p class="pcard-note">
+          <svg class="pcard-note__icon" viewBox="0 0 48 56" fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true">
+            <path d="M24 2 45 9.5v20C45 42 35 51.5 24 54 13 51.5 3 42 3 29.5v-20L24 2Z" stroke-linejoin="round"/>
+            <path d="M15.5 28.5 21.5 34.5 33 23" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+
+          <span>
+            Оплата будет осуществляться через защищённый платёжный сервис.
+            Ваши данные в безопасности.
+          </span>
+        </p>
+
+        <div class="pcard-actions">
+          <button class="pcard-btn pcard-btn--primary" type="submit">Сохранить</button>
+          <a class="pcard-btn pcard-btn--ghost" href="checkout.html">Отменить</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="../js/payment-card.js"></script>
+  <script src="../js/validation.js" defer></script>
+</body>
+</html>

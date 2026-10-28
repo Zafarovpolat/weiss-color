@@ -71,9 +71,13 @@
         </button>
 
         <p class="callback-form__note">
-          <svg viewBox="0 0 17 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <rect x="1" y="10" width="15" height="13" rx="2"/>
-            <path d="M4 10V7a4.5 4.5 0 0 1 9 0v3"/>
+          <!-- заливной замок: скоба толстой обводкой + корпус с вырезом-скважиной
+               (fill-rule="evenodd" — скважина вырезается из корпуса), как в checkout -->
+          <svg viewBox="0 0 20 22" aria-hidden="true" focusable="false">
+            <path fill="currentColor" fill-rule="evenodd"
+                  d="M2 8.7h16a1.4 1.4 0 0 1 1.4 1.4v9.9a1.4 1.4 0 0 1-1.4 1.4H2a1.4 1.4 0 0 1-1.4-1.4v-9.9A1.4 1.4 0 0 1 2 8.7Zm8 2.9a2 2 0 0 0-1 3.7v3.4a1 1 0 0 0 2 0v-3.4a2 2 0 0 0-1-3.7Z"/>
+            <path fill="none" stroke="currentColor" stroke-width="2.2"
+                  d="M5.7 9.2V7.3a4.3 4.3 0 0 1 8.6 0v1.9"/>
           </svg>
           Ваши данные защищены и не будут переданы третьим лицам
         </p>
@@ -81,6 +85,7 @@
     </section>
   </main>
 
+  <script src="../js/phone-mask.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/validation.js" defer></script>
 </body>

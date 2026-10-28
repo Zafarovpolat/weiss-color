@@ -581,9 +581,13 @@ dialog.mcard:not([open]) { display: none; }
 
 /* навигационные «назад» */
 .cart-back,
-.sampler-back,
-.viz-help {
+.sampler-back {
   min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.viz-help {
   display: inline-flex;
   align-items: center;
 }
