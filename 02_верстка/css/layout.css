@@ -36,42 +36,6 @@
   padding-block: var(--space-sm);
   border-top: 1px solid var(--color-line);
 }
-.site-nav[data-open] { display: block; }
-
-/* Мобильное меню — оверлей под шапкой: не растягивает документ и не
-   сдвигает контент; шапка остаётся видимой (логотип + крестик + корзина) */
-@media (max-width: 1279.98px) {
-  .site-nav[data-open] {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: var(--menu-z);
-    max-height: calc(100dvh - 74px);
-    overflow-y: auto;
-    padding: 8px 20px 28px;
-    background: var(--color-white);
-    border-top: 1px solid var(--color-line);
-    box-shadow: 0 18px 30px rgba(23, 30, 49, 0.12);
-  }
-
-  .site-nav[data-open] .site-nav__list a {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-  }
-
-  .site-nav[data-open] .header__phone {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .site-nav[data-open] .header__cta {
-    min-height: 48px;
-    width: 100%;
-  }
-}
 
 .site-nav__list {
   display: flex;
@@ -189,7 +153,7 @@
   position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
+  /* без flex-direction: column — банка и текст стоят в ряд на всех ширинах */
   align-items: center;
   gap: var(--space-md);
   padding-block: var(--space-lg);
@@ -328,6 +292,15 @@
 }
 .footer__copy:hover { color: var(--color-white); }
 
+/* «Политика» и кнопка звонка — одна пара: на широкой вёрстке обе уезжают
+   вправо, на 1920 и ниже — на свою нижнюю строку подвала */
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
 
 /* Ссылки-тексты в подвале: высота строки мала для тач-таргета (мин. 44px) */
 @media (max-width: 1919px) {
@@ -345,4 +318,78 @@
   .cart img { width: 52px; }
   .cart__count { font-size: 12px; }
   .header__inner { min-height: 64px; gap: 8px; }
+}
+
+/* Мобильное меню — полноэкранная панель, выезжает справа налево.
+   display не переключаем (иначе не анимируется): панель всегда в DOM,
+   спрятана через visibility + сдвиг за правый край. */
+@media (max-width: 1279.98px) {
+  .site-nav {
+    position: fixed;
+    inset: 0;
+    z-index: var(--menu-z);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    /* верхний отступ — под шапку: панель лежит под ней, контент не заезжает */
+    padding: 96px 20px 32px;
+    background: var(--color-white);
+    border-top: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+                visibility 0s linear 0.38s;
+  }
+
+  .site-nav[data-open] {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+                visibility 0s;
+  }
+
+  /* Панель перекрывает экран целиком, поэтому содержимое шапки поднято
+     над ней: логотип, корзина и крестик остаются на своих местах */
+  .logo,
+  .burger,
+  .cart {
+    position: relative;
+    z-index: calc(var(--menu-z) + 1);
+  }
+
+  /* Пункты крупнее: в полноэкранном меню мелкий кегль теряется */
+  .site-nav__list { gap: 2px; }
+  .site-nav__list a {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    font-size: clamp(18px, 4.6vw, 22px);
+  }
+
+  .header__contacts {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    margin-top: auto;
+  }
+
+  .header__phone {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    font-size: clamp(18px, 4.6vw, 22px);
+  }
+
+  .header__cta {
+    min-height: 52px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Бургер — в правом краю шапки, корзина — сразу слева от него.
+     Порядок задаётся явно: в разметке бургер идёт до навигации. */
+  .burger { order: 3; }
+  .cart { order: 2; margin-left: 0; }
 }

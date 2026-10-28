@@ -8,7 +8,9 @@
   if (!burger || !nav) return;
 
   const label = burger.querySelector('.visually-hidden');
-  const desktop = window.matchMedia('(min-width: 1100px)');
+  /* 1280 — граница, на которой бургер скрывается и меню раскрыто всегда
+     (см. layout.css / responsive.css), до неё меню — оверлей */
+  const desktop = window.matchMedia('(min-width: 1280px)');
 
   const setOpen = (open) => {
     burger.setAttribute('aria-expanded', String(open));

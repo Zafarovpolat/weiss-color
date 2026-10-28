@@ -7,8 +7,9 @@
 
 .legal-hero {
   position: relative;
-  padding: clamp(24px, 4.1vw, 105px) clamp(16px, 8.83vw, 226px)
-    clamp(16px, 1.49vw, 38px);
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-block: clamp(24px, 4.1vw, 105px) clamp(16px, 1.49vw, 38px);
+  padding-inline: var(--container-pad);
   background: #f7f8fa;
 }
 
@@ -60,8 +61,9 @@
 /* --- Две колонки разделов --- */
 
 .legal-body {
-  padding: 0 clamp(16px, 7.81vw, 200px)
-    clamp(24px, 1.17vw, 30px) clamp(16px, 8.87vw, 227px);
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-block: 0 clamp(24px, 1.17vw, 30px);
+  padding-inline: var(--container-pad);
   background: #f7f8fa;
 }
 

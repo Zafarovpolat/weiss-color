@@ -160,32 +160,57 @@
 
         <section class="form-card form-card--address" aria-labelledby="address-title">
           <h2 class="form-card__title" id="address-title">Адрес доставки</h2>
-          <p class="visually-hidden" id="address-hint">Адрес понадобится при курьерской доставке.</p>
+          <p class="visually-hidden" id="address-hint">Адрес нужен для доставки заказа — заполните все поля со звёздочкой.</p>
 
           <div class="form-grid">
-            <label class="field">
-              <span class="field__label">Регион*</span>
-              <select class="field__select" name="region" required data-error="Выберите регион">
-                <option value="" selected disabled>Выберите регион</option>
-                <option>Москва и Московская область</option>
-                <option>Санкт-Петербург и Ленинградская область</option>
-                <option>Тверская область</option>
-                <option>Тульская область</option>
-                <option>Другой регион</option>
-              </select>
-            </label>
+            <!-- Нативный <select> под макет не оформить (список рисует ОС),
+                 поэтому разметка — кнопка + ul[role="listbox"], как у селекта
+                 региона на «Контактах». Значение уходит в скрытый input:
+                 его проверяет validation.js (data-validate), а фокус при
+                 ошибке переводится на кнопку (data-focus). -->
+            <div class="field">
+              <span class="field__label" id="region-label">Регион*</span>
+              <div class="select" data-select>
+                <button class="select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false"
+                        aria-labelledby="region-label region-value">
+                  <span class="select__value" id="region-value">Выберите регион</span>
+                  <svg class="select__chevron" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="M1 1.5 6 6.5l5-5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <ul class="select__list" role="listbox" aria-labelledby="region-label" hidden>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Москва и Московская область</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Санкт-Петербург и Ленинградская область</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Тверская область</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Тульская область</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Другой регион</li>
+                </ul>
+                <input type="hidden" name="region" value="" required data-error="Выберите регион"
+                       data-validate data-focus=".select__trigger">
+              </div>
+            </div>
 
-            <label class="field">
-              <span class="field__label">Город*</span>
-              <select class="field__select" name="city" required data-error="Выберите город">
-                <option value="" selected disabled>Выберите город</option>
-                <option>Москва</option>
-                <option>Санкт-Петербург</option>
-                <option>Тверь</option>
-                <option>Тула</option>
-                <option>Другой город</option>
-              </select>
-            </label>
+            <div class="field">
+              <span class="field__label" id="city-label">Город*</span>
+              <div class="select" data-select>
+                <button class="select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false"
+                        aria-labelledby="city-label city-value">
+                  <span class="select__value" id="city-value">Выберите город</span>
+                  <svg class="select__chevron" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="M1 1.5 6 6.5l5-5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <ul class="select__list" role="listbox" aria-labelledby="city-label" hidden>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Москва</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Санкт-Петербург</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Тверь</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Тула</li>
+                  <li class="select__option" role="option" aria-selected="false" tabindex="-1">Другой город</li>
+                </ul>
+                <input type="hidden" name="city" value="" required data-error="Выберите город"
+                       data-validate data-focus=".select__trigger">
+              </div>
+            </div>
 
             <label class="field">
               <span class="field__label">Улица*</span>
@@ -270,7 +295,7 @@
           <label class="consent">
             <input type="checkbox" name="consent" id="consent" required aria-describedby="consent-error">
             <span>
-              Я согласен с <a href="legal.html">политикой конфиденциальности и обработкой персональных данных</a>
+              Я согласен с <a href="legal.html">политикой конфиденциальности</a> и обработкой персональных данных
             </span>
           </label>
           <p class="consent__error" id="consent-error" role="alert">Отметьте согласие на обработку персональных данных.</p>
@@ -338,9 +363,13 @@
         </div>
 
         <p class="checkout-note">
-          <svg viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <rect x="2" y="9" width="16" height="11" rx="2"/>
-            <path d="M6 9V6a4 4 0 1 1 8 0v3"/>
+          <!-- заливной замок: скоба толстой обводкой + корпус с вырезом-скважиной
+               (fill-rule="evenodd" — скважина вырезается из корпуса) -->
+          <svg viewBox="0 0 20 22" aria-hidden="true" focusable="false">
+            <path fill="currentColor" fill-rule="evenodd"
+                  d="M2 8.7h16a1.4 1.4 0 0 1 1.4 1.4v9.9a1.4 1.4 0 0 1-1.4 1.4H2a1.4 1.4 0 0 1-1.4-1.4v-9.9A1.4 1.4 0 0 1 2 8.7Zm8 2.9a2 2 0 0 0-1 3.7v3.4a1 1 0 0 0 2 0v-3.4a2 2 0 0 0-1-3.7Z"/>
+            <path fill="none" stroke="currentColor" stroke-width="2.2"
+                  d="M5.7 9.2V7.3a4.3 4.3 0 0 1 8.6 0v1.9"/>
           </svg>
           Ваши данные защищены и не будут переданы третьим лицам
         </p>
@@ -362,13 +391,15 @@
         <a href="palettes.html">Колеровка цвета</a>
       </nav>
 
-      <a class="footer__copy" href="legal.html">
-        Политика конфиденциальности и&nbsp;обработки персональных данных
-      </a>
+      <div class="footer__bottom">
+        <a class="footer__copy" href="legal.html">
+          Политика конфиденциальности и&nbsp;обработки персональных данных
+        </a>
 
-      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
-        Заказать звонок
-      </button>
+        <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+          Заказать звонок
+        </button>
+      </div>
     </div>
   </footer>
 

@@ -6,3 +6,6 @@ node_modules/
 .vscode/
 .idea/
 ~$*
+
+# служебные данные ассистента
+.workbuddy-ai/

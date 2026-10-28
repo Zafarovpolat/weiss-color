@@ -91,12 +91,25 @@
       <span aria-current="page">Краска для стен и потолков</span>
     </nav>
 
-    <h1 class="sampler-title">
-      Заказ пробного образца
-      <span class="sampler-title__color">Цвет F316</span>
-    </h1>
-
     <div class="sampler-layout">
+      <!-- заголовок живёт в той же сетке, что и правая колонка: на макете
+           «Назад к выбору цвета» стоит на уровне H1, а карточка цвета — ниже -->
+      <h1 class="sampler-title">
+        Заказ пробного образца
+        <span class="sampler-title__color">Цвет F316</span>
+
+        <!-- на десктопе ссылка уходит вправо на линию заголовка,
+             на ≤768 остаётся последней строкой этого блока -->
+        <div class="sampler-head">
+          <a class="sampler-back" href="color.html">
+            <svg viewBox="0 0 28 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+              <path d="M27 8H1M7 2 1 8l6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Назад к выбору цвета</span>
+          </a>
+        </div>
+      </h1>
+
       <!-- цвет-квадрат: в проде подставляется цвет выбранного оттенка -->
       <div class="sampler-swatch" role="img" aria-label="Цвет F316 — светло-розовый беж"></div>
 
@@ -106,15 +119,6 @@
       </div>
 
       <aside class="sampler-aside" aria-labelledby="sampler-title">
-        <div class="sampler-head">
-          <a class="sampler-back" href="color.html">
-            <svg viewBox="0 0 28 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-              <path d="M27 8H1M7 2 1 8l6 6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Назад к выбору цвета
-          </a>
-        </div>
-
         <h2 class="sampler-aside__title" id="sampler-title">Пробный образец цвета F316</h2>
         <p class="sampler-aside__text">
           Баночка краски 300 мл в цвете F316 — идеальное решение, чтобы оценить,
@@ -124,24 +128,37 @@
 
         <ul class="sampler-benefits">
           <li class="sampler-benefit">
-            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <path d="M20 3 37 11v18L20 37 3 29V11Z" stroke-linejoin="round"/>
-              <path d="M3 11l17 8 17-8M20 19v18" stroke-linejoin="round"/>
+            <!-- веер цветовых карточек (как в макете) -->
+            <svg viewBox="0 0 50 54" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true">
+              <rect x="1.2" y="1.2" width="12.6" height="51.6" rx="1.5"/>
+              <path d="M1.2 38.5h12.6" stroke-width="2.6"/>
+              <circle cx="7.5" cy="45.5" r="1.9" fill="currentColor" stroke="none"/>
+              <path d="M17 52.5 22.5 5.5l9 3-11.5 44Z" stroke-linejoin="round"/>
+              <path d="M20 52.5 33 22.5l8 4-16 26Z" stroke-linejoin="round"/>
+              <path d="M18.5 43.5H45v9H18.5Z" stroke-linejoin="round"/>
             </svg>
             <span>Реальный цвет<br>в вашем интерьере</span>
           </li>
           <li class="sampler-benefit">
-            <svg viewBox="0 0 44 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <path d="M4 17 22 3l18 14v20H4Z" stroke-linejoin="round"/>
-              <path d="M16 37V24h12v13" stroke-linejoin="round"/>
+            <!-- дом с окном и малярной кистью (как в макете) -->
+            <svg viewBox="0 0 52 48" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true">
+              <path d="M2 21.5 26 2l24 19.5" stroke-linejoin="round" stroke-linecap="round"/>
+              <path d="M7.5 20v25h37V20"/>
+              <rect x="18.5" y="21.5" width="13" height="13"/>
+              <path d="M49.5 25.5 43 32" stroke-linecap="round" stroke-width="3.2"/>
+              <path d="M41.5 30.5 38 34" stroke-width="6"/>
+              <path d="M39.6 33.2 32.4 39.9c-1 .9-2 1.6-3.2 2.1-.8.3-1.1-.6-.5-1.2l.7-.7 7.3-7.6Z" fill="currentColor" stroke="none"/>
             </svg>
             <span>Удобно<br>тестировать</span>
           </li>
           <li class="sampler-benefit">
-            <svg viewBox="0 0 77 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <path d="M2 8h34v24H2zM36 16h18l12 10v6H36z" stroke-linejoin="round"/>
-              <circle cx="14" cy="32" r="4"/>
-              <circle cx="55" cy="32" r="4"/>
+            <!-- грузовик с линиями скорости (как в макете) -->
+            <svg viewBox="0 0 76 44" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+              <path d="M2 10h15M2 19h10M2 28h14" stroke-width="3.6" stroke-linecap="round"/>
+              <rect x="21" y="6.5" width="30" height="27" rx="1"/>
+              <path d="M51 15.5h7.5l7.5 8.5v9.5H51Z" stroke-linejoin="round"/>
+              <circle cx="30" cy="34.5" r="4.5"/>
+              <circle cx="57.5" cy="34.5" r="4.5"/>
             </svg>
             <span>Быстрая доставка<br>от 3 до 7 дней</span>
           </li>
@@ -170,9 +187,11 @@
         </form>
 
         <div class="sampler-notice">
-          <svg viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <circle cx="25" cy="25" r="22"/>
-            <path d="M25 12v16M25 35v3" stroke-linecap="round"/>
+          <!-- в макете — заливной синий круг с белым «!» -->
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="22" fill="currentColor"/>
+            <rect x="19.9" y="9" width="4.2" height="16.5" rx="2.1" fill="#ffffff"/>
+            <circle cx="22" cy="31.4" r="2.5" fill="#ffffff"/>
           </svg>
           <p>
             <strong>Цвет на экране отличается от реального.</strong><br>
@@ -197,13 +216,15 @@
         <a href="palettes.html">Колеровка цвета</a>
       </nav>
 
-      <a class="footer__copy" href="legal.html">
-        Политика конфиденциальности и&nbsp;обработки персональных данных
-      </a>
+      <div class="footer__bottom">
+        <a class="footer__copy" href="legal.html">
+          Политика конфиденциальности и&nbsp;обработки персональных данных
+        </a>
 
-      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
-        Заказать звонок
-      </button>
+        <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+          Заказать звонок
+        </button>
+      </div>
     </div>
   </footer>
 

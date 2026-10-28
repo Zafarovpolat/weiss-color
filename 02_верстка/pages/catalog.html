@@ -207,13 +207,26 @@
       <!-- Сетка товаров -->
       <div class="catalog__main">
         <div class="sort">
-          <label for="sort-select">Сортировать:</label>
-          <select class="sort__select" id="sort-select">
-            <option value="popular" selected>по популярности</option>
-            <option value="price-asc">по возрастанию цены</option>
-            <option value="price-desc">по убыванию цены</option>
-            <option value="new">по новизне</option>
-          </select>
+          <span class="sort__label" id="sort-label">Сортировать:</span>
+          <!-- Кастомный дропдаун вместо нативного <select>: системное меню ОС
+               не поддаётся стилизации, а в макете список оформлен своим блоком.
+               Разметка — по паттерну listbox: кнопка + ul[role=listbox]. -->
+          <div class="sort__dropdown" data-sort>
+            <button class="sort__trigger" type="button"
+                    aria-haspopup="listbox" aria-expanded="false"
+                    aria-labelledby="sort-label sort-value">
+              <span class="sort__value" id="sort-value">по популярности</span>
+              <svg class="sort__chevron" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+                <path d="M1 1.5 7.5 9 14 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <ul class="sort__list" role="listbox" aria-labelledby="sort-label" hidden>
+              <li class="sort__option" role="option" tabindex="-1" aria-selected="true" data-value="popular">по популярности</li>
+              <li class="sort__option" role="option" tabindex="-1" aria-selected="false" data-value="price-asc">по возрастанию цены</li>
+              <li class="sort__option" role="option" tabindex="-1" aria-selected="false" data-value="price-desc">по убыванию цены</li>
+              <li class="sort__option" role="option" tabindex="-1" aria-selected="false" data-value="new">по новизне</li>
+            </ul>
+          </div>
         </div>
 
         <ul class="products">
@@ -293,7 +306,7 @@
     </section>
 
     <!-- Постраничная навигация (п.4.3) -->
-    <nav class="pagination container" aria-label="Страницы каталога">
+    <nav class="pagination pagination--catalog container" aria-label="Страницы каталога">
       <span class="pagination__item" aria-disabled="true">Назад</span>
       <a class="pagination__item" href="#" aria-label="Страница 1">1</a>
       <a class="pagination__item" href="#" aria-label="Страница 2">2</a>
@@ -321,13 +334,15 @@
         <a href="palettes.html">Колеровка цвета</a>
       </nav>
 
-      <a class="footer__copy" href="legal.html">
-        Политика конфиденциальности и обработки персональных данных
-      </a>
+      <div class="footer__bottom">
+        <a class="footer__copy" href="legal.html">
+          Политика конфиденциальности и обработки персональных данных
+        </a>
 
-      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
-        Заказать звонок
-      </button>
+        <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+          Заказать звонок
+        </button>
+      </div>
     </div>
   </footer>
 

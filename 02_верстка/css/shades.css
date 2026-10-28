@@ -8,28 +8,21 @@
   background: linear-gradient(180deg, #f9f9fa 0%, #fafafb 100%);
 }
 
-/* --- Хлебные крошки (в макете левее контента: отступ 227px) --- */
+/* --- Хлебные крошки: та же полоса, что у остальных страниц (общий .container) --- */
 
 .shades-head {
-  max-width: 2560px;
-  padding: clamp(20px, 1.33vw, 34px) clamp(20px, 8.87vw, 227px) 0;
+  padding-top: clamp(20px, 1.33vw, 34px);
 }
 
-.shades-head .breadcrumbs {
-  font-size: clamp(13px, 0.63vw, 16px);
-}
+/* крошки — общий вид из components.css (13–15px) */
 
-.shades-head .breadcrumbs [aria-current="page"] {
-  color: var(--color-ink);
-  font-weight: 500;
-}
+/* текущая страница красится общим правилом .breadcrumbs [aria-current] */
 
-/* --- Контент экрана: заголовок, сетка, пагинация (центрированная полоса) --- */
-
-.shades-main {
-  width: min(1633px, 100% - 40px);
-  margin-inline: auto;
-}
+/* --- Контент экрана: заголовок, сетка, пагинация ---
+   Ширину и боковые поля даёт общий .container (base.css):
+   max-width 2112px + padding-inline var(--container-pad).
+   Своя полоса min(1633px, 100% - 40px) убрана — из-за неё страница
+   выбивалась из общего ритма. */
 
 .shades-title {
   margin-top: clamp(16px, 1.48vw, 38px);
@@ -111,7 +104,6 @@
 /* --- Постраничная навигация (как на экране «Каталог») --- */
 
 .shades-page .pagination {
-  margin-top: clamp(32px, 3.4vw, 87px);
   padding-bottom: clamp(40px, 2.77vw, 71px);
 }
 
@@ -122,14 +114,6 @@
 }
 
 @media (max-width: 1024px) {
-  .shades-head {
-    padding-inline: clamp(20px, 3vw, 32px);
-  }
-
-  .shades-main {
-    width: min(100% - 40px, 900px);
-  }
-
   .shades-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }

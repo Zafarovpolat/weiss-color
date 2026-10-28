@@ -112,24 +112,31 @@
       <div class="coloring__inner">
         <div class="coloring__copy">
           <h2 class="coloring__title" id="coloring-title">Колеровка онлайн</h2>
-          <p class="coloring__text">
-            Подберите идеальный цвет для вашего интерьера с помощью каталога ведущих производителей красок
-          </p>
-          <a class="btn btn--teal" href="pages/visualizer.html">
-            Подобрать цвет
-            <svg class="btn__arrow" viewBox="0 0 44 16" fill="none" aria-hidden="true">
-              <path d="M1 8h38M34 2l7 6-7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
+          <div class="coloring__body">
+            <p class="coloring__text">
+              Подберите идеальный цвет для вашего интерьера с помощью каталога ведущих производителей красок
+            </p>
+            <a class="btn btn--teal" href="pages/visualizer.html">
+              Подобрать цвет
+              <svg class="btn__arrow" viewBox="0 0 44 16" fill="none" aria-hidden="true">
+                <path d="M1 8h38M34 2l7 6-7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
         </div>
 
         <figure class="coloring__fan">
-          <img src="assets/img/coloring-fan.png" width="1137" height="393"
-               alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <!-- до 768 веер компактнее (613×393) — он стоит в одной строке с текстом,
+               а не под ним; с 769 и выше используется широкий макетный PNG -->
+          <picture>
+            <source media="(max-width: 768px)" srcset="assets/img/coloring-fan-mobile.png">
+            <img src="assets/img/coloring-fan.png" width="1137" height="393"
+                 alt="" aria-hidden="true" loading="lazy" decoding="async">
+          </picture>
         </figure>
 
         <figure class="coloring__photo">
-          <img src="assets/img/coloring-scene.jpg" width="1038" height="322"
+          <img src="assets/img/coloring-scene.jpg" width="1038" height="385"
                alt="Интерьер с окрашенной стеной из каталога цветов Weiss Color"
                loading="lazy" decoding="async">
         </figure>
@@ -140,7 +147,7 @@
     <section class="benefits" aria-labelledby="benefits-title">
       <div class="container benefits__inner">
         <h2 class="benefits__heading" id="benefits-title">
-          Почему стоит обратиться к профессионалам
+          Почему стоит обратиться <span class="benefits__heading-accent">к профессионалам</span>
         </h2>
 
         <ul class="benefits__list">
@@ -199,13 +206,15 @@
         <a href="pages/palettes.html">Колеровка цвета</a>
       </nav>
 
-      <a class="footer__copy" href="pages/legal.html">
-        Политика конфиденциальности и обработки персональных данных
-      </a>
+      <div class="footer__bottom">
+        <a class="footer__copy" href="pages/legal.html">
+          Политика конфиденциальности и обработки персональных данных
+        </a>
 
-      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
-        Заказать звонок
-      </button>
+        <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+          Заказать звонок
+        </button>
+      </div>
     </div>
   </footer>
 

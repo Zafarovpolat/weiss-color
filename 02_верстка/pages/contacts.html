@@ -90,23 +90,25 @@
     </nav>
 
     <div class="contacts-layout">
-      <section aria-labelledby="contacts-title">
-        <h1 class="contacts-title" id="contacts-title">Контакты</h1>
+      <div class="contacts-text">
+        <section class="contacts-info" aria-labelledby="contacts-title">
+          <h1 class="contacts-title" id="contacts-title">Контакты</h1>
 
-        <p class="contacts-org">
-          <span class="contacts-org__name">ООО «WEISS NATURAL PRODUCT»</span>
-          <span>Удмуртская респ., г. Ижевск, ул. Пойма, д. 57</span>
-        </p>
+          <p class="contacts-org">
+            <span class="contacts-org__name">ООО «WEISS NATURAL PRODUCT»</span>
+            <span>Удмуртская респ., г. Ижевск, ул. Пойма, д. 57</span>
+          </p>
 
-        <p class="contacts-list">
-          <span>т. : <a href="tel:+79502553015" translate="no">+7 (950) 255-30-15</a></span>
-          <span>e. : <a href="mailto:info@ooonort.ru">info@ooonort.ru</a></span>
-        </p>
+          <p class="contacts-list">
+            <span>т. : <a href="tel:+79502553015" translate="no">+7 (950) 255-30-15</a></span>
+            <span>e. : <a href="mailto:info@ooonort.ru">info@ooonort.ru</a></span>
+          </p>
+        </section>
 
         <p class="contacts-place">
           Продукцию компании можно приобрести у региональных представителей или на маркетплейсах
         </p>
-      </section>
+      </div>
 
       <aside class="contacts-form-card" aria-labelledby="contacts-form-title">
         <h2 class="contacts-form-card__title" id="contacts-form-title">Есть вопросы?</h2>
@@ -118,18 +120,28 @@
             <input class="field__input" type="text" name="name" autocomplete="name" placeholder="Ваше имя" required>
           </label>
 
-          <label class="field">
-            <span class="visually-hidden">Регион</span>
-            <select class="field__select" name="region" required data-error="Выберите регион">
-              <option value="" selected disabled>Выберите регион</option>
-              <option>Москва</option>
-              <option>Санкт-Петербург</option>
-              <option>Московская область</option>
-              <option>Ленинградская область</option>
-              <option>Удмуртская Республика</option>
-              <option>Другой регион</option>
-            </select>
-          </label>
+          <div class="field">
+            <span class="visually-hidden" id="contacts-region-label">Регион</span>
+            <div class="select" data-select>
+              <button class="select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false"
+                      aria-labelledby="contacts-region-label contacts-region-value">
+                <span class="select__value" id="contacts-region-value">Выберите регион</span>
+                <svg class="select__chevron" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <path d="M1 1.5 6 6.5l5-5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <ul class="select__list" role="listbox" aria-labelledby="contacts-region-label" hidden>
+                <li class="select__option" role="option" aria-selected="false" tabindex="-1">Москва</li>
+                <li class="select__option" role="option" aria-selected="false" tabindex="-1">Санкт-Петербург</li>
+                <li class="select__option" role="option" aria-selected="false" tabindex="-1">Московская область</li>
+                <li class="select__option" role="option" aria-selected="false" tabindex="-1">Ленинградская область</li>
+                <li class="select__option" role="option" aria-selected="false" tabindex="-1">Удмуртская Республика</li>
+                <li class="select__option" role="option" aria-selected="false" tabindex="-1">Другой регион</li>
+              </ul>
+              <input type="hidden" name="region" value="" required data-error="Выберите регион"
+                     data-validate data-focus=".select__trigger">
+            </div>
+          </div>
 
           <label class="field">
             <span class="visually-hidden">Телефон</span>
@@ -167,13 +179,15 @@
         <a href="palettes.html">Колеровка цвета</a>
       </nav>
 
-      <a class="footer__copy" href="legal.html">
-        Политика конфиденциальности и&nbsp;обработки персональных данных
-      </a>
+      <div class="footer__bottom">
+        <a class="footer__copy" href="legal.html">
+          Политика конфиденциальности и&nbsp;обработки персональных данных
+        </a>
 
-      <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
-        Заказать звонок
-      </button>
+        <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
+          Заказать звонок
+        </button>
+      </div>
     </div>
   </footer>
 

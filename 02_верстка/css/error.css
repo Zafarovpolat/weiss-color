@@ -62,7 +62,11 @@
   margin-top: clamp(20px, 2.11vw, 54px);
 }
 
-.error-page .btn { min-height: clamp(48px, 2.46vw, 63px); }
+.error-page .btn {
+  min-height: clamp(48px, 2.46vw, 63px);
+  /* обе кнопки одним кеглем (у .btn--outline был базовый, мельче коричневой) */
+  font-size: clamp(15px, 0.86vw, 22px);
+}
 
 /* в макете вторая кнопка шире первой по паддингам (269 против 355) */
 .error-page__actions .btn--outline {
@@ -73,7 +77,6 @@
   .error-page {
     min-height: 0;
     padding-bottom: clamp(40px, 6vw, 80px);
-    background-size: auto 62%;
     background-position: right bottom;
   }
 }
@@ -81,4 +84,12 @@
 @media (max-width: 540px) {
   .error-page { background-image: none; }
   .error-page__actions .btn { width: 100%; }
+  .error-page__eyebrow,
+  .error-page__code,
+  .error-page__title,
+  .error-page__text {
+    text-align: center;
+  }
+  .error-page__title,
+  .error-page__text { margin-inline: auto; }
 }

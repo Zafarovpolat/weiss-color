@@ -8,12 +8,15 @@
 .buy-hero {
   position: relative;
   min-height: clamp(420px, 36.05vw, 923px);
-  padding: clamp(24px, 4.52vw, 116px) clamp(16px, 8.79vw, 225px)
-    clamp(24px, 5.55vw, 142px) clamp(16px, 11.95vw, 306px);
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-block: clamp(24px, 4.52vw, 116px) clamp(24px, 5.55vw, 142px);
+  padding-inline: var(--container-pad);
   /* фото макета содержит и карточки, и блок преимуществ — показываем только
-     верхние 923px (небо + интерьер + банка), остальное собираем разметкой */
+     верхние 923px (небо + интерьер + банка), остальное собираем разметкой.
+     background-size намеренно не задаём: фиксированная высота полотна
+     (clamp(620px, 58.67vw, 1502px)) ломала пропорции фото и налезала
+     на карточки — пусть работает «100% auto» из шорткода выше. */
   background: #eceff4 url("../assets/img/buy-hero.png") center top / 100% auto no-repeat;
-  background-size: 100% clamp(620px, 58.67vw, 1502px);
 }
 
 .buy-hero__title {
@@ -118,8 +121,9 @@
 
 .buy-features {
   background: #f2f4f7;
-  padding: clamp(24px, 2.15vw, 55px) clamp(16px, 8.79vw, 225px)
-    clamp(24px, 2.15vw, 55px) clamp(16px, 11.95vw, 306px);
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-block: clamp(24px, 2.15vw, 55px);
+  padding-inline: var(--container-pad);
 }
 
 .buy-features__inner {
@@ -189,11 +193,24 @@
   .buy-features__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
   .buy-features__head { grid-column: 1 / -1; }
   .buy-feature { padding-left: 20px; }
+
+  /* В две колонки карточки больше не тянутся до макетных 320px: при
+     min-height кнопка «Перейти» уезжала вниз и над ней оставалось до 96px
+     пустоты (margin-top: auto делил свободную высоту). Высоту задаёт
+     контент, а минимальный зазор над кнопкой — нижнее поле текста:
+     сама кнопка по-прежнему прижата к низу и в ряду стоит ровно. */
+  .buy-card { min-height: 0; }
+  .buy-card__text { margin-bottom: clamp(14px, 1.4vw, 22px); }
 }
 
 @media (max-width: 540px) {
   .buy-cards { grid-template-columns: minmax(0, 1fr); }
   .buy-card { min-height: 0; }
+}
+
+/* 560 и ниже: три преимущества — по одному в строку.
+   Боковые поля страницы уже идут от --container-pad, отдельно их не трогаем. */
+@media (max-width: 560px) {
   .buy-features__inner { grid-template-columns: minmax(0, 1fr); }
   .buy-feature { padding-left: 16px; }
 }

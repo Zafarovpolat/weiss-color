@@ -5,27 +5,124 @@
    Fluid-величины (clamp) уже привязаны к макету 2560 (1:2560).
    ========================================================================== */
 
-/* ---------- Герой: пока ширина < 1834px, min-height 420px выше расчётной
-   (22.9vw) — кроп съезжает и в кадр попадает белая полоса фотографии.
-   Прижимаем кадр к верху, макетная посадка (25%) остаётся для ≥1834. ---------- */
-@media (max-width: 1833px) {
-  /* кадр «шире» блока — держим в кадре кресло и растение справа */
-  .hero__bg { object-position: 72% top; }
+/* ---------- Герой: кадр фона ----------
+   Больше 1920 — прижат к нижнему краю (макетная посадка снизу).
+   1833 и ниже — min-height 420px выше расчётной (22.9vw), кроп съезжает
+   и в кадр попадает белая полоса фотографии: поднимаем кадр на 30px. */
+@media (min-width: 1921px) {
+  .hero__bg { object-position: bottom; }
 }
 
-/* ---------- Герой главной: на узких экранах высота по контенту ----------
-   Фиксированный min-height 420px при узком вьюпорте обрезал банку
-   (overflow: hidden у .hero). */
-/* до 1023 герой в одну колонку: фото-подложка только мешает (кресло
-   оказывается прямо под банкой), высота — по контенту */
-@media (max-width: 1023px) {
+@media (max-width: 1833px) {
+  .hero__bg { object-position: 0 -30px; }
+}
+
+/* 1440 и ниже — кадр прижат к правому краю и поднят на 60px.
+   object-position работает только при cover: с fill картинка растягивается
+   по коробке и позиция игнорируется, поэтому fill здесь не годится. */
+@media (max-width: 1440px) {
+  .hero__bg {
+    object-fit: cover;
+    object-position: right -60px;
+  }
+}
+
+/* 1280 и ниже — кадр сдвинут влево на 360px и поднят на 60px */
+@media (max-width: 1280px) {
+  .hero__bg { object-position: -360px -60px; }
+}
+
+/* ---------- Герой на планшете: одна колонка на всю высоту экрана ----------
+   до 1024 герой занимает экран целиком за вычетом шапки: банка прижата
+   влево, копирайт — вправо (space-between), текст чуть поднят.
+   Фиксированный min-height 420px тут уже не работает — на узком экране
+   он обрезал банку (overflow: hidden у .hero). */
+@media (max-width: 1024px) {
   .hero__inner {
-    min-height: 0;
+    /* реальная высота шапки: 76px (лого 52 + поля) до 768, ниже — 72px.
+       Считаем от неё, а не от «макетных» 72: иначе герой на 4px выше экрана */
+    --header-h: 76px;
+    min-height: calc(100vh - var(--header-h));
+    min-height: calc(100dvh - var(--header-h));
+    justify-content: space-between;
     padding-block: clamp(28px, 5vw, 44px) clamp(20px, 4vw, 32px);
   }
-  .hero__product { width: clamp(180px, 34vw, 260px); }
-  .hero__copy { max-width: min(100%, 34ch); }
+  .hero__product { width: 30vw; }
+  .hero__copy {
+    max-width: min(100%, 34ch);
+    /* поднимаем копирайт: по центру экрана он читается ниже линии банки */
+    transform: translateY(-70px);
+  }
   .hero__bg { display: none; }
+}
+
+/* Телефоны: банка держит свою ширину (30vw — та же доля, что на планшете,
+   иначе на границе 768/769 ширина прыгала бы с 230 на 200) */
+@media (max-width: 768px) {
+  .hero__product {
+    width: 30vw;
+    min-width: 0;
+    /* не ужимаем: с flex-shrink: 1 на 541–768 банка съезжала до ~107px,
+       место забирает копирайт (у него min-width: 0) */
+    flex-shrink: 0;
+  }
+  .hero__copy { min-width: 0; }
+}
+
+/* ниже 768 корзина уменьшена до 52px — шапка становится 72px */
+@media (max-width: 767.98px) {
+  .hero__inner { --header-h: 72px; }
+}
+
+/* Узкие телефоны: логотип ужимается, иначе шапка переносится на вторую
+   строку (193px лого + корзина + бургер не влезают в 320) */
+@media (max-width: 360px) {
+  .logo img { width: clamp(140px, 44vw, 193px); height: auto; }
+}
+
+/* Узкие телефоны: банку скрываем, копирайт и текст по центру */
+@media (max-width: 540px) {
+  .hero__inner {
+    gap: 16px;
+    justify-content: center;
+  }
+  .hero__product { display: none; }
+  .hero__copy {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    margin-inline: auto;
+    text-align: center;
+    transform: none;
+  }
+  .hero__title { font-size: clamp(30px, 8vw, 38px); }
+}
+
+/* 340 и ниже: длинное слово заголовка шире оставшегося места */
+@media (max-width: 340px) {
+  .hero__title { font-size: 27px; }
+}
+
+/* ---------- 560 и ниже: боковые отступы контейнеров вдвое меньше ----------
+   Макетные 8.75vw на телефоне дают ≈49px при 560 — почти шестая часть строки
+   уходит в поля. Делим и vw, и минимумы ровно пополам: 24.5px при 560, 17px
+   при 390. Меньше не делаем — текст начинает липнуть к рамке.
+   Все страницы ходят по --container-pad, поэтому отдельных правил для
+   корзины/оформления/спасибо/карточки цвета больше не нужно. */
+@media (max-width: 560px) {
+  :root {
+    --container-pad: clamp(10px, 4.375vw, 112px);
+    /* шапка и подвал ходят по своей переменной — привязываем к контейнеру,
+       иначе логотип стоит на 20px, а контент на 17px и край «ломается» */
+    --header-pad: var(--container-pad);
+  }
+
+  /* шапка: у неё свои макетные поля (40 / 101), на телефоне это 20px —
+     выравниваем по контенту */
+  body .header__inner {
+    padding-left: var(--container-pad);
+    padding-right: var(--container-pad);
+  }
 }
 
 /* ---------- Планшет: две колонки там, где есть смысл ---------- */
@@ -44,8 +141,9 @@
   .footer__inner { justify-content: space-between; }
 }
 
-/* ---------- Более широкий планшет/малый десктоп ---------- */
-@media (min-width: 1024px) {
+/* ---------- Более широкий планшет/малый десктоп ----------
+   с 1025: ровно на 1024 работает компактный герой (см. блок ≤1024 выше) */
+@media (min-width: 1025px) {
   /* Герой: банка слева от копирайта (композиция макета) */
   .hero__inner {
     flex-direction: row;
@@ -79,25 +177,148 @@
     padding-right: 0;
     padding-block: clamp(40px, 3.44vw, 88px) clamp(32px, 1.37vw, 35px);
   }
+  /* Отрицательные поля снизу подрезаны: макетные vw-величины растут быстрее
+     паддинга секции (он в clamp), и на широких экранах веер уходил под нижний
+     край на 42px — обрезался вместе с основанием.
+     Фото тоже выровнено по низу: отрицательное нижнее поле снимает паддинг
+     секции, поэтому кадр садится ровно на нижнюю границу на любой ширине. */
   .coloring__photo {
     grid-column: auto;
-    align-self: start;
+    align-self: end;
     border-radius: 0;
-    margin-top: -2.93vw;   /* фото начинается на 13px ниже края секции */
-    margin-bottom: -1.37vw; /* и заканчивается ровно по её нижнему краю */
+    margin-top: -2.93vw;                              /* фото начинается выше контентной зоны */
+    margin-bottom: calc(-1 * clamp(32px, 1.37vw, 35px)); /* и садится по нижнему краю секции */
   }
   .coloring__fan {
+    /* Ширина веера: макетная доля, увеличенная на 5 %. От неё же считаются
+       прозрачная полоса в самом PNG (14 из 393 px по высоте = 1,2313 % ширины)
+       и компенсация роста margin-box, чтобы высоту секции по-прежнему задавало
+       фото, а не веер. */
+    --fan-w: calc(clamp(280px, 44.4vw, 1137px) * 1.05);
     justify-self: start;
-    align-self: start;
+    /* Веер прижат к нижней границе секции, как фото справа. Выравниваем по
+       низу грид-области и отрицательным нижним полем выходим за её нижнюю
+       границу: паддинг секции + прозрачная полоса PNG. В сумме видимый низ
+       веера попадает ровно на границу секции. */
+    align-self: end;
     width: max-content;
     max-width: none;
-    margin-left: -9.22vw;
-    margin-top: -4.06vw;
-    margin-bottom: -3.01vw;
+    margin-left: -10.22vw;
+    margin-top: calc(-4.06vw + 10px - var(--fan-w) * 0.017286);
+    margin-bottom: calc(-1 * (clamp(32px, 1.37vw, 35px) + var(--fan-w) * 0.012313));
   }
   .coloring__fan img {
+    width: var(--fan-w);
     max-width: none;
   }
+}
+
+/* Веер на узких десктопах: колонка текста занимает относительно больше места,
+   поэтому веер сдвигаем левее, чтобы зазор до текста оставался прежним.
+   Порядок важен: при ≤1440 побеждает -14vw. */
+@media (min-width: 1024px) and (max-width: 1600px) {
+  .coloring__fan { margin-left: -12vw; }
+}
+@media (min-width: 1024px) and (max-width: 1440px) {
+  .coloring__fan { margin-left: -14vw; }
+}
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .coloring__fan { margin-left: -16vw; }
+}
+@media (min-width: 1024px) and (max-width: 1160px) {
+  .coloring__fan { margin-left: -18vw; }
+}
+@media (min-width: 1024px) and (max-width: 1040px) {
+  .coloring__fan { margin-left: -20vw; }
+}
+
+/* 1024 и ниже: фото в «Колеровке» не показываем — на планшете и телефоне
+   секция идёт без него (веер остаётся) */
+@media (max-width: 1024px) {
+  .coloring__photo { display: none; }
+}
+
+/* Ровно 1024 — единственная ширина, где ещё работает трёхколоночная сетка:
+   без фото третью колонку убираем, иначе справа остаётся пустая полоса */
+@media (min-width: 1024px) and (max-width: 1024px) {
+  .coloring__inner {
+    grid-template-columns: minmax(300px, 16.4vw) minmax(0, 1fr);
+    padding-right: var(--container-pad);
+  }
+}
+
+/* ---------- Телефон и планшет: веер в одну строку с текстом ----------
+   До этой правки на ≤767 сетка была одноколоночной, и веер уезжал под
+   копирайт отдельной строкой. Теперь он стоит справа от текста:
+   заголовок идёт во всю ширину (в одну строку даже на 360), под ним
+   слева текст с кнопкой, справа — веер, выровненный по центру этого блока.
+   Раскладку даёт display: contents на .coloring__copy — дети становятся
+   грид-элементами и расставляются по строкам.
+   В <picture> для этого диапазона подключается компактный
+   coloring-fan-mobile.png (613×393): широкий макетный PNG в узкой колонке
+   выглядел бы обрезком. */
+@media (max-width: 768px) {
+  .coloring__inner {
+    grid-template-columns: minmax(0, 1fr) clamp(96px, 26vw, 220px);
+    column-gap: clamp(10px, 2vw, 24px);
+    row-gap: 0;
+    align-items: start;
+  }
+  .coloring__copy { display: contents; }
+  .coloring__title {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    /* макетный line-height: 0.6 рассчитан на одну строку — при переносе
+       (узкие экраны) строки склеиваются */
+    line-height: 1.12;
+  }
+  /* текст и кнопка — один блок в левой колонке: кнопка идёт сразу за текстом,
+     а не через всю высоту веера */
+  .coloring__body {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+  }
+  .coloring__text { max-width: none; }
+  .coloring .btn {
+    /* в узкой колонке широкие боковые поля ломают строку «ПОДОБРАТЬ ЦВЕТ»;
+       кнопка может чуть выйти в зазор — под веером там пусто */
+    width: max-content;
+    max-width: none;
+    padding-inline: 14px;
+    gap: 8px;
+  }
+  .coloring__fan {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    justify-self: end;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+  .coloring__fan img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* пропорции мобильного PNG: до загрузки бокс уже правильной высоты */
+    aspect-ratio: 613 / 393;
+  }
+}
+
+/* ---------- 560 и ниже: веер убираем совсем ----------
+   Блок стоит ПОСЛЕ правил ≤768 намеренно: при равной специфичности побеждает
+   последний, иначе двухколоночная сетка из блока выше перебила бы это.
+   На такой ширине под веер остаётся 90–120px — он читается как иконка и
+   только отнимает место у текста, поэтому секция идёт одной колонкой. */
+@media (max-width: 560px) {
+  .coloring__fan { display: none; }
+  .coloring__inner { grid-template-columns: minmax(0, 1fr); }
+  .coloring__body { grid-column: 1 / -1; }
+  .coloring .btn { width: auto; max-width: 100%; }
 }
 
 /* ---------- Десктоп: раскрываем навигацию вместо бургера ---------- */
@@ -146,8 +367,11 @@
 
   .cart { margin-left: clamp(8px, 1.88vw, 48px); }
 
-  /* В макете кнопка подвала не «прижата» к краю, а продолжает ряд */
-  .footer__inner > .btn { margin-right: clamp(0px, 3.9vw, 100px); }
+  /* Кнопка подвала прижата к правому краю контентной зоны, как CTA в шапке */
+  .footer__inner > .btn { margin-right: 0; }
+
+  /* «Политика» и кнопка — справа: свободное место забирает левый отступ */
+  .footer__copy { margin-left: auto; }
 }
 
 /* ---------- 1280–1919: шапка в одну строку ----------
@@ -218,7 +442,7 @@
   /* PSD-границы текста — tight-bbox: компенсируем ведущие браузера,
      чтобы ink совпадал с макетом (y=1120/1121) */
   .benefits__list { margin-top: -4px; }
-  .benefits__heading { max-width: 290px; margin-top: -6px; }
+  .benefits__heading { max-width: 590px; margin-top: -6px; }
   .benefits__num { width: clamp(36px, 1.72vw, 44px); margin-top: 8px; }
   .benefits__list { grid-template-columns: 0.868fr repeat(3, minmax(0, 1fr)); column-gap: 0; }
   /* секция короче на 4px: отступ описаний вниз (макет ink y=1179) */
@@ -260,8 +484,12 @@
     margin-left: clamp(24px, 5.78vw, 148px);
     margin-bottom: 6px;
   }
+  .footer__bottom {
+    /* «Политика» и кнопка прижаты к правому краю: свободное место забирает
+       левый отступ, а не фиксированные макетные 115px */
+    margin-left: auto;
+  }
   .footer__copy {
-    margin-left: clamp(20px, 4.49vw, 115px);
     margin-bottom: 10px;
     color: var(--color-white);
     font-size: clamp(14px, 0.594vw, 15.21px);
@@ -276,6 +504,43 @@
 @media (min-width: 1920px) {
   /* На очень широких экранах придерживаемся макетных пропорций */
   .benefits__item { padding-right: clamp(24px, 1.8vw, 46px); }
+}
+
+/* ---------- 1920 и ниже: подвал собирается от левого края ----------
+   На широкой вёрстке «Политика» уезжала вправо (margin-left: auto), а кнопка
+   прижималась к правому краю — на 1920 и уже из-за этого в строке появлялись
+   рваные пустоты. Здесь подвал идёт в две строки: сверху логотип и меню,
+   снизу «Политика» и кнопка звонка в одном ряду от левого края.
+   Блок стоит после @media (min-width: 1920px) — при ровно 1920 он должен
+   перебить тамошние margin-left: auto и nowrap. */
+@media (max-width: 1920px) {
+  .footer__inner {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    row-gap: 4px;
+  }
+  .footer__nav,
+  .footer__copy,
+  .footer__cta { margin-left: 0; }
+
+  /* flex-basis 100% гарантированно переносит пару на свою строку,
+     даже когда при 1920 всё влезало в один ряд */
+  .footer__bottom {
+    flex: 1 1 100%;
+    margin-left: 0;
+    gap: clamp(12px, 2vw, 32px);
+  }
+  /* длинная «Политика» сжимается, а не выдавливает кнопку на новую строку */
+  .footer__copy {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* совсем узко: «Политика» занимает строку целиком, кнопка уходит под неё */
+@media (max-width: 560px) {
+  .footer__copy { flex: 1 1 100%; }
 }
 
 /* ==========================================================================
@@ -332,8 +597,9 @@ dialog.mcard:not([open]) { display: none; }
   place-items: center;
 }
 
-/* сортировка и пагинация */
-.sort__select { min-height: 44px; padding-block: 10px; }
+/* сортировка (кастомный дропдаун) и пагинация */
+.sort__trigger { min-height: 44px; padding-block: 10px; }
+.sort__option { min-height: 44px; display: flex; align-items: center; }
 .pagination__item {
   min-width: 44px;
   min-height: 44px;
@@ -343,7 +609,7 @@ dialog.mcard:not([open]) { display: none; }
 }
 
 /* табы цвета */
-.c-tabs__item { min-height: 44px; display: inline-flex; align-items: center; }
+.c-tabs__item { display: inline-flex; align-items: center; }
 
 /* кнопки-ссылки в карточках партнёров */
 .buy-card__link { min-height: 44px; }

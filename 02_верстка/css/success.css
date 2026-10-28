@@ -6,7 +6,8 @@
 
 .success-page {
   background: #f3f3f5;
-  padding-inline: clamp(16px, 8.2vw, 210px) clamp(16px, 9.38vw, 240px);
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-inline: var(--container-pad);
   padding-block: clamp(20px, 1.46vw, 37px) clamp(20px, 7.19vw, 184px);
 }
 
@@ -35,7 +36,8 @@
   place-items: center;
   width: clamp(96px, 7.27vw, 186px);
   height: clamp(96px, 7.27vw, 186px);
-  margin: clamp(14px, 0.63vw, 16px) auto 0;
+  /* чуть больше воздуха над знаком успеха */
+  margin: clamp(28px, 1.56vw, 40px) auto 0;
   background: #e6f3ea;
   border-radius: 50%;
 }
@@ -59,7 +61,8 @@
 }
 
 .success-lead {
-  max-width: clamp(320px, 40.9vw, 1047px);
+  /* шире, чтобы текст влезал в 2–3 строки и не рвался */
+  max-width: clamp(320px, 52vw, 1080px);
   margin: clamp(6px, 0.31vw, 8px) auto 0;
   font-size: clamp(16px, 0.98vw, 25px);
   line-height: 1.44;
@@ -95,9 +98,17 @@
 /* --- Разделитель и список подсказок --- */
 
 .success-divider {
-  margin: clamp(18px, 1.56vw, 40px) 0 0;
+  margin: clamp(18px, 1.56vw, 40px) auto 0;
+  /* на макете 2560 линия во всю ширину карточки */
+  width: 100%;
+  max-width: 100%;
   border: 0;
   border-top: 1px solid #dcdcdc;
+}
+
+/* 1440 и меньше — линия примерно на 70% ширины, по центру */
+@media (max-width: 1440px) {
+  .success-divider { width: 70%; }
 }
 
 .success-tips {
@@ -128,7 +139,7 @@
 }
 
 .success-tip__icon svg {
-  width: 42%;
+  width: 55%;
   height: auto;
 }
 
@@ -202,11 +213,59 @@
 @media (max-width: 540px) {
   .success-card { padding: 24px 16px 28px; }
 
+  /* на телефоне весь блок компактнее: кегли упираются в минимумы clamp(),
+     рассчитанные на десктоп, поэтому задаём явно */
+  .success-badge {
+    width: 72px;
+    height: 72px;
+    margin-top: 18px;
+  }
+
+  .success-badge svg { width: 42%; }
+
+  .success-title {
+    margin-top: 14px;
+    font-size: 24px;
+    line-height: 1.14;
+  }
+
+  .success-lead {
+    max-width: none;
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* жёсткие переносы из макета на узком экране дают рваные строки */
+  .success-lead br { display: none; }
+
+  .success-number {
+    width: 100%;
+    margin-top: 14px;
+    padding-block: 8px;
+    font-size: 13px;
+  }
+
+  .success-divider { margin-top: 18px; }
+
+  .success-tips {
+    gap: 14px;
+    margin-top: 18px;
+  }
+
   .success-tip {
     grid-template-columns: 52px minmax(0, 1fr);
     align-items: start;
     gap: 12px;
   }
+
+  .success-tip__title {
+    padding-top: 4px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .success-tip__text { font-size: 12px; }
 
   .success-actions {
     flex-direction: column;

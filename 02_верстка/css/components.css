@@ -138,11 +138,14 @@
   margin: 0;
   font-size: var(--fs-benefits-title);
   line-height: 1.45;
+  /* в макете набрано в два веса: «к профессионалам» жирнее остального текста */
+  font-weight: var(--fw-regular);
   letter-spacing: 0;
   text-transform: uppercase;
   color: var(--color-ink);
-  max-width: 290px;
+  max-width: 590px;
 }
+.benefits__heading-accent { font-weight: var(--fw-semibold); }
 
 /* ---------- Модальное окно «Заказать звонок» (М25) ---------- */
 .modal {
@@ -266,3 +269,28 @@
   font-weight: var(--fw-medium);
   color: #2e6b4f;
 }
+
+/* --- Хлебные крошки: единый вид на всех страницах ---
+   Две разметки (.crumbs простым текстом и .breadcrumbs списком) должны
+   выглядеть одинаково: 13–15px, обычный вес, светлый разделитель,
+   текущая страница — чёрная. */
+.crumbs,
+.breadcrumbs {
+  font-size: clamp(13px, 0.59vw, 15px);
+  line-height: 1.4;
+  /* цвет уходит на разделители — это текстовые узлы между ссылками */
+  color: #b6b7bb;
+}
+
+.crumbs a,
+.breadcrumbs a {
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.crumbs a:hover,
+.breadcrumbs a:hover { color: var(--color-brown); }
+
+.crumbs [aria-current],
+.breadcrumbs [aria-current] { color: #000000; }

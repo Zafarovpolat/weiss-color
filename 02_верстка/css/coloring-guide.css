@@ -6,7 +6,9 @@
 
 .guide-page {
   background: #f8f8fa;
-  padding: clamp(24px, 2.3vw, 60px) clamp(16px, 4vw, 40px) clamp(40px, 3vw, 72px);
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-block: clamp(24px, 2.3vw, 60px) clamp(40px, 3vw, 72px);
+  padding-inline: var(--container-pad);
 }
 
 /* Белая карточка-инструкция (в макете: 1822×1053, радиус ~28) */

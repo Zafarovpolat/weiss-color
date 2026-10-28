@@ -8,9 +8,21 @@
 .about-page {
   position: relative;
   min-height: clamp(600px, 52.6vw, 1347px);
-  padding: clamp(20px, 1.6vw, 41px) clamp(16px, 8.71vw, 223px)
-    clamp(24px, 2.5vw, 64px) clamp(16px, 8.63vw, 221px);
-  background: #f8f8fa url("../assets/img/about-hero.png") right top / auto 100% no-repeat;
+  padding-block: clamp(20px, 1.6vw, 41px) clamp(24px, 2.5vw, 64px);
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-inline: var(--container-pad);
+
+  /* Цветной подложки нет — секция прозрачная, фон даёт страница.
+     В самом PNG сверху лежит полоса ровного светлого тона (118px из 1444,
+     ≈8.17% высоты снимка), из-за неё фото визуально начиналось примерно
+     на 110px ниже верха секции, а не вплотную, как в макете.
+     Лечим без обрезки файла: тянем картинку на 108.9% высоты
+     (100 / (1 − 0.0817)) и прижимаем к низу — тогда верхние 8.9% уходят
+     за верхнюю кромку ровно на ширину этой полосы, и снимок начинается
+     от самого верха. По ширине картинка при этом всегда шире секции
+     (её пропорция 1.78 против 1.90 у секции), поэтому ни слева, ни снизу
+     просветов не остаётся. */
+  background: #f0eff2 url("../assets/img/about-hero.png") right bottom / auto 108.9% no-repeat;
 }
 
 /* Крошки: отступ до заголовка (в макете 20px при ширине 2560) */
@@ -112,11 +124,6 @@
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
 @media (max-width: 1280px) {
-  .about-page {
-    background-position: right -140px top;
-    background-size: auto 100%;
-  }
-
   .about-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .about-partners { gap: clamp(16px, 3vw, 40px); }
 }
@@ -129,6 +136,21 @@
   }
 
   .about-features { grid-template-columns: minmax(0, 1fr); }
-  .about-partners { gap: 20px; }
+  .about-partners {
+    gap: 20px;
+    /* логотипы отрываются от блока преимуществ чуть сильнее */
+    margin-top: clamp(28px, 3.2vw, 40px);
+  }
   .about-partners img { max-width: 120px; max-height: 60px; }
+}
+
+/* Мобилка: текст крупнее по интерлиньяжу и с более воздушными абзацами */
+@media (max-width: 768px) {
+  .about-text p {
+    line-height: 1.55;
+  }
+
+  .about-text p + p {
+    margin-top: 14px;
+  }
 }

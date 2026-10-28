@@ -22,7 +22,8 @@
 .breadcrumbs {
   font-size: clamp(13px, 0.59vw, 15px);
   line-height: 1.4;
-  color: var(--color-muted);
+  /* цвет уходит на разделители-текстовые узлы; ссылки красятся отдельно */
+  color: #b6b7bb;
 }
 
 .breadcrumbs__list {
@@ -32,7 +33,7 @@
 }
 
 .breadcrumbs a {
-  color: inherit;
+  color: var(--color-muted);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -46,7 +47,8 @@
 }
 
 .breadcrumbs [aria-current="page"] {
-  color: var(--color-muted);
+  /* текущая страница — чёрная, одинаково на всех страницах */
+  color: #000000;
 }
 
 /* Заголовок экрана (в PSD набран строчными, на макете — капс) */
@@ -96,42 +98,103 @@
 
 .catalog__main {
   min-width: 0;
-  padding-right: clamp(0px, 5.31vw, 136px);
 }
 
 /* Сортировка — прижата вправо */
 .sort {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-end;
   gap: 6px;
   font-size: clamp(14px, 0.66vw, 17px);
-  /* ширина ограничена: длинные <option> не растягивают строку сортировки */
   line-height: 1.4;
   font-weight: 500;
   color: var(--color-muted);
 }
 
-.sort__select {
-  appearance: none;
-  -webkit-appearance: none;
-  width: clamp(140px, 6.53vw, 167px);
-  border: 0;
-  background: transparent url("../assets/img/chevron-down.svg") no-repeat right 0.15em center;
-  background-size: 15px 11px;
+/* Кастомный дропдаун сортировки (нативный <select> в макет не укладывался) */
+.sort__dropdown { position: relative; }
+
+.sort__trigger {
+  display: inline-flex;
+  align-items: center;
+  /* ширина по содержимому, но не уже макетных 140–167: длинные пункты
+     («по возрастанию цены») в фиксированную ширину не влезали и обрезались
+     многоточием */
+  width: auto;
+  min-width: clamp(140px, 6.53vw, 167px);
+  max-width: 100%;
   padding: 0 24px 0 0;
-  margin: 0;
+  border: 0;
+  background: none;
   font: inherit;
   font-weight: 500;
   color: inherit;
+  text-align: left;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
-.sort__select:hover,
-.sort__select:focus-visible {
-  color: var(--color-brown);
+.sort__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+.sort__chevron {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 15px;
+  height: 11px;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+}
+
+.sort__trigger:hover,
+.sort__trigger:focus-visible,
+.sort__dropdown.is-open .sort__trigger { color: var(--color-brown); }
+
+.sort__trigger:focus-visible { outline: 2px solid var(--color-teal); outline-offset: 3px; }
+
+.sort__dropdown.is-open .sort__chevron { transform: translateY(-50%) rotate(180deg); }
+
+.sort__list {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 100%;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 32px));
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--color-white);
+  border: 1px solid #e8e8ea;
+  border-radius: 4px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.sort__list[hidden] { display: none; }
+
+.sort__option {
+  padding: 8px 12px;
+  border-radius: 3px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sort__option.is-active { background: #f4f5f7; color: var(--color-ink); }
+
+.sort__option[aria-selected="true"] { color: var(--color-ink); font-weight: 600; }
+
+.sort__option:focus { outline: none; }
+/* фокус ставится программно при открытии — держим кольцо мягким,
+   чтобы оно не читалось как рамка вокруг пункта */
+.sort__option:focus-visible { outline: 2px solid rgba(57, 117, 125, 0.45); outline-offset: -2px; }
 
 /* --- Карточки товаров --- */
 
@@ -144,6 +207,10 @@
 }
 
 .product {
+  /* внутренние боковые поля карточки: от них же считается минимальная ширина
+     медиа-колонки, поэтому вынесены в переменные */
+  --card-pad-l: clamp(24px, 3.75vw, 96px);
+  --card-pad-r: clamp(12px, 1vw, 26px);
   display: flex;
   min-height: clamp(210px, 9.38vw, 240px);
   border: 2px solid #eeeeee;
@@ -155,8 +222,12 @@
 .product__media {
   flex: none;
   width: clamp(190px, 12.23vw, 313px);
+  /* Самая широкая картинка в карточках — 137px. Без этого минимума медиа-колонка
+     упиралась в текст: на 1440 зазор между банкой и .product__body становился 0,
+     на 1280–1700 — 6–8px. Теперь между ними всегда ≥12px. */
+  min-width: calc(var(--card-pad-l) + 137px + clamp(12px, 0.7vw, 18px));
   padding-top: clamp(16px, 1.02vw, 26px);
-  padding-left: clamp(24px, 3.75vw, 96px);
+  padding-left: var(--card-pad-l);
   display: flex;
   align-items: flex-start;
 }
@@ -171,10 +242,44 @@
   flex: 1;
   min-width: 0;
   padding-top: clamp(10px, 0.55vw, 14px);
-  padding-right: clamp(12px, 1vw, 26px);
+  padding-right: var(--card-pad-r);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+/* 1920 и ниже: внутренние поля карточки заметно уже — при макетных значениях
+   на 1920 это 72px слева и 19px справа, для рабочего стола слишком много.
+   На 2560 всё остаётся макетным. */
+@media (max-width: 1920px) {
+  .product {
+    --card-pad-l: clamp(20px, 2.6vw, 50px);
+    --card-pad-r: clamp(12px, 1.1vw, 21px);
+  }
+
+  /* Кнопка «В корзину» упиралась в нижнюю границу карточки: у .product__body
+     не было нижнего поля, и как только содержимое переставало умещаться в
+     min-height, кнопка прилипала к рамке (замер: зазор 2px на 1664 и ниже).
+     Нижнее поле равно верхнему — карточка остаётся симметричной по вертикали. */
+  .product__body {
+    padding-bottom: clamp(10px, 0.55vw, 14px);
+  }
+}
+
+/* 1440 и ниже: картинка чуть мельче, а её левое поле равно правому полю
+   текста — края карточки становятся симметричными. Ширину медиа-колонки
+   отпускаем в auto (иначе фиксированные 190px давали пустую полосу справа
+   от банки), а зазор задаём column-gap. */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .product {
+    --card-pad-l: var(--card-pad-r);
+    column-gap: clamp(12px, 1.4vw, 28px);
+  }
+  .product__media {
+    width: auto;
+    min-width: 0;
+  }
+  .product__media img { max-width: clamp(116px, 9.2vw, 132px); }
 }
 
 .product__title {
@@ -252,6 +357,13 @@
   font-size: clamp(15px, 0.7vw, 18px);
 }
 
+/* Только каталог: воздух над пагинацией. У секции каталога нижнего паддинга
+   нет, и блок прилипал к последнему ряду карточек. Отдельный класс, потому что
+   .pagination общий для палеток, оттенков и колеровки — там свои отступы. */
+.pagination--catalog {
+  padding-top: clamp(28px, 2.2vw, 56px);
+}
+
 .pagination a {
   color: #43484f;
   text-decoration: none;
@@ -281,11 +393,19 @@
 }
 
 /* Компактная раскладка (экраны «Колеровка цвета»): цифры в ячейках 49px,
-   зазоры и активный квадрат 33×31 — по PSD 2560w */
+   зазоры и активный квадрат 33×31 — по PSD 2560w.
+   Единый отступ сверху, чтобы пагинация не выглядела иначе на разных
+   страницах (palettes/shades/cart). */
 .pagination--compact {
   gap: 0;
+  padding-top: clamp(28px, 2.2vw, 56px);
   font-size: clamp(15px, 0.78vw, 20px);
 }
+
+/* В контекстах со своим ритмом (корзина, визуализатор в колонке) —
+   оставляем старый отступ, общий padding не нужен. */
+.cart-pagination .pagination,
+.viz-page .pagination { padding-top: 0; }
 
 .pagination--compact .pagination__item {
   display: grid;
@@ -589,6 +709,8 @@
 
   .product__media {
     width: auto;
+    /* в вертикальной карточке минимум не нужен — картинка идёт над текстом */
+    min-width: 0;
     padding: 20px 16px 0;
     justify-content: center;
   }
@@ -659,4 +781,140 @@
   .product__price { font-size: 15px; }
   .product__body { align-items: stretch; text-align: left; }
   .product__desc { max-width: none; }
+}
+
+/* --- 1920 и ниже: раньше здесь каталог и его шапка получали более узкие
+   поля (clamp(20px, 6.5vw, 125px)). Убрано ради правила «у всех страниц
+   один контейнер»: поля задаёт только --container-pad. */
+
+/* --- 1280 и ниже: фильтр переезжает из левой колонки наверх ---
+   Каталог становится одноколоночным, а фильтр — панелью над карточками:
+   строка заголовка, строка чекбоксов в линию, и внизу цена вместе с
+   кнопками одной строкой. Блок стоит в конце файла, чтобы перекрывать
+   правила из @media (max-width: 1024px) выше. */
+@media (max-width: 1280px) {
+  .catalog {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(20px, 2.2vw, 28px);
+  }
+
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(14px, 1.5vw, 20px) clamp(16px, 2.4vw, 34px);
+    margin-top: 0;
+    padding: clamp(16px, 1.5vw, 22px) clamp(16px, 1.7vw, 24px);
+  }
+
+  .filter__title {
+    order: 1;
+    flex: 1 1 100%;
+    font-size: clamp(17px, 1.25vw, 20px);
+  }
+
+  /* чекбоксы — второй строкой во всю ширину панели */
+  .filter__group {
+    order: 2;
+    flex: 1 1 100%;
+    margin-top: 0;
+  }
+
+  .filter__list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: clamp(10px, 1vw, 16px) clamp(18px, 2.4vw, 34px);
+  }
+
+  /* нижняя строка: цена и кнопки в одну линию, ползунок забирает остаток */
+  .filter__price {
+    order: 3;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.1vw, 16px);
+    margin-top: 0;
+  }
+
+  .filter__subtitle {
+    font-size: clamp(14px, 0.95vw, 16px);
+    white-space: nowrap;
+  }
+
+  .range {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 72px;
+    margin-top: 0;
+  }
+
+  .filter__prices {
+    gap: 8px;
+    margin-top: 0;
+    white-space: nowrap;
+  }
+
+  .filter__apply { order: 4; }
+
+  .filter__reset { order: 5; }
+
+  .filter__apply,
+  .filter__reset {
+    flex: none;
+    width: auto;
+    height: clamp(42px, 3.2vw, 48px);
+    margin-top: 0;
+    padding: 0 clamp(16px, 1.7vw, 26px);
+    font-size: clamp(12px, 0.8vw, 14px);
+  }
+}
+
+/* 768 и ниже: нижняя строка разбирается — цена отдельно, кнопки отдельно,
+   но обе части по-прежнему идут после чекбоксов. */
+@media (max-width: 768px) {
+  .filter__price {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .filter__apply {
+    order: 4;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .filter__reset {
+    order: 5;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+/* Совсем узкие экраны: панель компактнее, чекбоксы — вертикальным списком */
+@media (max-width: 560px) {
+  .filter {
+    padding: 16px;
+  }
+
+  .filter__apply,
+  .filter__reset {
+    padding-inline: 12px;
+  }
+
+  .filter__list {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* 400 и ниже: подпись «Цена» у ползунка убираем — на узком экране она
+   съедает ~45px, которых не хватает самому ползунку. Доступное имя
+   ползунка при этом сохраняется: aria-labelledby ссылается на скрытый
+   элемент, а скрытые узлы всё равно участвуют в вычислении имени. */
+@media (max-width: 400px) {
+  .filter__subtitle {
+    display: none;
+  }
 }

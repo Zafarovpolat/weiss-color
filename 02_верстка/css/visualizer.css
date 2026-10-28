@@ -7,12 +7,13 @@
   background: #f8f8fa;
 }
 
-/* --- Контейнер (в макете: 220px слева, 201px справа) --- */
+/* --- Контейнер: та же полоса, что у остальных страниц --- */
 
 .viz-main {
-  max-width: 2560px;
-  padding: clamp(40px, 3.75vw, 96px) clamp(20px, 7.85vw, 201px) 0
-    clamp(20px, 8.59vw, 220px);
+  max-width: calc(2112px + 2 * var(--container-pad));
+  margin-inline: auto;
+  padding-block: clamp(40px, 3.75vw, 96px) 0;
+  padding-inline: var(--container-pad);
 }
 
 /* --- Заголовок и подсказка --- */
@@ -376,7 +377,8 @@
 
 @media (max-width: 1024px) {
   .viz-main {
-    padding: clamp(32px, 4vw, 48px) clamp(20px, 3vw, 32px) 0;
+    padding-block: clamp(32px, 4vw, 48px) 0;
+    padding-inline: var(--container-pad);
   }
 
   .viz-cols {

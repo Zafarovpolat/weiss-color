@@ -69,10 +69,21 @@
   }
 
   /* Только поля внутри формы: у счётчиков количества вне форм (корзина)
-     своя логика в cart.js, и лишние сообщения им не нужны */
+     своя логика в cart.js, и лишние сообщения им не нужны.
+     Исключение — скрытые input'ы с data-validate: так работает кастомный
+     селект (значение хранится в input[type="hidden"]). */
   function isField(el) {
     return el && el.matches && el.matches('input, select, textarea') &&
-      SKIP.indexOf(el.type) === -1 && !el.disabled && el.form;
+      !el.disabled && el.form &&
+      (SKIP.indexOf(el.type) === -1 || el.hasAttribute('data-validate'));
+  }
+
+  /* Элемент, который получает фокус при ошибке: у кастомных контролов
+     сам input скрыт, поэтому фокус уводим на видимую кнопку (data-focus) */
+  function focusTargetOf(field) {
+    if (!field.dataset.focus) return null;
+    var holder = field.closest('.field') || field.parentNode;
+    return holder ? holder.querySelector(field.dataset.focus) : null;
   }
 
   /* Текст ошибки для поля; пустая строка — поле валидно */
@@ -136,11 +147,14 @@
     if (!node) return;
     node.textContent = message;
     field.setAttribute('aria-invalid', 'true');
+    var target = focusTargetOf(field);
+    if (target) target.setAttribute('aria-invalid', 'true');
     if (field.dataset.describedby === undefined) {
       field.dataset.describedby = field.getAttribute('aria-describedby') || '';
     }
     var ids = (field.dataset.describedby ? field.dataset.describedby + ' ' : '') + node.id;
     field.setAttribute('aria-describedby', ids);
+    if (target) target.setAttribute('aria-describedby', ids);
   }
 
   function clearError(field) {
@@ -148,6 +162,11 @@
     var node = holder ? holder.querySelector('.field__error') : null;
     if (node) node.remove();
     field.removeAttribute('aria-invalid');
+    var target = focusTargetOf(field);
+    if (target) {
+      target.removeAttribute('aria-invalid');
+      target.removeAttribute('aria-describedby');
+    }
     if (field.dataset.describedby !== undefined) {
       if (field.dataset.describedby) field.setAttribute('aria-describedby', field.dataset.describedby);
       else field.removeAttribute('aria-describedby');
@@ -217,8 +236,9 @@
     if (!first) first = consent;
 
     if (first) {
-      first.focus();
-      if (first.scrollIntoView) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      var target = focusTargetOf(first) || first;
+      target.focus();
+      if (target.scrollIntoView) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
       return false;
     }
     return true;
