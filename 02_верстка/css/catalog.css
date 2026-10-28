@@ -327,6 +327,28 @@
   color: var(--color-white);
 }
 
+/* Карточка ведёт на страницу товара: фото и заголовок — ссылки.
+   .product__btn теперь <a>, ему нужно центрирование текста как у кнопки. */
+.product__media {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.product__title a:hover { color: var(--color-brown); }
+
+.product__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 /* Карточка в состоянии наведения (на макете показана 2-я слева) */
 .product:hover,
 .product:focus-within,
@@ -508,6 +530,11 @@
   background: var(--color-brown);
   border-color: var(--color-brown);
 }
+
+/* Наведение на пункт фильтра: рамка темнеет, текст — коричневый */
+.check:hover .check__box { border-color: var(--color-brown); }
+.check:hover .check__label { color: var(--color-brown); }
+.check:hover input:checked + .check__box { background: #734426; border-color: #734426; }
 
 .check input:checked + .check__box::after {
   opacity: 1;

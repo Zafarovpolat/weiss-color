@@ -158,6 +158,12 @@
   outline-offset: 2px;
 }
 
+/* Наведение на селектор палитры: рамка и текст темнеют */
+.viz-select:hover {
+  border-color: var(--color-teal);
+  color: var(--color-ink);
+}
+
 .viz-select svg {
   width: clamp(20px, 1.17vw, 30px);
   height: clamp(12px, 0.7vw, 18px);
@@ -335,6 +341,16 @@
   outline-offset: -3px;
 }
 
+/* Наведение на превью сцены: подсветка рамкой, активная — не темнеет */
+.viz-thumb:hover img {
+  outline: 3px solid rgba(57, 117, 125, 0.55);
+  outline-offset: -3px;
+}
+
+.viz-thumb--active:hover img {
+  outline-color: var(--color-teal);
+}
+
 /* Кнопки «предыдущий / следующий интерьер» */
 
 .viz-prev,
@@ -347,6 +363,19 @@
   background: rgba(255, 255, 255, 0.85);
   border: 0;
   cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.viz-prev:hover,
+.viz-next:hover {
+  background: #fff;
+  transform: scale(1.06);
+}
+
+.viz-prev:focus-visible,
+.viz-next:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
 }
 
 /* лента по центру кадра — кнопки симметрично по её краям */

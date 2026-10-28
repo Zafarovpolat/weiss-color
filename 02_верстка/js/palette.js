@@ -11,3 +11,19 @@ document.querySelectorAll('.pselect').forEach(root => {
     control.setAttribute('aria-expanded', String(open));
   });
 });
+
+// М19: выбор палитры уводит в список её оттенков (М07).
+// Без этого страница была тупиком: из неё не было ни одной ссылки вперёд.
+const selectorPage = document.querySelector('.selector-page');
+if (selectorPage) {
+  selectorPage.querySelectorAll('.pselect__option').forEach(option => {
+    const go = () => { window.location.href = 'shades.html'; };
+    option.addEventListener('click', go);
+    option.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        go();
+      }
+    });
+  });
+}

@@ -187,3 +187,21 @@
     }
   });
 })();
+
+/* ---------- Крестик в окнах-демо (М06, М17, М20, М23, М25) ----------
+   На реальном сайте это модальное окно и оно просто закрывается. Отдельные
+   страницы-демо показывают его на подложке, поэтому «Закрыть» возвращает
+   на предыдущий экран — раньше кнопка не делала ничего. */
+(() => {
+  const buttons = document.querySelectorAll('.mcard__close');
+  if (!buttons.length) return;
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const host = btn.closest('dialog');
+      if (host) { host.close(); return; }
+      if (history.length > 1) history.back();
+      else window.location.href = 'catalog.html';
+    });
+  });
+})();

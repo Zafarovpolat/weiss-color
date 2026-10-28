@@ -53,6 +53,9 @@ body.page-fill main {
   outline-offset: 2px;
 }
 
+/* Наведение на селектор каталога */
+.pselect__control:hover { border-color: var(--color-teal); }
+
 .pselect__icon {
   width: clamp(20px, 1.46vw, 30px);
   height: clamp(12px, 0.88vw, 18px);

@@ -174,3 +174,43 @@
 
   render();
 })();
+
+/* ---------- Кнопки фильтра ----------
+   Настоящей фильтрации на этапе вёрстки быть не может: все шесть демо-карточек
+   с одной ценой и без категорий, реальные товары приходят на этапе 2 из WP.
+   Поэтому «Сбросить» приводит фильтр к исходному состоянию (иначе кнопка
+   не делала ничего), а «Применить» подтверждает выбор и прокручивает к сетке —
+   на мобиле фильтр стоит над товарами, и это ровно тот переход, которого ждут. */
+(function () {
+  "use strict";
+
+  var panel = document.querySelector(".filter");
+  var apply = document.querySelector(".filter__apply");
+  var reset = document.querySelector(".filter__reset");
+  if (!panel || (!apply && !reset)) return;
+
+  var boxes = panel.querySelectorAll('input[name="category"]');
+  var ranges = panel.querySelectorAll('input[type="range"]');
+  var list = document.querySelector(".products");
+
+  function resetFilter() {
+    Array.prototype.forEach.call(boxes, function (box) {
+      box.checked = box.value === "all";
+    });
+
+    Array.prototype.forEach.call(ranges, function (input) {
+      var initial = input.getAttribute("value");
+      if (initial !== null) input.value = initial;
+      // событие пересчитывает заливку ползунка и подписи «от / до»
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  }
+
+  if (reset) reset.addEventListener("click", resetFilter);
+
+  if (apply) {
+    apply.addEventListener("click", function () {
+      if (list) list.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+})();
