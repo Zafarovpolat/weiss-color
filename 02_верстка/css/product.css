@@ -294,6 +294,10 @@
     width: min(397px, 100%);
   }
 
+  .p-hero__can img {
+    width: clamp(150px, 34vw, 220px);
+  }
+
   .p-specs__row {
     grid-template-columns: 1fr;
     gap: 4px;

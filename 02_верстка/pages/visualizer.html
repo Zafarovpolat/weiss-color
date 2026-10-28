@@ -115,12 +115,24 @@
 
           <h2 class="viz-choose">Выберите цвет</h2>
 
-          <button class="viz-select" type="button" aria-haspopup="listbox" aria-expanded="false">
-            Каталог ACE PAINT
-            <svg viewBox="0 0 30 18" fill="none" aria-hidden="true">
-              <path d="M2 2l13 13L28 2" stroke="currentColor" stroke-width="3" stroke-linecap="square"/>
-            </svg>
-          </button>
+          <div class="viz-palette">
+            <button class="viz-select" type="button" aria-haspopup="listbox" aria-expanded="false"
+                    aria-controls="viz-palette-options">
+              <span class="viz-select__label">Каталог ACE PAINT</span>
+              <svg viewBox="0 0 30 18" fill="none" aria-hidden="true">
+                <path d="M2 2l13 13L28 2" stroke="currentColor" stroke-width="3" stroke-linecap="square"/>
+              </svg>
+            </button>
+
+            <ul class="viz-palette__list" id="viz-palette-options" role="listbox" aria-label="Каталог оттенков">
+              <li class="viz-palette__option" role="option" aria-selected="true" tabindex="0">ACE PAINT</li>
+              <li class="viz-palette__option" role="option" aria-selected="false" tabindex="0">NCS</li>
+              <li class="viz-palette__option" role="option" aria-selected="false" tabindex="0">RAL</li>
+              <li class="viz-palette__option" role="option" aria-selected="false" tabindex="0">Tikkurila Symphony</li>
+              <li class="viz-palette__option" role="option" aria-selected="false" tabindex="0">Dulux</li>
+              <li class="viz-palette__option" role="option" aria-selected="false" tabindex="0">Caparol 3D</li>
+            </ul>
+          </div>
 
           <ul class="viz-swatches" aria-label="Оттенки каталога ACE PAINT">
             <li><button class="viz-swatch" type="button"><span class="viz-swatch__fill" style="background:#f31616"></span><span class="viz-swatch__label">F316</span></button></li>
@@ -162,10 +174,18 @@
             <img class="viz-hero__img" src="../assets/img/viz-hero.png" width="1337" height="722" alt="Интерьер гостиной, окрашенной в выбранный оттенок">
 
             <ul class="viz-thumbs" aria-label="Превью интерьеров">
-              <li><button class="viz-thumb viz-thumb--active" type="button" aria-current="true"><img src="../assets/img/viz-thumb1.png" width="199" height="119" alt="Интерьер 1 — гостиная"></button></li>
-              <li><button class="viz-thumb" type="button"><img src="../assets/img/viz-thumb2.png" width="199" height="119" alt="Интерьер 2 — кухня"></button></li>
-              <li><button class="viz-thumb" type="button"><img src="../assets/img/viz-thumb3.png" width="199" height="119" alt="Интерьер 3 — спальня"></button></li>
-              <li><button class="viz-thumb" type="button"><img src="../assets/img/viz-thumb4.png" width="199" height="119" alt="Интерьер 4 — детская"></button></li>
+              <li><button class="viz-thumb" type="button"
+                          data-img="../assets/img/viz-scene1.png"
+                          data-alt="Интерьер гостиной, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb1.png" width="199" height="119" alt="Интерьер 1 — гостиная"></button></li>
+              <li><button class="viz-thumb" type="button"
+                          data-img="../assets/img/viz-scene2.png"
+                          data-alt="Интерьер ванной, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb2.png" width="199" height="119" alt="Интерьер 2 — ванная"></button></li>
+              <li><button class="viz-thumb" type="button"
+                          data-img="../assets/img/viz-scene3.png"
+                          data-alt="Интерьер кухни, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb3.png" width="199" height="119" alt="Интерьер 3 — кухня"></button></li>
+              <li><button class="viz-thumb viz-thumb--active" type="button" aria-current="true"
+                          data-img="../assets/img/viz-hero.png"
+                          data-alt="Интерьер детской, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb4.png" width="199" height="119" alt="Интерьер 4 — детская"></button></li>
             </ul>
 
             <button class="viz-next" type="button" aria-label="Следующий интерьер">
@@ -208,10 +228,13 @@
         <a href="where-to-buy.html">Где купить</a>
         <a href="about.html">О компании</a>
         <a href="contacts.html">Контакты</a>
+        <a href="palettes.html">Колеровка цвета</a>
       </nav>
 
       <div class="footer__bottom">
-        <a class="footer__copy" href="legal.html">© Weiss Color, 2020–2025. Все права защищены.</a>
+        <a class="footer__copy" href="legal.html">
+          Политика конфиденциальности и обработки персональных данных
+        </a>
 
         <button class="btn btn--ghost footer__cta" type="button" data-modal-open="callback-dialog">
           Заказать звонок
@@ -279,6 +302,8 @@
 
   <script src="../js/main.js"></script>
   <script src="../js/palette.js"></script>
+  <script src="../js/ace-colors.js"></script>
+  <script src="../js/visualizer.js"></script>
   <script src="../js/validation.js" defer></script>
 </body>
 </html>

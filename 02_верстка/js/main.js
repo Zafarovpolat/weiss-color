@@ -121,3 +121,69 @@
     setValue(input, normalize(input, Number(String(input.value).replace(',', '.'))));
   });
 })();
+
+/* ---------- Объём упаковки на карточке товара ----------
+   Кнопки — toggle-группа: активной может быть только одна. */
+(() => {
+  const groups = document.querySelectorAll('.p-volumes');
+  if (!groups.length) return;
+
+  groups.forEach((group) => {
+    group.addEventListener('click', (event) => {
+      const button = event.target.closest('.p-volumes__item');
+      if (!button || !group.contains(button)) return;
+
+      group.querySelectorAll('.p-volumes__item').forEach((item) => {
+        item.setAttribute('aria-pressed', String(item === button));
+      });
+    });
+  });
+})();
+
+/* ---------- Каталог оттенков на странице визуализации ----------
+   Кастомный селект: кнопка + список опций (как .pselect на palette-selector). */
+(() => {
+  const palette = document.querySelector('.viz-palette');
+  if (!palette) return;
+
+  const control = palette.querySelector('.viz-select');
+  const label = palette.querySelector('.viz-select__label');
+  const options = Array.from(palette.querySelectorAll('.viz-palette__option'));
+
+  const setOpen = (open) => {
+    palette.classList.toggle('is-open', open);
+    control.setAttribute('aria-expanded', String(open));
+  };
+
+  control.addEventListener('click', () => {
+    setOpen(control.getAttribute('aria-expanded') !== 'true');
+  });
+
+  options.forEach((option) => {
+    const choose = () => {
+      options.forEach((item) => item.setAttribute('aria-selected', String(item === option)));
+      label.textContent = 'Каталог ' + option.textContent.trim();
+      setOpen(false);
+      control.focus();
+    };
+
+    option.addEventListener('click', choose);
+    option.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        choose();
+      }
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!palette.contains(event.target)) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && palette.classList.contains('is-open')) {
+      setOpen(false);
+      control.focus();
+    }
+  });
+})();

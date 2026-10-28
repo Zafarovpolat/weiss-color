@@ -18,7 +18,7 @@
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: clamp(120px, 10.31vw, 264px);
+  height: 100%;
   background: #eff1f4 url("../assets/img/legal-hero.png") right top / auto 100% no-repeat;
   z-index: 0;
 }
@@ -62,7 +62,7 @@
 
 .legal-body {
   /* боковые поля — общий контейнер (как на всех страницах) */
-  padding-block: 0 clamp(24px, 1.17vw, 30px);
+  padding-block: clamp(24px, 2.2vw, 56px) clamp(32px, 2.5vw, 64px);
   padding-inline: var(--container-pad);
   background: #f7f8fa;
 }
@@ -82,19 +82,26 @@
   align-items: start;
 }
 
+/* вертикальный ритм между разделами внутри колонки */
+.legal-column {
+  display: grid;
+  gap: clamp(24px, 1.95vw, 50px);
+  align-content: start;
+}
+
 .legal-section__num {
   /* как и номера 01–09: Tinos (self-host, метрический клон Times) — Times
      нельзя вшивать, а на Android/Linux его нет, см. FONTS.md */
   font-family: var(--font-num);
-  font-size: clamp(20px, 1.21vw, 31px);
+  font-size: clamp(27px, 1.48vw, 39px);
   line-height: 1;
-  font-weight: 400;
+  font-weight: 600;
   color: #253346;
 }
 
 .legal-section__title {
   margin: 0;
-  font-size: clamp(16px, 0.98vw, 25px);
+  font-size: clamp(19px, 1.15vw, 29px);
   line-height: 1.2;
   font-weight: var(--fw-semibold);
   color: #233146;
@@ -102,7 +109,7 @@
 
 .legal-section__text {
   margin: clamp(6px, 0.55vw, 14px) 0 0;
-  font-size: clamp(13px, 0.7vw, 18px);
+  font-size: clamp(15px, 0.85vw, 21px);
   line-height: 1.45;
   font-weight: var(--fw-medium);
   color: #88919a;
@@ -126,15 +133,18 @@
 
   .legal-columns { column-gap: 32px; }
 
-  .legal-hero__title,
-  .legal-hero__lead { max-width: 100%; }
+  .legal-hero__title { max-width: 100%; }
 }
 
 @media (max-width: 1024px) {
   .legal-hero::before { display: none; }
   .legal-columns { grid-template-columns: minmax(0, 1fr); }
+
+  .legal-section__text { font-size: 14.5px; }
 }
 
 @media (max-width: 540px) {
   .legal-section { grid-template-columns: 48px minmax(0, 1fr); }
+
+  .legal-section__text { font-size: 14px; }
 }

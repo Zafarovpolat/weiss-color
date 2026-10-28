@@ -131,13 +131,18 @@
 
 /* Селект каталога 766×67 */
 
+.viz-palette {
+  position: relative;
+  margin-top: clamp(11px, 0.55vw, 14px);
+}
+
 .viz-select {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   height: clamp(52px, 2.62vw, 67px);
-  margin-top: clamp(11px, 0.55vw, 14px);
+  margin-top: 0;
   padding: 0 clamp(16px, 1.17vw, 30px) 0 clamp(16px, 1.13vw, 29px);
   font-size: clamp(16px, 0.82vw, 21px);
   font-weight: 500;
@@ -148,10 +153,64 @@
   text-align: left;
 }
 
+.viz-select:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
 .viz-select svg {
   width: clamp(20px, 1.17vw, 30px);
   height: clamp(12px, 0.7vw, 18px);
   flex: none;
+  transition: transform 0.2s ease;
+}
+
+/* закрыт — стрелка вниз, открыт — вверх */
+.viz-palette.is-open .viz-select svg {
+  transform: rotate(180deg);
+}
+
+/* Выпадающий список — тот же язык, что у .pselect на palette-selector */
+.viz-palette__list {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  max-height: clamp(240px, 22vw, 340px);
+  overflow-y: auto;
+  background: var(--color-white);
+  border: 2px solid #bdbcbc;
+  border-top: 0;
+  list-style: none;
+}
+
+.viz-palette:not(.is-open) .viz-palette__list {
+  display: none;
+}
+
+.viz-palette__option {
+  display: flex;
+  align-items: center;
+  min-height: clamp(40px, 2.44vw, 50px);
+  padding-inline: clamp(16px, 1.13vw, 29px);
+  font-size: clamp(15px, 0.78vw, 20px);
+  line-height: 1.2;
+  color: #515257;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.viz-palette__option:hover,
+.viz-palette__option:focus-visible {
+  background: #f2f8fe;
+  outline: none;
+}
+
+.viz-palette__option[aria-selected="true"] {
+  background: #e7f2fc;
 }
 
 /* Сетка оттенков: 6 колонок, карточка 121×146, зазор 8/7 */
@@ -374,6 +433,17 @@
 }
 
 /* --- Адаптив (проверяем до 1024) --- */
+
+@media (max-width: 1440px) {
+  /* кнопка «Подобрать цвет» уходит на свою строку */
+  .viz-info {
+    flex-wrap: wrap;
+  }
+
+  .viz-info__btn {
+    width: 100%;
+  }
+}
 
 @media (max-width: 1024px) {
   .viz-main {
