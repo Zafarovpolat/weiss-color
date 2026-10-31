@@ -32,7 +32,7 @@
   margin: 0;
   font-size: clamp(11px, 0.74vw, 19px);
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #233146;
   overflow-wrap: break-word;
@@ -50,7 +50,7 @@
 }
 
 .legal-hero__lead {
-  max-width: clamp(280px, 27vw, 692px);
+  max-width: clamp(280px, 31vw, 692px);
   margin: clamp(12px, 1.02vw, 26px) 0 0;
   font-size: clamp(15px, 0.98vw, 25px);
   line-height: 1.32;
@@ -93,7 +93,7 @@
   /* как и номера 01–09: Tinos (self-host, метрический клон Times) — Times
      нельзя вшивать, а на Android/Linux его нет, см. FONTS.md */
   font-family: var(--font-num);
-  font-size: clamp(27px, 1.48vw, 39px);
+  font-size: clamp(29px, 1.48vw, 39px);
   line-height: 1;
   font-weight: 600;
   color: #253346;
@@ -125,6 +125,11 @@
 }
 
 .legal-section__text li + li { margin-top: 2px; }
+
+/* Маркеры списка чуть темнее основного текста раздела */
+.legal-section__text li::marker {
+  color: #6a737c;
+}
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 

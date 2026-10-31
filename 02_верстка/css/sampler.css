@@ -190,7 +190,7 @@
   gap: clamp(6px, 0.55vw, 14px);
   font-size: clamp(12px, 0.7vw, 18px);
   font-weight: var(--fw-medium);
-  color: #43484f;
+  color: var(--color-teal);
 }
 
 .sampler-stock::before {

@@ -47,12 +47,24 @@
 }
 
 .error-page__text {
-  max-width: clamp(280px, 25.6vw, 655px);
   margin: clamp(10px, 1.02vw, 26px) 0 0;
   font-size: clamp(14px, 1.05vw, 27px);
   line-height: 1.36;
   font-weight: var(--fw-medium);
   color: #43484f;
+}
+
+.error-page__text-line {
+  display: block;
+}
+
+.error-page__text-line--first {
+  max-width: clamp(280px, 25.6vw, 655px);
+}
+
+.error-page__text-line--second {
+  /* шире макетного блока: иначе «нужному» переносится на вторую строку */
+  max-width: clamp(320px, 31vw, 786px);
 }
 
 .error-page__actions {
@@ -66,6 +78,7 @@
   min-height: clamp(48px, 2.46vw, 63px);
   /* обе кнопки одним кеглем (у .btn--outline был базовый, мельче коричневой) */
   font-size: clamp(15px, 0.86vw, 22px);
+  border-radius: 0;
 }
 
 /* в макете вторая кнопка шире первой по паддингам (269 против 355) */

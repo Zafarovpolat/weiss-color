@@ -282,6 +282,8 @@
 /* Пагинация на этом экране (см. catalog.css) */
 .c-pagination {
   margin-top: clamp(16px, 0.9vw, 23px);
+  /* верхний отступ задан margin-top — общий padding-top не нужен */
+  padding-top: 0;
   padding-bottom: clamp(32px, 1.56vw, 40px);
 }
 

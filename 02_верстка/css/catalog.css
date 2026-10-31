@@ -368,24 +368,18 @@
 
 /* --- Пагинация (по центру страницы, как на макете) --- */
 
+/* Единый вид пагинации на всех страницах (эталон — каталог):
+   квадратные ячейки цифр, «Назад/Вперед» по тексту, жирность 500. */
+
 .pagination {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: clamp(16px, 1.56vw, 40px);
-  padding-block: 0 clamp(40px, 2.38vw, 61px);
+  gap: 10px 8px;
+  padding-block: clamp(28px, 2.2vw, 56px) clamp(40px, 2.38vw, 61px);
   list-style: none;
   font-size: clamp(15px, 0.7vw, 18px);
-}
-
-/* Только каталог: воздух над пагинацией. У секции каталога нижнего паддинга
-   нет, и блок прилипал к последнему ряду карточек. Отдельный класс, потому что
-   .pagination общий для палеток, оттенков и колеровки — там свои отступы. */
-.pagination--catalog {
-  padding-top: clamp(28px, 2.2vw, 56px);
-  /* зазор между цифрами (по вертикали — при переносе) */
-  gap: 10px 8px;
   font-weight: 500;
   /* сторона квадратной ячейки цифры — одна переменная на всё */
   --pg-cell: clamp(26px, 1.25vw, 32px);
@@ -408,24 +402,11 @@
   cursor: default;
 }
 
-.pagination__item[aria-current="page"] {
-  display: grid;
-  place-items: center;
-  min-width: clamp(30px, 1.41vw, 36px);
-  height: clamp(28px, 1.33vw, 34px);
-  background: var(--color-brown);
-  color: var(--color-white);
-}
-
-.pagination__item[aria-current="page"]:hover {
-  color: var(--color-white);
-}
-
-/* Каталог: каждая цифра — ровный квадрат, стоят вплотную, поэтому заливка
-   активной страницы даёт квадрат, а не вытянутый прямоугольник.
+/* Каждая цифра — ровный квадрат, стоят вплотную, поэтому заливка активной
+   страницы даёт квадрат, а не вытянутый прямоугольник.
    min-width/min-height обнуляем — иначе тач-таргет 44px из responsive.css
    растягивает ячейку и квадрат ломается («Назад/Вперед» остаются по тексту). */
-.pagination--catalog .pagination__item {
+.pagination__item {
   display: grid;
   place-items: center;
   width: var(--pg-cell);
@@ -435,70 +416,38 @@
   font-weight: 500;
 }
 
-.pagination--catalog .pagination__item:first-child,
-.pagination--catalog .pagination__item:last-child {
+.pagination__item:first-child,
+.pagination__item:last-child {
   width: auto;
   height: auto;
   padding-inline: 4px;
 }
 
 /* «Назад/Вперед» отделяем от цифр сильнее, чем цифры друг от друга */
-.pagination--catalog .pagination__item:first-child {
+.pagination__item:first-child {
   margin-right: clamp(20px, 1.7vw, 44px);
 }
 
-.pagination--catalog .pagination__item:last-child {
+.pagination__item:last-child {
   margin-left: clamp(20px, 1.7vw, 44px);
 }
 
-.pagination--catalog .pagination__item[aria-current="page"] {
+.pagination__item[aria-current="page"] {
   width: var(--pg-cell);
   height: var(--pg-cell);
   min-width: 0;
-  color: var(--color-white);
   background: var(--color-brown);
+  color: var(--color-white);
 }
 
-/* Компактная раскладка (экраны «Колеровка цвета»): цифры в ячейках 49px,
-   зазоры и активный квадрат 33×31 — по PSD 2560w.
-   Единый отступ сверху, чтобы пагинация не выглядела иначе на разных
-   страницах (palettes/shades/cart). */
-.pagination--compact {
-  gap: 0;
-  padding-top: clamp(28px, 2.2vw, 56px);
-  font-size: clamp(15px, 0.78vw, 20px);
+.pagination__item[aria-current="page"]:hover {
+  color: var(--color-white);
 }
 
 /* В контекстах со своим ритмом (корзина, визуализатор в колонке) —
-   оставляем старый отступ, общий padding не нужен. */
+   внешний отступ сверху не нужен, он задан секцией. */
 .cart-pagination .pagination,
 .viz-page .pagination { padding-top: 0; }
-
-.pagination--compact .pagination__item {
-  display: grid;
-  place-items: center;
-  width: clamp(34px, 1.91vw, 49px);
-}
-
-.pagination--compact .pagination__item:first-child,
-.pagination--compact .pagination__item:last-child {
-  width: auto;
-}
-
-.pagination--compact .pagination__item:first-child {
-  margin-right: clamp(16px, 1.56vw, 40px);
-}
-
-.pagination--compact .pagination__item:last-child {
-  margin-left: clamp(16px, 1.48vw, 38px);
-}
-
-.pagination--compact .pagination__item[aria-current="page"] {
-  height: clamp(24px, 1.21vw, 31px);
-  color: var(--color-white);
-  background: linear-gradient(var(--color-brown), var(--color-brown))
-    center / clamp(26px, 1.29vw, 33px) 100% no-repeat;
-}
 
 /* --- Фильтр слева --- */
 
@@ -837,22 +786,13 @@
   .sort {
     justify-content: flex-start;
   }
-
-  .pagination {
-    gap: 14px;
-  }
 }
 
-/* Мобильная пагинация каталога: квадрат остаётся квадратом, но крупнее —
-   иначе 26px неудобно нажимать. gap возвращаем свой (выше на ≤540 его
-   перебивает общее правило .pagination). */
+/* Мобильная пагинация (единая для всех страниц): квадрат остаётся квадратом,
+   но крупнее — иначе 26px неудобно нажимать. */
 @media (max-width: 767px) {
-  .pagination.pagination--catalog {
-    gap: 10px 8px;
-  }
-
-  .pagination--catalog .pagination__item,
-  .pagination--catalog .pagination__item[aria-current="page"] {
+  .pagination__item,
+  .pagination__item[aria-current="page"] {
     width: 40px;
     height: 40px;
     min-width: 40px;
@@ -860,8 +800,8 @@
     font-size: 16px;
   }
 
-  .pagination--catalog .pagination__item:first-child,
-  .pagination--catalog .pagination__item:last-child {
+  .pagination__item:first-child,
+  .pagination__item:last-child {
     width: auto;
     min-width: 0;
     padding-inline: 8px;

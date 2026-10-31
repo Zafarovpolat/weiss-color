@@ -57,7 +57,7 @@
   margin: 0;
   font-size: clamp(16px, 1.48vw, 24px);
   line-height: 1.15;
-  font-weight: var(--fw-medium);
+  font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   text-align: center;
@@ -399,6 +399,7 @@
   font-size: clamp(12px, 0.7vw, 18px);
   letter-spacing: 0.1em;
   padding-inline: clamp(12px, 0.78vw, 20px);
+  border-radius: 0;
 }
 
 .cookie-bar__leaf {
