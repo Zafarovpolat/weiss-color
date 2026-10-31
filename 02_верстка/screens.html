@@ -80,12 +80,6 @@
     .cmp-row__note { margin: 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12px; line-height: 1.5; color: #8a6b4a; }
     .cmp-row__note b { color: var(--brown); }
 
-    .cmp-row__empty {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 230px; padding: 20px; font-size: 13px; line-height: 1.5; color: var(--muted);
-      text-align: center; background: #f4f5f7; border: 1px dashed #cfd3da; border-radius: 4px;
-    }
-
     /* ── подвал-пояснение ── */
     .cmp-foot { margin-top: 44px; padding: 18px 20px; font-size: 13px; line-height: 1.65; color: #43484f; background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--brown); border-radius: 4px; }
     .cmp-foot b { color: var(--ink); }
@@ -113,7 +107,7 @@
     <header class="cmp-head">
       <img class="cmp-head__logo" src="assets/img/logo.png" width="193" height="52" alt="Weiss Color">
       <h1 class="cmp-head__title">Сверка: макет ↔ вёрстка</h1>
-      <p class="cmp-head__count">25 экранов · слева макет, справа ссылка</p>
+      <p class="cmp-head__count">25 экранов · макет слева, ссылка справа</p>
     </header>
 
     <nav class="cmp-index" aria-label="Перейти к экрану">
@@ -450,19 +444,16 @@
 
     <!-- 24 -->
     <article class="cmp-row" id="m24">
-      <div class="cmp-row__empty">
-        Макета этой страницы в исходниках нет.<br>
-        Есть только старая модалка с полем «Номер карты» — она заменена по ТЗ.
-      </div>
+      <a class="cmp-row__shot" href="pages/payment-card.html"><img src="assets/mockups/М24.jpg" alt="Макет М24 — Реквизиты для оплаты" loading="lazy" width="1129" height="1060"></a>
       <div class="cmp-row__side">
         <span class="cmp-row__code">М24</span>
-        <h2 class="cmp-row__name">Оплата (безопасный сценарий)</h2>
+        <h2 class="cmp-row__name">Реквизиты для оплаты</h2>
         <p class="cmp-row__group">Корзина и заказ</p>
-        <a class="cmp-row__go" href="pages/payment.html">Открыть вёрстку
+        <a class="cmp-row__go" href="pages/payment-card.html">Открыть вёрстку
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
         </a>
-        <a class="cmp-row__url" href="pages/payment.html">/pages/payment.html</a>
-        <p class="cmp-row__note"><b>Макета нет.</b> Свёрстано по ТЗ п. 8.3: ввод карты на сайте запрещён, оплата через платёжный шлюз. Подробнее — в СВЕРКА_С_МАКЕТАМИ.md</p>
+        <a class="cmp-row__url" href="pages/payment-card.html">/pages/payment-card.html</a>
+        <p class="cmp-row__note">Это модалка «Реквизиты для оплаты» — свёрстана отдельной страницей. Страница выбора способа оплаты — <a href="pages/payment.html" style="color:#62381e">/pages/payment.html</a> (макета не имеет, сделана по ТЗ).</p>
       </div>
     </article>
 
@@ -486,7 +477,7 @@
       <ul>
         <li>Макеты нарисованы под ширину <b>2560 px</b>. Чтобы сравнение было честным, смотрите вёрстку на такой же ширине либо уменьшите масштаб браузера.</li>
         <li>Эталон — композиты из PSD. Часть PNG в <code>01_исходники/макеты_png</code> — фрагменты или устаревшие версии; какие именно и почему, расписано в <code>02_верстка/СВЕРКА_С_МАКЕТАМИ.md</code>.</li>
-        <li>У <b>М24 «Оплата»</b> макета нет: страница сделана по ТЗ (без ввода карты). Это единственный экран без картинки.</li>
+        <li>Все <b>25 макетов</b> на месте. У М24 макет — это модалка «Реквизиты для оплаты» (в папке PNG она названа «Заменяется безопасным сценарием оплаты»); она свёрстана как <code>/pages/payment-card.html</code>. Отдельная страница выбора способа оплаты — <code>/pages/payment.html</code>, макета у неё нет, сделана по ТЗ.</li>
         <li>Страница служебная: <code>noindex</code>, из сайта не линкуется, открывается только по прямому адресу <code>/screens.html</code>.</li>
       </ul>
     </section>

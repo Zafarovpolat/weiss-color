@@ -72,7 +72,7 @@ Weiss Color/
 | М21 | Инструкция колеровки           | pages/coloring-guide.html        | 6.4 | ✅ готов |
 | М16 | Корзина и расчёт заказа        | pages/cart.html                  | раздел 7 | ✅ готов |
 | М01 | Оформление заказа              | pages/checkout.html              | раздел 8 | ✅ готов |
-| М24 | Оплата (безопасный сценарий)   | pages/payment.html               | 8.3 | ✅ готов |
+| М24 | Реквизиты для оплаты (макет)   | pages/payment-card.html          | 8.3 | ✅ готов |
 | М22 | Реквизиты для счёта            | pages/invoice.html               | 8.2 | ✅ готов |
 | М08 | Спасибо за заказ               | pages/order-success.html         | 8.7 | ✅ готов |
 | М04 | Контакты и форма обращения     | pages/contacts.html              | 9.3 | ✅ готов |
