@@ -269,7 +269,7 @@
   grid-area: 1 / 2;
   margin: 0;
   font-size: clamp(15px, 0.645vw, 16.5px);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   line-height: 1.4;
   letter-spacing: 0.04em;
   text-transform: uppercase;

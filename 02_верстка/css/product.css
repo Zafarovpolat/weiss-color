@@ -85,7 +85,7 @@
 
 .p-volumes__item[aria-pressed="true"] {
   border-color: var(--color-brown);
-  background: #faf8f6;
+  background: transparent;
   color: #000000;
 }
 
@@ -243,7 +243,7 @@
   border-bottom: var(--p-tab-line) solid transparent;
   font-size: clamp(17px, 0.78vw, 20px);
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   color: #43484f;
 }

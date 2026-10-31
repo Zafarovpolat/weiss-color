@@ -54,7 +54,7 @@
   margin: clamp(16px, 1.21vw, 31px) 0 0;
   font-size: clamp(30px, 2.15vw, 55px);
   line-height: 1.05;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   text-transform: uppercase;
   text-align: center;
   color: #233146;

@@ -40,7 +40,7 @@
   margin: clamp(14px, 6.13vw, 157px) 0 0;
   font-size: clamp(28px, 2vw, 51px);
   line-height: 1.1;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   text-transform: uppercase;
   letter-spacing: 0.01em;
   color: #233146;
@@ -111,7 +111,7 @@
   margin: 0;
   font-size: clamp(20px, 1.33vw, 34px);
   line-height: 1.2;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   text-align: center;
   color: #252b37;
 }
@@ -136,6 +136,8 @@
 .contacts-form .field__select {
   height: clamp(48px, 2.97vw, 76px);
   font-size: clamp(14px, 0.78vw, 20px);
+  /* поля без заливки — виден фон карточки, остаётся только рамка */
+  background: transparent;
   border-color: #dcdcdc;
   border-radius: 2px;
 }
@@ -166,16 +168,17 @@
   font-size: clamp(14px, 0.78vw, 20px);
   font-weight: var(--fw-medium);
   text-align: left;
-  color: #9fa5b3;
-  background: var(--color-white);
+  /* текст селекта (и плейсхолдер «Выберите регион») — чёрный */
+  color: #000000;
+  background: transparent;
   border: 1px solid #dcdcdc;
   border-radius: 2px;
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* выбранное значение — обычным цветом, плейсхолдер — серым */
-.contacts-form .select__trigger[data-filled] { color: #252b37; }
+/* выбранное значение — тем же чёрным, что и плейсхолдер */
+.contacts-form .select__trigger[data-filled] { color: #000000; }
 
 .select__value {
   min-width: 0;
@@ -227,7 +230,7 @@
   padding: 10px 14px;
   font-size: clamp(14px, 0.78vw, 20px);
   font-weight: var(--fw-medium);
-  color: #2a323a;
+  color: #000000;
   border-radius: 2px;
   white-space: nowrap;
   overflow: hidden;

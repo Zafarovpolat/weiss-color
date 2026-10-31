@@ -39,7 +39,7 @@
   margin: clamp(10px, 1.4vw, 36px) 0 0;
   font-size: clamp(22px, 2.09vw, 53px);
   line-height: 1.24;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #233146;
   /* base.css балансирует строки заголовков — здесь нужен перенос как в макете */

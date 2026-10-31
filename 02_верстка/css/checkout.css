@@ -17,7 +17,7 @@
   margin-top: clamp(8px, 0.55vw, 14px);
   font-size: clamp(28px, 2vw, 51px);
   line-height: 1.1;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   text-transform: uppercase;
   letter-spacing: 0.01em;
   color: #233146;
@@ -58,7 +58,7 @@
   margin: 0;
   font-size: clamp(20px, 1.15vw, 29.5px);
   line-height: 1.05;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   color: #2a323a;
 }
 
@@ -399,7 +399,7 @@
   margin: 0;
   font-size: clamp(22px, 1.17vw, 30px);
   line-height: 1.05;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   color: #2a323a;
 }
 
@@ -598,7 +598,7 @@
   margin: 0;
   font-size: clamp(20px, 1.13vw, 29px);
   line-height: 1.2;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   color: #2a323a;
 }
 

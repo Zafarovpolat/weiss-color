@@ -29,7 +29,7 @@
   margin: 0;
   font-size: clamp(24px, 2.22vw, 32px);
   line-height: 1.15;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   color: #2a323a;
 }
 

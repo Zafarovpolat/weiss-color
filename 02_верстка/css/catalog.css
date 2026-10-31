@@ -56,7 +56,7 @@
   margin-top: clamp(12px, 0.86vw, 22px);
   font-size: clamp(30px, 1.95vw, 50px);
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   color: #233146;
 }
@@ -285,7 +285,7 @@
 .product__title {
   font-size: clamp(15px, 0.7vw, 18px);
   line-height: 1.4;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   color: #575961;
 }
@@ -515,7 +515,7 @@
 .filter__subtitle {
   font-size: clamp(20px, 0.94vw, 24px);
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   color: #575961;
 }

@@ -94,7 +94,7 @@
 .viz-product__title {
   font-size: clamp(16px, 0.84vw, 21.5px);
   line-height: 1.18;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   color: #171e31;
 }
@@ -124,7 +124,7 @@
   margin-top: clamp(14px, 0.94vw, 24px);
   font-size: clamp(20px, 1.09vw, 28px);
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   color: #192030;
 }

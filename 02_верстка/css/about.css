@@ -35,7 +35,7 @@
   margin: 0;
   font-size: clamp(28px, 2.07vw, 53px);
   line-height: 1.1;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   text-transform: uppercase;
   letter-spacing: 0.01em;
   color: #233146;
@@ -48,7 +48,7 @@
 
 .about-text p {
   margin: 0;
-  font-size: clamp(14px, 1.05vw, 27px);
+  font-size: 19.5px;
   line-height: 1.32;
   font-weight: var(--fw-medium);
   color: #2a323a;
@@ -56,37 +56,61 @@
 
 .about-text p + p { margin-top: clamp(6px, 0.78vw, 20px); }
 
+/* На широких экранах текстовая колонка чуть уже (было 58vw / 1485px) */
+@media (min-width: 1440px) {
+  .about-text { max-width: clamp(320px, 55vw, 1400px); }
+}
+
 /* --- Преимущества (4 колонки) --- */
 
 .about-features {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 268px));
-  gap: clamp(16px, 2.46vw, 63px);
-  max-width: clamp(320px, 51.5vw, 1318px);
-  margin: clamp(20px, 2.73vw, 70px) 0 0;
+  /* колонки длиннее (285→315→340→360→375→390), зазор вдвое меньше (63→32) */
+  grid-template-columns: repeat(4, minmax(0, 390px));
+  gap: clamp(8px, 1.23vw, 32px);
+  max-width: clamp(320px, 66vw, 1680px);
+  /* Отступ сверху компенсирует «просевшую» высоту вступления: текст стал
+     19.5px вместо clamp(14px, 1.05vw, 27px), блок поднялся на ~186px при 2560
+     и начинал заезжать на фото кресла. Возвращаем блоку прежнюю позицию. */
+  margin: calc(clamp(20px, 2.73vw, 70px) + max(0px, (min(1.05vw, 27px) - 19.5px) * 24.8)) 0 0;
   padding: 0;
   list-style: none;
 }
 
+/* Шире 1920 блок упирался в фоновое фото кресла — там ужимаем предел.
+   До 1920 (и на самом 1920) ширина та же, что и была: 66vw, колонки 390. */
+@media (min-width: 1921px) {
+  .about-features { max-width: clamp(320px, 66vw, 1480px); }
+}
+
 .about-feature {
   display: grid;
-  grid-template-columns: clamp(24px, 2.15vw, 55px) minmax(0, 1fr);
+  /* иконки из макета разной ширины (38–64px), поэтому колонка по контенту */
+  grid-template-columns: auto minmax(0, 1fr);
   gap: clamp(8px, 0.94vw, 24px);
   align-items: start;
 }
 
-.about-feature svg {
-  width: 100%;
+/* Разделитель между преимуществами: тонкая серая линия справа у всех, кроме
+   последнего пункта. Высота — по самой высокой карточке ряда (stretch). */
+.about-feature:not(:last-child) {
+  /* воздух между текстом и линией, иначе последняя строка упирается в неё */
+  padding-right: clamp(12px, 1.56vw, 40px);
+  border-right: 2px solid #cccccc;
+}
+
+.about-feature__icon {
+  display: block;
+  max-width: 100%;
   height: auto;
   margin-top: 3px;
-  color: #252b37;
 }
 
 .about-feature__title {
   margin: 0;
   font-size: clamp(13px, 0.7vw, 18px);
   line-height: 1.25;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #252b37;
 }
@@ -125,6 +149,12 @@
 
 @media (max-width: 1280px) {
   .about-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* в две колонки разделитель нужен только между колонками (1-й и 3-й) */
+  .about-feature:not(:last-child) { padding-right: 0; border-right: 0; }
+  .about-feature:nth-child(odd) {
+    padding-right: clamp(12px, 1.56vw, 40px);
+    border-right: 2px solid #cccccc;
+  }
   .about-partners { gap: clamp(16px, 3vw, 40px); }
 }
 
@@ -136,6 +166,9 @@
   }
 
   .about-features { grid-template-columns: minmax(0, 1fr); }
+  /* в одну колонку вертикальные разделители не нужны */
+  .about-feature,
+  .about-feature:nth-child(odd) { padding-right: 0; border-right: 0; }
   .about-partners {
     gap: 20px;
     /* логотипы отрываются от блока преимуществ чуть сильнее */
