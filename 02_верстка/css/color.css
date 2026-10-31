@@ -122,6 +122,8 @@
   font-size: clamp(17px, 0.94vw, 24px);
   font-weight: 400;
   text-transform: none;
+  /* кнопка прямоугольная — скругление базового .btn убрано */
+  border-radius: 0;
 }
 
 /* --- Совместимые материалы --- */

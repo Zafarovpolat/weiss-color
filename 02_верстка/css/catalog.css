@@ -384,6 +384,11 @@
    .pagination общий для палеток, оттенков и колеровки — там свои отступы. */
 .pagination--catalog {
   padding-top: clamp(28px, 2.2vw, 56px);
+  /* зазор между цифрами (по вертикали — при переносе) */
+  gap: 10px 8px;
+  font-weight: 500;
+  /* сторона квадратной ячейки цифры — одна переменная на всё */
+  --pg-cell: clamp(26px, 1.25vw, 32px);
 }
 
 .pagination a {
@@ -398,6 +403,8 @@
 
 .pagination__item[aria-disabled="true"] {
   color: #a0a1a5;
+  /* неактивная «Назад» — приглушённее, но остаётся читаемой */
+  opacity: 0.65;
   cursor: default;
 }
 
@@ -412,6 +419,44 @@
 
 .pagination__item[aria-current="page"]:hover {
   color: var(--color-white);
+}
+
+/* Каталог: каждая цифра — ровный квадрат, стоят вплотную, поэтому заливка
+   активной страницы даёт квадрат, а не вытянутый прямоугольник.
+   min-width/min-height обнуляем — иначе тач-таргет 44px из responsive.css
+   растягивает ячейку и квадрат ломается («Назад/Вперед» остаются по тексту). */
+.pagination--catalog .pagination__item {
+  display: grid;
+  place-items: center;
+  width: var(--pg-cell);
+  height: var(--pg-cell);
+  min-width: 0;
+  min-height: 0;
+  font-weight: 500;
+}
+
+.pagination--catalog .pagination__item:first-child,
+.pagination--catalog .pagination__item:last-child {
+  width: auto;
+  height: auto;
+  padding-inline: 4px;
+}
+
+/* «Назад/Вперед» отделяем от цифр сильнее, чем цифры друг от друга */
+.pagination--catalog .pagination__item:first-child {
+  margin-right: clamp(20px, 1.7vw, 44px);
+}
+
+.pagination--catalog .pagination__item:last-child {
+  margin-left: clamp(20px, 1.7vw, 44px);
+}
+
+.pagination--catalog .pagination__item[aria-current="page"] {
+  width: var(--pg-cell);
+  height: var(--pg-cell);
+  min-width: 0;
+  color: var(--color-white);
+  background: var(--color-brown);
 }
 
 /* Компактная раскладка (экраны «Колеровка цвета»): цифры в ячейках 49px,
@@ -637,6 +682,10 @@
   color: var(--color-muted);
 }
 
+.filter__prices > span {
+  font-weight: 600;
+}
+
 .filter__prices output {
   font-size: clamp(16px, 0.7vw, 18px);
   font-weight: 600;
@@ -791,6 +840,31 @@
 
   .pagination {
     gap: 14px;
+  }
+}
+
+/* Мобильная пагинация каталога: квадрат остаётся квадратом, но крупнее —
+   иначе 26px неудобно нажимать. gap возвращаем свой (выше на ≤540 его
+   перебивает общее правило .pagination). */
+@media (max-width: 767px) {
+  .pagination.pagination--catalog {
+    gap: 10px 8px;
+  }
+
+  .pagination--catalog .pagination__item,
+  .pagination--catalog .pagination__item[aria-current="page"] {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 16px;
+  }
+
+  .pagination--catalog .pagination__item:first-child,
+  .pagination--catalog .pagination__item:last-child {
+    width: auto;
+    min-width: 0;
+    padding-inline: 8px;
   }
 }
 

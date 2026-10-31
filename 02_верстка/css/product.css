@@ -135,17 +135,18 @@
   color: #253346;
 }
 
-/* Цвет — ссылка на каталог палитр (перелинковка «товар → колеровка») */
+/* Цвет — ссылка на каталог палитр (перелинковка «товар → колеровка»).
+   По макету значение серое (#6E6F75, как --color-muted), без подчёркивания —
+   раньше его роль играл border-bottom. Жирнее остального текста — 500. */
 .p-color a {
-  color: var(--color-brown);
+  color: var(--color-muted);
+  font-weight: 500;
   text-decoration: none;
-  border-bottom: 1px solid rgba(98, 56, 30, 0.35);
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .p-color a:hover {
-  color: #3d2312;
-  border-bottom-color: #3d2312;
+  color: var(--color-lead);
 }
 
 /* Блок цены */
@@ -156,7 +157,8 @@
   margin-top: clamp(16px, 0.9vw, 23px);
   padding: clamp(14px, 0.74vw, 19px) clamp(16px, 0.9vw, 23px) clamp(16px, 0.94vw, 24px) clamp(18px, 1.05vw, 27px);
   border: 2px solid #d2d2d2;
-  background: rgba(255, 255, 255, 0.72);
+  /* блок цены без заливки — только рамка, фон страницы виден */
+  background: transparent;
 }
 
 .p-price {
@@ -182,7 +184,9 @@
   margin-left: auto;
   padding: 0;
   background: var(--color-teal);
-  border-color: var(--color-teal);
+  /* кнопка «В корзину» — прямоугольная, без рамки и скруглений */
+  border: 0;
+  border-radius: 0;
   color: var(--color-white);
   font-family: "Open Sans", system-ui, sans-serif;
   font-size: clamp(14px, 0.63vw, 16px);
@@ -192,7 +196,6 @@
 
 .p-price__btn:hover {
   background: #2f6169;
-  border-color: #2f6169;
   color: var(--color-white);
 }
 
@@ -204,20 +207,49 @@
 }
 
 .p-details__grid {
+  /* Колонки в переменных: их повторяет .p-tabs, чтобы общая линия под
+     табами шла непрерывно, включая промежуток между колонками. */
+  --p-col1: minmax(0, clamp(420px, 27.5vw, 704px));
+  --p-col2: minmax(0, clamp(480px, 35.78vw, 916px));
+  --p-col-gap: clamp(40px, 9.18vw, 235px);
+  /* толщина линии под табами — одна переменная на серую и на тёмно-синюю */
+  --p-tab-line: 2px;
   display: grid;
-  grid-template-columns: minmax(0, clamp(420px, 27.5vw, 704px)) minmax(0, clamp(480px, 35.78vw, 916px));
-  gap: clamp(40px, 9.18vw, 235px);
+  grid-template-columns: var(--p-col1) var(--p-col2);
+  column-gap: var(--p-col-gap);
+  row-gap: 0;
   justify-content: start;
 }
 
+/* Ряд заголовков на всю ширину сетки + одна общая линия под ними.
+   По макету линия у всех табов одна, а тёмно-синяя — только под текстом
+   активного. */
+.p-tabs {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: var(--p-col1) var(--p-col2);
+  column-gap: var(--p-col-gap);
+  border-bottom: var(--p-tab-line) solid #d2d2d2;
+}
+
 .p-tab {
-  padding-bottom: clamp(8px, 0.47vw, 12px);
-  border-bottom: 2px solid #d2d2d2;
+  --p-tab-pad: clamp(8px, 0.47vw, 12px);
+  /* ширина по тексту — от неё зависит длина тёмно-синего сегмента */
+  justify-self: start;
+  width: fit-content;
+  /* отрицательный отступ заводит бордер таба на общую линию, а не под неё */
+  margin-bottom: calc(-1 * var(--p-tab-line));
+  padding-bottom: var(--p-tab-pad);
+  border-bottom: var(--p-tab-line) solid transparent;
   font-size: clamp(17px, 0.78vw, 20px);
   line-height: 1.2;
   font-weight: 600;
   text-transform: uppercase;
   color: #43484f;
+}
+
+.p-tab--active {
+  border-bottom-color: var(--color-ink);
 }
 
 .p-desc {
@@ -294,8 +326,32 @@
 
   .p-details__grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    row-gap: 0;
   }
+
+  /* На узком экране общая линия не нужна: табы возвращаются каждый в свою
+     колонку, у каждого заголовка своя линия (у активного — тёмно-синяя). */
+  .p-tabs {
+    display: contents;
+  }
+
+  .p-tab {
+    /* на узком экране линия снова во всю ширину колонки */
+    justify-self: stretch;
+    width: auto;
+    margin-bottom: 0;
+    border-bottom-color: #d2d2d2;
+  }
+
+  .p-tab--active {
+    border-bottom-color: var(--color-ink);
+  }
+
+  /* порядок: заголовок → его содержимое → второй заголовок → его содержимое */
+  .p-tab:nth-child(1) { order: 1; }
+  .p-details__col:nth-child(2) { order: 2; }
+  .p-tab:nth-child(2) { order: 3; margin-top: 40px; }
+  .p-details__col:nth-child(3) { order: 4; }
 
   .p-details {
     padding-block: 32px 48px;

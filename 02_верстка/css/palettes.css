@@ -22,6 +22,14 @@
    Ширину и боковые поля даёт общий .container (base.css).
    Своя полоса min(1881px, 100% - 40px) убрана ради единого контейнера. */
 
+/* Заголовок и сетка вееров живут в своём слое: максимум 1600px по центру.
+   Крошки и пагинация остаются на общей ширине контейнера. */
+.palettes-inner {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
 .palettes-title {
   margin-top: clamp(16px, 1.6vw, 41px);
   font-size: clamp(30px, 2.03vw, 52px);

@@ -47,7 +47,7 @@
     justify-content: space-between;
     padding-block: clamp(28px, 5vw, 44px) clamp(20px, 4vw, 32px);
   }
-  .hero__product { width: 30vw; }
+  .hero__product-wrapper { width: 30vw; }
   .hero__copy {
     max-width: min(100%, 34ch);
     /* поднимаем копирайт: по центру экрана он читается ниже линии банки */
@@ -59,7 +59,7 @@
 /* Телефоны: банка держит свою ширину (30vw — та же доля, что на планшете,
    иначе на границе 768/769 ширина прыгала бы с 230 на 200) */
 @media (max-width: 768px) {
-  .hero__product {
+  .hero__product-wrapper {
     width: 30vw;
     min-width: 0;
     /* не ужимаем: с flex-shrink: 1 на 541–768 банка съезжала до ~107px,
@@ -86,7 +86,7 @@
     gap: 16px;
     justify-content: center;
   }
-  .hero__product { display: none; }
+  .hero__product-wrapper { display: none; }
   .hero__copy {
     flex: 1 1 auto;
     min-width: 0;
@@ -153,7 +153,7 @@
     padding-block-start: clamp(40px, 2.97vw, 76px);
     padding-block-end: clamp(24px, 1.7vw, 43px);
   }
-  .hero__product {
+  .hero__product-wrapper {
     order: 0;
     flex: none;
     margin-left: clamp(0px, 4.65vw, 119px);
@@ -483,6 +483,8 @@
   .footer__nav {
     margin-left: clamp(24px, 5.78vw, 148px);
     margin-bottom: 6px;
+    /* меньше отступ между ссылками, чтобы строка не ломалась до 1920 */
+    gap: 8px clamp(16px, 1.7vw, 56px);
   }
   .footer__bottom {
     /* «Политика» и кнопка прижаты к правому краю: свободное место забирает
@@ -490,7 +492,6 @@
     margin-left: auto;
   }
   .footer__copy {
-    margin-bottom: 10px;
     color: var(--color-white);
     font-size: clamp(14px, 0.594vw, 15.21px);
   }
@@ -523,8 +524,7 @@
   .footer__copy,
   .footer__cta { margin-left: 0; }
 
-  /* flex-basis 100% гарантированно переносит пару на свою строку,
-     даже когда при 1920 всё влезало в один ряд */
+  /* своя строка на всю ширину + выравнивание по левому краю */
   .footer__bottom {
     flex: 1 1 100%;
     margin-left: 0;
@@ -534,7 +534,6 @@
   .footer__copy {
     flex: 0 1 auto;
     min-width: 0;
-    margin-bottom: 0;
   }
 }
 

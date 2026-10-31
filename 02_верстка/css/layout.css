@@ -51,7 +51,6 @@
   letter-spacing: 0.02em;
   color: var(--color-lead);
 }
-.site-nav__list a[aria-current="page"] { color: var(--color-teal); }
 
 .header__contacts {
   display: flex;
@@ -164,9 +163,37 @@
   max-width: 560px;
   text-align: left;
 }
-.hero__product {
+/* Обёртка банки: держит размеры/порядок в flex, а на полу рисует тень.
+   Тень вынесена в псевдоэлемент, т.к. у <img> псевдоэлементов нет. */
+.hero__product-wrapper {
   order: 2;
+  position: relative;
+  isolation: isolate;
+  flex: none;
   width: clamp(200px, 12.4vw, 317px);
+  line-height: 0;
+}
+/* Плоская тень на полу, смещённая влево-вниз: мягкий эллипс с наклоном.
+   z-index: 0 (картинка выше — z-index: 1) держит тень за банкой; -1 здесь
+   прятал её за фоном секции. */
+.hero__product-wrapper::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: -45%;
+  bottom: 2%;
+  width: 110%;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(31, 41, 55, 0.25);
+  filter: blur(18px);
+  transform: rotate(-5deg);
+}
+.hero__product {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
   height: auto;
 }
 
