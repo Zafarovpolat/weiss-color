@@ -18,6 +18,12 @@ body {
   min-height: 100%;
 }
 
+/* Открытое модальное окно блокирует прокрутку страницы */
+html.is-modal-open,
+html.is-modal-open body {
+  overflow: hidden;
+}
+
 /* Плавную прокручиваемость отключаем при запросе пользователя */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

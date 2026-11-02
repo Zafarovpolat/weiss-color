@@ -39,33 +39,109 @@
   desktop.addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 })();
 
+/* ---------- Окно «Спасибо» (М17) и блокировка прокрутки ---------- */
+(() => {
+  const scriptSrc = document.currentScript && document.currentScript.src;
+  const logoUrl = scriptSrc
+    ? new URL('../assets/img/logo.png', scriptSrc).href
+    : '../assets/img/logo.png';
+
+  const RESULT_HTML = `
+    <button class="mcard__close" type="button" data-modal-close aria-label="Закрыть окно">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <path d="M3 3l18 18M21 3 3 21" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="callback-photo">
+      <img class="callback-photo__logo" src="${logoUrl}" width="193" height="52" alt="Weiss Color">
+      <hr class="callback-photo__rule">
+      <p class="callback-photo__slogan">Вдохновляем<br>на красивые<br>интерьеры</p>
+    </div>
+    <div class="callback-result" role="status" aria-live="polite">
+      <p class="callback-result__icon" aria-hidden="true">
+        <svg viewBox="0 0 72 51" fill="none" stroke="currentColor" stroke-width="6">
+          <path d="M5 26 26 46 67 5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </p>
+      <h2 class="callback-result__title" id="form-result-title">Спасибо!</h2>
+      <p class="callback-result__text">
+        Мы получили ваше обращение и в ближайшее время свяжемся с вами
+      </p>
+    </div>`;
+
+  /* Пока открыт любой <dialog>, страница не прокручивается */
+  const syncScrollLock = () => {
+    const open = Boolean(document.querySelector('dialog[open]'));
+    document.documentElement.classList.toggle('is-modal-open', open);
+    document.body.classList.toggle('is-modal-open', open);
+  };
+
+  const wireDialog = (dialog) => {
+    dialog.addEventListener('toggle', syncScrollLock);
+    dialog.addEventListener('close', syncScrollLock);
+  };
+
+  /* Окно результата одно на страницу; если его нет в разметке — создаём */
+  const getResultDialog = () => {
+    let dialog = document.getElementById('form-result-dialog');
+    if (dialog) return dialog;
+
+    dialog = document.createElement('dialog');
+    dialog.className = 'mcard mcard-callback mcard-result';
+    dialog.id = 'form-result-dialog';
+    dialog.setAttribute('aria-labelledby', 'form-result-title');
+    dialog.innerHTML = RESULT_HTML;
+    document.body.appendChild(dialog);
+
+    dialog.querySelector('[data-modal-close]').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    wireDialog(dialog);
+    return dialog;
+  };
+
+  const showResult = () => {
+    const dialog = getResultDialog();
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+  };
+
+  document.querySelectorAll('dialog').forEach(wireDialog);
+  syncScrollLock();
+
+  window.WCModal = { showResult };
+})();
+
 /* ---------- Модальное окно «Заказать звонок» (М25, п.9.3) ---------- */
 (() => {
   const dialog = document.getElementById('callback-dialog');
-  if (!dialog || typeof dialog.showModal !== 'function') return;
 
-  document.querySelectorAll('[data-modal-open]').forEach((btn) => {
-    btn.addEventListener('click', () => dialog.showModal());
-  });
+  if (dialog && typeof dialog.showModal === 'function') {
+    document.querySelectorAll('[data-modal-open]').forEach((btn) => {
+      btn.addEventListener('click', () => dialog.showModal());
+    });
 
-  dialog.querySelector('[data-modal-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-modal-close]')?.addEventListener('click', () => dialog.close());
 
-  // Клик по подложке закрывает окно (клиент по краю — не кнопка)
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) dialog.close();
-  });
+    // Клик по подложке закрывает окно (клиент по краю — не кнопка)
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  }
 
-  // Демо-отправка: на этапе 1 бэкенда нет. Поля проверяет validation.js
-  // (сообщения под полями), здесь — закрытие окна и очистка формы.
-  // Фокус после закрытия возвращается на вызвавший элемент автоматически.
-  const form = document.getElementById('callback-form');
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const valid = window.WCForm ? window.WCForm.validate(form) : form.checkValidity();
-    if (!valid) return;
-    dialog.close();
-    form.reset();
-    window.WCForm?.clear(form);
+  /* Демо-отправка: на этапе 1 бэкенда нет. Поля проверяет validation.js,
+     после успеха показываем окно «Спасибо» поверх текущей страницы. */
+  document.querySelectorAll('#callback-form, #callback-modal-form').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const valid = window.WCForm ? window.WCForm.validate(form) : form.checkValidity();
+      if (!valid) return;
+
+      form.closest('dialog')?.close();
+      form.reset();
+      window.WCForm?.clear(form);
+      window.WCModal?.showResult();
+    });
   });
 })();
 

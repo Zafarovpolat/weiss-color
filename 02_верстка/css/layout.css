@@ -67,7 +67,7 @@
   font-family: var(--font-main);
   font-size: var(--fs-phone);
   font-weight: var(--fw-medium);
-  color: var(--color-lead);
+  color: var(--color-brown);
   white-space: nowrap;
 }
 .header__phone:hover { color: var(--color-ink); text-decoration: none; }

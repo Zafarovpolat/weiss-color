@@ -247,6 +247,33 @@
       </form>
     </dialog>
 
+  <!-- Окно «Спасибо за обращение» (М17, п.9.3) — открывается после отправки формы -->
+  <dialog class="mcard mcard-callback mcard-result" id="form-result-dialog" aria-labelledby="form-result-title">
+    <button class="mcard__close" type="button" data-modal-close aria-label="Закрыть окно">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <path d="M3 3l18 18M21 3 3 21" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="callback-photo">
+      <img class="callback-photo__logo" src="../assets/img/logo.png" width="193" height="52" alt="Weiss Color">
+      <hr class="callback-photo__rule">
+      <p class="callback-photo__slogan">Вдохновляем<br>на красивые<br>интерьеры</p>
+    </div>
+
+    <div class="callback-result" role="status" aria-live="polite">
+      <p class="callback-result__icon" aria-hidden="true">
+        <svg viewBox="0 0 72 51" fill="none" stroke="currentColor" stroke-width="6">
+          <path d="M5 26 26 46 67 5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </p>
+      <h2 class="callback-result__title" id="form-result-title">Спасибо!</h2>
+      <p class="callback-result__text">
+        Мы получили ваше обращение и в ближайшее время свяжемся с вами
+      </p>
+    </div>
+  </dialog>
+
   <script src="../js/main.js"></script>
   <script src="../js/contacts.js"></script>
   <script src="../js/validation.js" defer></script>

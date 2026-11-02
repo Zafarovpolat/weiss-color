@@ -200,9 +200,17 @@
   }
 
   /* ------------------------------------------------------------------------
-     Отправка: «спасибо» больше не подменяет карточку — уходим на отдельный
-     экран результата отправки формы.
+     Отправка: показываем окно «Спасибо» поверх текущей страницы,
+     без перехода на отдельный экран результата.
      ------------------------------------------------------------------------ */
+
+  var resultDialog = document.getElementById('form-result-dialog');
+
+  if (resultDialog) {
+    resultDialog.addEventListener('click', function (event) {
+      if (event.target === resultDialog) resultDialog.close();
+    });
+  }
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
@@ -211,6 +219,13 @@
     var valid = window.WCForm ? window.WCForm.validate(form) : form.checkValidity();
     if (!valid) return;
 
-    window.location.href = 'modal-form-result.html';
+    form.reset();
+    if (window.WCForm) window.WCForm.clear(form);
+
+    if (resultDialog && typeof resultDialog.showModal === 'function') {
+      resultDialog.showModal();
+    } else {
+      window.location.href = 'modal-form-result.html';
+    }
   });
 })();

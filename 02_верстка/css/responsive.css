@@ -508,12 +508,9 @@
 }
 
 /* ---------- 1920 и ниже: подвал собирается от левого края ----------
-   На широкой вёрстке «Политика» уезжала вправо (margin-left: auto), а кнопка
-   прижималась к правому краю — на 1920 и уже из-за этого в строке появлялись
-   рваные пустоты. Здесь подвал идёт в две строки: сверху логотип и меню,
-   снизу «Политика» и кнопка звонка в одном ряду от левого края.
-   Блок стоит после @media (min-width: 1920px) — при ровно 1920 он должен
-   перебить тамошние margin-left: auto и nowrap. */
+   База для планшета и мобиля: две строки — сверху логотип и меню, снизу
+   «Политика» и кнопка звонка. Для 1024–1920 подвал остаётся одной строкой:
+   блок ниже перебивает flex-wrap и сжимает зазоры вместо переноса. */
 @media (max-width: 1920px) {
   .footer__inner {
     flex-wrap: wrap;
@@ -534,6 +531,51 @@
   .footer__copy {
     flex: 0 1 auto;
     min-width: 0;
+  }
+}
+
+/* ---------- 1024–1920: подвал в одну строку ----------
+   Вместо переноса «Политики» и кнопки на вторую строку сжимаем зазоры,
+   кегль и поля кнопки. «Политика» при нехватке места переносится внутри
+   своей ссылки, но остаётся в общем ряду с логотипом и меню. */
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .footer__inner {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    min-height: 80px;
+    padding-block: 0;
+    gap: clamp(10px, 1vw, 20px);
+  }
+  .footer__nav {
+    flex-wrap: nowrap;
+    margin-left: clamp(8px, 1.25vw, 24px);
+    margin-bottom: 6px;
+    gap: 8px clamp(8px, 0.84vw, 16px);
+  }
+  .footer__nav a {
+    font-size: clamp(12px, 0.73vw, 14px);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .footer__bottom {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-left: auto;
+    flex-wrap: nowrap;
+    gap: clamp(8px, 0.84vw, 16px);
+  }
+  .footer__copy {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-left: 0;
+    font-size: clamp(12px, 0.68vw, 13px);
+  }
+  .footer__cta {
+    flex: none;
+    padding: 12px clamp(12px, 1.1vw, 21px);
+    font-size: clamp(12px, 0.73vw, 14px);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
   }
 }
 

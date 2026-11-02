@@ -32,12 +32,6 @@
     short: 'Слишком короткое значение'
   };
 
-  /* Формы без собственного обработчика: после успешной проверки показываем
-     демо-подтверждение (этап 2 — отправка на сервер). */
-  var DEMO_SUCCESS = {
-    'callback-modal-form': 'Спасибо! Заявка отправлена — мы перезвоним в рабочее время: с 9:00 до 18:00 (МСК).'
-  };
-
   var SKIP = ['checkbox', 'radio', 'submit', 'button', 'reset', 'file', 'hidden', 'image'];
   var touched = new WeakSet();
   var errorSeq = 0;
@@ -257,19 +251,6 @@
     });
   }
 
-  function showDemoSuccess(form, text) {
-    var note = form.querySelector('.form-success');
-    if (!note) {
-      note = document.createElement('p');
-      note.className = 'form-success';
-      note.setAttribute('role', 'status');
-      form.appendChild(note);
-    }
-    note.textContent = text;
-    var submit = form.querySelector('[type="submit"]');
-    if (submit) submit.disabled = true;
-  }
-
   /* --- Проверка при отправке: перехватываем раньше обработчиков страницы --- */
 
   document.addEventListener('submit', function (event) {
@@ -284,14 +265,6 @@
     if (!validate(form)) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      return;
-    }
-
-    if (DEMO_SUCCESS[form.id]) {
-      event.preventDefault();
-      showDemoSuccess(form, DEMO_SUCCESS[form.id]);
-      clear(form);
-      form.reset();
     }
   }, true);
 
