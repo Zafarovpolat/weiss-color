@@ -90,8 +90,9 @@
   box-shadow: none;
   padding-inline: clamp(18px, 1.1vw, 28px);
 }
+/* На тёмном подвале чёрная тень не видна — даём светлый ореол */
 .btn--ghost:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.22);
 }
 
 /* ---------- Текстовые атомы героя ---------- */

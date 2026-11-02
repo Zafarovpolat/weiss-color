@@ -485,6 +485,7 @@
   color: var(--color-brown);
   border-color: var(--color-brown);
   box-shadow: var(--shadow-hover-outline);
+  text-decoration: none;
 }
 
 /* Ряд покупки: цена + «В корзину» */
