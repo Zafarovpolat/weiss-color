@@ -14,9 +14,15 @@ body {
   font-size: var(--fs-body);
   line-height: 1.5;
   color: var(--color-ink);
-  background: var(--color-white);
-  min-height: 100%;
+  background: #f0eff2;
+  /* Подвал прижимается к низу, если контента меньше высоты экрана */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
+
+main { flex: 1 0 auto; }
 
 /* Открытое модальное окно блокирует прокрутку страницы */
 html.is-modal-open,
