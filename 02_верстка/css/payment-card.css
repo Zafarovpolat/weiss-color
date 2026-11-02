@@ -164,9 +164,10 @@
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background var(--ease-ui), color var(--ease-ui),
+    border-color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .pcard-btn--primary {
@@ -176,8 +177,9 @@
 }
 
 .pcard-btn--primary:hover {
-  background: #7a4a26;
-  border-color: #7a4a26;
+  background: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
 }
 
 .pcard-btn--ghost {
@@ -187,8 +189,9 @@
 }
 
 .pcard-btn--ghost:hover {
-  color: var(--color-brown);
-  border-color: var(--color-brown);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* --- Адаптив --- */

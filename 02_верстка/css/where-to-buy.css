@@ -98,11 +98,15 @@
   font-size: clamp(14px, 0.78vw, 20px);
   font-weight: var(--fw-regular);
   text-decoration: none;
-  border-radius: 2px;
-  transition: filter 0.2s ease;
+  border-radius: 0;
+  transition: filter 0.2s ease, box-shadow var(--ease-ui);
 }
 
-.buy-card__link:hover { filter: brightness(0.92); }
+.buy-card__link:hover {
+  filter: brightness(0.92);
+  text-decoration: none;
+  box-shadow: var(--shadow-hover-outline);
+}
 
 .buy-card__link svg {
   width: clamp(24px, 1.87vw, 48px);

@@ -2,7 +2,7 @@
 // (гостиная / кухня / ванная / детская), выбор оттенка и постраничный
 // список оттенков каталога ACE PAINT.
 //
-// Перекраска стены по маске пока отключена — сцены просто меняют фото.
+// Перекраска стен: слой цвета по маске сцены + mix-blend-mode: multiply.
 
 (() => {
   const root = document.querySelector('.viz-page');
@@ -11,7 +11,9 @@
   /* ---------- Элементы ---------- */
   const grid = root.querySelector('.viz-swatches');
   const pager = root.querySelector('.viz-pagination');
+  const hero = root.querySelector('.viz-hero');
   const heroImg = root.querySelector('.viz-hero__img');
+  const paint = root.querySelector('.viz-hero__paint');
   const thumbs = Array.from(root.querySelectorAll('.viz-thumb'));
   const nextBtn = root.querySelector('.viz-next');
   const prevBtn = root.querySelector('.viz-prev');
@@ -21,8 +23,50 @@
   const PER_PAGE = 18;
   const TOTAL_PAGES = Math.max(1, Math.ceil(COLORS.length / PER_PAGE));
 
+  // Средняя яркость белой стены сцены: компенсирует затемнение от multiply,
+  // чтобы итоговый тон стены совпадал со свотчем.
+  const WALL_RGB = {
+    living: [253, 253, 253],
+    bath: [250, 250, 250],
+    kitchen: [250, 250, 250],
+    kids: [251, 251, 251],
+  };
+
   let page = 0;
   let scene = Math.max(0, thumbs.findIndex((t) => t.classList.contains('viz-thumb--active')));
+  let wall = WALL_RGB[thumbs[scene]?.dataset.scene] || [255, 255, 255];
+  let currentHex = null;
+
+  // Маски грузим заранее: иначе при смене сцены слой краски на миг
+  // показывается без маски — весь кадр, включая мебель.
+  const maskPreloads = [];
+  thumbs.forEach((thumb) => {
+    if (!thumb.dataset.mask) return;
+    const img = new Image();
+    img.src = thumb.dataset.mask;
+    maskPreloads.push(img);
+  });
+
+  /* ---------- Перекраска стен ---------- */
+  function hexToRgb(hex) {
+    const value = String(hex || '').replace('#', '');
+    if (value.length !== 6) return null;
+    const num = parseInt(value, 16);
+    return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+  }
+
+  function applyColor(hex) {
+    if (!hex || !paint) return;
+    currentHex = hex;
+    const rgb = hexToRgb(hex);
+    if (!rgb) return;
+
+    // layer = target * 255 / wall — multiply на фото даёт ровно target
+    const layer = rgb.map((channel, i) =>
+      Math.min(255, Math.round((channel * 255) / wall[i]))
+    );
+    paint.style.backgroundColor = 'rgb(' + layer.join(', ') + ')';
+  }
 
   /* ---------- Список оттенков ---------- */
   function selectSwatch(button) {
@@ -32,6 +76,7 @@
       item.classList.toggle('viz-swatch--active', active);
       item.setAttribute('aria-pressed', String(active));
     });
+    applyColor(button.dataset.hex);
   }
 
   function renderSwatches() {
@@ -122,9 +167,14 @@
     const thumb = thumbs[scene];
     const src = thumb.dataset.img;
     const alt = thumb.dataset.alt;
+    const mask = thumb.dataset.mask;
 
     if (src && heroImg.getAttribute('src') !== src) heroImg.src = src;
     if (alt) heroImg.alt = alt;
+    if (mask && hero) hero.style.setProperty('--viz-mask', 'url("' + mask + '")');
+
+    wall = WALL_RGB[thumb.dataset.scene] || [255, 255, 255];
+    applyColor(currentHex);
   }
 
   thumbs.forEach((thumb, index) => {
@@ -135,7 +185,7 @@
   prevBtn?.addEventListener('click', () => setScene(scene - 1));
 
   /* ---------- Старт ---------- */
+  setScene(scene);
   renderSwatches();
   renderPager();
-  renderThumbs();
 })();

@@ -137,9 +137,10 @@
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background var(--ease-ui), color var(--ease-ui),
+    border-color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .invoice-form__btn--primary {
@@ -148,7 +149,11 @@
   border: 1px solid var(--color-brown);
 }
 
-.invoice-form__btn--primary:hover { background: #7a4a26; border-color: #7a4a26; }
+.invoice-form__btn--primary:hover {
+  background: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
 
 .invoice-form__btn--ghost {
   color: #575756;
@@ -157,8 +162,10 @@
 }
 
 .invoice-form__btn--ghost:hover {
-  color: var(--color-brown);
-  border-color: var(--color-brown);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
+  text-decoration: none;
 }
 
 /* Поле КПП скрывается для ИП (ТЗ 8.2) */

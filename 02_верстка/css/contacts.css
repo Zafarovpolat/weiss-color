@@ -257,10 +257,15 @@
 .contacts-consent a {
   color: #54575b;
   text-decoration: underline;
+  text-decoration-color: var(--color-brown);
   text-underline-offset: 3px;
+  transition: color var(--ease-ui), text-decoration-color var(--ease-ui);
 }
 
-.contacts-consent a:hover { color: var(--color-brown); }
+.contacts-consent a:hover {
+  color: var(--color-brown-dark);
+  text-decoration-color: var(--color-brown-dark);
+}
 
 .contacts-submit {
   display: grid;
@@ -275,12 +280,15 @@
   color: var(--color-white);
   background: var(--color-brown);
   border: 1px solid var(--color-brown);
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
-.contacts-submit:hover { background: #7a4a26; }
+.contacts-submit:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
 
 /* Служебные поля валидации */
 

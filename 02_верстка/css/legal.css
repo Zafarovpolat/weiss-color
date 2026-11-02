@@ -131,6 +131,21 @@
   color: #6a737c;
 }
 
+/* Текстовые ссылки в документе: тёмный текст на коричневой линии,
+   при наведении темнеет до фирменного коричневого */
+.legal-section__text a {
+  color: #253346;
+  text-decoration: underline;
+  text-decoration-color: var(--color-brown);
+  text-underline-offset: 3px;
+  transition: color var(--ease-ui), text-decoration-color var(--ease-ui);
+}
+
+.legal-section__text a:hover {
+  color: var(--color-brown-dark);
+  text-decoration-color: var(--color-brown-dark);
+}
+
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
 @media (max-width: 1280px) {

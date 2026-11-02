@@ -307,6 +307,8 @@
   /* высота = высота левой колонки минус viz-info, viz-buy и их margin-top */
   flex: 1 1 0;
   min-height: clamp(220px, 17vw, 440px);
+  /* multiply красит только фото, не смешиваясь с фоном страницы */
+  isolation: isolate;
 }
 
 .viz-hero__img {
@@ -317,10 +319,31 @@
   display: block;
 }
 
+/* Слой краски: цвет умножается на яркость фото по маске стен.
+   mask-size: cover повторяет object-fit: cover у картинки, поэтому
+   маска совпадает с кадром при любом размере блока. */
+.viz-hero__paint {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  -webkit-mask-image: var(--viz-mask, none);
+  mask-image: var(--viz-mask, none);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  transition: background-color 0.25s ease;
+}
+
 /* Лента превью интерьеров — поверх фото, справа снизу */
 
 .viz-thumbs {
   position: absolute;
+  z-index: 1;
   left: 50%;
   right: auto;
   transform: translateX(-50%);
@@ -370,6 +393,7 @@
 .viz-prev,
 .viz-next {
   position: absolute;
+  z-index: 1;
   bottom: clamp(16px, 1.33vw, 34px);
   width: clamp(36px, 1.76vw, 45px);
   height: clamp(42px, 2.11vw, 54px);
@@ -377,13 +401,13 @@
   background: rgba(255, 255, 255, 0.85);
   border: 0;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow var(--ease-ui);
 }
 
 .viz-prev:hover,
 .viz-next:hover {
-  background: #fff;
   transform: scale(1.06);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 .viz-prev:focus-visible,
@@ -453,12 +477,14 @@
   background: var(--color-white);
   border: 1px solid #b9babf;
   text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease,
+    box-shadow var(--ease-ui);
 }
 
 .viz-info__btn:hover {
   color: var(--color-brown);
   border-color: var(--color-brown);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* Ряд покупки: цена + «В корзину» */
@@ -487,11 +513,13 @@
   border: 0;
   border-radius: 0;
   color: var(--color-white);
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .viz-cart:hover {
-  background: #7a4a26;
+  background: var(--color-brown-dark);
   color: var(--color-white);
+  box-shadow: var(--shadow-hover-brown);
 }
 
 /* --- Адаптив (проверяем до 1024) --- */

@@ -69,7 +69,7 @@
   transition: color 0.2s ease;
 }
 
-.cart-back:hover { color: #7f828d; }
+.cart-back:hover { color: var(--color-brown); }
 
 .cart-back svg {
   flex: none;
@@ -284,7 +284,7 @@
 }
 
 .qty__btn:hover { background: #f3ede9; }
-.qty__btn--minus:hover { background: #7a4a26; }
+.qty__btn--minus:hover { background: var(--color-brown-dark); }
 
 .qty__input {
   width: clamp(42px, 2.19vw, 56px);
@@ -575,12 +575,15 @@
   color: var(--color-white);
   background: var(--color-teal);
   border: 0;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
-.promo__btn:hover { background: #2f646b; }
+.promo__btn:hover {
+  background: var(--color-teal-dark);
+  box-shadow: var(--shadow-hover-teal);
+}
 
 /* Итого */
 
@@ -629,12 +632,16 @@
   text-transform: uppercase;
   color: var(--color-white);
   background: var(--color-brown);
-  border-radius: 2px;
+  border-radius: 0;
   text-decoration: none;
-  transition: background 0.2s ease;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
-.order-panel__checkout:hover { background: #7a4a26; }
+.order-panel__checkout:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+  text-decoration: none;
+}
 
 .order-panel__continue {
   display: grid;
@@ -647,14 +654,16 @@
   color: var(--color-ink-deep);
   background: var(--color-white);
   border: 1px solid #b9babf;
-  border-radius: 2px;
+  border-radius: 0;
   text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color var(--ease-ui), color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .order-panel__continue:hover {
-  color: var(--color-brown);
-  border-color: var(--color-brown);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
+  text-decoration: none;
 }
 
 /* --- Пустая корзина --- */
@@ -691,9 +700,14 @@
   color: var(--color-white);
   background: var(--color-brown);
   text-decoration: none;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
-.cart-empty__link:hover { background: #7a4a26; }
+.cart-empty__link:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+  text-decoration: none;
+}
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 

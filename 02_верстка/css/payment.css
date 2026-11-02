@@ -103,9 +103,10 @@
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background var(--ease-ui), color var(--ease-ui),
+    border-color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .payment-actions__submit {
@@ -114,7 +115,11 @@
   border: 1px solid var(--color-brown);
 }
 
-.payment-actions__submit:hover { background: #7a4a26; border-color: #7a4a26; }
+.payment-actions__submit:hover {
+  background: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
 
 .payment-actions__cancel {
   color: #575756;
@@ -123,8 +128,9 @@
 }
 
 .payment-actions__cancel:hover {
-  color: var(--color-brown);
-  border-color: var(--color-brown);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 .payment-card__footnote {

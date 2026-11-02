@@ -23,8 +23,8 @@
   border-radius: var(--radius-btn);
   cursor: pointer;
   text-decoration: none;
-  transition: box-shadow 0.25s ease, background-color 0.2s ease,
-    border-color 0.2s ease, color 0.2s ease, filter 0.2s ease;
+  transition: box-shadow var(--ease-ui), background-color var(--ease-ui),
+    border-color var(--ease-ui), color var(--ease-ui), filter var(--ease-ui);
 }
 .btn:hover { text-decoration: none; }
 .btn:active { filter: brightness(0.93); }
@@ -45,7 +45,10 @@
   padding-inline: clamp(18px, 1.37vw, 35px);
   border-radius: 0;
 }
-.btn--brown:hover { background: #734426; box-shadow: 0 0 34px 4px rgba(98, 56, 30, 0.45); }
+.btn--brown:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
 .btn--brown:focus-visible { outline-color: var(--color-brown); }
 
 /* Вторичная CTA — бирюзовая (макет: #39757d + свечение .35) */
@@ -58,21 +61,25 @@
   gap: clamp(8px, 0.4vw, 10px);
   padding-inline: clamp(18px, 1.1vw, 28px);
 }
-.btn--teal:hover { background: #44858e; box-shadow: 0 0 34px 4px rgba(57, 117, 125, 0.45); }
+.btn--teal:hover {
+  background: var(--color-teal-dark);
+  box-shadow: var(--shadow-hover-teal);
+}
 .btn--teal:focus-visible { outline-color: var(--color-teal); }
 .btn--teal .btn__arrow { width: clamp(20px, 1.64vw, 42px); }
 
 /* Контурная кнопка «Заказать звонок» (шапка/подвал) */
 .btn--outline {
-  color: var(--color-ink);
+  color: var(--color-brown);
   background: var(--color-white);
-  border-color: #d9d9d9;
+  border-color: #c9b7a6;
   box-shadow: none;
   padding-inline: clamp(20px, 1.68vw, 43px);
 }
 .btn--outline:hover {
-  border-color: var(--color-ink);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* Контурная на тёмном (подвал) — в макете более узкий «дышащий» контур */
@@ -83,7 +90,9 @@
   box-shadow: none;
   padding-inline: clamp(18px, 1.1vw, 28px);
 }
-.btn--ghost:hover { background: rgba(255, 255, 255, 0.1); }
+.btn--ghost:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
 
 /* ---------- Текстовые атомы героя ---------- */
 .hero__eyebrow {

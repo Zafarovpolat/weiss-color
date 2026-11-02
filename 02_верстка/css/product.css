@@ -101,13 +101,14 @@
   background: #4d2c17;
   color: var(--color-white);
   text-decoration: none;
-  transition: background 0.2s ease;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .p-coloring:hover {
-  background: #3d2312;
+  background: var(--color-brown-dark);
   color: var(--color-white);
   text-decoration: none;
+  box-shadow: var(--shadow-hover-brown);
 }
 
 .p-coloring span {
@@ -192,11 +193,13 @@
   font-size: clamp(14px, 0.63vw, 16px);
   font-weight: 600;
   text-transform: uppercase;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .p-price__btn:hover {
-  background: #2f6169;
+  background: var(--color-teal-dark);
   color: var(--color-white);
+  box-shadow: var(--shadow-hover-teal);
 }
 
 /* --- Нижняя секция: описание + характеристики --- */

@@ -354,7 +354,13 @@
     gap: clamp(24px, 3.18vw, 81.5px);
   }
   .site-nav__list a { padding: 0; }
-  .site-nav__list a:hover { color: var(--color-teal); text-decoration: none; }
+  .site-nav__list a:hover {
+    color: var(--color-brown);
+    text-decoration: underline;
+    text-decoration-color: var(--color-brown);
+    text-underline-offset: 8px;
+    text-decoration-thickness: 1px;
+  }
 
   .header__contacts {
     flex-wrap: nowrap;

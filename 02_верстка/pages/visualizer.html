@@ -156,7 +156,7 @@
           </ul>
 
           <nav class="pagination pagination--compact viz-pagination" aria-label="Страницы оттенков">
-            <span class="pagination__item" aria-disabled="true">Назад</span>
+            <a class="pagination__item" href="#" aria-label="Предыдущая страница">Назад</a>
             <a class="pagination__item" href="#" aria-label="Страница 1">1</a>
             <a class="pagination__item" href="#" aria-label="Страница 2">2</a>
             <a class="pagination__item" href="#" aria-label="Страница 3">3</a>
@@ -171,20 +171,25 @@
         <!-- ============ Правая колонка: визуализатор ============ -->
         <div class="viz-right">
           <figure class="viz-hero">
-            <img class="viz-hero__img" src="../assets/img/viz-hero.png" width="1337" height="722" alt="Интерьер гостиной, окрашенной в выбранный оттенок">
+            <img class="viz-hero__img" src="../assets/img/scene-kids.png" width="1334" height="746" alt="Интерьер детской, окрашенной в выбранный оттенок">
+            <span class="viz-hero__paint" aria-hidden="true"></span>
 
             <ul class="viz-thumbs" aria-label="Превью интерьеров">
-              <li><button class="viz-thumb" type="button"
-                          data-img="../assets/img/viz-scene1.png"
+              <li><button class="viz-thumb" type="button" data-scene="living"
+                          data-img="../assets/img/scene-living.png"
+                          data-mask="../assets/masks/scene-living.png"
                           data-alt="Интерьер гостиной, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb1.png" width="199" height="119" alt="Интерьер 1 — гостиная"></button></li>
-              <li><button class="viz-thumb" type="button"
-                          data-img="../assets/img/viz-scene2.png"
+              <li><button class="viz-thumb" type="button" data-scene="bath"
+                          data-img="../assets/img/scene-bath.png"
+                          data-mask="../assets/masks/scene-bath.png"
                           data-alt="Интерьер ванной, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb2.png" width="199" height="119" alt="Интерьер 2 — ванная"></button></li>
-              <li><button class="viz-thumb" type="button"
-                          data-img="../assets/img/viz-scene3.png"
+              <li><button class="viz-thumb" type="button" data-scene="kitchen"
+                          data-img="../assets/img/scene-kitchen.png"
+                          data-mask="../assets/masks/scene-kitchen.png"
                           data-alt="Интерьер кухни, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb3.png" width="199" height="119" alt="Интерьер 3 — кухня"></button></li>
-              <li><button class="viz-thumb viz-thumb--active" type="button" aria-current="true"
-                          data-img="../assets/img/viz-hero.png"
+              <li><button class="viz-thumb viz-thumb--active" type="button" aria-current="true" data-scene="kids"
+                          data-img="../assets/img/scene-kids.png"
+                          data-mask="../assets/masks/scene-kids.png"
                           data-alt="Интерьер детской, окрашенной в выбранный оттенок"><img src="../assets/img/viz-thumb4.png" width="199" height="119" alt="Интерьер 4 — детская"></button></li>
             </ul>
 

@@ -382,9 +382,10 @@
 .cookie-bar__link {
   width: fit-content;
   align-self: start;
+  transition: color var(--ease-ui);
 }
 
-.cookie-bar__link:hover { color: #62381e; border-color: #62381e; }
+.cookie-bar__link:hover { color: var(--color-brown-dark); border-color: var(--color-brown-dark); }
 .cookie-bar__link svg { width: clamp(16px, 1.02vw, 26px); height: auto; }
 
 .cookie-bar__actions {

@@ -318,13 +318,13 @@
   font-size: clamp(13px, 0.59vw, 15px);
   font-weight: 600;
   text-transform: uppercase;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color var(--ease-ui), color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .product__btn:hover {
-  background: var(--color-brown);
-  border-color: var(--color-brown);
-  color: var(--color-white);
+  border-color: var(--color-brown-dark);
+  color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* Карточка ведёт на страницу товара: фото и заголовок — ссылки.
@@ -353,17 +353,7 @@
 .product:hover,
 .product:focus-within,
 .product--active {
-  border-color: transparent;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-}
-
-.product:hover .product__btn,
-.product:focus-within .product__btn,
-.product--active .product__btn {
-  background: var(--color-brown);
-  border-color: var(--color-brown);
-  color: var(--color-white);
-  box-shadow: 0 6px 16px rgba(98, 56, 30, 0.35);
+  box-shadow: var(--shadow-hover-card);
 }
 
 /* --- Пагинация (по центру страницы, как на макете) --- */
@@ -385,14 +375,53 @@
   --pg-cell: clamp(26px, 1.25vw, 32px);
 }
 
+/* Ссылка внутри ячейки (вариант разметки ul > li > a) заполняет квадрат */
+.pagination__item {
+  position: relative;
+}
+
+.pagination__item > a {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.pagination__item:first-child > a,
+.pagination__item:last-child > a {
+  position: static;
+  padding-inline: 4px;
+}
+
 .pagination a {
+  display: grid;
+  place-items: center;
+  border-radius: 0;
   color: #43484f;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--ease-ui), background-color var(--ease-ui);
 }
 
 .pagination a:hover {
-  color: var(--color-brown);
+  color: var(--color-ink);
+  background: var(--color-hover-bg);
+}
+
+.pagination__item[aria-current="page"]:hover {
+  background: var(--color-brown);
+  color: var(--color-white);
+}
+
+/* «Назад» чуть приглушённее цифр, но остаётся ссылкой */
+.pagination__item:first-child,
+.pagination__item:first-child > a {
+  color: #7d8087;
+}
+
+.pagination__item:first-child:hover,
+.pagination__item:first-child > a:hover {
+  color: #5b5e65;
+  background: var(--color-hover-bg);
 }
 
 .pagination__item[aria-disabled="true"] {
@@ -438,6 +467,8 @@
   min-width: 0;
   background: var(--color-brown);
   color: var(--color-white);
+  border-radius: 0;
+  transition: background-color var(--ease-ui), color var(--ease-ui);
 }
 
 .pagination__item[aria-current="page"]:hover {
@@ -528,7 +559,7 @@
 /* Наведение на пункт фильтра: рамка темнеет, текст — коричневый */
 .check:hover .check__box { border-color: var(--color-brown); }
 .check:hover .check__label { color: var(--color-brown); }
-.check:hover input:checked + .check__box { background: #734426; border-color: #734426; }
+.check:hover input:checked + .check__box { background: var(--color-brown-dark); border-color: var(--color-brown-dark); }
 
 .check input:checked + .check__box::after {
   opacity: 1;
@@ -662,11 +693,14 @@
   border: 1px solid #b9babf;
   background: var(--color-white);
   color: #626366;
+  transition: border-color var(--ease-ui), color var(--ease-ui),
+    box-shadow var(--ease-ui);
 }
 
 .filter__reset:hover {
   border-color: #626366;
   color: var(--color-ink);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* --- Адаптив (проверяем 360–1024) --- */

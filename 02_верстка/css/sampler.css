@@ -101,7 +101,7 @@
 }
 
 /* при наведении подчёркивание не добавляется: линия уже есть под текстом */
-.sampler-back:hover { color: #7a4a26; text-decoration: none; }
+.sampler-back:hover { color: var(--color-brown-dark); text-decoration: none; }
 
 .sampler-back svg { width: clamp(18px, 1.09vw, 28px); height: auto; }
 

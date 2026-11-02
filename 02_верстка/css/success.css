@@ -180,8 +180,9 @@
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: 2px;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  border-radius: 0;
+  transition: background var(--ease-ui), border-color var(--ease-ui),
+    color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .success-actions__primary {
@@ -190,7 +191,11 @@
   border: 1px solid var(--color-brown);
 }
 
-.success-actions__primary:hover { background: #7a4a26; border-color: #7a4a26; }
+.success-actions__primary:hover {
+  background: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
 
 .success-actions__link {
   color: #061e3f;
@@ -199,8 +204,9 @@
 }
 
 .success-actions__link:hover {
-  color: var(--color-brown);
-  border-color: var(--color-brown);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* --- Адаптив (проверяем 360 и 1024) --- */

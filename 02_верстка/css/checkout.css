@@ -529,12 +529,15 @@
   color: var(--color-white);
   background: var(--color-brown);
   border: 0;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
-.checkout-actions__submit:hover { background: #7a4a26; }
+.checkout-actions__submit:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
 
 .checkout-actions__back {
   display: grid;
@@ -547,14 +550,16 @@
   color: #2a3848;
   background: var(--color-white);
   border: 1px solid #b9babf;
-  border-radius: 2px;
+  border-radius: 0;
   text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color var(--ease-ui), color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .checkout-actions__back:hover {
-  color: var(--color-brown);
-  border-color: var(--color-brown);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
+  text-decoration: none;
 }
 
 .checkout-note {
@@ -644,8 +649,10 @@
   font-family: inherit;
   font-size: clamp(13px, 0.7vw, 18px);
   font-weight: var(--fw-medium);
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
+  transition: background var(--ease-ui), border-color var(--ease-ui),
+    color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .invoice-dialog__btn--ghost {
@@ -654,13 +661,23 @@
   border: 1px solid #b9babf;
 }
 
+.invoice-dialog__btn--ghost:hover {
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
+}
+
 .invoice-dialog__btn--primary {
   color: var(--color-white);
   background: var(--color-teal);
   border: 1px solid var(--color-teal);
 }
 
-.invoice-dialog__btn--primary:hover { background: #2f646b; }
+.invoice-dialog__btn--primary:hover {
+  background: var(--color-teal-dark);
+  border-color: var(--color-teal-dark);
+  box-shadow: var(--shadow-hover-teal);
+}
 
 /* Кнопка «Указать реквизиты» в секции оплаты (ТЗ 8.2) */
 .invoice-dialog__open {
@@ -669,12 +686,15 @@
   font-size: clamp(13px, 0.7vw, 18px);
   color: var(--color-teal);
   border-color: var(--color-teal);
+  transition: background var(--ease-ui), border-color var(--ease-ui),
+    color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .invoice-dialog__open:hover {
   color: var(--color-white);
-  background: var(--color-teal);
-  border-color: var(--color-teal);
+  background: var(--color-teal-dark);
+  border-color: var(--color-teal-dark);
+  box-shadow: var(--shadow-hover-teal);
 }
 
 .invoice-dialog__open[hidden] { display: none; }

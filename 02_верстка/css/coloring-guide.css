@@ -133,11 +133,13 @@
   background: var(--color-brown);
   border: 0;
   text-decoration: none;
-  transition: background 0.2s ease;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .guide-cta__primary:hover {
-  background: #7a4a26;
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+  text-decoration: none;
 }
 
 .guide-cta__secondary {
@@ -152,12 +154,15 @@
   background: var(--color-white);
   border: 1px solid #b9babf;
   text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color var(--ease-ui), color var(--ease-ui),
+    box-shadow var(--ease-ui);
 }
 
 .guide-cta__secondary:hover {
-  color: var(--color-brown);
-  border-color: var(--color-brown);
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
+  text-decoration: none;
 }
 
 /* --- Адаптив (проверяем до 1024) --- */
