@@ -10,7 +10,7 @@
   var list = document.querySelector('.cart-list');
   if (!list) return;
 
-  var pageCount = document.querySelector('.cart-count');      // плашка у H1
+  var headCount = document.querySelector('.cart-count');      // плашка у H1
   var panelCount = document.querySelector('.order-panel__count');
   var panelGoods = document.querySelector('.order-panel__goods'); // «Товары (N шт.)»
   var panelTotal = document.querySelector('.order-panel__sum dd');
@@ -72,9 +72,9 @@
 
     var label = units + ' ' + itemsWord(units);
 
-    if (pageCount) pageCount.textContent = label;
+    if (headCount) headCount.textContent = label;
     if (panelCount) panelCount.textContent = label;
-    if (panelGoods) panelGoods.textContent = 'Товары (' + units + ' шт. )';
+    if (panelGoods) panelGoods.textContent = 'Товары (' + units + ' шт.\u00A0)';
     if (panelTotal) panelTotal.textContent = money(total);
     if (headerCount) headerCount.textContent = String(units);
 
@@ -94,7 +94,7 @@
     list.hidden = true;
     if (pagination) pagination.hidden = true;
     if (panel) panel.hidden = true;
-    if (pageCount) pageCount.hidden = true;
+    if (headCount) headCount.hidden = true;
     if (head && !document.querySelector('.cart-empty')) {
       var empty = document.createElement('div');
       empty.className = 'cart-empty';

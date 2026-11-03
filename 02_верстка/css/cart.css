@@ -337,14 +337,6 @@
 
 .cart-item__del:hover { opacity: 1; }
 
-/* --- Пагинация (в макете — под списком; данных > страницы, оставлена как в макете) --- */
-
-.cart-pagination {
-  margin-top: clamp(12px, 0.78vw, 20px);
-}
-
-.cart-pagination .pagination { padding-bottom: clamp(32px, 2.66vw, 68px); }
-
 /* --- Панель «Ваш заказ» --- */
 
 .order-panel {
@@ -666,6 +658,11 @@
   text-decoration: none;
 }
 
+/* --- Пагинация --- */
+
+.cart-pagination { margin-top: clamp(12px, 0.78vw, 20px); }
+.cart-pagination .pagination { padding-bottom: clamp(32px, 2.2vw, 56px); }
+
 /* --- Пустая корзина --- */
 
 .cart-empty {
@@ -822,4 +819,403 @@
     transform: translateY(-50%);
     width: min(230px, calc(100vw - 190px));
   }
+}
+
+/* --- Компактный режим для невысоких десктоп-окон ---
+   Макет нарисован под 2560×1440 без панелей браузера. В окне 1920×1080
+   под контент остаётся ~950px, и корзина не помещалась. На невысоких
+   окнах сжимаем вертикальный ритм, фото и кегли только у корзины —
+   остальные страницы не затрагиваются. На 2560×1440 правила не работают
+   (макет 1:1), но на широких экранах в окне ниже макетной высоты — работают. */
+
+/* Широкие экраны (1921–2299) в невысоком окне: макетные поля в clamp
+   не успевают сжаться пропорционально ширине, и корзина уезжает вниз
+   (2048×1152 — на 14px). Включаем тот же компактный режим, пока высота
+   окна меньше 60% ширины — выше этого порога макет влезает сам.
+   На 1920 первый уровень требует ~1107px, поэтому порог 1120, а не 1100:
+   в окне 1101–1106 корзина уезжала вниз на 6px.
+   Ровно 1280 — отдельная история: там базовый режим переключает карточку
+   в планшетную сетку 100px + 1fr + auto, и она требует ~1259px. */
+@media (min-width: 1280px) and (max-width: 1280px) and (max-height: 1269px),
+  (min-width: 1281px) and (max-height: 1120px),
+  (min-width: 1921px) and (max-width: 2299px) and (max-height: 60vw),
+  (min-width: 2300px) and (max-height: 1439px) {
+  .cart-body .header__inner { min-height: 64px; }
+  .cart-body .logo { margin-top: 10px; }
+
+  .cart-body .cart-head { padding-top: 24px; }
+  .cart-body .cart-head__row { margin-top: 16px; }
+  .cart-body .cart-title { font-size: clamp(30px, 1.75vw, 38px); }
+  .cart-body .cart-count {
+    height: 38px;
+    padding-inline: 16px;
+    font-size: 15px;
+  }
+  .cart-body .cart-back { font-size: 16px; }
+  .cart-body .cart-layout { margin-top: 20px; }
+
+  .cart-body .cart-list { gap: 14px; }
+  .cart-body .cart-item {
+    grid-template-columns: clamp(56px, 4.8vw, 120px) minmax(0, 543fr) minmax(0, 605fr) 44px;
+    column-gap: 0;
+    row-gap: 0;
+    padding-top: 18px;
+    padding-bottom: 14px;
+  }
+  /* ширина колонки с банкой растёт от vw, и на 1920 банка делала карточку
+     выше панели заказа. В компактном режиме ограничиваем её по высоте окна */
+  .cart-body .cart-item__img {
+    width: auto;
+    max-width: 100%;
+    height: clamp(64px, 12vh, 110px);
+    margin-inline: auto;
+  }
+
+  /* на ровно 1280 общий медиазапрос перестраивал карточку в три ряда
+     и она становилась выше, чем на 1366. Возвращаем одну строку */
+  .cart-body .cart-item__body { margin-left: clamp(12px, 1.6vw, 30px); }
+  .cart-body .cart-item__cols {
+    grid-column: auto;
+    /* треки по содержимому: степпер (132px) шире прежней fr-колонки,
+       и при justify-self: center колонка цены вылезала влево на текст товара */
+    grid-template-columns: auto auto auto;
+    justify-content: space-between;
+    column-gap: 0;
+    justify-items: initial;
+    padding-right: 0;
+    margin-top: 22px;
+  }
+  .cart-body .cart-item__cols > div { justify-self: start; }
+  .cart-body .cart-item__cols > div:last-child {
+    justify-self: end;
+    padding-right: clamp(16px, 1.6vw, 36px);
+  }
+  .cart-body .cart-item__col-title,
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total { text-align: center; }
+  .cart-body .cart-item__del {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .cart-body .cart-item__name {
+    font-size: clamp(15px, 0.84vw, 21px);
+    line-height: 1.25;
+  }
+  .cart-body .cart-item__meta { margin-top: 5px; }
+  .cart-body .cart-item__spec { font-size: clamp(13px, 0.72vw, 18px); }
+  .cart-body .cart-item__stock {
+    margin-top: 8px;
+    padding: 6px 12px;
+  }
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total {
+    margin-top: 24px;
+    font-size: clamp(16px, 0.92vw, 23px);
+  }
+  .cart-body .cart-item__qty { margin-top: 8px; }
+  .cart-body .cart-item__del { margin-top: 40px; }
+
+  .cart-body .cart-pagination { margin-top: 16px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 28px; }
+
+  .cart-body .order-panel { padding: 26px; }
+  .cart-body .order-panel__head { padding-bottom: 18px; }
+  .cart-body .order-panel__title { font-size: clamp(22px, 1.2vw, 30px); }
+  .cart-body .order-panel__count { font-size: 18px; }
+  .cart-body .order-panel__rows { padding-top: 24px; }
+  .cart-body .order-panel__row { font-size: clamp(14px, 0.85vw, 21px); }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 16px; }
+  .cart-body .order-panel__info {
+    margin-top: 20px;
+    padding: 12px 16px;
+  }
+  .cart-body .promo { margin-top: 20px; }
+  .cart-body .promo__label {
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  .cart-body .promo__input,
+  .cart-body .promo__btn { height: 48px; }
+  .cart-body .order-panel__sum {
+    margin-top: 18px;
+    padding-top: 20px;
+  }
+  .cart-body .order-panel__sum dt { font-size: clamp(19px, 1.05vw, 26px); }
+  .cart-body .order-panel__sum dd { font-size: clamp(22px, 1.3vw, 32px); }
+  .cart-body .order-panel__actions {
+    margin-top: 18px;
+    gap: 14px;
+  }
+  .cart-body .order-panel__checkout,
+  .cart-body .order-panel__continue { height: 50px; }
+
+  /* Ссылка «Продолжить покупки» и подвал в компактном режиме ниже макетных
+     44/80px: иначе корзина упирается в самый низ окна и пагинация
+     выглядит приклеенной к подвалу. */
+  .cart-body .cart-back { min-height: 32px; }
+  .cart-body .footer__inner {
+    min-height: 56px;
+    padding-block: 10px;
+  }
+  .cart-body .footer__logo img { height: 40px; }
+}
+
+/* Узкие окна (1280–1340): цена + степпер + сумма по 296px не встают в 249px
+   колонки, поэтому подпись над степпером скрываем (у кнопок есть aria-label),
+   а сумму прижимаем вправо */
+@media (min-width: 1280px) and (max-width: 1340px) and (max-height: 1269px) {
+  .cart-body .cart-item__cols {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .cart-body .cart-item__cols > div:nth-child(2) { display: none; }
+}
+
+/* 1281–1600: в базовой пропорции 1435:653 панель заказа выходит уже, чем
+   на ровно 1280 (там 38%), и от переносов строк вырастает: на 1440×720
+   корзина уезжала вниз на 14px. Ниже 394px панели текст начинает
+   переноситься, поэтому держим минимум 396px, дальше — доля 32% */
+@media (min-width: 1281px) and (max-width: 1600px) and (max-height: 1120px) {
+  .cart-body .cart-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(396px, 32%, 430px);
+  }
+}
+
+/* 900-е высоты (1440×900, 1366×900): первому уровню не хватает ~30px.
+   Сжимаем только панель заказа и ритм секции, кегли оставляем как в первом
+   уровне — полный второй уровень (ниже) для этих высот слишком мелкий. */
+@media (min-width: 1280px) and (max-height: 930px) {
+  .cart-body .cart-layout { margin-top: 16px; }
+  .cart-body .cart-list { gap: 12px; }
+
+  .cart-body .order-panel { padding: 20px; }
+  .cart-body .order-panel__head { padding-bottom: 14px; }
+  .cart-body .order-panel__rows { padding-top: 18px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 12px; }
+  .cart-body .order-panel__info {
+    margin-top: 16px;
+    padding: 10px 14px;
+  }
+  .cart-body .promo { margin-top: 16px; }
+  .cart-body .order-panel__sum {
+    margin-top: 14px;
+    padding-top: 16px;
+  }
+  .cart-body .order-panel__actions { margin-top: 14px; }
+}
+
+/* Ещё ниже (1366×768, 1440×800): дополнительное сжатие */
+@media (min-width: 1280px) and (max-height: 880px) {
+  .cart-body .cart-head { padding-top: 16px; }
+  .cart-body .cart-head__row { margin-top: 10px; }
+  .cart-body .cart-title { font-size: 26px; }
+  .cart-body .header__inner { min-height: 56px; }
+  /* иконка корзины в шапке растёт от vw до 89px и на 1920 делает шапку
+     74px — на невысоких окнах ограничиваем её макетными 56px */
+  .cart-body .site-header .cart img { width: 56px; }
+  .cart-body .logo { margin-top: 4px; }
+  .cart-body .cart-count {
+    height: 32px;
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+  .cart-body .cart-back { font-size: 14px; }
+  .cart-body .cart-layout { margin-top: 12px; }
+
+  .cart-body .cart-list { gap: 6px; }
+  .cart-body .cart-item {
+    padding-top: 8px;
+    padding-bottom: 6px;
+  }
+  .cart-body .cart-item__name { font-size: 14px; }
+  .cart-body .cart-item__spec { font-size: 12px; }
+  .cart-body .cart-item__stock {
+    margin-top: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .cart-body .cart-item__cols { margin-top: 14px; }
+  .cart-body .cart-item__col-title { font-size: 12px; }
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total {
+    margin-top: 16px;
+    font-size: 16px;
+  }
+  .cart-body .cart-item__del { margin-top: 26px; }
+
+  .cart-body .order-panel { padding: 16px; }
+  .cart-body .order-panel__head { padding-bottom: 12px; }
+  .cart-body .order-panel__title { font-size: 21px; }
+  .cart-body .order-panel__count { font-size: 15px; }
+  .cart-body .order-panel__rows { padding-top: 12px; }
+  .cart-body .order-panel__row { font-size: 13px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 10px; }
+  .cart-body .order-panel__info {
+    margin-top: 10px;
+    padding: 8px 12px;
+  }
+  .cart-body .order-panel__info p { font-size: 12px; }
+  .cart-body .promo { margin-top: 10px; }
+  .cart-body .promo__label {
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .cart-body .order-panel__sum {
+    margin-top: 10px;
+    padding-top: 12px;
+  }
+  .cart-body .order-panel__sum dt { font-size: 17px; }
+  .cart-body .order-panel__sum dd { font-size: 21px; }
+  .cart-body .order-panel__actions {
+    margin-top: 12px;
+    gap: 10px;
+  }
+  .cart-body .order-panel__checkout,
+  .cart-body .order-panel__continue {
+    height: 44px;
+    font-size: 13px;
+  }
+
+  .cart-body .cart-back { min-height: 30px; }
+  .cart-body .cart-pagination { margin-top: 12px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 16px; }
+
+  .cart-body .footer__inner {
+    min-height: 48px;
+    padding-block: 8px;
+  }
+  .cart-body .footer__logo img { height: 34px; }
+}
+
+/* Совсем низкие окна (1366×768 с панелями браузера): последний уровень сжатия */
+@media (min-width: 1280px) and (max-height: 700px) {
+  .cart-body .header__inner { min-height: 56px; }
+  .cart-body .logo { margin-top: 4px; }
+
+  .cart-body .cart-head { padding-top: 10px; }
+  .cart-body .cart-head__row { margin-top: 8px; }
+  .cart-body .cart-title { font-size: 22px; }
+  .cart-body .cart-count {
+    height: 28px;
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+  .cart-body .cart-back { font-size: 12px; }
+  .cart-body .cart-layout { margin-top: 10px; }
+
+  .cart-body .cart-list { gap: 8px; }
+  .cart-body .cart-item {
+    padding-top: 8px;
+    padding-bottom: 6px;
+  }
+  .cart-body .cart-item__name { font-size: 13px; }
+  .cart-body .cart-item__meta { margin-top: 2px; }
+  .cart-body .cart-item__spec { font-size: 12px; }
+  .cart-body .cart-item__stock {
+    margin-top: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+  .cart-body .cart-item__cols { margin-top: 10px; }
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .cart-body .cart-item__qty { margin-top: 4px; }
+  .cart-body .cart-item__del { margin-top: 20px; }
+
+  .cart-body .order-panel { padding: 10px; }
+  .cart-body .order-panel__head { padding-bottom: 6px; }
+  .cart-body .order-panel__title { font-size: 18px; }
+  .cart-body .order-panel__count { font-size: 13px; }
+  .cart-body .order-panel__rows { padding-top: 8px; }
+  .cart-body .order-panel__row { font-size: 12px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 6px; }
+  .cart-body .order-panel__info {
+    margin-top: 6px;
+    padding: 4px 8px;
+  }
+  .cart-body .promo { margin-top: 6px; }
+  .cart-body .promo__label {
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .cart-body .order-panel__sum {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+  .cart-body .order-panel__sum dt { font-size: 15px; }
+  .cart-body .order-panel__sum dd { font-size: 18px; }
+  .cart-body .order-panel__actions {
+    margin-top: 6px;
+    gap: 8px;
+  }
+  .cart-body .order-panel__checkout,
+  .cart-body .order-panel__continue {
+    height: 38px;
+    font-size: 12px;
+  }
+
+  .cart-body .cart-back { min-height: 28px; }
+  .cart-body .cart-pagination { margin-top: 10px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 12px; }
+
+  .cart-body .footer__inner {
+    min-height: 40px;
+    padding-block: 6px;
+  }
+  .cart-body .footer__logo img { height: 30px; }
+}
+
+/* Окно ниже 640px по высоте (768-й экран с панелями браузера).
+   Кегли уже минимальные, поэтому сжимаем только «хром» — шапку,
+   заголовок, отступы карточек и подвал */
+@media (min-width: 1280px) and (max-height: 640px) {
+  .cart-body .header__inner { min-height: 48px; }
+  .cart-body .logo { margin-top: 2px; }
+  .cart-body .cart-head { padding-top: 6px; }
+  .cart-body .cart-head__row { margin-top: 6px; }
+  .cart-body .cart-title { font-size: 20px; }
+  .cart-body .cart-count {
+    height: 24px;
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+  .cart-body .cart-back { font-size: 11px; }
+  .cart-body .cart-layout { margin-top: 8px; }
+
+  .cart-body .cart-list { gap: 6px; }
+  .cart-body .cart-item {
+    padding-top: 6px;
+    padding-bottom: 4px;
+  }
+  .cart-body .cart-item__cols { margin-top: 8px; }
+  .cart-body .cart-item__del { margin-top: 16px; }
+
+  .cart-body .order-panel { padding: 8px; }
+  .cart-body .order-panel__head { padding-bottom: 4px; }
+  .cart-body .order-panel__rows { padding-top: 6px; }
+  .cart-body .promo__input,
+  .cart-body .promo__btn { height: 42px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 4px; }
+  .cart-body .order-panel__info {
+    margin-top: 6px;
+    padding: 4px 8px;
+  }
+  .cart-body .promo { margin-top: 6px; }
+  .cart-body .order-panel__sum {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+  .cart-body .order-panel__actions { margin-top: 6px; }
+
+  .cart-body .cart-back { min-height: 26px; }
+  .cart-body .cart-pagination { margin-top: 8px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 10px; }
+
+  .cart-body .footer__inner {
+    min-height: 32px;
+    padding-block: 4px;
+  }
+  .cart-body .footer__logo img { height: 24px; }
 }
