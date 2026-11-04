@@ -258,32 +258,35 @@
 .p-desc {
   margin-top: clamp(20px, 1.41vw, 36px);
   font-family: "Open Sans", system-ui, sans-serif;
-  font-size: clamp(17px, 0.94vw, 24px);
-  line-height: 1.45;
+  /* ink-замер макета: строки по 30px, «…Отсутствие запаха» = 702px */
+  font-size: clamp(16px, 0.78125vw, 20px);
+  line-height: 1.5;
   font-weight: 400;
   color: var(--color-muted);
 }
 
 .p-desc p + p {
-  margin-top: 1.45em;
+  margin-top: 0;
 }
 
 /* Таблица характеристик */
 .p-specs {
   display: flex;
   flex-direction: column;
-  gap: clamp(5px, 0.27vw, 7px);
+  gap: clamp(6px, 0.43vw, 11px);
   margin-top: clamp(6px, 0.39vw, 10px);
   list-style: none;
 }
 
+/* Макет: строка таблицы 58px, шаг 69px — двухстрочное значение
+   укладывается ровно в 2×28px без больших внутренних полей. */
 .p-specs__row {
   display: grid;
   grid-template-columns: clamp(200px, 11.33vw, 290px) minmax(0, 1fr);
   align-items: center;
   gap: clamp(16px, 1.05vw, 27px);
-  min-height: clamp(54px, 2.42vw, 62px);
-  padding: clamp(8px, 0.5vw, 13px) clamp(4px, 0.16vw, 4px) clamp(8px, 0.5vw, 13px) clamp(18px, 1.05vw, 27px);
+  min-height: clamp(50px, 2.266vw, 58px);
+  padding: 1px clamp(4px, 0.16vw, 4px) 1px clamp(18px, 1.05vw, 27px);
   background: #ebebed;
 }
 

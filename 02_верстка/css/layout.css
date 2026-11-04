@@ -17,9 +17,9 @@
   gap: 12px;
   min-height: 72px;
   padding-block: 10px;
-  /* макет: слева 40px, справа 101px — иконка корзины заканчивается на x2459 */
-  padding-left: clamp(20px, 1.56vw, 40px);
-  padding-right: clamp(20px, 3.95vw, 101px);
+  /* поля симметричные: в макете справа было 101 против 40 слева,
+     из-за чего шапка читалась смещённой влево */
+  padding-inline: clamp(20px, 1.56vw, 40px);
 }
 
 .logo {
@@ -47,7 +47,7 @@
   display: block;
   padding-block: 10px;
   font-size: var(--fs-nav);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-semibold);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   color: var(--color-lead);
@@ -72,18 +72,18 @@
 }
 
 .header__phone {
-  /* в макете Sovest-Medium, файлов нет — осознанно Montserrat, см. FONTS.md */
-  font-family: var(--font-main);
+  /* в макете Sovest Medium — файл передан заказчиком, см. FONTS.md */
+  font-family: var(--font-digit);
   font-size: var(--fs-phone);
   font-weight: var(--fw-medium);
-  color: var(--color-brown);
+  color: var(--color-ink);
   white-space: nowrap;
   transition: color var(--ease-ui), text-decoration-color var(--ease-ui);
 }
 .header__phone:hover {
-  color: var(--color-brown-dark);
+  color: var(--color-brown);
   text-decoration: underline;
-  text-decoration-color: var(--color-brown-dark);
+  text-decoration-color: var(--color-brown);
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 }
@@ -101,12 +101,11 @@
   height: clamp(40px, 2.34vw, 60px);
   border-radius: 50%;
   overflow: hidden;
-  transition: background-color var(--ease-ui), box-shadow var(--ease-ui);
+  transition: box-shadow var(--ease-ui);
 }
 .socials a:hover {
   text-decoration: none;
-  background: var(--color-brown);
-  box-shadow: var(--shadow-hover-brown);
+  box-shadow: var(--shadow-hover-card);
 }
 .socials img {
   width: 100%;
@@ -114,7 +113,25 @@
   transition: opacity var(--ease-ui);
 }
 
-/* Наведение: фирменный коричневый круг + та же иконка в белом */
+/* Наведение: красится сама круглая подложка в фирменный цвет мессенджера,
+   иконка остаётся той же формы, но белой */
+.socials a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--ease-ui);
+}
+.socials a[aria-label="Viber"]::before {
+  background: linear-gradient(135deg, #31cfd3 12%, #4e4bd6 52%, #8a37c9 88%);
+}
+.socials a[aria-label="Telegram"]::before {
+  background: #2aabee;
+}
+.socials a[aria-label="WhatsApp"]::before {
+  background: #27b837;
+}
 .socials a::after {
   content: "";
   position: absolute;
@@ -135,6 +152,7 @@
   background-image: url("../assets/img/social-whatsapp-hover.png");
 }
 .socials a:hover img { opacity: 0; }
+.socials a:hover::before { opacity: 1; }
 .socials a:hover::after { opacity: 1; }
 
 /* Корзина со счётчиком (п.3.1) */
@@ -152,16 +170,36 @@
   transform: scale(1.05);
   filter: drop-shadow(0 2px 4px rgba(37, 51, 70, 0.16));
 }
-.cart__count {
-  font-family: var(--font-main);   /* в макете Sovest-Regular, см. FONTS.md */
+/* Серая обводка круга запечена в PNG, поэтому на hover поверх неё
+   проявляется коричневое кольцо той же толщины (2px из 89) — отдельным
+   SVG в натуральную величину иконки, чтобы картинка корзины не менялась.
+   z-index нужен, чтобы кольцо легло выше иконки: при hover у img
+   появляется transform, и без него картинка перекрывает ::before. */
+.cart::before {
+  content: "";
   position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: url("../assets/img/cart-ring.svg") center / 100% 100% no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ease-ui), transform 0.2s ease;
+}
+.cart:hover::before {
+  opacity: 1;
+  transform: scale(1.05);
+}
+.cart__count {
+  font-family: var(--font-digit);  /* в макете Sovest, см. FONTS.md */
+  position: absolute;
+  z-index: 2;
   /* кружок бейджа запечён в иконке (58,11 30×30 из 89) — цифра только
      центрируется на нём, без своего фона */
   top: 29.2%;
   left: 82%;
   transform: translate(-50%, -50%);
   font-size: clamp(13px, 0.86vw, 22px);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   line-height: 1;
   text-align: center;
   color: var(--color-white);
@@ -355,6 +393,13 @@
   padding-inline: var(--header-pad);
 }
 .footer__logo img { height: clamp(40px, 2vw, 52px); width: auto; }
+
+/* кнопка звонка в подвале: на hover — белая заливка и коричневый текст */
+.footer__cta:hover {
+  color: var(--color-brown);
+  background: var(--color-white);
+  border-color: var(--color-white);
+}
 .footer__nav {
   display: flex;
   flex-wrap: wrap;

@@ -47,7 +47,8 @@
 }
 .btn--brown:hover {
   background: var(--color-brown-dark);
-  box-shadow: var(--shadow-hover-brown);
+  /* свечение из базового состояния остаётся, иначе на ховере тень «пропадает» */
+  box-shadow: var(--shadow-brown), var(--shadow-hover-brown);
 }
 .btn--brown:focus-visible { outline-color: var(--color-brown); }
 
@@ -63,7 +64,8 @@
 }
 .btn--teal:hover {
   background: var(--color-teal-dark);
-  box-shadow: var(--shadow-hover-teal);
+  /* свечение из базового состояния остаётся, иначе на ховере тень «пропадает» */
+  box-shadow: var(--shadow-teal), var(--shadow-hover-teal);
 }
 .btn--teal:focus-visible { outline-color: var(--color-teal); }
 .btn--teal .btn__arrow { width: clamp(20px, 1.64vw, 42px); }
@@ -77,9 +79,10 @@
   padding-inline: clamp(20px, 1.68vw, 43px);
 }
 .btn--outline:hover {
-  color: var(--color-brown-dark);
-  border-color: var(--color-brown-dark);
-  box-shadow: var(--shadow-hover-outline);
+  color: var(--color-white);
+  background: var(--color-brown);
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-hover-brown);
 }
 
 /* Контурная на тёмном (подвал) — в макете более узкий «дышащий» контур */

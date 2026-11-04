@@ -61,6 +61,10 @@
   text-decoration: none;
 }
 
+/* общий a:hover подчёркивает подпись — карточке это не нужно */
+.palette-card:hover,
+.palette-card:focus-visible { text-decoration: none; }
+
 .palette-card__media {
   display: grid;
   place-items: center;
@@ -70,11 +74,13 @@
      площадь без обрезки и без лишнего воздуха. */
   aspect-ratio: 437 / 335;
   border: 2px solid #adadad;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow var(--ease-ui);
 }
 
-.palette-card:hover .palette-card__media {
+.palette-card:hover .palette-card__media,
+.palette-card:focus-visible .palette-card__media {
   border-color: var(--color-teal);
+  box-shadow: var(--shadow-hover-card);
 }
 
 .palette-card__media img {

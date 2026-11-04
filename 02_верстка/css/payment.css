@@ -77,7 +77,8 @@
   background: #f0f1f4;
 }
 
-.payment-note svg {
+.payment-note svg,
+.payment-note img {
   flex: none;
   width: clamp(30px, 1.48vw, 38px);
   height: auto;

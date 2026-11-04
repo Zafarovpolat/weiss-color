@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89" fill="none">
+  <!-- Коричневая обводка корзины на hover: кольцо 2px из 89 (как серая
+       обводка в cart.png), светлый тон с макета; бейдж счётчика запечён
+       в cart.png и должен остаться поверх — его круг вырезан маской. -->
+  <defs>
+    <mask id="badge">
+      <rect width="89" height="89" fill="#fff"/>
+      <circle cx="72.5" cy="25.5" r="15.6" fill="#000"/>
+    </mask>
+  </defs>
+  <circle cx="44.5" cy="44.5" r="43.5" stroke="#9a745a" stroke-width="2" mask="url(#badge)"/>
+</svg>

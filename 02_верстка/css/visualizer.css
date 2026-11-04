@@ -64,7 +64,7 @@
   grid-template-columns: minmax(0, 769px) minmax(0, 1337px);
   gap: clamp(20px, 1.29vw, 33px);
   margin-top: clamp(12px, 0.74vw, 19px);
-  margin-bottom: clamp(40px, 2.73vw, 70px);
+  margin-bottom: clamp(40px, 2.695vw, 69px);
 }
 
 /* ---------- Левая колонка ---------- */
@@ -556,6 +556,11 @@
 }
 
 @media (max-width: 1440px) {
+  /* на узких экранах правая колонка забирала слишком много — делаем равные */
+  .viz-cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
   /* кнопка «Подобрать цвет» уходит на свою строку */
   .viz-info {
     flex-wrap: wrap;

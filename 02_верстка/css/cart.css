@@ -12,6 +12,10 @@
   padding-bottom: 0;
   /* фон как у страницы оттенков */
   background: linear-gradient(180deg, #f9f9fa 0%, #fafafb 100%);
+  /* колонка: пагинация прижимается к низу экрана (margin-top: auto),
+     а не висит сразу под списком товаров */
+  display: flex;
+  flex-direction: column;
 }
 
 .cart-head {
@@ -90,6 +94,13 @@
   gap: clamp(20px, 0.94vw, 24px);
   margin-top: clamp(20px, 1.56vw, 40px);
   align-items: start;
+}
+
+/* Ниже 2300 панель заказа чуть шире макетной доли: на 1920 при пропорции
+   1435 : 653 она выходила 495px и читалась теснее, чем в макете. На самом
+   2560 оставляем ровно макет (653fr). */
+@media (min-width: 1281px) and (max-width: 2299px) {
+  .cart-layout { grid-template-columns: minmax(0, 1435fr) minmax(0, 700fr); }
 }
 
 /* --- Список позиций --- */
@@ -414,7 +425,7 @@
   height: 44px;
   padding: 0;
   /* знак занимает ~2/3 кружка — при 12px он читался как точка */
-  font-size: clamp(15px, 0.9vw, 23px);
+  font-size: clamp(13px, 0.86vw, 22px);
   font-weight: var(--fw-medium);
   line-height: 1;
   color: #9b9898;
@@ -427,8 +438,10 @@
 .tip__btn::before {
   content: "";
   position: absolute;
-  width: clamp(24px, 1.45vw, 36px);
-  height: clamp(24px, 1.45vw, 36px);
+  /* кружок по макету: 33px на 2560 — раньше был 36px и на 1920 выглядел
+     крупнее «Доставки» рядом */
+  width: clamp(20px, 1.29vw, 33px);
+  height: clamp(20px, 1.29vw, 33px);
   border: 1px solid #c4c1c1;
   border-radius: 50%;
   pointer-events: none;
@@ -496,9 +509,10 @@
   border: 1px solid #dceafb;
 }
 
+/* В макете фургон 73×36 при 2560, прежние 56px были мельче */
 .order-panel__info img {
   flex: none;
-  width: clamp(40px, 2.15vw, 56px);
+  width: clamp(46px, 2.85vw, 73px);
   height: auto;
 }
 
@@ -660,7 +674,10 @@
 
 /* --- Пагинация --- */
 
-.cart-pagination { margin-top: clamp(12px, 0.78vw, 20px); }
+.cart-pagination {
+  margin-top: auto;
+  padding-top: clamp(12px, 0.78vw, 20px);
+}
 .cart-pagination .pagination { padding-bottom: clamp(32px, 2.2vw, 56px); }
 
 /* --- Пустая корзина --- */
@@ -832,17 +849,21 @@
    не успевают сжаться пропорционально ширине, и корзина уезжает вниз
    (2048×1152 — на 14px). Включаем тот же компактный режим, пока высота
    окна меньше 60% ширины — выше этого порога макет влезает сам.
-   На 1920 первый уровень требует ~1107px, поэтому порог 1120, а не 1100:
-   в окне 1101–1106 корзина уезжала вниз на 6px.
+   На 2560 (2300 и шире) этот тир не работает: макет 1:1, как и было;
+   ниже 880px окна включаются только подтиры (они без max-width) — иначе
+   карточки и панель не помещаются в короткое окно.
+   1600–1920: компактный режим только ниже 1080, а окна 1080–1106
+   поджимаем лёгким тиром (см. ниже) — шапка, кегли и панель остаются
+   макетными, убирается только вертикальный запас.
    Ровно 1280 — отдельная история: там базовый режим переключает карточку
    в планшетную сетку 100px + 1fr + auto, и она требует ~1259px. */
 @media (min-width: 1280px) and (max-width: 1280px) and (max-height: 1269px),
-  (min-width: 1281px) and (max-height: 1120px),
-  (min-width: 1921px) and (max-width: 2299px) and (max-height: 60vw),
-  (min-width: 2300px) and (max-height: 1439px) {
-  .cart-body .header__inner { min-height: 64px; }
-  .cart-body .logo { margin-top: 10px; }
-
+  (min-width: 1281px) and (max-width: 1599px) and (max-height: 1100px),
+  (min-width: 1600px) and (max-width: 1920px) and (max-height: 1079px),
+  (min-width: 1921px) and (max-width: 2299px) and (max-height: 60vw) {
+  /* Шапку не трогаем: в компактном режиме она опускалась до 64px и на 1920
+     выглядела «сжатой» по сравнению с остальными страницами. Высоту шапки
+     задаёт только макетная шкала (84–113px). */
   .cart-body .cart-head { padding-top: 24px; }
   .cart-body .cart-head__row { margin-top: 16px; }
   .cart-body .cart-title { font-size: clamp(30px, 1.75vw, 38px); }
@@ -915,8 +936,9 @@
   .cart-body .cart-item__qty { margin-top: 8px; }
   .cart-body .cart-item__del { margin-top: 40px; }
 
-  .cart-body .cart-pagination { margin-top: 16px; }
-  .cart-body .cart-pagination .pagination { padding-bottom: 28px; }
+  .cart-body .cart-pagination { padding-top: 16px; }
+  /* 40px вместо 28: на 1920×900 цифры стояли в 30px от подвала — «прилипли» */
+  .cart-body .cart-pagination .pagination { padding-bottom: 40px; }
 
   .cart-body .order-panel { padding: 26px; }
   .cart-body .order-panel__head { padding-bottom: 18px; }
@@ -960,6 +982,17 @@
   .cart-body .footer__logo img { height: 40px; }
 }
 
+/* Лёгкий режим для 1600–1920 при высоте 1080–1106: макетному виду
+   не хватает всего ~27px (на 1920 нужно ~1107px), поэтому ничего не
+   сжимаем — ни шапку, ни кегли, ни панель заказа, — а убираем только
+   верхний вертикальный запас. Корзина остаётся масштабом макета 0,75,
+   а не «компактным» вариантом. */
+@media (min-width: 1600px) and (max-width: 1920px) and (min-height: 1080px) and (max-height: 1106px) {
+  .cart-body .cart-head { padding-top: 20px; }
+  .cart-body .cart-head__row { margin-top: 16px; }
+  .cart-body .cart-layout { margin-top: 20px; }
+}
+
 /* Узкие окна (1280–1340): цена + степпер + сумма по 296px не встают в 249px
    колонки, поэтому подпись над степпером скрываем (у кнопок есть aria-label),
    а сумму прижимаем вправо */
@@ -970,11 +1003,11 @@
   .cart-body .cart-item__cols > div:nth-child(2) { display: none; }
 }
 
-/* 1281–1600: в базовой пропорции 1435:653 панель заказа выходит уже, чем
+/* 1281–1600: в базовой пропорции панель заказа выходит уже, чем
    на ровно 1280 (там 38%), и от переносов строк вырастает: на 1440×720
    корзина уезжала вниз на 14px. Ниже 394px панели текст начинает
    переноситься, поэтому держим минимум 396px, дальше — доля 32% */
-@media (min-width: 1281px) and (max-width: 1600px) and (max-height: 1120px) {
+@media (min-width: 1281px) and (max-width: 1600px) and (max-height: 1100px) {
   .cart-body .cart-layout {
     grid-template-columns: minmax(0, 1fr) clamp(396px, 32%, 430px);
   }
@@ -983,7 +1016,10 @@
 /* 900-е высоты (1440×900, 1366×900): первому уровню не хватает ~30px.
    Сжимаем только панель заказа и ритм секции, кегли оставляем как в первом
    уровне — полный второй уровень (ниже) для этих высот слишком мелкий. */
-@media (min-width: 1280px) and (max-height: 930px) {
+/* На широких 1921–2299 (шапка там уже 90–101px) панель без этого сжатия
+   делает корзину выше окна в полосе 931–1000px, поэтому тир продлён. */
+@media (min-width: 1280px) and (max-height: 930px),
+  (min-width: 1921px) and (max-width: 2299px) and (max-height: 1000px) {
   .cart-body .cart-layout { margin-top: 16px; }
   .cart-body .cart-list { gap: 12px; }
 
@@ -1003,23 +1039,26 @@
   .cart-body .order-panel__actions { margin-top: 14px; }
 }
 
+/* 1921–2299: на самой границе тира (931–933px) не хватает 3px после
+   увеличения отступа под пагинацией — снимаем их с верхнего отступа */
+@media (min-width: 1921px) and (max-width: 2299px) and (max-height: 1000px) {
+  .cart-body .cart-head { padding-top: 20px; }
+}
+
 /* Ещё ниже (1366×768, 1440×800): дополнительное сжатие */
 @media (min-width: 1280px) and (max-height: 880px) {
-  .cart-body .cart-head { padding-top: 16px; }
-  .cart-body .cart-head__row { margin-top: 10px; }
+  /* Шапка больше не сжимается (−28px к прежнему режиму), поэтому
+     вертикальный запас снимаем с отступов секции, а не с шапки. */
+  .cart-body .cart-head { padding-top: 6px; }
+  .cart-body .cart-head__row { margin-top: 6px; }
   .cart-body .cart-title { font-size: 26px; }
-  .cart-body .header__inner { min-height: 56px; }
-  /* иконка корзины в шапке растёт от vw до 89px и на 1920 делает шапку
-     74px — на невысоких окнах ограничиваем её макетными 56px */
-  .cart-body .site-header .cart img { width: 56px; }
-  .cart-body .logo { margin-top: 4px; }
   .cart-body .cart-count {
     height: 32px;
     padding-inline: 12px;
     font-size: 13px;
   }
   .cart-body .cart-back { font-size: 14px; }
-  .cart-body .cart-layout { margin-top: 12px; }
+  .cart-body .cart-layout { margin-top: 8px; }
 
   .cart-body .cart-list { gap: 6px; }
   .cart-body .cart-item {
@@ -1075,9 +1114,15 @@
     font-size: 13px;
   }
 
-  .cart-body .cart-back { min-height: 30px; }
-  .cart-body .cart-pagination { margin-top: 12px; }
-  .cart-body .cart-pagination .pagination { padding-bottom: 16px; }
+  .cart-body .tip__btn { font-size: 14px; }
+  .cart-body .tip__btn::before {
+    width: 22px;
+    height: 22px;
+  }
+
+  .cart-body .cart-back { min-height: 28px; }
+  .cart-body .cart-pagination { padding-top: 8px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 24px; }
 
   .cart-body .footer__inner {
     min-height: 48px;
@@ -1086,11 +1131,10 @@
   .cart-body .footer__logo img { height: 34px; }
 }
 
-/* Совсем низкие окна (1366×768 с панелями браузера): последний уровень сжатия */
-@media (min-width: 1280px) and (max-height: 700px) {
-  .cart-body .header__inner { min-height: 56px; }
-  .cart-body .logo { margin-top: 4px; }
-
+/* Совсем низкие окна (1366×768 с панелями браузера): последний уровень сжатия.
+   Порог 720, а не 700: без сжатия шапки умеренный тир ≤ 880 заканчивается
+   ровно на 720px, и полоса 701–719 иначе уезжала вниз на 10px. */
+@media (min-width: 1280px) and (max-height: 720px) {
   .cart-body .cart-head { padding-top: 10px; }
   .cart-body .cart-head__row { margin-top: 8px; }
   .cart-body .cart-title { font-size: 22px; }
@@ -1157,8 +1201,8 @@
   }
 
   .cart-body .cart-back { min-height: 28px; }
-  .cart-body .cart-pagination { margin-top: 10px; }
-  .cart-body .cart-pagination .pagination { padding-bottom: 12px; }
+  .cart-body .cart-pagination { padding-top: 10px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 20px; }
 
   .cart-body .footer__inner {
     min-height: 40px;
@@ -1168,13 +1212,11 @@
 }
 
 /* Окно ниже 640px по высоте (768-й экран с панелями браузера).
-   Кегли уже минимальные, поэтому сжимаем только «хром» — шапку,
-   заголовок, отступы карточек и подвал */
+   Кегли уже минимальные, поэтому сжимаем только «хром» — заголовок,
+   отступы карточек и подвал; шапка остаётся макетной */
 @media (min-width: 1280px) and (max-height: 640px) {
-  .cart-body .header__inner { min-height: 48px; }
-  .cart-body .logo { margin-top: 2px; }
-  .cart-body .cart-head { padding-top: 6px; }
-  .cart-body .cart-head__row { margin-top: 6px; }
+  .cart-body .cart-head { padding-top: 2px; }
+  .cart-body .cart-head__row { margin-top: 4px; }
   .cart-body .cart-title { font-size: 20px; }
   .cart-body .cart-count {
     height: 24px;
@@ -1182,7 +1224,7 @@
     font-size: 11px;
   }
   .cart-body .cart-back { font-size: 11px; }
-  .cart-body .cart-layout { margin-top: 8px; }
+  .cart-body .cart-layout { margin-top: 4px; }
 
   .cart-body .cart-list { gap: 6px; }
   .cart-body .cart-item {
@@ -1210,8 +1252,8 @@
   .cart-body .order-panel__actions { margin-top: 6px; }
 
   .cart-body .cart-back { min-height: 26px; }
-  .cart-body .cart-pagination { margin-top: 8px; }
-  .cart-body .cart-pagination .pagination { padding-bottom: 10px; }
+  .cart-body .cart-pagination { padding-top: 6px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 16px; }
 
   .cart-body .footer__inner {
     min-height: 32px;

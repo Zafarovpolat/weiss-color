@@ -161,8 +161,12 @@
 
   function setScene(index) {
     if (!thumbs.length) return;
-    scene = (index + thumbs.length) % thumbs.length;
+    // без прокрутки по кругу: на краях соответствующая стрелка скрыта
+    scene = Math.min(Math.max(index, 0), thumbs.length - 1);
     renderThumbs();
+
+    if (prevBtn) prevBtn.hidden = scene === 0;
+    if (nextBtn) nextBtn.hidden = scene === thumbs.length - 1;
 
     const thumb = thumbs[scene];
     const src = thumb.dataset.img;

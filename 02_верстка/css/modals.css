@@ -99,6 +99,25 @@
   color: #233146;
 }
 
+/* --- М23 «Товар добавлен» как <dialog>: окно 916×677 --- */
+
+dialog.mcard-add {
+  width: min(916px, 94vw);
+  max-width: min(916px, 94vw);
+  max-height: 92dvh;
+  margin: auto;
+  overflow-y: auto;
+  border: 0;
+  background: #f7f6fa;
+  box-shadow: 0 30px 80px rgba(23, 30, 49, 0.28);
+}
+
+dialog.mcard-add::backdrop { background: rgba(23, 30, 49, 0.45); }
+
+/* фокус при открытии — на самом окне, обводка контейнера не нужна */
+dialog.mcard-add:focus,
+dialog.mcard-add:focus-visible { outline: none; }
+
 /* --- Адаптив --- */
 
 @media (max-width: 768px) {
@@ -202,7 +221,8 @@
 
 .callback-field + .callback-field { margin-top: clamp(10px, 1.17vw, 30px); }
 
-.callback-field svg {
+.callback-field svg,
+.callback-field__icon {
   position: absolute;
   left: clamp(12px, 1.02vw, 26px);
   width: clamp(18px, 1.25vw, 32px);

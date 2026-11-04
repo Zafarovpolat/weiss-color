@@ -15,7 +15,8 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: clamp(24px, 4vw, 120px);
-  padding-block: clamp(24px, 1.56vw, 40px) clamp(20px, 0.94vw, 24px);
+  /* макет: контент полосы 117..276 при шапке 117 — нижнее поле всего 17px */
+  padding-block: clamp(24px, 1.56vw, 40px) clamp(8px, 0.66vw, 17px);
 }
 
 /* Хлебные крошки */
@@ -53,8 +54,10 @@
 
 /* Заголовок экрана (в PSD набран строчными, на макете — капс) */
 .page-head__title {
-  margin-top: clamp(12px, 0.86vw, 22px);
-  font-size: clamp(30px, 1.95vw, 50px);
+  margin-top: clamp(12px, 0.78vw, 20px);
+  /* макет: капитель 40px, чернила заголовка 225..473 (249px) */
+  font-size: clamp(30px, 2.11vw, 54px);
+  letter-spacing: -0.028em;
   line-height: 1.2;
   font-weight: 500;
   text-transform: uppercase;
@@ -66,7 +69,7 @@
   display: flex;
   align-items: center;
   gap: clamp(24px, 3.52vw, 90px);
-  margin-top: clamp(0px, 0.31vw, 8px);
+  margin-top: clamp(0px, 0.59vw, 15px);
   margin-right: clamp(0px, 9.7vw, 248px);
   list-style: none;
 }
@@ -81,9 +84,10 @@
   white-space: nowrap;
 }
 
+/* Высота снята с макета: иконки 49px при 2560, а не 60px */
 .features__item img {
   flex: none;
-  height: clamp(36px, 2.34vw, 60px);
+  height: clamp(28px, 1.92vw, 49px);
   width: auto;
 }
 
@@ -92,12 +96,23 @@
 .catalog {
   display: grid;
   grid-template-columns: clamp(280px, 14.73vw, 377px) minmax(0, 1fr);
-  gap: clamp(32px, 5.08vw, 130px);
-  padding-block: clamp(24px, 1.25vw, 32px) 0;
+  /* макет: фильтр 224..601, сетка карточек начинается с x=735 (зазор 134) */
+  gap: clamp(32px, 5.23vw, 134px);
+  padding-block: clamp(24px, 1.13vw, 29px) 0;
+  /* в макете фон контента белый, а не серый фон страницы */
+  background: var(--color-white);
 }
 
 .catalog__main {
   min-width: 0;
+}
+
+/* Сетка с макета: две карточки по 713 + зазор 33, правый край 2195.
+   Колонка не растягивается до края контейнера (2336). */
+@media (min-width: 1281px) {
+  .catalog__main {
+    max-width: 57.03vw;
+  }
 }
 
 /* Сортировка — прижата вправо */
@@ -201,8 +216,9 @@
 .products {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(20px, 1.09vw, 28px) clamp(16px, 1.21vw, 31px);
-  margin-top: clamp(20px, 1.33vw, 34px);
+  /* макет: карточки 713, горизонтальный зазор 33, вертикальный шаг ряда 268 */
+  gap: clamp(20px, 1.25vw, 32px) clamp(16px, 1.29vw, 33px);
+  margin-top: clamp(8px, 0.78vw, 20px);
   list-style: none;
 }
 
@@ -212,7 +228,8 @@
   --card-pad-l: clamp(24px, 3.75vw, 96px);
   --card-pad-r: clamp(12px, 1vw, 26px);
   display: flex;
-  min-height: clamp(210px, 9.38vw, 240px);
+  /* макет: внешняя высота карточки 236 */
+  min-height: clamp(206px, 9.22vw, 236px);
   border: 2px solid #eeeeee;
   border-radius: 4px;
   background: var(--color-white);
@@ -318,13 +335,15 @@
   font-size: clamp(13px, 0.59vw, 15px);
   font-weight: 600;
   text-transform: uppercase;
-  transition: border-color var(--ease-ui), color var(--ease-ui), box-shadow var(--ease-ui);
+  transition: background var(--ease-ui), border-color var(--ease-ui),
+    color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .product__btn:hover {
-  border-color: var(--color-brown-dark);
-  color: var(--color-brown-dark);
-  box-shadow: var(--shadow-hover-outline);
+  background: var(--color-brown);
+  border-color: var(--color-brown);
+  color: var(--color-white);
+  box-shadow: var(--shadow-hover-brown);
 }
 
 /* Карточка ведёт на страницу товара: фото и заголовок — ссылки.
@@ -349,10 +368,9 @@
   text-decoration: none;
 }
 
-/* Карточка в состоянии наведения (на макете показана 2-я слева) */
+/* Карточка в состоянии наведения */
 .product:hover,
-.product:focus-within,
-.product--active {
+.product:focus-within {
   box-shadow: var(--shadow-hover-card);
 }
 
@@ -373,6 +391,15 @@
   font-weight: 500;
   /* сторона квадратной ячейки цифры — одна переменная на всё */
   --pg-cell: clamp(26px, 1.25vw, 32px);
+}
+
+/* Каталог: пагинация идёт сразу под сеткой (в макете квадрат страницы
+   стоит в полосе фильтра, на 8px выше его нижней границы), поэтому
+   верхнего отступа нет, а нижний добивает страницу ровно до 1440. */
+.pagination--catalog {
+  padding-top: 0;
+  padding-bottom: clamp(40px, 2.38vw, 61px);
+  background: var(--color-white);
 }
 
 /* Ссылка внутри ячейки (вариант разметки ul > li > a) заполняет квадрат */
@@ -445,6 +472,12 @@
   font-weight: 500;
 }
 
+/* Номера страниц в макете набраны Sovest; «Назад/Вперед» остаются
+   на Montserrat — у Sovest только цифры. */
+.pagination__item:not(:first-child):not(:last-child) {
+  font-family: var(--font-digit);
+}
+
 .pagination__item:first-child,
 .pagination__item:last-child {
   width: auto;
@@ -484,11 +517,13 @@
 
 .filter {
   align-self: start;
-  margin-top: clamp(0px, 1.09vw, 28px);
+  margin-top: clamp(0px, 1.29vw, 33px);
   padding: clamp(24px, 1.25vw, 32px) clamp(14px, 0.63vw, 16px) clamp(40px, 2.42vw, 62px) clamp(20px, 1.09vw, 28px);
   border: 1px solid #f0f0f0;
   border-radius: 4px;
   background: var(--color-white);
+  /* в макете панель лежит с мягким рассеянным ореолом ~13px без смещения */
+  box-shadow: 0 0 clamp(8px, 0.5vw, 13px) rgba(0, 0, 0, 0.09);
 }
 
 .filter__title,
@@ -547,19 +582,24 @@
   width: 100%;
   height: 100%;
   background: url("../assets/img/check.svg") no-repeat center;
-  background-size: 78%;
+  background-size: 100%;
   opacity: 0;
+  transition: opacity 0.15s ease;
 }
 
+/* Отмеченный пункт: градиентная коричневая подложка, рамку убираем */
 .check input:checked + .check__box {
-  background: var(--color-brown);
-  border-color: var(--color-brown);
+  background: linear-gradient(135deg, #94633f 0%, #7c5033 100%);
+  border-color: transparent;
 }
 
 /* Наведение на пункт фильтра: рамка темнеет, текст — коричневый */
 .check:hover .check__box { border-color: var(--color-brown); }
 .check:hover .check__label { color: var(--color-brown); }
-.check:hover input:checked + .check__box { background: var(--color-brown-dark); border-color: var(--color-brown-dark); }
+.check:hover input:checked + .check__box {
+  background: linear-gradient(135deg, #7c5233 0%, #66402a 100%);
+  border-color: transparent;
+}
 
 .check input:checked + .check__box::after {
   opacity: 1;
@@ -698,9 +738,11 @@
 }
 
 .filter__reset:hover {
-  border-color: #626366;
+  border-color: var(--color-brown);
   color: var(--color-ink);
-  box-shadow: var(--shadow-hover-outline);
+  /* 1px-линия тёмного коричневого на белом визуально «сереет» —
+     усиливаем контур вторым кольцом и тёплой тенью вместо синеватой */
+  box-shadow: inset 0 0 0 1px var(--color-brown), var(--shadow-hover-brown);
 }
 
 /* --- Адаптив (проверяем 360–1024) --- */

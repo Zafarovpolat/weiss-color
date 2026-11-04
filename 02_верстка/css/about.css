@@ -7,8 +7,10 @@
 
 .about-page {
   position: relative;
-  min-height: clamp(600px, 52.6vw, 1347px);
-  padding-block: clamp(20px, 1.6vw, 41px) clamp(24px, 2.5vw, 64px);
+  /* макет: полоса контента 110..1343 = 1233 при шапке 110; у нас шапка 113,
+     поэтому высота 1230 возвращает подвал на 1343 и страница не скроллится */
+  min-height: clamp(600px, 48.05vw, 1230px);
+  padding-block: clamp(20px, 1.48vw, 38px) clamp(24px, 2.5vw, 64px);
   /* боковые поля — общий контейнер (как на всех страницах) */
   padding-inline: var(--container-pad);
 
@@ -25,36 +27,39 @@
   background: #f0eff2 url("../assets/img/about-hero.png") right bottom / auto 108.9% no-repeat;
 }
 
-/* Крошки: отступ до заголовка (в макете 20px при ширине 2560) */
+/* Крошки: отступ до заголовка (в макете 22px при ширине 2560) */
 .about-page .crumbs span[aria-current] {
   display: inline-block;
-  padding-bottom: clamp(6px, 0.78vw, 20px);
+  padding-bottom: clamp(6px, 0.86vw, 22px);
 }
 
 .about-title {
-  margin: 0;
+  /* макет: между крошками и заголовком ещё 20px */
+  margin: clamp(0px, 0.78vw, 20px) 0 0;
   font-size: clamp(28px, 2.07vw, 53px);
   line-height: 1.1;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
-  letter-spacing: 0.01em;
+  /* макет: чернила заголовка 221..608 (388px) — Montserrat 53 с трекингом -0.02em */
+  letter-spacing: -0.02em;
   color: #233146;
 }
 
 .about-text {
   max-width: clamp(320px, 58vw, 1485px);
-  margin: clamp(16px, 2.07vw, 53px) 0 0;
+  margin: clamp(16px, 2.15vw, 55px) 0 0;
 }
 
 .about-text p {
   margin: 0;
-  font-size: 19.5px;
-  line-height: 1.32;
+  /* макет: кегль 18.3, интерлиньяж 30px (чернила строк 335..709) */
+  font-size: 18.3px;
+  line-height: 1.639;
   font-weight: var(--fw-medium);
   color: #2a323a;
 }
 
-.about-text p + p { margin-top: clamp(6px, 0.78vw, 20px); }
+.about-text p + p { margin-top: clamp(6px, 0.71vw, 18px); }
 
 /* На широких экранах текстовая колонка чуть уже (было 58vw / 1485px) */
 @media (min-width: 1440px) {
@@ -69,10 +74,9 @@
   grid-template-columns: repeat(4, minmax(0, 390px));
   gap: clamp(8px, 1.23vw, 32px);
   max-width: clamp(320px, 66vw, 1680px);
-  /* Отступ сверху компенсирует «просевшую» высоту вступления: текст стал
-     19.5px вместо clamp(14px, 1.05vw, 27px), блок поднялся на ~186px при 2560
-     и начинал заезжать на фото кресла. Возвращаем блоку прежнюю позицию. */
-  margin: calc(clamp(20px, 2.73vw, 70px) + max(0px, (min(1.05vw, 27px) - 19.5px) * 24.8)) 0 0;
+  /* макет: чернила преимуществ начинаются на 801, текст вступления
+     заканчивается на 717 — отступ 84 */
+  margin: clamp(20px, 3.28vw, 84px) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -106,6 +110,12 @@
   margin-top: 3px;
 }
 
+/* Ширины — макетные при 2560 (38/46/43/62), ниже масштабируются */
+.about-feature:nth-child(1) .about-feature__icon { width: clamp(28px, 1.48vw, 38px); }
+.about-feature:nth-child(2) .about-feature__icon { width: clamp(34px, 1.8vw, 46px); }
+.about-feature:nth-child(3) .about-feature__icon { width: clamp(32px, 1.68vw, 43px); }
+.about-feature:nth-child(4) .about-feature__icon { width: clamp(46px, 2.42vw, 62px); }
+
 .about-feature__title {
   margin: 0;
   font-size: clamp(13px, 0.7vw, 18px);
@@ -131,7 +141,8 @@
   align-items: center;
   gap: clamp(16px, 3.05vw, 78px);
   max-width: clamp(320px, 83vw, 2125px);
-  margin: clamp(20px, 2.35vw, 60px) 0 0;
+  /* макет: логотипы (чернила) 1056..1165, блок преимуществ кончается на 950 */
+  margin: clamp(20px, 3.91vw, 100px) 0 0;
   padding: 0;
   list-style: none;
 }

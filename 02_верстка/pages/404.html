@@ -85,7 +85,7 @@
 
   <main id="main" class="error-page">
     <p class="error-page__eyebrow">Страница не найдена</p>
-    <p class="error-page__code" aria-hidden="true">404</p>
+    <img class="error-page__code" src="../assets/img/404.svg" width="496" height="221" alt="" aria-hidden="true">
     <h1 class="error-page__title">Кажется, эта страница не найдена</h1>
     <p class="error-page__text">
       <span class="error-page__text-line error-page__text-line--first">Возможно, страница была перемещена, удалена или вы ввели неверный адрес.</span>
@@ -150,18 +150,13 @@
 
         <label class="callback-field">
           <span class="visually-hidden">Ваше имя</span>
-          <svg viewBox="0 0 32 33" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <circle cx="16" cy="10" r="6.5"/>
-            <path d="M3 31c0-7.2 5.8-13 13-13s13 5.8 13 13" stroke-linecap="round"/>
-          </svg>
+          <img class="callback-field__icon" src="../assets/icons/user.svg" width="32" height="33" alt="" aria-hidden="true">
           <input type="text" name="name" autocomplete="name" placeholder="Ваше имя" required>
         </label>
 
         <label class="callback-field">
           <span class="visually-hidden">Телефон</span>
-          <svg viewBox="0 0 32 33" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M8 3h5l3 7-3.5 2.5a16 16 0 0 0 8 8L22 17l7 3v5c0 2.2-1.8 4-4 4C13.6 29 4 19.4 4 8c0-2.2 1.8-5 4-5Z" stroke-linejoin="round"/>
-          </svg>
+          <img class="callback-field__icon" src="../assets/icons/phone.svg" width="32" height="31" alt="" aria-hidden="true">
           <input type="tel" name="phone" autocomplete="tel" inputmode="tel"
                  placeholder="+7 ( _ _ _ )_ _ _-_ _-_ _" required>
         </label>

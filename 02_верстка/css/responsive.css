@@ -338,6 +338,11 @@
     margin-right: clamp(24px, 7.27vw, 186px);
   }
 
+  /* Логотип масштабируется вместе с макетом: на 2560 он 193×52, на 1920 —
+     ~145×39. Фиксированные 193px в шапке 84px (0,75 макета) съедали нижнее
+     поле — оно сжималось до 13px, и шапка выглядела «сжатой». */
+  .logo img { width: clamp(140px, 7.54vw, 193px); height: auto; }
+
   .site-nav {
     flex: 1 1 auto;
     display: flex;
@@ -359,7 +364,7 @@
     text-decoration: underline;
     text-decoration-color: var(--color-brown);
     text-underline-offset: 8px;
-    text-decoration-thickness: 1px;
+    text-decoration-thickness: 2px;
   }
 
   .header__contacts {
@@ -421,7 +426,9 @@
   }
 
   .cart { margin-left: clamp(6px, 1.1vw, 20px); }
-  .cart img { width: clamp(50px, 3.9vw, 74px); }
+  /* иконка — по макетной доле 3,48vw (89px на 2560), как в базовом правиле;
+     прежние 3,9vw давали на 1920 74px в шапке 84px — почти без полей */
+  .cart img { width: clamp(50px, 3.48vw, 74px); }
 }
 
 /* 1280–1399: ужимаем только отступы текстовых блоков, чтобы шапка

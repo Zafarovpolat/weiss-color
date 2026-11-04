@@ -7,10 +7,13 @@
 
 .buy-hero {
   position: relative;
-  min-height: clamp(420px, 36.05vw, 923px);
-  /* боковые поля — общий контейнер (как на всех страницах) */
-  padding-block: clamp(24px, 4.52vw, 116px) clamp(24px, 5.55vw, 142px);
-  padding-inline: var(--container-pad);
+  min-height: clamp(420px, 34.69vw, 888px);
+  /* В макете контент этой страницы начинается с x≈306 при 2560,
+     а не с общего 224 — добавляем собственный отступ 82px (3.2vw). */
+  /* верх 64px: при шапке 113px и ink-боксе строки заголовка 21px
+     заглавные буквы встают на макетный y198 */
+  padding-block: clamp(24px, 2.5vw, 64px) clamp(24px, 2.19vw, 56px);
+  padding-inline: calc(var(--container-pad) + clamp(0px, 3.2vw, 82px));
   /* фото макета содержит и карточки, и блок преимуществ — показываем только
      верхние 923px (небо + интерьер + банка), остальное собираем разметкой.
      background-size намеренно не задаём: фиксированная высота полотна
@@ -21,19 +24,23 @@
 
 .buy-hero__title {
   margin: 0;
-  max-width: clamp(280px, 30.3vw, 775px);
-  font-size: clamp(28px, 2.35vw, 60px);
-  line-height: 1.08;
+  max-width: clamp(280px, 30.9vw, 790px);
+  /* ink-замер макета: строка «ПРОДУКЦИЮ WEISS» 773px в две строки.
+     Montserrat Medium даёт эту ширину при 72px (при 75 — 807px, уходило в 3 строки). */
+  font-size: clamp(36px, 2.8125vw, 72px);
+  /* межстрочный по макету 93px */
+  line-height: 1.2917;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #233146;
 }
 
 .buy-hero__lead {
-  max-width: clamp(280px, 30.8vw, 788px);
-  margin: clamp(14px, 1.91vw, 49px) 0 0;
-  font-size: clamp(16px, 1.07vw, 27px);
-  line-height: 1.28;
+  max-width: clamp(280px, 31.25vw, 800px);
+  margin: clamp(14px, 1.45vw, 37px) 0 0;
+  font-size: clamp(16px, 1.094vw, 28px);
+  /* межстрочный по макету 37px */
+  line-height: 1.3214;
   font-weight: var(--fw-medium);
   color: #061e3f;
 }
@@ -50,7 +57,7 @@
      вместе с фото и остаются левее банки, как в макете. */
   grid-template-columns: repeat(4, minmax(0, min(15.16vw, 388px)));
   gap: clamp(12px, 0.66vw, 17px);
-  margin-top: clamp(20px, 1.8vw, 46px);
+  margin-top: clamp(20px, 1.68vw, 43px);
   padding: 0;
   list-style: none;
 }
@@ -131,14 +138,16 @@
 
 .buy-features {
   background: #f2f4f7;
-  /* боковые поля — общий контейнер (как на всех страницах) */
-  padding-block: clamp(24px, 2.15vw, 55px);
-  padding-inline: var(--container-pad);
+  /* тот же макетный отступ, что и у героя: заголовок блока стоит на x≈308 */
+  padding-block: clamp(24px, 2.617vw, 67px) clamp(24px, 2.344vw, 60px);
+  padding-inline: calc(var(--container-pad) + clamp(0px, 3.2vw, 82px));
 }
 
 .buy-features__inner {
   display: grid;
-  grid-template-columns: clamp(200px, 21.13vw, 541px) repeat(3, minmax(0, 1fr));
+  /* головная колонка 423px по макету (до разделителя x729 при 2560):
+     «ПОКУПАЙТЕ УДОБНО» переносится на две строки, как в PSD */
+  grid-template-columns: clamp(200px, 16.52vw, 423px) clamp(0px, 19.6875vw, 504px) clamp(0px, 19.6484vw, 503px) minmax(0, 1fr);
   column-gap: 0;
   align-items: start;
 }
@@ -149,18 +158,20 @@
 
 .buy-features__title {
   margin: 0;
-  font-size: clamp(22px, 1.64vw, 42px);
-  line-height: 1.15;
+  /* ink-замер макета: «ПОКУПАЙТЕ» 292px, межстрочный 57px */
+  font-size: clamp(22px, 1.71875vw, 44px);
+  line-height: 1.295;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #061e3f;
 }
 
 .buy-features__lead {
-  margin: clamp(10px, 0.86vw, 22px) 0 0;
-  max-width: clamp(240px, 12.77vw, 327px);
-  font-size: clamp(14px, 0.78vw, 20px);
-  line-height: 1.4;
+  margin: clamp(10px, 0.781vw, 20px) 0 0;
+  max-width: clamp(240px, 13.05vw, 334px);
+  /* макет: 3 строки, строки шириной 309/327/195, межстрочный 26px */
+  font-size: clamp(14px, 0.715vw, 18.3px);
+  line-height: 1.421;
   font-weight: var(--fw-medium);
   color: #7d8695;
 }
@@ -169,34 +180,54 @@
   display: grid;
   grid-template-columns: clamp(32px, 2.34vw, 60px) minmax(0, 1fr);
   gap: clamp(10px, 0.94vw, 24px);
-  padding-left: clamp(16px, 1.56vw, 40px);
+  padding-left: clamp(16px, 1.17vw, 30px);
+  padding-top: clamp(0px, 0.234vw, 6px);
   background: linear-gradient(#848ea0, #848ea0) no-repeat left 0 / 1px 100%;
 }
 
-.buy-feature svg {
-  width: 100%;
+/* Размеры ink-замеров макета 2560: щит 43×49, фургон 75×38, люди 70×34
+   (ширина файла больше видимой картинки из-за прозрачных полей viewBox). */
+.buy-feature__icon {
+  justify-self: center;
+  width: auto;
   height: auto;
-  color: #252b37;
+  /* иконки шире колонки 60px — выпускаем их
+     в зазор сетки, иначе глобальный max-width:100% режет макетный размер */
+  max-width: none;
 }
+
+.buy-feature__icon--shield { width: clamp(26px, 1.68vw, 43px); }
+.buy-feature__icon--truck { width: clamp(36px, 2.93vw, 75px); }
+.buy-feature__icon--people { width: clamp(40px, 2.8125vw, 72px); }
 
 .buy-feature__title {
   margin: 0;
-  font-size: clamp(14px, 0.7vw, 18px);
-  line-height: 1.25;
+  /* макет: 18px с трекингом 0.5px, межстрочный 25px */
+  font-size: clamp(14px, 0.703vw, 18px);
+  line-height: 1.417;
+  letter-spacing: 0.028em;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #252b37;
 }
 
 .buy-feature__text {
-  margin: clamp(8px, 1.02vw, 26px) 0 0;
+  margin: clamp(8px, 0.86vw, 22px) 0 0;
   /* воздух справа, чтобы текст не упирался в край колонки */
   padding-right: 15px;
-  font-size: clamp(13px, 0.74vw, 19px);
-  line-height: 1.4;
+  /* макет: 18.2px, строки 352/174 и 289/148, межстрочный 27.5px */
+  font-size: clamp(13px, 0.711vw, 18.2px);
+  line-height: 1.51;
   font-weight: var(--fw-medium);
   color: #7d8695;
 }
+
+/* Ширина текстовых блоков по макету: в PSD у каждой колонки своя
+   текстовая рамка, поэтому переносы строк «WEISS / от производителя»
+   и «доставка / по всей России» совпадают только при своей ширине. */
+.buy-feature:nth-child(2) .buy-feature__text { max-width: clamp(200px, 14.531vw, 372px); }
+.buy-feature:nth-child(3) .buy-feature__text { max-width: clamp(200px, 12.109vw, 310px); }
+.buy-feature:nth-child(4) .buy-feature__text { max-width: clamp(200px, 13.867vw, 355px); }
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 

@@ -9,36 +9,36 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: clamp(600px, 48.2vw, 1234px);
-  padding: clamp(24px, 4.3vw, 110px) clamp(16px, 8.79vw, 225px)
+  min-height: clamp(600px, 48.05vw, 1230px);
+  padding: clamp(24px, 4.84vw, 124px) clamp(16px, 8.79vw, 225px)
     clamp(24px, 2.4vw, 62px) clamp(16px, 14.18vw, 363px);
   background: #f4f5f7 url("../assets/img/404-bg.jpg") right bottom / cover no-repeat;
 }
 
 .error-page__eyebrow {
   margin: 0 0 clamp(6px, 0.7vw, 18px);
-  font-size: clamp(11px, 0.82vw, 21px);
+  font-size: clamp(11px, 0.78vw, 20px);
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #233146;
 }
 
 .error-page__code {
-  margin: clamp(4px, 0.6vw, 15px) 0 0;
-  font-family: "Montserrat", system-ui, sans-serif;
-  font-size: clamp(90px, 14.2vw, 363px);
-  line-height: 0.86;
-  font-weight: var(--fw-semibold);
-  letter-spacing: -0.02em;
-  color: #233146;
+  /* «404» — SVG из макета 496×221 (ink 493×219), нижний край 584.
+     Ширина 496px при 2560 → 19.375vw, ниже 540px держим минимум 120px. */
+  display: block;
+  width: clamp(120px, 19.375vw, 496px);
+  height: auto;
+  margin: clamp(4px, 3.125vw, 80px) 0 0;
 }
 
 .error-page__title {
-  max-width: clamp(280px, 30.5vw, 781px);
-  margin: clamp(10px, 1.4vw, 36px) 0 0;
-  font-size: clamp(22px, 2.09vw, 53px);
-  line-height: 1.24;
+  max-width: clamp(280px, 31.64vw, 810px);
+  margin: clamp(10px, 1.5625vw, 40px) 0 0 clamp(-6px, -0.234vw, 0px);
+  font-size: clamp(22px, 2.46vw, 63px);
+  line-height: 1.235;
+  letter-spacing: -0.052em;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #233146;
@@ -47,11 +47,13 @@
 }
 
 .error-page__text {
-  margin: clamp(10px, 1.02vw, 26px) 0 0;
+  margin: clamp(10px, 0.605vw, 15.5px) 0 0;
   font-size: clamp(14px, 1.05vw, 27px);
-  line-height: 1.36;
+  line-height: 1.52;
   font-weight: var(--fw-medium);
   color: #43484f;
+  /* base.css ставит pretty и убирает «сироту» — в макете «разделу.» стоит отдельно */
+  text-wrap: wrap;
 }
 
 .error-page__text-line {
@@ -63,15 +65,16 @@
 }
 
 .error-page__text-line--second {
-  /* шире макетного блока: иначе «нужному» переносится на вторую строку */
-  max-width: clamp(320px, 31vw, 786px);
+  /* в макете «Но мы поможем быстро вернуться к нужному» / «разделу.» —
+     ширина абзаца 655, четвёртая строка переносится сама */
+  max-width: clamp(320px, 25.98vw, 665px);
 }
 
 .error-page__actions {
   display: flex;
   flex-wrap: wrap;
   gap: clamp(12px, 2.07vw, 53px);
-  margin-top: clamp(20px, 2.11vw, 54px);
+  margin-top: clamp(20px, 1.777vw, 45.5px);
 }
 
 .error-page .btn {
@@ -82,6 +85,10 @@
 }
 
 /* в макете вторая кнопка шире первой по паддингам (269 против 355) */
+.error-page__actions .btn--brown {
+  min-width: clamp(170px, 13.71vw, 351px);
+}
+
 .error-page__actions .btn--outline {
   min-width: clamp(160px, 10.5vw, 269px);
 }
@@ -98,11 +105,12 @@
   .error-page { background-image: none; }
   .error-page__actions .btn { width: 100%; }
   .error-page__eyebrow,
-  .error-page__code,
   .error-page__title,
   .error-page__text {
     text-align: center;
   }
+  /* «404» — картинка, text-align её не центрирует */
+  .error-page__code { margin-inline: auto; }
   .error-page__title,
   .error-page__text { margin-inline: auto; }
 }
