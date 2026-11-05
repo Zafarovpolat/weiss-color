@@ -70,19 +70,20 @@
 .btn--teal:focus-visible { outline-color: var(--color-teal); }
 .btn--teal .btn__arrow { width: clamp(20px, 1.64vw, 42px); }
 
-/* Контурная кнопка «Заказать звонок» (шапка/подвал) */
+/* Контурная кнопка «Заказать звонок» (шапка/подвал):
+   в покое тёмный текст и серый контур, на hover коричневыми становятся они */
 .btn--outline {
-  color: var(--color-brown);
+  color: var(--color-btn-dark);
   background: var(--color-white);
-  border-color: #c9b7a6;
+  border-color: var(--color-btn-border);
+  border-width: 2px;
   box-shadow: none;
   padding-inline: clamp(20px, 1.68vw, 43px);
 }
 .btn--outline:hover {
-  color: var(--color-white);
-  background: var(--color-brown);
+  color: var(--color-brown);
   border-color: var(--color-brown);
-  box-shadow: var(--shadow-hover-brown);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* Контурная на тёмном (подвал) — в макете более узкий «дышащий» контур */
@@ -218,11 +219,15 @@
   background: var(--color-white);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-btn);
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .field input:hover { border-color: #b9b9c0; }
 .field input:user-invalid { border-color: #c0392b; }
-.field input:focus-visible { border-color: var(--color-teal); }
+.field input:focus-visible {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
+}
 
 .modal .btn { width: 100%; margin-top: var(--space-xs); }
 .modal__note {

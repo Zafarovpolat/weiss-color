@@ -156,14 +156,14 @@
 }
 
 .invoice-form__btn--ghost {
-  color: #575756;
+  color: var(--color-btn-dark);
   background: var(--color-white);
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
 }
 
 .invoice-form__btn--ghost:hover {
-  color: var(--color-brown-dark);
-  border-color: var(--color-brown-dark);
+  color: var(--color-brown);
+  border-color: var(--color-brown);
   box-shadow: var(--shadow-hover-outline);
   text-decoration: none;
 }

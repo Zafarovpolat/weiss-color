@@ -189,8 +189,10 @@
 
 .select__chevron {
   flex: none;
-  width: 12px;
-  height: 8px;
+  /* в макете «Контактов» стрелка крупнее, чем в селектах чекаута;
+     по правке заказчика чуть уменьшена от макетных 27×15 */
+  width: clamp(17px, 0.98vw, 25px);
+  height: auto;
   color: #81848d;
   transition: transform 0.2s ease;
 }
@@ -199,10 +201,23 @@
 
 .select__trigger:hover { border-color: #b9b9c0; }
 
-.select__trigger:focus-visible {
+/* :focus, а не :focus-visible: селект — кнопка, клик мышью
+   :focus-visible не даёт; открытый список подсветку сохраняет */
+.select__trigger:focus,
+.select.is-open .select__trigger {
   outline: none;
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 2px rgba(57, 117, 125, 0.22);
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
+}
+
+/* рамки полей формы задаются правилами .contacts-form (они идут после
+   checkout.css и перебивают общий фокус), поэтому фокус повторяем здесь */
+.contacts-form .field__input:focus-visible,
+.contacts-form .field__select:focus-visible,
+.contacts-form .select__trigger:focus {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
 }
 
 .select__trigger[aria-invalid="true"] { border-color: #d0433a; }

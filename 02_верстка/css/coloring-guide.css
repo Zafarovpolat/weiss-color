@@ -152,7 +152,7 @@
   text-transform: uppercase;
   color: #3a3b3e;
   background: var(--color-white);
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
   text-decoration: none;
   transition: border-color var(--ease-ui), color var(--ease-ui),
     box-shadow var(--ease-ui);

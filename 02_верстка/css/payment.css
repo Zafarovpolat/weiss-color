@@ -123,14 +123,14 @@
 }
 
 .payment-actions__cancel {
-  color: #575756;
+  color: var(--color-btn-dark);
   background: var(--color-white);
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
 }
 
 .payment-actions__cancel:hover {
-  color: var(--color-brown-dark);
-  border-color: var(--color-brown-dark);
+  color: var(--color-brown);
+  border-color: var(--color-brown);
   box-shadow: var(--shadow-hover-outline);
 }
 

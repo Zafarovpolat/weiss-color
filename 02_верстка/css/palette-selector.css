@@ -48,9 +48,12 @@ body.page-fill main {
   cursor: pointer;
 }
 
-.pselect__control:focus-visible {
-  outline: 2px solid var(--color-teal);
-  outline-offset: 2px;
+/* селект-кнопка: подсветка по :focus (клик мышью) и пока открыт список */
+.pselect__control:focus,
+.pselect.is-open .pselect__control {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
 }
 
 /* Наведение на селектор каталога */

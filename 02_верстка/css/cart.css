@@ -73,7 +73,21 @@
   transition: color 0.2s ease;
 }
 
-.cart-back:hover { color: var(--color-brown); }
+.cart-back:hover {
+  color: var(--color-brown);
+  text-decoration: none;
+}
+
+/* на hover подчёркиваем не текстом, а нижней рамкой — только под надписью,
+   стрелка остаётся без линии; прозрачная рамка в покое держит высоту */
+.cart-back__text {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.cart-back:hover .cart-back__text {
+  border-bottom-color: var(--color-brown);
+}
 
 .cart-back svg {
   flex: none;
@@ -286,16 +300,24 @@
   background: var(--color-white);
   border: 0;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  /* цвет иконки не анимируем: градиент фона не переходный, иначе «+» белеет с задержкой */
+  transition: background-color 0.2s ease;
 }
 
+/* «−» — коричневый градиент (в макете затемняется к правому нижнему углу) */
 .qty__btn--minus {
   color: var(--color-white);
-  background: #62381e;
+  background: linear-gradient(135deg, #74452a 0%, #57311a 100%);
 }
 
-.qty__btn:hover { background: #f3ede9; }
-.qty__btn--minus:hover { background: var(--color-brown-dark); }
+/* «+» на hover — тот же градиент, что у минуса, иконка становится белой */
+.qty__btn:hover {
+  color: var(--color-white);
+  background: linear-gradient(135deg, #74452a 0%, #57311a 100%);
+}
+.qty__btn--minus:hover {
+  background: linear-gradient(135deg, #5f371f 0%, #452613 100%);
+}
 
 .qty__input {
   width: clamp(42px, 2.19vw, 56px);
@@ -564,10 +586,13 @@
 
 .promo__input::placeholder { color: #747c8c; opacity: 1; }
 
+/* фокус промокода — приглушённая коричневая рамка (на 1px толще обычной)
+   и мягкая тень */
 .promo__input:focus-visible {
   outline: none;
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 2px rgba(57, 117, 125, 0.25);
+  border-width: 2px;
+  border-color: rgba(98, 56, 30, 0.55);
+  box-shadow: var(--shadow-focus-field);
 }
 
 .promo__btn {
@@ -659,7 +684,7 @@
   text-transform: uppercase;
   color: var(--color-ink-deep);
   background: var(--color-white);
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
   border-radius: 0;
   text-decoration: none;
   transition: border-color var(--ease-ui), color var(--ease-ui), box-shadow var(--ease-ui);

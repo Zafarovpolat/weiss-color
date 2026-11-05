@@ -133,6 +133,8 @@
   --color-teal: #39757d;         /* CTA «Подобрать цвет» */
   --color-badge: #fe701a;        /* бейдж счётчика корзины */
   --color-border-btn: #a0a0a0;   /* контур кнопки «Заказать звонок» */
+  --color-btn-dark: #333333;     /* текст и контур светлых кнопок в покое */
+  --color-btn-border: #b9babf;   /* контур светлых кнопок в покое — серый */
 
   --shadow-brown: 0 0 27px 3px rgba(98, 56, 30, 0.35);
   --shadow-teal: 0 0 27px 3px rgba(57, 117, 125, 0.35);
@@ -145,6 +147,9 @@
   --shadow-hover-teal: 0 6px 18px rgba(57, 117, 125, 0.3);
   --shadow-hover-outline: 0 4px 14px rgba(37, 51, 70, 0.18);
   --shadow-hover-card: 0 8px 24px rgba(37, 51, 70, 0.12);
+  /* фокус полей: коричневая рамка + лёгкая тень */
+  --shadow-focus-field: 0 0 0 2px rgba(98, 56, 30, 0.12),
+    0 4px 12px rgba(98, 56, 30, 0.16);
   --ease-ui: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ---------- Шрифты ---------- */

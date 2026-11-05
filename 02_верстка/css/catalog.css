@@ -329,7 +329,7 @@
   height: clamp(42px, 1.88vw, 48px);
   margin-top: clamp(10px, 0.59vw, 15px);
   padding: 0;
-  border: 1px solid #b9babf;
+  border: 2px solid #b9babf;
   background: var(--color-white);
   color: var(--color-ink);
   font-size: clamp(13px, 0.59vw, 15px);
@@ -730,19 +730,17 @@
 
 .filter__reset {
   margin-top: clamp(12px, 0.66vw, 17px);
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
   background: var(--color-white);
-  color: #626366;
+  color: var(--color-btn-dark);
   transition: border-color var(--ease-ui), color var(--ease-ui),
     box-shadow var(--ease-ui);
 }
 
 .filter__reset:hover {
   border-color: var(--color-brown);
-  color: var(--color-ink);
-  /* 1px-линия тёмного коричневого на белом визуально «сереет» —
-     усиливаем контур вторым кольцом и тёплой тенью вместо синеватой */
-  box-shadow: inset 0 0 0 1px var(--color-brown), var(--shadow-hover-brown);
+  color: var(--color-brown);
+  box-shadow: var(--shadow-hover-outline);
 }
 
 /* --- Адаптив (проверяем 360–1024) --- */

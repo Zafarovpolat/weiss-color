@@ -150,7 +150,7 @@ dialog.mcard-add:focus-visible { outline: none; }
 
 .callback-photo__logo {
   display: block;
-  width: clamp(120px, 7.54vw, 193px);
+  width: clamp(120px, 7.54vw, 186px);
   height: auto;
 }
 
@@ -242,12 +242,16 @@ dialog.mcard-add:focus-visible { outline: none; }
   background: #fff;
   border: 1px solid #dcdde1;
   border-radius: 4px;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .callback-field input::placeholder { color: #9fa5b3; }
 .callback-field input:hover { border-color: #b9b9c0; }
-.callback-field input:focus-visible { border-color: #62381e; outline-offset: 2px; }
+.callback-field input:focus-visible {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
+}
 
 .callback-form .btn {
   width: 100%;
@@ -358,6 +362,7 @@ dialog.mcard-add:focus-visible { outline: none; }
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 10px 30px rgba(23, 30, 49, 0.12);
+  overflow: hidden;
 }
 
 .cookie-bar__img {
@@ -394,9 +399,13 @@ dialog.mcard-add:focus-visible { outline: none; }
   font-weight: var(--fw-medium);
   color: #4c4d51;
   text-decoration: none;
-  border-bottom: 0;
   border-radius: 2px;
-  padding-bottom: 0;
+}
+
+/* подчёркивание на hover — рамкой только под текстом, не под стрелкой */
+.cookie-bar__label {
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--ease-ui);
 }
 
 .cookie-bar__link {
@@ -405,7 +414,8 @@ dialog.mcard-add:focus-visible { outline: none; }
   transition: color var(--ease-ui);
 }
 
-.cookie-bar__link:hover { color: var(--color-brown-dark); border-color: var(--color-brown-dark); }
+.cookie-bar__link:hover { color: var(--color-brown-dark); text-decoration: none; }
+.cookie-bar__link:hover .cookie-bar__label { border-bottom-color: var(--color-brown-dark); }
 .cookie-bar__link svg { width: clamp(16px, 1.02vw, 26px); height: auto; }
 
 .cookie-bar__actions {
@@ -423,11 +433,12 @@ dialog.mcard-add:focus-visible { outline: none; }
   border-radius: 0;
 }
 
+/* ветка «липнет» к правому нижнему углу плашки и обрезается её скруглением */
 .cookie-bar__leaf {
-  align-self: center;
-  justify-self: end;
-  width: 100%;
-  max-width: 210px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: clamp(120px, 8.2vw, 210px);
   height: auto;
   opacity: 0.5;
   pointer-events: none;
@@ -451,12 +462,9 @@ dialog.mcard-add:focus-visible { outline: none; }
 }
 
 @media (max-width: 540px) {
-  /* на узких экранах подчёркиваем сам текст, а не всю строку */
-  .cookie-bar__link {
-    border-bottom: 0;
-    text-decoration: underline;
-    text-underline-offset: 5px;
-    text-decoration-color: #c9cace;
+  /* на узких экранах линия под текстом видна сразу (серым), на hover — коричневая */
+  .cookie-bar__label {
+    border-bottom-color: #c9cace;
   }
 
   .cookie-bar__link svg { display: none; }

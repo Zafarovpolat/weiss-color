@@ -118,8 +118,8 @@
 .field__input:focus-visible,
 .field__select:focus-visible {
   outline: none;
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 2px rgba(57, 117, 125, 0.22);
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
 }
 
 .field__input[aria-invalid="true"] {
@@ -167,10 +167,14 @@
 
 .select__trigger:hover { border-color: #b9b9c0; }
 
-.select__trigger:focus-visible {
+/* :focus, а не :focus-visible: селект — кнопка, и при клике мышью
+   :focus-visible не срабатывает, из-за чего поле «не подсвечивалось».
+   Открытый список тоже держит подсветку — фокус уходит в опции */
+.select__trigger:focus,
+.select.is-open .select__trigger {
   outline: none;
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 2px rgba(57, 117, 125, 0.22);
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
 }
 
 .select__trigger[aria-invalid="true"] { border-color: #d0433a; }
@@ -559,17 +563,17 @@
   font-size: clamp(14px, 0.82vw, 21px);
   font-weight: var(--fw-medium);
   text-transform: uppercase;
-  color: #2a3848;
+  color: var(--color-btn-dark);
   background: var(--color-white);
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
   border-radius: 0;
   text-decoration: none;
   transition: border-color var(--ease-ui), color var(--ease-ui), box-shadow var(--ease-ui);
 }
 
 .checkout-actions__back:hover {
-  color: var(--color-brown-dark);
-  border-color: var(--color-brown-dark);
+  color: var(--color-brown);
+  border-color: var(--color-brown);
   box-shadow: var(--shadow-hover-outline);
   text-decoration: none;
 }
@@ -668,14 +672,14 @@
 }
 
 .invoice-dialog__btn--ghost {
-  color: #575756;
+  color: var(--color-btn-dark);
   background: none;
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
 }
 
 .invoice-dialog__btn--ghost:hover {
-  color: var(--color-brown-dark);
-  border-color: var(--color-brown-dark);
+  color: var(--color-brown);
+  border-color: var(--color-brown);
   box-shadow: var(--shadow-hover-outline);
 }
 

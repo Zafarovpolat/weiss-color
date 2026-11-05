@@ -112,13 +112,14 @@
   font-weight: var(--fw-regular);
   text-decoration: none;
   border-radius: 0;
-  transition: filter 0.2s ease, box-shadow var(--ease-ui);
+  transition: box-shadow var(--ease-ui);
 }
 
+/* на hover фон не меняется; тень — в цвете самой кнопки, плотная и с малым
+   размытием (--buy-shadow задаётся в каждом модификаторе ниже) */
 .buy-card__link:hover {
-  filter: brightness(0.92);
   text-decoration: none;
-  box-shadow: var(--shadow-hover-outline);
+  box-shadow: var(--buy-shadow);
 }
 
 .buy-card__link svg {
@@ -129,10 +130,26 @@
 
 .buy-card__link:hover svg { transform: translateX(4px); }
 
-.buy-card__link--wb { color: var(--color-white); background: #8e2880; }
-.buy-card__link--ozon { color: var(--color-white); background: #0059ff; }
-.buy-card__link--lm { color: var(--color-white); background: #71bf44; }
-.buy-card__link--ym { color: #000; background: #ffe133; }
+.buy-card__link--wb {
+  color: var(--color-white);
+  background: #8e2880;
+  --buy-shadow: 0 0 10px 1px #8e2880;
+}
+.buy-card__link--ozon {
+  color: var(--color-white);
+  background: #0059ff;
+  --buy-shadow: 0 0 10px 1px #0059ff;
+}
+.buy-card__link--lm {
+  color: var(--color-white);
+  background: #71bf44;
+  --buy-shadow: 0 0 10px 1px #71bf44;
+}
+.buy-card__link--ym {
+  color: #000;
+  background: #ffe133;
+  --buy-shadow: 0 0 10px 1px #ffe133;
+}
 
 /* --- Блок преимуществ --- */
 

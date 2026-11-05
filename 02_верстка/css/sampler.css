@@ -86,24 +86,29 @@
   margin-left: auto;
   font-size: clamp(13px, 0.86vw, 22px);
   font-weight: var(--fw-medium);
-  /* в макете ссылка коричневая, как и подчёркивание */
-  color: var(--color-brown);
+  /* коричневый с подчёркиванием — только на hover, как у «Продолжить покупки» */
+  color: #a4a7b1;
   text-decoration: none;
   /* ссылка лежит внутри H1, а он uppercase — снимаем наследование */
   text-transform: none;
+  transition: color 0.2s ease;
 }
 
-/* подчёркивание только под текстом, не под стрелкой */
+/* подчёркивание только под текстом, не под стрелкой; прозрачная линия
+   в покое держит высоту, чтобы строка не дёргалась */
 .sampler-back span {
   padding-bottom: clamp(3px, 0.23vw, 6px);
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid transparent;
   font-weight: var(--fw-semibold);
+  transition: border-color 0.2s ease;
 }
 
-/* при наведении подчёркивание не добавляется: линия уже есть под текстом */
-.sampler-back:hover { color: var(--color-brown-dark); text-decoration: none; }
+.sampler-back:hover { color: var(--color-brown); text-decoration: none; }
+.sampler-back:hover span { border-bottom-color: var(--color-brown); }
 
-.sampler-back svg { width: clamp(18px, 1.09vw, 28px); height: auto; }
+/* заливная стрелка, как у «Продолжить покупки» в корзине:
+   viewBox 512×243.58, вытянутая, в разметке отзеркалена scale(-1 1) */
+.sampler-back svg { width: clamp(20px, 1.4vw, 36px); height: auto; }
 
 /* На десктопе ссылка стоит справа на линии H1 (внутри самого заголовка) */
 .sampler-head {
@@ -220,7 +225,7 @@
 }
 
 /* счётчик наследует .qty из cart.css; размеры — по макету: 201×61,
-   три ячейки по 67 px, цифра набрана Tinos (--font-num) */
+   три ячейки по 67 px, цифра набрана Montserrat */
 .sampler-qty .qty {
   border-radius: var(--radius-btn);
   background: transparent;
@@ -232,16 +237,16 @@
   font-size: clamp(18px, 1.4vw, 36px);
 }
 
-/* неактивная ячейка («+») — прозрачная, как в макете; минус остаётся коричневым */
-.sampler-qty .qty__btn:not(.qty__btn--minus) { background: transparent; }
-.sampler-qty .qty__btn:not(.qty__btn--minus):hover { background: #f3ede9; }
+/* неактивная ячейка («+») — прозрачная, как в макете; минус остаётся коричневым.
+   В покое только: на hover «+» получает общий коричневый градиент из cart.css */
+.sampler-qty .qty__btn:not(.qty__btn--minus):not(:hover) { background: transparent; }
 
 .sampler-qty .qty__input {
   width: clamp(40px, 2.58vw, 66px);
   height: clamp(44px, 2.38vw, 61px);
-  font-family: var(--font-num);
+  font-family: var(--font-main);
   font-size: clamp(18px, 1.45vw, 37px);
-  font-weight: var(--fw-regular);
+  font-weight: var(--fw-semibold);
   background: transparent;
 }
 

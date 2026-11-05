@@ -78,8 +78,8 @@
 }
 
 .pcard-input:focus-within {
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 2px rgba(57, 117, 125, 0.22);
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
 }
 
 .pcard-input:has(input[aria-invalid="true"]) {
@@ -183,14 +183,14 @@
 }
 
 .pcard-btn--ghost {
-  color: #575756;
+  color: var(--color-btn-dark);
   background: var(--color-white);
-  border: 1px solid #b9babf;
+  border: 2px solid var(--color-btn-border);
 }
 
 .pcard-btn--ghost:hover {
-  color: var(--color-brown-dark);
-  border-color: var(--color-brown-dark);
+  color: var(--color-brown);
+  border-color: var(--color-brown);
   box-shadow: var(--shadow-hover-outline);
 }
 
