@@ -15,6 +15,11 @@
   const setOpen = (open) => {
     burger.setAttribute('aria-expanded', String(open));
     nav.toggleAttribute('data-open', open);
+    /* Панель занимает весь экран: страница под ней не должна прокручиваться.
+       Класс отдельный от is-modal-open — меню и диалог могут открываться
+       независимо, и закрытие одного не разблокирует второй. */
+    document.documentElement.classList.toggle('is-menu-open', open);
+    document.body.classList.toggle('is-menu-open', open);
     if (label) label.textContent = open ? 'Скрыть меню' : 'Показать меню';
   };
 
