@@ -248,6 +248,17 @@
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
+/* 1440 и ниже: макетный сдвиг контента (306px при 2560, это +82px к общему
+   отступу) в масштабе ноутбука давал 170px слева — контент заметно уже, чем
+   на остальных страницах. Добавочную часть ужимаем вдвое, общий
+   --container-pad не трогаем: он один на весь сайт. */
+@media (max-width: 1440px) {
+  .buy-hero,
+  .buy-features {
+    padding-inline: calc(var(--container-pad) + clamp(0px, 1.6vw, 41px));
+  }
+}
+
 @media (max-width: 1280px) {
   .buy-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .buy-features__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }

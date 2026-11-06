@@ -130,6 +130,9 @@
   --color-white: #ffffff;
   --color-line: #dcdcdc;         /* разделители колонок преимуществ */
   --color-brown: #62381e;        /* CTA «Подробнее» (с тенью rgba .35) */
+  /* коричневый градиент активной страницы пагинации и отмеченного чекбокса */
+  --grad-brown: linear-gradient(135deg, #9a6647 0%, #7e5337 100%);
+  --grad-brown-hover: linear-gradient(135deg, #7e5337 0%, #62381e 100%);
   --color-teal: #39757d;         /* CTA «Подобрать цвет» */
   --color-badge: #fe701a;        /* бейдж счётчика корзины */
   --color-border-btn: #a0a0a0;   /* контур кнопки «Заказать звонок» */

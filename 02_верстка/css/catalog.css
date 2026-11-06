@@ -4,6 +4,12 @@
    Общие элементы (шапка, подвал, кнопки, контейнер) — в layout/components.
    ========================================================================== */
 
+/* Страница каталога целиком на белом: серая подложка сайта просвечивала
+   в зазорах между полосой-шапкой, сеткой товаров и пагинацией. */
+body.catalog-page {
+  background: var(--color-white);
+}
+
 /* --- Полоса-шапка экрана: крошки, H1, преимущества, фон с растением --- */
 
 .page-head {
@@ -435,7 +441,7 @@
 }
 
 .pagination__item[aria-current="page"]:hover {
-  background: var(--color-brown);
+  background: var(--grad-brown);
   color: var(--color-white);
 }
 
@@ -498,10 +504,10 @@
   width: var(--pg-cell);
   height: var(--pg-cell);
   min-width: 0;
-  background: var(--color-brown);
+  background: var(--grad-brown);
   color: var(--color-white);
   border-radius: 0;
-  transition: background-color var(--ease-ui), color var(--ease-ui);
+  transition: color var(--ease-ui);
 }
 
 .pagination__item[aria-current="page"]:hover {
@@ -589,7 +595,7 @@
 
 /* Отмеченный пункт: градиентная коричневая подложка, рамку убираем */
 .check input:checked + .check__box {
-  background: linear-gradient(135deg, #94633f 0%, #7c5033 100%);
+  background: var(--grad-brown);
   border-color: transparent;
 }
 
@@ -597,7 +603,7 @@
 .check:hover .check__box { border-color: var(--color-brown); }
 .check:hover .check__label { color: var(--color-brown); }
 .check:hover input:checked + .check__box {
-  background: linear-gradient(135deg, #7c5233 0%, #66402a 100%);
+  background: var(--grad-brown-hover);
   border-color: transparent;
 }
 
