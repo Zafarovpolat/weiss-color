@@ -89,7 +89,7 @@
   margin: clamp(16px, 1.17vw, 30px) 0 0;
   font-size: clamp(17px, 0.94vw, 24px);
   line-height: 1.2;
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-semibold);
   color: #252b37;
 }
 

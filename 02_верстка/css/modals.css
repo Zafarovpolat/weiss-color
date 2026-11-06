@@ -498,7 +498,7 @@ dialog.mcard-callback::backdrop { background: rgba(23, 30, 49, 0.45); }
 
 /* Демо-подложки модалок растянуты на весь экран. 100dvh зумом тоже
    ужимается на 10% — компенсируем, чтобы фон доходил до нижнего края. */
-@media (min-width: 1025px) {
+@media (min-width: 1440px) {
   .mcard-demo,
   .cookie-demo { min-height: calc(100dvh / 0.9); }
 }
