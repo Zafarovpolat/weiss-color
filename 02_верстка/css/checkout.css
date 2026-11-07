@@ -450,7 +450,7 @@
   margin: 0;
   font-size: clamp(14px, 0.74vw, 19px);
   line-height: 1.47;
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-semibold);
   text-transform: uppercase;
   color: #575961;
 }

@@ -45,7 +45,7 @@
   margin-top: clamp(14px, 1.25vw, 32px);
   font-size: clamp(32px, 2.03vw, 52px);
   line-height: 1.4;
-  font-weight: 400;
+  font-weight: var(--fw-medium);
   color: #233146;
 }
 
@@ -85,8 +85,14 @@
 
 .p-volumes__item[aria-pressed="true"] {
   border-color: var(--color-brown);
-  background: transparent;
+  background: var(--color-white);
   color: #000000;
+}
+
+/* Десктопный масштаб 0.9 (base.css: html { zoom: 0.9 }) съедает половину
+   пикселя и рисует рамку 2px как 1px — компенсируем только в этом диапазоне. */
+@media (min-width: 1420px) {
+  .p-volumes__item { border-width: 2.25px; }
 }
 
 /* Кнопка «Колеровка онлайн» */
@@ -113,7 +119,7 @@
 
 .p-coloring span {
   font-size: clamp(15px, 0.7vw, 18px);
-  font-weight: 600;
+  font-weight: 400;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -154,7 +160,9 @@
 .p-price-box {
   display: flex;
   flex-direction: column;
-  width: clamp(320px, 15.51vw, 397px);
+  /* минимум 344px: при 13px строка примечания «…итоговая» иначе не влезает
+     и ломается на 5 строк вместо трёх, как в макете */
+  width: clamp(344px, 15.51vw, 397px);
   margin-top: clamp(16px, 0.9vw, 23px);
   padding: clamp(14px, 0.74vw, 19px) clamp(16px, 0.9vw, 23px) clamp(16px, 0.94vw, 24px) clamp(18px, 1.05vw, 27px);
   border: 2px solid #d2d2d2;
@@ -171,9 +179,9 @@
 
 .p-price__note {
   margin-top: clamp(4px, 0.12vw, 3px);
-  max-width: clamp(240px, 13.28vw, 340px);
   font-size: clamp(13px, 0.55vw, 14px);
   line-height: 1.35;
+  font-weight: 500;
   color: var(--color-muted);
 }
 

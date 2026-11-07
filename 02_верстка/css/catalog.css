@@ -308,7 +308,8 @@ body.catalog-page {
 .product__title {
   font-size: clamp(15px, 0.7vw, 18px);
   line-height: 1.4;
-  font-weight: 500;
+  /* 600 по просьбе клиента: названия товаров в карточках жирнее макета */
+  font-weight: 600;
   text-transform: uppercase;
   color: #575961;
 }

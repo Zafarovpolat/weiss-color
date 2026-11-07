@@ -96,7 +96,7 @@
   /* фиксированный кегль: при сужении окна текст в карточке не мельчает */
   font-size: 21.5px;
   line-height: 1.18;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   color: #171e31;
 }
