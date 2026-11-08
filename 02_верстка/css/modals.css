@@ -150,7 +150,7 @@ dialog.mcard-add:focus-visible { outline: none; }
 
 .callback-photo__logo {
   display: block;
-  width: clamp(120px, 7.54vw, 186px);
+  width: clamp(120px, 11.6vw, 192px);
   height: auto;
 }
 

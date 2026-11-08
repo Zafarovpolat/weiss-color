@@ -48,8 +48,8 @@
 (() => {
   const scriptSrc = document.currentScript && document.currentScript.src;
   const logoUrl = scriptSrc
-    ? new URL('../assets/img/logo.svg', scriptSrc).href
-    : '../assets/img/logo.svg';
+    ? new URL('../assets/img/logo-wordmark.svg', scriptSrc).href
+    : '../assets/img/logo-wordmark.svg';
 
   const RESULT_HTML = `
     <button class="mcard__close" type="button" data-modal-close aria-label="Закрыть окно">
@@ -58,7 +58,7 @@
       </svg>
     </button>
     <div class="callback-photo">
-      <img class="callback-photo__logo" src="${logoUrl}" width="186" height="52" alt="Weiss Color">
+      <img class="callback-photo__logo" src="${logoUrl}" width="192" height="54" alt="Weiss Color">
       <hr class="callback-photo__rule">
       <p class="callback-photo__slogan">Вдохновляем<br>на красивые<br>интерьеры</p>
     </div>
