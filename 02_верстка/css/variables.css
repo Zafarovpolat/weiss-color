@@ -104,10 +104,10 @@
   src: url("../assets/fonts/tinos-latin-400-normal.woff2") format("woff2");
 }
 
-/* ---------- Sovest — передан заказчиком (только для цифр) ----------
-   В макетах Sovest набран исключительно цифрами: телефон в шапке,
-   счётчик корзины, номера страниц пагинации. Буквы и кириллица
-   остаются на Montserrat — подключаем один вес 500. */
+/* ---------- Sovest — передан заказчиком (цифры и телефоны) ----------
+   В макетах Sovest набран телефон в шапке, счётчик корзины, номера
+   страниц пагинации и поля телефона. В PSD у плейсхолдера стоит
+   Sovest-Bold, но Bold не существует — подключаем единственный вес 500. */
 @font-face {
   font-family: "Sovest";
   font-style: normal;
@@ -159,7 +159,7 @@
   --font-main: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-aux: "Open Sans", var(--font-main);
   --font-num: "Tinos", "Times New Roman", Times, Georgia, serif;  /* Tinos — self-host, клон Times */
-  --font-digit: "Sovest", var(--font-main);  /* телефон, счётчик корзины, номера пагинации */
+  --font-digit: "Sovest", var(--font-main);  /* телефон, счётчик корзины, пагинация, поля телефона */
 
   --fw-regular: 400;
   --fw-medium: 500;

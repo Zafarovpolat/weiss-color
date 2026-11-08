@@ -245,6 +245,9 @@ dialog.mcard-add:focus-visible { outline: none; }
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* В макете номер набран Sovest Bold, но у Sovest есть только Medium */
+.callback-field input[type="tel"] { font-family: var(--font-digit); }
+
 .callback-field input::placeholder { color: #9fa5b3; }
 .callback-field input:hover { border-color: #b9b9c0; }
 .callback-field input:focus-visible {

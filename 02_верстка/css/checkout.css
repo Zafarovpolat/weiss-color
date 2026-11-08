@@ -109,6 +109,9 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* В макете номер набран Sovest Bold, но у Sovest есть только Medium */
+.field__input[type="tel"] { font-family: var(--font-digit); }
+
 .field__input::placeholder,
 .field__select:invalid {
   color: #9fa5b3;
