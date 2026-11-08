@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Масштаб сайта: 1 / 0.95 / 0.9 — Главная</title>
+<link rel="stylesheet" href="css/variables.css">
+<style>
+  html { zoom: 1; }
+  body {
+    margin: 0;
+    padding: 40px 32px 80px;
+    font-family: var(--font-main);
+    font-size: 16px;
+    line-height: 1.5;
+    color: #252b37;
+    background: #f6f5f3;
+  }
+  .wrap { max-width: 1800px; margin: 0 auto; }
+  h1 { margin: 0 0 8px; font-size: 34px; font-weight: 500; letter-spacing: 0.02em; }
+  .lead { margin: 0 0 8px; color: #5c6474; }
+  .stamp { margin: 0 0 32px; font-size: 13px; color: #9fa5b3; }
+  h2 { margin: 48px 0 16px; font-size: 24px; font-weight: 500; }
+  table { border-collapse: collapse; width: 100%; max-width: 900px; margin-bottom: 8px; font-size: 15px; }
+  th, td { padding: 9px 14px; text-align: left; border-bottom: 1px solid #e2e0dc; }
+  th { font-weight: 500; color: #5c6474; }
+  tr.cur td { background: #efe9e2; font-weight: 500; }
+  .shots { display: grid; gap: 28px; margin-top: 20px; }
+  figure { margin: 0; }
+  figcaption {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 8px; font-size: 15px; color: #5c6474;
+  }
+  figcaption b { font-size: 17px; font-weight: 500; color: #252b37; }
+  figure img {
+    display: block; width: 100%; height: auto;
+    border: 1px solid #ddd9d3; border-radius: 4px; background: #fff;
+  }
+  .note {
+    margin-top: 48px; padding: 16px 20px;
+    font-size: 14px; color: #5c6474;
+    background: #fff; border: 1px solid #e2e0dc; border-radius: 4px;
+  }
+  a { color: #9a6647; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Масштаб сайта: 1 против 0.9 и 1 против 0.95</h1>
+  <p class="lead">Главная страница, один и тот же код. Менялся только масштаб страницы — 1, 0.95 и 0.9. Сейчас на сайте стоит 0.9.</p>
+  <p class="stamp">Снято 09.11.2026, Chrome, масштаб ОС 100%, без полосы прокрутки. Временная страница, будет удалена.</p>
+
+  <h2>Сводка</h2>
+  <table>
+    <tr><th>Разрешение</th><th>Масштаб</th><th>Высота страницы</th><th>Первый экран</th></tr>
+    <tr><td>2560×1440</td><td>1</td><td>1527 px</td><td>подвал ниже среза на 87 px</td></tr>
+    <tr><td>2560×1440</td><td>0.95</td><td>1451 px</td><td>подвал срезан на 11 px</td></tr>
+    <tr class="cur"><td>2560×1440</td><td>0.9</td><td>1375 px</td><td>вся страница до подвала, 65 px воздуха</td></tr>
+    <tr><td>1920×1080</td><td>1</td><td>1238 px</td><td>блок преимуществ срезан, подвал ниже на 158 px</td></tr>
+    <tr><td>1920×1080</td><td>0.95</td><td>1139 px</td><td>подвал срезан на 59 px</td></tr>
+    <tr class="cur"><td>1920×1080</td><td>0.9</td><td>1079 px</td><td>вся страница до подвала, ровно в экран</td></tr>
+  </table>
+  <p class="stamp">Размеры — в пикселях экрана, заголовок H1: 2560 — 560×190 / 532×181 / 504×171; 1920 — 420×143 / 399×136 / 378×129. Горизонтальной прокрутки нет ни в одном режиме.</p>
+
+  <h2>2560×1440</h2>
+  <div class="shots">
+    <figure>
+      <figcaption><b>Масштаб 1</b> — страница 1527 px, подвал за срезом</figcaption>
+      <a href="assets/img/zoom/zoom-1-2560.png" target="_blank" rel="noopener"><img src="assets/img/zoom/zoom-1-2560.png" alt="Главная, 2560×1440, масштаб 1" width="2560" height="1440"></a>
+    </figure>
+    <figure>
+      <figcaption><b>Масштаб 0.95</b> — страница 1451 px, подвал срезан</figcaption>
+      <a href="assets/img/zoom/zoom-095-2560.png" target="_blank" rel="noopener"><img src="assets/img/zoom/zoom-095-2560.png" alt="Главная, 2560×1440, масштаб 0.95" width="2560" height="1440" loading="lazy"></a>
+    </figure>
+    <figure>
+      <figcaption><b>Масштаб 0.9</b> — страница 1375 px, всё помещается (сейчас на сайте)</figcaption>
+      <a href="assets/img/zoom/zoom-09-2560.png" target="_blank" rel="noopener"><img src="assets/img/zoom/zoom-09-2560.png" alt="Главная, 2560×1440, масштаб 0.9" width="2560" height="1440" loading="lazy"></a>
+    </figure>
+  </div>
+
+  <h2>1920×1080</h2>
+  <div class="shots">
+    <figure>
+      <figcaption><b>Масштаб 1</b> — страница 1238 px, преимущества и подвал за срезом</figcaption>
+      <a href="assets/img/zoom/zoom-1-1920.png" target="_blank" rel="noopener"><img src="assets/img/zoom/zoom-1-1920.png" alt="Главная, 1920×1080, масштаб 1" width="1920" height="1080" loading="lazy"></a>
+    </figure>
+    <figure>
+      <figcaption><b>Масштаб 0.95</b> — страница 1139 px, подвал срезан</figcaption>
+      <a href="assets/img/zoom/zoom-095-1920.png" target="_blank" rel="noopener"><img src="assets/img/zoom/zoom-095-1920.png" alt="Главная, 1920×1080, масштаб 0.95" width="1920" height="1080" loading="lazy"></a>
+    </figure>
+    <figure>
+      <figcaption><b>Масштаб 0.9</b> — страница 1079 px, всё помещается (сейчас на сайте)</figcaption>
+      <a href="assets/img/zoom/zoom-09-1920.png" target="_blank" rel="noopener"><img src="assets/img/zoom/zoom-09-1920.png" alt="Главная, 1920×1080, масштаб 0.9" width="1920" height="1080" loading="lazy"></a>
+    </figure>
+  </div>
+
+  <p class="note">Скриншоты кликабельны — открываются в полном размере 1:1. Страница служебная: в поиске не индексируется и после просмотра удаляется.</p>
+</div>
+</body>
+</html>
