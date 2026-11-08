@@ -179,9 +179,12 @@
 
 .p-price__note {
   margin-top: clamp(4px, 0.12vw, 3px);
+  /* в макете примечание набрано Open Sans SemiBold; у Montserrat веса 500 нет
+     в семействе, поэтому прежний 500 браузер показывал как 400 */
+  font-family: "Open Sans", system-ui, sans-serif;
   font-size: clamp(13px, 0.55vw, 14px);
   line-height: 1.35;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-muted);
 }
 
@@ -298,10 +301,12 @@
   background: #ebebed;
 }
 
+/* В макете названия строк — SemiBold, значения — Regular; у Open Sans
+   веса 500 нет, поэтому прежний 500 у названий браузер показывал как 400. */
 .p-specs__label {
   font-family: "Open Sans", system-ui, sans-serif;
   font-size: clamp(16px, 0.78vw, 20px);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-muted);
 }
 
@@ -309,7 +314,7 @@
   font-family: "Open Sans", system-ui, sans-serif;
   font-size: clamp(16px, 0.78vw, 20px);
   line-height: 1.35;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-muted);
 }
 

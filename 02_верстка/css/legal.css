@@ -95,7 +95,8 @@
   font-family: var(--font-num);
   font-size: clamp(29px, 1.91vw, 49px);
   line-height: 1;
-  font-weight: 600;
+  /* в макете Times-Roman Regular, а у Tinos есть только один вес — 400 */
+  font-weight: var(--fw-regular);
   color: #253346;
 }
 

@@ -546,10 +546,11 @@
   color: var(--color-ink-deep);
 }
 
-/* первая строка («Бесплатная доставка при заказе от 30 000₽») — жирнее */
+/* первая строка («Бесплатная доставка при заказе от 30 000₽») — SemiBold
+   из макета; 700 у Montserrat нет — браузер дорисовывал жирность сам */
 .order-panel__info strong {
   display: block;
-  font-weight: 700;
+  font-weight: var(--fw-semibold);
 }
 
 /* Промокод */
