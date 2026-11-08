@@ -71,19 +71,30 @@
   background: var(--color-white);
 }
 
-/* Логотип: высота зоны у всех карточек одинаковая (94px в макете) */
+/* Логотип: высота зоны у всех карточек одинаковая (94px в макете),
+   логотипы в ней стоят по центру */
 .buy-card__logo {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: clamp(64px, 3.67vw, 94px);
 }
 
+/* Размеры логотипов — как в макете: 325×94, 283×62, 178×107, 345×82.
+   Ширина задана долей полосы, поэтому логотипы масштабируются вместе с
+   карточкой и на 2560 совпадают с макетом. Wildberries и Яндекс Маркет
+   шире полосы, Леруа Мерлен выше её — в макете они так же выходят за
+   поля, поэтому ограничения ослаблены. */
 .buy-card__logo img {
-  max-width: 100%;
-  height: auto;
-  max-height: 100%;
+  max-height: 114%;
   width: auto;
+  height: auto;
 }
+
+.buy-logo--wb { max-width: 101.5%; }
+.buy-logo--ozon { max-width: 88.4%; }
+.buy-logo--lm { max-width: 55.6%; }
+.buy-logo--ym { max-width: 107.7%; }
 
 .buy-card__name {
   margin: clamp(16px, 1.17vw, 30px) 0 0;
