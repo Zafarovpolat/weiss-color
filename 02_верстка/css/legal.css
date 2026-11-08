@@ -93,7 +93,7 @@
   /* как и номера 01–09: Tinos (self-host, метрический клон Times) — Times
      нельзя вшивать, а на Android/Linux его нет, см. FONTS.md */
   font-family: var(--font-num);
-  font-size: clamp(29px, 1.48vw, 39px);
+  font-size: clamp(29px, 1.91vw, 49px);
   line-height: 1;
   font-weight: 600;
   color: #253346;
