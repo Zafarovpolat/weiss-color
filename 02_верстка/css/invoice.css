@@ -10,9 +10,13 @@
   background: #f2f3f5;
 }
 
+/* Окно стоит по центру экрана и по горизонтали, и по вертикали.
+   min-height, а не height: если карточка выше окна, страница растёт и
+   прокручивается — верх окна не срезается. */
 .invoice-page__center {
   display: grid;
-  place-items: start center;
+  align-content: center;
+  justify-items: center;
   min-height: 100vh;
   padding: clamp(16px, 2.34vw, 60px) clamp(12px, 1vw, 26px);
 }
