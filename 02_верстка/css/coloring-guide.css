@@ -5,20 +5,17 @@
    ========================================================================== */
 
 .guide-page {
-  display: flex;
-  flex-direction: column;
   background: #f8f8fa;
   /* боковые поля — общий контейнер (как на всех страницах) */
   padding-block: clamp(24px, 2.3vw, 60px) clamp(40px, 3vw, 72px);
   padding-inline: var(--container-pad);
 }
 
-/* Белая карточка-инструкция (в макете: 1822×1053, радиус ~28).
-   Auto-отступы делят запас высоты поровну сверху и снизу; когда контент
-   выше окна, они схлопываются в 0 и страница скроллится как обычно. */
+/* Белая карточка-инструкция (в макете: 1822×1053, радиус ~28) */
+
 .guide-card {
   max-width: 1822px;
-  margin: auto;
+  margin: 0 auto;
   padding: clamp(32px, 2.4vw, 62px) clamp(20px, 1.87vw, 40px)
     clamp(36px, 3.48vw, 74px);
   background: var(--color-white);

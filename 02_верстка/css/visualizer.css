@@ -4,17 +4,12 @@
    ========================================================================== */
 
 .viz-page {
-  display: flex;
-  flex-direction: column;
   background: #f8f8fa;
 }
 
 /* --- Контейнер: та же полоса, что у остальных страниц --- */
 
 .viz-main {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
   max-width: calc(2112px + 2 * var(--container-pad));
   margin-inline: auto;
   padding-block: clamp(40px, 3.75vw, 96px) 0;
@@ -70,19 +65,9 @@
   gap: clamp(20px, 1.29vw, 33px);
   margin-top: clamp(12px, 0.74vw, 19px);
   margin-bottom: clamp(40px, 2.695vw, 69px);
-  /* запас высоты окна уходит в колонки: фото визуализатора растёт,
-     пагинация в левой колонке прижимается к их низу */
-  flex: 1 0 auto;
 }
 
 /* ---------- Левая колонка ---------- */
-
-/* Колонка — тоже флекс-столбец: пагинация прижимается к низу колонки
-   и остаётся на одной линии с рядом «цена + В корзину» справа. */
-.viz-left {
-  display: flex;
-  flex-direction: column;
-}
 
 /* Карточка товара 768×278, рамка 2px #dcdcdf */
 
@@ -305,10 +290,7 @@
 
 .viz-page .pagination {
   justify-content: flex-start;
-  /* auto прижимает полосу к низу колонки; прежний отступ стал padding —
-     высота полосы не меняется */
-  margin-top: auto;
-  padding-top: clamp(14px, 0.86vw, 22px);
+  margin-top: clamp(14px, 0.86vw, 22px);
   /* нижний отступ ушёл на .viz-cols — иначе низ пагинации и viz-buy не совпадают */
   padding-bottom: 0;
 }

@@ -11,14 +11,7 @@
   padding-inline: var(--container-pad);
   /* фото чуть ниже: сдвигаем вниз от нижней кромки (cover даёт запас по высоте) */
   background: #f0eff2 url("../assets/img/contacts-bg.png") left calc(100% + clamp(50px, 4.5vw, 110px)) / cover no-repeat;
-  /* колонка: при запасе высоты группа «крошки + контент» встаёт по центру */
-  display: flex;
-  flex-direction: column;
 }
-
-/* Свободная высота делится поровну над крошками и под сеткой; при контенте
-   выше окна auto-отступы схлопываются в 0. */
-.contacts-page > .crumbs { margin-top: auto; }
 
 .contacts-layout {
   display: grid;
@@ -31,7 +24,6 @@
   column-gap: clamp(24px, 2vw, 48px);
   align-items: start;
   margin-top: clamp(12px, 0.86vw, 22px);
-  margin-bottom: auto;
 }
 
 .contacts-text {

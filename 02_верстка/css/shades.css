@@ -5,8 +5,6 @@
    ========================================================================== */
 
 .shades-page {
-  display: flex;
-  flex-direction: column;
   background: linear-gradient(180deg, #f9f9fa 0%, #fafafb 100%);
 }
 
@@ -32,14 +30,6 @@
   width: 100%;
   max-width: 1600px;
   margin-inline: auto;
-}
-
-/* Колонка контента: при запасе высоты пагинация уходит к подвалу,
-   сетка образцов остаётся на месте. */
-.shades-main {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
 }
 
 .shades-title {
@@ -121,7 +111,6 @@
 /* --- Постраничная навигация (как на экране «Каталог») --- */
 
 .shades-page .pagination {
-  margin-top: auto;
   padding-bottom: clamp(40px, 2.77vw, 71px);
 }
 

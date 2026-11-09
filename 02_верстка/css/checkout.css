@@ -11,16 +11,9 @@
   padding-bottom: clamp(28px, 1.91vw, 49px);
   /* фон страницы из макета */
   background: #f5f5f7;
-  /* колонка: при запасе высоты группа «крошки + заголовок + форма»
-     встаёт по центру, а не оставляет пустую полосу под собой */
-  display: flex;
-  flex-direction: column;
 }
 
 .crumbs--checkout {
-  /* auto-верх + auto-низ у формы делят свободную высоту поровну;
-     при контенте выше окна отступы схлопываются в 0 */
-  margin-top: auto;
   padding-top: clamp(18px, 1.13vw, 29px);
   /* в макете крошки крупнее базовых 15px */
   font-size: clamp(13px, 0.66vw, 17px);
@@ -48,8 +41,6 @@
   justify-content: space-between;
   gap: clamp(20px, 0.94vw, 24px);
   margin-top: clamp(12px, 0.66vw, 17px);
-  /* низ группы отдаёт остаток высоты (см. .crumbs--checkout) */
-  margin-bottom: auto;
   /* панель «Ваш заказ» — по высоте своего содержимого, без растяжки
      до высоты формы */
   align-items: start;
