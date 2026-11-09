@@ -18,6 +18,12 @@ html {
   html { zoom: 0.9; }
 }
 
+/* На мониторах от 2560px макет помещается и без уменьшения: возвращаем
+   масштаб 1:1, чтобы на больших экранах сайт не выглядел мелким. */
+@media (min-width: 2560px) {
+  html { zoom: 1; }
+}
+
 body {
   font-family: var(--font-main);
   font-weight: var(--fw-regular);
