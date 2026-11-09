@@ -45,6 +45,46 @@
 
     .idx-sub strong { color: #253346; }
 
+    .idx-vers {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .idx-vers__label {
+      font-size: 13px;
+      color: #7d8695;
+    }
+
+    .idx-vers__item {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      font-size: 14px;
+      line-height: 1.2;
+      color: #253346;
+      background: #fff;
+      border: 1px solid #e2e4e8;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .idx-vers__item:hover,
+    .idx-vers__item:focus-visible {
+      color: #62381e;
+      border-color: #62381e;
+    }
+
+    .idx-vers__item.is-active {
+      color: #fff;
+      background: #62381e;
+      border-color: #62381e;
+    }
+
     .idx-group { margin-top: 40px; }
 
     .idx-group__title {
@@ -128,8 +168,16 @@
       <p class="idx-sub">
         Этап 1 — HTML/CSS/JS на демо-данных. <strong>25 экранов</strong>: 19 страниц и 5 модальных окон
         (М18 — ассеты интерьерных сцен, отдельной страницы не имеет).<br>
-        Проверено на 2560 / 1920 / 1440 / 1280 / 1024 / 768 / 540 / 360 px.
+        Проверено на 2560 / 1920 / 1440 / 1280 / 1024 / 768 / 540 / 360 px.<br>
+        Версии масштаба: <strong>0.9 — от 1920px</strong> (на 2560px и шире тоже 0.9);
+        <strong>текущая</strong> — 0.9 от 1420px и 1:1 от 2560px.
+        Ссылки в списке открываются сразу в выбранной версии.
       </p>
+      <nav class="idx-vers" aria-label="Версия масштаба">
+        <span class="idx-vers__label">Версия:</span>
+        <a class="idx-vers__item" data-zoom="09" href="all-pages.html?zoom=09">0.9 — от 1920px</a>
+        <a class="idx-vers__item" data-zoom="auto" href="all-pages.html?zoom=auto">Текущая — адаптивная</a>
+      </nav>
     </header>
 
     <section class="idx-group" aria-labelledby="g1">
@@ -193,5 +241,20 @@
       <b>Адаптив:</b> проверяй, сузив окно браузера — 1920 → 1440 → 1280 → 1024 → 768 → 540 → 360.
     </p>
   </main>
+  <script>
+    /* Каждая ссылка списка открывается сразу в той версии масштаба,
+       в которой открыт сам список: параметр сохраняется при переходе. */
+    (function () {
+      var mode = sessionStorage.getItem('wc-demo-zoom') === '09' ? '09' : 'auto';
+      document.querySelectorAll('.idx-link').forEach(function (link) {
+        link.setAttribute('href', link.getAttribute('href') + '?zoom=' + mode);
+      });
+      var active = document.querySelector('.idx-vers__item[data-zoom="' + mode + '"]');
+      if (active) {
+        active.classList.add('is-active');
+        active.setAttribute('aria-current', 'true');
+      }
+    })();
+  </script>
 </body>
 </html>
