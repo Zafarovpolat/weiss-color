@@ -702,14 +702,17 @@ dialog.mcard:not([open]) { display: none; }
 /* кнопки-ссылки в карточках партнёров */
 .buy-card__link { min-height: 44px; }
 
-/* поля ввода: не ниже 44px и 16px — iOS не зумит страницу */
-.promo__input,
-.field__input,
-.callback-field input,
-.contacts-form .field__input,
-.search-form input {
-  min-height: 44px;
-  font-size: max(16px, 1em);
+/* iOS Safari зумит страницу при фокусе поля с кеглем меньше 16px.
+   Порог нужен только тач-устройствам: при обычном сужении окна на десктопе
+   поля должны следовать макетным clamp'ам (19px на 2560 → 14px на узких). */
+@media (max-width: 1024px) and (pointer: coarse) {
+  .field input.field__input,
+  .field textarea.field__input,
+  .promo .promo__input,
+  .callback-form .callback-field input,
+  .mcard .callback-field input {
+    font-size: max(16px, 1em);
+  }
 }
 
 /* --- Заголовки преимуществ: не режем по max-width на узких экранах --- */

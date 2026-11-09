@@ -851,6 +851,9 @@
   .cart-item__del { justify-self: start; }
 
   .promo__row { flex-direction: column; }
+  /* в колонке flex: 1 задаёт flex-basis 0 и обнуляет height — поле
+     схлопывается до строки текста, поэтому высоту держим явно */
+  .promo__input { flex: none; }
   .promo__btn { width: 100%; }
 
   /* подсказка остаётся сбоку от «?», как на десктопе, но уже: иначе она
