@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--
+  Служебная страница: список всех свёрстанных экранов в версии 0.9.
+  Отличается от all-pages.html только ссылками (?zoom=09) и классом zoom-09.
+  Нужна для приёмки — открывается по адресу /all-pages.html
+  (не входит в дизайн-макет и не индексируется).
+-->
+<html lang="ru" class="zoom-09">
+<head>
+  <meta charset="UTF-8">
+  <script src="js/zoom-mode.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Все страницы, версия 0.9 — Weiss Color</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/montserrat-cyrillic-500-normal.woff2" crossorigin>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    .idx-page {
+      max-width: 1180px;
+      margin-inline: auto;
+      padding: clamp(24px, 4vw, 64px) clamp(16px, 4vw, 40px) 80px;
+    }
+
+    .idx-head { border-bottom: 1px solid #e2e4e8; padding-bottom: 24px; }
+
+    .idx-logo { display: block; width: 168px; height: auto; margin-bottom: 24px; }
+
+    .idx-title {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 40px);
+      line-height: 1.1;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #233146;
+    }
+
+    .idx-sub {
+      margin: 12px 0 0;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #6e6f75;
+    }
+
+    .idx-sub strong { color: #253346; }
+
+    .idx-vers {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .idx-vers__label {
+      font-size: 13px;
+      color: #7d8695;
+    }
+
+    .idx-vers__item {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      font-size: 14px;
+      line-height: 1.2;
+      color: #253346;
+      background: #fff;
+      border: 1px solid #e2e4e8;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .idx-vers__item:hover,
+    .idx-vers__item:focus-visible {
+      color: #62381e;
+      border-color: #62381e;
+    }
+
+    .idx-vers__item.is-active {
+      color: #fff;
+      background: #62381e;
+      border-color: #62381e;
+    }
+
+    .idx-group { margin-top: 40px; }
+
+    .idx-group__title {
+      margin: 0 0 14px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7d8695;
+    }
+
+    .idx-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .idx-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #253346;
+      background: #fff;
+      border: 1px solid #e2e4e8;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+    }
+
+    .idx-link:hover,
+    .idx-link:focus-visible {
+      color: #62381e;
+      border-color: #62381e;
+      box-shadow: 0 2px 12px rgba(98, 56, 30, 0.12);
+    }
+
+    .idx-code {
+      flex: none;
+      min-width: 42px;
+      padding: 3px 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-align: center;
+      color: #6e6f75;
+      background: #f1f1f5;
+      border-radius: 3px;
+    }
+
+    .idx-note {
+      margin-top: 48px;
+      padding: 18px 20px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #43484f;
+      background: #f7f8fa;
+      border-left: 3px solid #62381e;
+      border-radius: 4px;
+    }
+
+    .idx-note b { color: #253346; }
+
+    @media (max-width: 540px) {
+      .idx-list { grid-template-columns: minmax(0, 1fr); }
+      .idx-link { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="idx-page">
+    <header class="idx-head">
+      <img class="idx-logo" src="assets/img/logo.svg" width="186" height="52" alt="Weiss Color">
+      <h1 class="idx-title">Все свёрстанные экраны — 0.9</h1>
+      <p class="idx-sub">
+        Этап 1 — HTML/CSS/JS на демо-данных. <strong>25 экранов</strong>: 19 страниц и 5 модальных окон
+        (М18 — ассеты интерьерных сцен, отдельной страницы не имеет).<br>
+        Проверено на 2560 / 1920 / 1440 / 1280 / 1024 / 768 / 540 / 360 px.<br>
+        Версии списка: <strong>оригинал</strong> — ссылки как есть (0.9 от 1420px, 1:1 от 2560px);
+        <strong>0.9 — от 1920px</strong> — те же экраны в масштабе 0.9, включая 2560px и шире.
+      </p>
+      <nav class="idx-vers" aria-label="Версии списка">
+        <span class="idx-vers__label">Список:</span>
+        <a class="idx-vers__item" href="all-pages.html">Оригинал</a>
+        <a class="idx-vers__item is-active" href="all-pages-09.html" aria-current="true">0.9 — от 1920px</a>
+      </nav>
+    </header>
+
+    <section class="idx-group" aria-labelledby="g1">
+      <h2 class="idx-group__title" id="g1">Основные страницы</h2>
+      <ul class="idx-list">
+        <li><a class="idx-link" href="index.html?zoom=09"><span class="idx-code">М10</span>Главная</a></li>
+        <li><a class="idx-link" href="pages/catalog.html?zoom=09"><span class="idx-code">М15</span>Каталог товаров</a></li>
+        <li><a class="idx-link" href="pages/product.html?zoom=09"><span class="idx-code">М05</span>Карточка товара</a></li>
+        <li><a class="idx-link" href="pages/color.html?zoom=09"><span class="idx-code">М12</span>Цвет и совместимые материалы</a></li>
+        <li><a class="idx-link" href="pages/shades.html?zoom=09"><span class="idx-code">М07</span>Список оттенков</a></li>
+      </ul>
+    </section>
+
+    <section class="idx-group" aria-labelledby="g2">
+      <h2 class="idx-group__title" id="g2">Колеровка и палитры</h2>
+      <ul class="idx-list">
+        <li><a class="idx-link" href="pages/palettes.html?zoom=09"><span class="idx-code">М13</span>Обзор палитр (28)</a></li>
+        <li><a class="idx-link" href="pages/palette-selector.html?zoom=09"><span class="idx-code">М19</span>Селектор палитры</a></li>
+        <li><a class="idx-link" href="pages/visualizer.html?zoom=09"><span class="idx-code">М09</span>Выбор цвета и визуализатор</a></li>
+        <li><a class="idx-link" href="pages/coloring-guide.html?zoom=09"><span class="idx-code">М21</span>Инструкция колеровки</a></li>
+      </ul>
+    </section>
+
+    <section class="idx-group" aria-labelledby="g3">
+      <h2 class="idx-group__title" id="g3">Корзина и заказ</h2>
+      <ul class="idx-list">
+        <li><a class="idx-link" href="pages/cart.html?zoom=09"><span class="idx-code">М16</span>Корзина и расчёт заказа</a></li>
+        <li><a class="idx-link" href="pages/checkout.html?zoom=09"><span class="idx-code">М01</span>Оформление заказа</a></li>
+        <li><a class="idx-link" href="pages/payment.html?zoom=09"><span class="idx-code">М24</span>Оплата (безопасный сценарий)</a></li>
+        <li><a class="idx-link" href="pages/invoice.html?zoom=09"><span class="idx-code">М22</span>Реквизиты для счёта</a></li>
+        <li><a class="idx-link" href="pages/order-success.html?zoom=09"><span class="idx-code">М08</span>Спасибо за заказ</a></li>
+      </ul>
+    </section>
+
+    <section class="idx-group" aria-labelledby="g4">
+      <h2 class="idx-group__title" id="g4">Информационные страницы</h2>
+      <ul class="idx-list">
+        <li><a class="idx-link" href="pages/contacts.html?zoom=09"><span class="idx-code">М04</span>Контакты и форма обращения</a></li>
+        <li><a class="idx-link" href="pages/where-to-buy.html?zoom=09"><span class="idx-code">М03</span>Где купить</a></li>
+        <li><a class="idx-link" href="pages/about.html?zoom=09"><span class="idx-code">М14</span>О компании и партнёрах</a></li>
+        <li><a class="idx-link" href="pages/legal.html?zoom=09"><span class="idx-code">М11</span>Правовой документ (политика)</a></li>
+        <li><a class="idx-link" href="pages/404.html?zoom=09"><span class="idx-code">М02</span>Страница ошибки 404</a></li>
+      </ul>
+    </section>
+
+    <section class="idx-group" aria-labelledby="g5">
+      <h2 class="idx-group__title" id="g5">Модальные окна</h2>
+      <ul class="idx-list">
+        <li><a class="idx-link" href="pages/modal-sampler.html?zoom=09"><span class="idx-code">М06</span>Пробник 300 мл</a></li>
+        <li><a class="idx-link" href="pages/modal-add-to-cart.html?zoom=09"><span class="idx-code">М23</span>Товар добавлен в корзину</a></li>
+        <li><a class="idx-link" href="pages/modal-callback.html?zoom=09"><span class="idx-code">М25</span>Заказать звонок</a></li>
+        <li><a class="idx-link" href="pages/modal-form-result.html?zoom=09"><span class="idx-code">М17</span>Результат отправки формы</a></li>
+        <li><a class="idx-link" href="pages/modal-cookie.html?zoom=09"><span class="idx-code">М20</span>Cookie-уведомление</a></li>
+      </ul>
+    </section>
+
+    <p class="idx-note">
+      <b>Про модальные окна:</b> отдельными страницами они открыты только для приёмки —
+      на сайте это всплывающие окна. «Заказать звонок» уже открывается кнопкой в шапке и подвале
+      любой страницы.<br>
+      <b>Адаптив:</b> проверяй, сузив окно браузера — 1920 → 1440 → 1280 → 1024 → 768 → 540 → 360.
+    </p>
+  </main>
+</body>
+</html>

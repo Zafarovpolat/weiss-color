@@ -169,14 +169,13 @@
         Этап 1 — HTML/CSS/JS на демо-данных. <strong>25 экранов</strong>: 19 страниц и 5 модальных окон
         (М18 — ассеты интерьерных сцен, отдельной страницы не имеет).<br>
         Проверено на 2560 / 1920 / 1440 / 1280 / 1024 / 768 / 540 / 360 px.<br>
-        Версии масштаба: <strong>0.9 — от 1920px</strong> (на 2560px и шире тоже 0.9);
-        <strong>текущая</strong> — 0.9 от 1420px и 1:1 от 2560px.
-        Ссылки в списке открываются сразу в выбранной версии.
+        Версии списка: <strong>оригинал</strong> — ссылки как есть (0.9 от 1420px, 1:1 от 2560px);
+        <strong>0.9 — от 1920px</strong> — те же экраны в масштабе 0.9, включая 2560px и шире.
       </p>
-      <nav class="idx-vers" aria-label="Версия масштаба">
-        <span class="idx-vers__label">Версия:</span>
-        <a class="idx-vers__item" data-zoom="09" href="all-pages.html?zoom=09">0.9 — от 1920px</a>
-        <a class="idx-vers__item" data-zoom="auto" href="all-pages.html?zoom=auto">Текущая — адаптивная</a>
+      <nav class="idx-vers" aria-label="Версии списка">
+        <span class="idx-vers__label">Список:</span>
+        <a class="idx-vers__item is-active" href="all-pages.html" aria-current="true">Оригинал</a>
+        <a class="idx-vers__item" href="all-pages-09.html">0.9 — от 1920px</a>
       </nav>
     </header>
 
@@ -241,20 +240,5 @@
       <b>Адаптив:</b> проверяй, сузив окно браузера — 1920 → 1440 → 1280 → 1024 → 768 → 540 → 360.
     </p>
   </main>
-  <script>
-    /* Каждая ссылка списка открывается сразу в той версии масштаба,
-       в которой открыт сам список: параметр сохраняется при переходе. */
-    (function () {
-      var mode = sessionStorage.getItem('wc-demo-zoom') === '09' ? '09' : 'auto';
-      document.querySelectorAll('.idx-link').forEach(function (link) {
-        link.setAttribute('href', link.getAttribute('href') + '?zoom=' + mode);
-      });
-      var active = document.querySelector('.idx-vers__item[data-zoom="' + mode + '"]');
-      if (active) {
-        active.classList.add('is-active');
-        active.setAttribute('aria-current', 'true');
-      }
-    })();
-  </script>
 </body>
 </html>
