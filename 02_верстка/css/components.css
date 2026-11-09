@@ -112,7 +112,7 @@
 .hero__title {
   margin: clamp(10px, 0.86vw, 22px) 0 0;
   font-size: var(--fs-h1);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-h1);
   letter-spacing: -0.01em;
   text-transform: uppercase;
