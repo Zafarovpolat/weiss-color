@@ -5,6 +5,8 @@
    ========================================================================== */
 
 .color-page {
+  display: flex;
+  flex-direction: column;
   background: #f5f5f7;
 }
 
@@ -275,11 +277,12 @@
   box-shadow: var(--shadow-hover-card);
 }
 
-/* Пагинация на этом экране (см. catalog.css) */
+/* Пагинация на этом экране (см. catalog.css). margin-top: auto прижимает
+   полосу к подвалу при запасе высоты; прежний отступ перенесён в padding —
+   высота полосы не меняется. */
 .c-pagination {
-  margin-top: clamp(16px, 0.9vw, 23px);
-  /* верхний отступ задан margin-top — общий padding-top не нужен */
-  padding-top: 0;
+  margin-top: auto;
+  padding-top: clamp(16px, 0.9vw, 23px);
   padding-bottom: clamp(32px, 1.56vw, 40px);
 }
 
