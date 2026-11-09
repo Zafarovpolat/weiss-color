@@ -209,6 +209,25 @@
   box-shadow: var(--shadow-hover-outline);
 }
 
+/* --- 2560 (макет 1:1): плотная вертикаль, футер входит в экран ---
+   По макету карточка 162..1233, зазор до футера 111, футер 1344..1440.
+   На 2560 кегли упираются в максимумы clamp(), а отступы были больше
+   макетных, из-за чего страница выходила 1575px и футер уезжал за экран.
+   Здесь отступы привязаны к позициям элементов макета; на 1920 и ниже
+   всё остаётся как было. */
+@media (min-width: 2560px) {
+  .success-page { padding-block: 49px 109px; }
+  .success-card { padding-bottom: 36px; }
+  .success-badge { margin-top: 12px; }
+  .success-title { margin-top: 20px; }
+  .success-lead { margin-top: 22px; }
+  .success-number { margin-top: 35px; }
+  .success-divider { margin-top: 24px; }
+  .success-tips { margin-top: 36px; }
+  .success-actions { margin-top: 28px; }
+  .success-actions a { height: 61px; }
+}
+
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
 @media (max-width: 1024px) {
