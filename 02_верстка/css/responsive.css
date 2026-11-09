@@ -479,8 +479,13 @@
   .benefits__heading { max-width: 590px; margin-top: -6px; }
   .benefits__num { width: clamp(36px, 1.72vw, 44px); margin-top: 8px; }
   .benefits__list { grid-template-columns: 0.868fr repeat(3, minmax(0, 1fr)); column-gap: 0; }
-  /* секция короче на 4px: отступ описаний вниз (макет ink y=1179) */
-  .benefits { padding-bottom: clamp(28px, 1.21vw, 31px); }
+  /* секция короче на 4px: отступ описаний вниз (макет ink y=1179).
+     Сверху в макете ~28px, базовая 3.3vw давала 85px и выталкивала главную
+     за 1440 при 1:1; 20px при 2560 — высота страницы ровно 1440. */
+  .benefits {
+    padding-top: clamp(16px, 0.78vw, 20px);
+    padding-bottom: clamp(28px, 1.21vw, 31px);
+  }
 
   .benefits__item {
     border-top: none;
