@@ -24,6 +24,13 @@ html {
   html { zoom: 1; }
 }
 
+/* Демо-версия «масштаб 0.9 на экранах 1920px и шире» (?zoom=09).
+   Класс ставит js/zoom-mode.js до первой отрисовки; за счёт специфичности
+   он перебивает возврат к 1:1 от 2560px выше. */
+@media (min-width: 1920px) {
+  html.zoom-09 { zoom: 0.9; }
+}
+
 body {
   font-family: var(--font-main);
   font-weight: var(--fw-regular);
