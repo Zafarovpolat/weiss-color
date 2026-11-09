@@ -121,8 +121,35 @@
 /* --- Постраничная навигация (как на экране «Каталог») --- */
 
 .shades-page .pagination {
-  margin-top: auto;
+  margin-top: clamp(18px, 1.19vw, 30px);
   padding-bottom: clamp(40px, 2.77vw, 71px);
+}
+
+/* Свободная высота уходит в сетку образцов, а не в зазор над пагинацией.
+   На 1920×1080 страница ниже окна на 89px, и они копились между последним
+   рядом и пагинацией — пагинация прижата к подвалу, а сетка на масштабе 0.9
+   короче макета. Теперь ряд тянется по высоте (растёт свотч), пагинация
+   остаётся в макетных 30px под сеткой и у подвала. */
+@media (min-width: 1025px) {
+  .shades-inner {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .shades-grid { flex: 1 1 auto; }
+
+  .shade-card {
+    height: 100%;
+    min-height: clamp(160px, 8.01vw, 205px);
+  }
+
+  .shade-card__swatch {
+    flex: 1 1 auto;
+    min-height: clamp(110px, 5.82vw, 149px);
+  }
+
+  .shade-card__label { flex: 0 0 auto; }
 }
 
 /* --- Адаптив (проверяем до 1024) --- */
