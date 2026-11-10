@@ -25,37 +25,11 @@ body.catalog-page {
   padding-block: clamp(24px, 1.56vw, 40px) clamp(8px, 0.66vw, 17px);
 }
 
-/* Хлебные крошки */
-.breadcrumbs {
-  font-size: clamp(13px, 0.59vw, 15px);
-  line-height: 1.4;
-  /* цвет уходит на разделители-текстовые узлы; ссылки красятся отдельно */
-  color: #b6b7bb;
-}
-
+/* Хлебные крошки: кегль и цвета — общие в components.css */
 .breadcrumbs__list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-}
-
-.breadcrumbs a {
-  color: var(--color-muted);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.breadcrumbs a:hover {
-  color: var(--color-brown);
-}
-
-.breadcrumbs__sep {
-  color: #b6b7bb;
-}
-
-.breadcrumbs [aria-current="page"] {
-  /* текущая страница — чёрная, одинаково на всех страницах */
-  color: #000000;
 }
 
 /* Заголовок экрана (в PSD набран строчными, на макете — капс) */

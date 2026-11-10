@@ -211,8 +211,11 @@ main {
 
 .buy-features {
   background: #f2f4f7;
-  /* тот же макетный отступ, что и у героя: заголовок блока стоит на x≈308 */
-  padding-block: max(24px, calc(2.6171875 * var(--u))) max(24px, calc(2.34375 * var(--u)));
+  /* Поля по растру: полоса начинается на y1000, колонки — на y1065,
+     низ текста на y1277 при низе полосы y1343. Отступы одинаковые (65.25),
+     чтобы содержимое стояло по центру полосы: при разных полях flex-центровка
+     страницы (page-grow) сдвигала блок вниз на 4px. */
+  padding-block: calc(2.548828125 * var(--u));
   padding-inline: calc(11.953125 * var(--u));
 }
 
@@ -252,9 +255,14 @@ main {
 .buy-feature {
   display: grid;
   grid-template-columns: max(32px, calc(2.34375 * var(--u))) minmax(0, 1fr);
-  gap: max(10px, calc(0.9375 * var(--u)));
+  /* зазор 26px: в растре текстовая колонка начинается на x845, а не 843 */
+  gap: max(10px, calc(1.015625 * var(--u)));
   padding-left: max(16px, calc(1.171875 * var(--u)));
   padding-top: max(0px, calc(0.234375 * var(--u)));
+  /* Разделитель в макете — ровно 200px у всех трёх колонок (y1065..1264),
+     то есть длиннее текста; высота задана, иначе линия шла по высоте
+     содержимого и колонки получались разной длины (134/134/162). */
+  min-height: calc(7.8125 * var(--u));
   /* Растр макета: разделитель 2px цвета #c2c7cb (194,199,203), а не
      1px #848ea0 — прежний цвет в полтора раза темнее макетного. */
   background: linear-gradient(#c2c7cb, #c2c7cb) no-repeat left 0 / 2px 100%;
@@ -272,16 +280,30 @@ main {
 }
 
 .buy-feature__icon--shield { width: max(26px, calc(1.6796875 * var(--u))); }
-.buy-feature__icon--truck { width: max(36px, calc(2.9296875 * var(--u))); }
-.buy-feature__icon--people { width: max(40px, calc(2.8125 * var(--u))); }
+.buy-feature__icon--truck {
+  width: max(36px, calc(2.9296875 * var(--u)));
+  /* в растре фургон стоит на 5px левее центра колонки и на 4px ниже щита —
+     это разные поля в самих вырезках, а не сдвиг колонки */
+  transform: translate(calc(-0.1953125 * var(--u)), max(1px, calc(0.15625 * var(--u))));
+}
+.buy-feature__icon--people {
+  /* ink макета 70×34: прежние 72px по ширине файла давали лишние 2px */
+  width: max(40px, calc(2.734375 * var(--u)));
+  transform: translateY(max(1px, calc(0.15625 * var(--u))));
+}
 
 .buy-feature__title {
-  margin: 0;
-  /* макет: 18px с трекингом 0.5px, межстрочный 25px */
+  /* в макете текстовая колонка начинается на 3px ниже верха иконки:
+     закрепки строк 18px/25px дают в браузере другой верхний полуинтервал */
+  margin: calc(0.1171875 * var(--u)) 0 0;
+  /* макет: 18px, межстрочный 25px. По растру это Bold с плотным трекингом
+     0.25px: Semibold с 0.5px давал ink 1011 при макетных 1192 и более
+     светлые буквы (mean 86 против 74). Bold с 0.014em — ink 1172 и те же
+     ширины строк, что в макете */
   font-size: max(14px, calc(0.703125 * var(--u)));
-  line-height: 1.417;
-  letter-spacing: 0.028em;
-  font-weight: var(--fw-medium);
+  line-height: 1.3889;
+  letter-spacing: 0.014em;
+  font-weight: var(--fw-bold);
   text-transform: uppercase;
   color: #252b37;
 }
@@ -311,6 +333,9 @@ main {
   .buy-features__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
   .buy-features__head { grid-column: 1 / -1; }
   .buy-feature { padding-left: 20px; }
+  /* на ровно 1280 макетный перенос в третьей колонке уже не нужен:
+     преимущества здесь в две колонки */
+  .buy-feature__text .d-br { display: none; }
 
   /* В две колонки карточки больше не тянутся до макетных 320px: при
      min-height кнопка «Перейти» уезжала вниз и над ней оставалось до 96px

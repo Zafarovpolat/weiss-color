@@ -326,34 +326,38 @@
   .coloring .btn { width: auto; max-width: 100%; }
 }
 
-/* ---------- Десктоп: раскрываем навигацию вместо бургера ---------- */
+/* ---------- Десктоп: раскрываем навигацию вместо бургера ----------
+   Шапка и подвал считаются в «процентах полотна» (1cqw), как контент
+   страниц: 110 и 96 px при 2560. Так при html{zoom:.9} на 1920 шапка
+   остаётся ровно 0,75 макета (82.5), а не 76, как было с vw. */
 @media (min-width: 1280px) {
   .burger { display: none; }
+
+  .site-header { container-type: inline-size; --u: 1cqw; }
 
   .header__inner {
     flex-wrap: nowrap;
     gap: 0;
-    min-height: clamp(84px, 4.4vw, 113px);
-    padding-block: 0;
+    height: calc(4.296875 * var(--u));
+    min-height: 0;
+    /* поля PSD: логотип на ink 64, корзина заканчивается на 2461 */
+    padding: 0 calc(3.8671875 * var(--u)) 0 calc(2.34375 * var(--u));
   }
 
   .logo {
-    align-self: flex-start;
-    margin-top: clamp(16px, 1vw, 26px);
-    margin-right: clamp(24px, 7.27vw, 186px);
+    position: relative;
+    top: calc(-0.2421875 * var(--u));
+    align-self: center;
+    margin: 0 calc(7.03125 * var(--u)) 0 0;
   }
-
-  /* Логотип масштабируется вместе с макетом: на 2560 он 186×52, на 1920 —
-     ~145×40. Фиксированные 186px в шапке 84px (0,75 макета) съедали нижнее
-     поле — оно сжималось до 13px, и шапка выглядела «сжатой». */
-  .logo img { width: clamp(140px, 7.54vw, 186px); height: auto; }
+  .logo img { width: calc(7.8515625 * var(--u)); height: auto; }
 
   .site-nav {
     flex: 1 1 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-md);
+    gap: 0;
     padding: 0;
     border: none;
   }
@@ -361,9 +365,12 @@
   .site-nav__list {
     flex-direction: row;
     align-items: center;
-    gap: clamp(24px, 3.18vw, 81.5px);
+    gap: calc(3.125 * var(--u));
   }
-  .site-nav__list a { padding: 0; }
+  .site-nav__list a {
+    padding: 0;
+    font-size: calc(0.625 * var(--u));
+  }
   .site-nav__list a:hover {
     color: var(--color-brown);
     text-decoration: underline;
@@ -377,75 +384,85 @@
     margin: 0;
     padding: 0;
     border: none;
-    gap: clamp(12px, 0.74vw, 19px);
+    gap: calc(0.9765625 * var(--u));
   }
-  .header__phone { margin-right: clamp(12px, 1.21vw, 31px); }
-
-  .cart { margin-left: clamp(8px, 1.88vw, 48px); }
-
-  /* Кнопка подвала прижата к правому краю контентной зоны, как CTA в шапке */
-  .footer__inner > .btn { margin-right: 0; }
-
-  /* «Политика» и кнопка — справа: свободное место забирает левый отступ */
-  .footer__copy { margin-left: auto; }
-}
-
-/* ---------- 1280–1919: шапка в одну строку ----------
-   В этом диапазоне макетные 2560-е отступы уже не влезают: ссылки
-   переносились по словам, CTA — на две строки. Ужимаем пропорционально. */
-@media (min-width: 1280px) and (max-width: 2299px) {
-  /* Иконки и логотип не сжимаем: иначе flex-шапка сплющивает их в овал */
-  .logo,
-  .cart,
-  .socials { flex: none; }
-
-  .logo { margin-right: clamp(20px, 3.2vw, 60px); }
-
-  .site-nav__list { gap: clamp(14px, 1.85vw, 35px); }
-  .site-nav__list a {
-    white-space: nowrap;
-    font-size: clamp(12px, 0.78vw, 15px);
-    letter-spacing: 0.01em;
-  }
-
-  .header__contacts { gap: 8px; flex-wrap: nowrap; }
   .header__phone {
-    margin-right: 6px;
-    font-size: clamp(12px, 0.85vw, 16px);
+    margin-right: calc(0.8984375 * var(--u));
+    font-size: calc(0.79296875 * var(--u));
   }
 
-  /* Круглая подложка и картинка — один квадратный размер */
-  .socials { gap: 5px; }
+  .socials { gap: calc(0.9765625 * var(--u)); }
   .socials a {
-    width: clamp(34px, 2.34vw, 60px);
-    height: clamp(34px, 2.34vw, 60px);
+    width: calc(2.34375 * var(--u));
+    height: calc(2.34375 * var(--u));
   }
 
   .header__cta {
+    width: calc(8.984375 * var(--u));
+    height: calc(1.9921875 * var(--u));
+    min-height: 0;
+    margin-left: calc(0.1171875 * var(--u));
+    padding: 0;
+    font-size: calc(0.5078125 * var(--u));
     white-space: nowrap;
-    min-height: 44px;
-    padding: 10px clamp(14px, 1.5vw, 26px);
-    font-size: clamp(11px, 0.68vw, 13px);
+  }
+
+  .cart {
+    flex: none;
+    margin-left: calc(2.5390625 * var(--u));
+    width: calc(3.4765625 * var(--u));
+    height: calc(3.4765625 * var(--u));
+  }
+
+  /* --- Подвал: 96 px, меню с ink 440, «Политика» и кнопка справа --- */
+  .site-footer { container-type: inline-size; --u: 1cqw; }
+
+  .footer__inner {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0;
+    height: calc(3.75 * var(--u));
+    min-height: 0;
+    padding: 0 calc(7.7734375 * var(--u)) 0 calc(2.34375 * var(--u));
+  }
+  .footer__logo img { width: calc(7.7734375 * var(--u)); height: auto; }
+  .footer__nav {
+    flex-wrap: nowrap;
+    margin-left: calc(7.03125 * var(--u));
+    margin-bottom: 0;
+    gap: calc(3.359375 * var(--u));
+  }
+  .footer__nav a {
+    display: inline;
+    min-height: 0;
+    font-size: calc(0.625 * var(--u));
+  }
+  .footer__bottom {
+    flex: none;
+    flex-wrap: nowrap;
+    margin-left: auto;
+    gap: calc(1.171875 * var(--u));
+  }
+  .footer__copy {
+    margin-left: 0;
+    font-size: calc(0.59375 * var(--u));
     letter-spacing: 0.04em;
   }
-
-  .cart { margin-left: clamp(6px, 1.1vw, 20px); }
-  /* иконка — по макетной доле 3,48vw (89px на 2560), как в базовом правиле;
-     прежние 3,9vw давали на 1920 74px в шапке 84px — почти без полей */
-  .cart {
-    width: clamp(50px, 3.48vw, 74px);
-    height: clamp(50px, 3.48vw, 74px);
+  .footer__cta {
+    flex: none;
+    width: calc(8.984375 * var(--u));
+    height: calc(2.03125 * var(--u));
+    min-height: 0;
+    padding: 0;
+    font-size: calc(0.5078125 * var(--u));
+    white-space: nowrap;
   }
 }
 
-/* 1280–1399: ужимаем только отступы текстовых блоков, чтобы шапка
-   влезала в строку без сжатия иконок */
-@media (min-width: 1280px) and (max-width: 1399.98px) {
-  .header__inner { gap: 8px; }
-  .site-nav__list { gap: 12px; }
-  .header__cta { padding-inline: 12px; }
-  .cart { margin-left: 10px; }
-}
+/* ---------- 1280–1919: шапка в одну строку ----------
+   Правила «сжатия» удалены: с 2026-11-10 шапка считается от полотна
+   (см. блок min-width:1280 выше) и сама ужимается ровно как макет. */
+
 
 /* Макетные переносы строк в описаниях — только на десктопе (как в PSD),
    на узких экранах абзацы переносятся свободно */
@@ -513,35 +530,6 @@
       no-repeat left 6px / 2px calc(100% - 6px);
   }
   .benefits__title { max-width: clamp(150px, 8.4vw, 215px); }
-
-  /* Подвал: точная строка макета — фиксированные зазоры как в PSD
-     (logo→nav 188, nav→copy 155, copy→btn 67 при gap 40) */
-  .footer__inner {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    min-height: clamp(80px, 3.8vw, 97px);
-    padding-block: 0;
-    gap: clamp(16px, 1.6vw, 40px);
-  }
-  .footer__nav {
-    margin-left: clamp(24px, 5.78vw, 148px);
-    margin-bottom: 6px;
-    /* меньше отступ между ссылками, чтобы строка не ломалась до 1920 */
-    gap: 8px clamp(16px, 1.7vw, 56px);
-  }
-  .footer__bottom {
-    /* «Политика» и кнопка прижаты к правому краю: свободное место забирает
-       левый отступ, а не фиксированные макетные 115px */
-    margin-left: auto;
-  }
-  .footer__copy {
-    color: var(--color-white);
-    font-size: clamp(14px, 0.594vw, 15.21px);
-  }
-  .footer__cta {
-    margin-left: clamp(8px, 1.05vw, 27px);
-    padding-block: 16px;
-  }
 }
 
 /* ---------- Ширина макета 2560 ---------- */
@@ -550,11 +538,11 @@
   .benefits__item { padding-right: clamp(24px, 1.8vw, 46px); }
 }
 
-/* ---------- 1920 и ниже: подвал собирается от левого края ----------
+/* ---------- 1280 и ниже: подвал собирается от левого края ----------
    База для планшета и мобиля: две строки — сверху логотип и меню, снизу
-   «Политика» и кнопка звонка. Для 1024–1920 подвал остаётся одной строкой:
-   блок ниже перебивает flex-wrap и сжимает зазоры вместо переноса. */
-@media (max-width: 1920px) {
+   «Политика» и кнопка звонка. На десктопе (≥1280) подвал считается от
+   полотна в u-модели, см. блок min-width:1280 выше. */
+@media (max-width: 1279.98px) {
   .footer__inner {
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -577,11 +565,11 @@
   }
 }
 
-/* ---------- 1024–1920: подвал в одну строку ----------
+/* ---------- 1024–1279: подвал в одну строку ----------
    Вместо переноса «Политики» и кнопки на вторую строку сжимаем зазоры,
    кегль и поля кнопки. «Политика» при нехватке места переносится внутри
    своей ссылки, но остаётся в общем ряду с логотипом и меню. */
-@media (min-width: 1024px) and (max-width: 1920px) {
+@media (min-width: 1024px) and (max-width: 1279.98px) {
   .footer__inner {
     flex-wrap: nowrap;
     justify-content: flex-start;
