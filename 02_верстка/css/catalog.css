@@ -313,7 +313,6 @@ body.catalog-page {
   text-transform: uppercase;
   color: #575961;
 }
-
 .product__desc {
   max-width: clamp(220px, 12.7vw, 325px);
   margin-top: clamp(4px, 0.23vw, 6px);
@@ -351,6 +350,16 @@ body.catalog-page {
   border-color: var(--color-brown);
   color: var(--color-white);
   box-shadow: var(--shadow-hover-brown);
+}
+
+/* Карточки стоят в ряд и выравниваются по кнопке: у товара с коротким
+   названием и описанием «В корзину» уезжала выше соседей. Резервируем
+   две строки заголовка и три строки описания — столько в макете.
+   Только на десктопе: на узких экранах карточка вертикальная и растёт
+   по содержимому. */
+@media (min-width: 1025px) {
+  .product__title { min-height: 2.8em; }
+  .product__desc { min-height: 4.5em; }
 }
 
 /* Карточка ведёт на страницу товара: фото и заголовок — ссылки.

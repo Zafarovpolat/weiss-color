@@ -46,6 +46,9 @@
   font-size: clamp(32px, 2.03vw, 52px);
   line-height: 1.4;
   font-weight: var(--fw-medium);
+  /* название приходит из каталога в обычном регистре — в макете оно набрано
+     капсом, поэтому кегль задаём здесь, а не в данных товара */
+  text-transform: uppercase;
   color: #233146;
 }
 

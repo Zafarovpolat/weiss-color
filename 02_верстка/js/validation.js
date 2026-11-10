@@ -91,7 +91,7 @@
 
     if (field.type === 'tel' && !isValidPhone(value)) return field.dataset.error || DEFAULT.phone;
     if (field.type === 'email' && !isValidEmail(value)) return field.dataset.error || DEFAULT.email;
-    if (field.name === 'name' && !isValidName(value)) return field.dataset.error || DEFAULT.name;
+    if ((field.name === 'name' || field.hasAttribute('data-validate-name')) && !isValidName(value)) return field.dataset.error || DEFAULT.name;
 
     if (field.type === 'number') {
       var num = Number(value);
