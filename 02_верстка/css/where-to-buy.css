@@ -1,33 +1,54 @@
 /* ==========================================================================
    where-to-buy.css — экран М03 «Где купить».
-   Геометрия снята с PSD 2560w (spec/Внешние_торговые_площадки):
-   герой-фото 0,77 2561×923; карточки 388×427 на y517 (шаг 400);
-   блок преимуществ y1040–1315 на фоне #f2f4f7.
+   Геометрия снята с растра макета 2560×1440 (01_исходники/макеты_png/
+   Внешние торговые площадки.png): герой-фото 100vw; карточки 384×424
+   на y519 (шаг 400, зазор 16); блок преимуществ с y1000 на фоне #f2f4f7.
+
+   Размеры записаны в «процентах макета»: --u — это 1% ширины макета
+   (25.6px на 2560). Прежние vw здесь не годятся: при html{zoom:.9}
+   (base.css) полотно шире окна в 1/0.9, а vw по-прежнему считается от
+   окна. Из-за этого на 1420–2559 карточки, кегли и отступы выходили на
+   10% мельче макета относительно фото героя (оно тянется по ширине):
+   ряд обрывался, не доходя до банки, «Перейти» был мельче макетного,
+   а описание Леруа Мерлен переносилось в 4 строки вместо 3. Проценты от
+   ширины main при масштабе 1:1 совпадают с vw и растут вместе с полотном
+   при зуме. От 2560 (там зум уже 1:1) --u заморожен на 25.6px, чтобы на
+   широких экранах размеры остались макетными.
    ========================================================================== */
+
+main {
+  /* контейнер нужен ради cqw: 1cqw = 1% ширины полотна main */
+  container-type: inline-size;
+  --u: 1cqw;
+}
+
+@media (min-width: 2560px) {
+  main { --u: 25.6px; }
+}
 
 .buy-hero {
   position: relative;
-  min-height: clamp(420px, 34.69vw, 888px);
+  min-height: max(420px, calc(34.6875 * var(--u)));
   /* В макете контент этой страницы начинается с x≈306 при 2560,
-     а не с общего 224 — добавляем собственный отступ 82px (3.2vw). */
+     а не с общего 224 — это 11.95% ширины (было: container-pad + 3.2vw). */
   /* верх 64px: при шапке 113px и ink-боксе строки заголовка 21px
      заглавные буквы встают на макетный y198 */
-  padding-block: clamp(24px, 2.5vw, 64px) clamp(24px, 2.19vw, 56px);
-  padding-inline: calc(var(--container-pad) + clamp(0px, 3.2vw, 82px));
+  padding-block: max(24px, calc(2.5 * var(--u))) max(24px, calc(2.1875 * var(--u)));
+  padding-inline: calc(11.953125 * var(--u));
   /* фото макета содержит и карточки, и блок преимуществ — показываем только
      верхние 923px (небо + интерьер + банка), остальное собираем разметкой.
      background-size намеренно не задаём: фиксированная высота полотна
-     (clamp(620px, 58.67vw, 1502px)) ломала пропорции фото и налезала
-     на карточки — пусть работает «100% auto» из шорткода выше. */
+     (888px) ломала пропорции фото и налезала на карточки — пусть работает
+     «100% auto» из шорткода выше. */
   background: #eceff4 url("../assets/img/buy-hero.png") center top / 100% auto no-repeat;
 }
 
 .buy-hero__title {
   margin: 0;
-  max-width: clamp(280px, 30.9vw, 790px);
+  max-width: max(280px, calc(30.859375 * var(--u)));
   /* ink-замер макета: строка «ПРОДУКЦИЮ WEISS» 773px в две строки.
      Montserrat Medium даёт эту ширину при 72px (при 75 — 807px, уходило в 3 строки). */
-  font-size: clamp(36px, 2.8125vw, 72px);
+  font-size: max(36px, calc(2.8125 * var(--u)));
   /* межстрочный по макету 93px */
   line-height: 1.2917;
   font-weight: var(--fw-medium);
@@ -36,9 +57,9 @@
 }
 
 .buy-hero__lead {
-  max-width: clamp(280px, 31.25vw, 800px);
-  margin: clamp(14px, 1.45vw, 37px) 0 0;
-  font-size: clamp(16px, 1.094vw, 28px);
+  max-width: max(280px, calc(31.25 * var(--u)));
+  margin: max(14px, calc(1.4453125 * var(--u))) 0 0;
+  font-size: max(16px, calc(1.09375 * var(--u)));
   /* межстрочный по макету 37px */
   line-height: 1.3214;
   font-weight: var(--fw-medium);
@@ -49,25 +70,25 @@
 
 .buy-cards {
   display: grid;
-  /* ширина карточки — макетные 388px на 2560 (15.16vw).
-
-     Раньше здесь стоял жёсткий максимум 388px: фото героя масштабируется
-     с шириной окна, а карточки нет, и на 1920 они выходили шириной 383px —
-     правая карточка закрывала банку Acrilux. Теперь карточки сжимаются
-     вместе с фото и остаются левее банки, как в макете. */
-  grid-template-columns: repeat(4, minmax(0, min(15.16vw, 388px)));
-  gap: clamp(12px, 0.66vw, 17px);
-  margin-top: clamp(20px, 1.68vw, 43px);
+  /* ширина карточки — 384px на 2560 (15%), шаг 400px, зазор 16px.
+     Ряд идёт от 11.95% до 73.8% ширины, как в макете, на любом
+     десктопном масштабе, включая зум 0.9. */
+  grid-template-columns: repeat(4, minmax(0, calc(15 * var(--u))));
+  gap: max(8px, calc(0.625 * var(--u)));
+  margin-top: max(20px, calc(1.7578125 * var(--u)));
   padding: 0;
   list-style: none;
 }
 
+/* Поля карточки по макету: 30 сверху, 36 по бокам, 39 снизу —
+   кнопка «Перейти» прижата к низу и стоит на y861..903 при карточке
+   519..942. */
 .buy-card {
   display: flex;
   flex-direction: column;
-  min-height: clamp(320px, 16.68vw, 427px);
-  padding: clamp(16px, 1.25vw, 32px) clamp(16px, 1.44vw, 37px)
-    clamp(16px, 1.25vw, 32px) clamp(16px, 1.13vw, 29px);
+  min-height: calc(16.5625 * var(--u));
+  padding: max(16px, calc(1.171875 * var(--u))) max(16px, calc(1.40625 * var(--u)))
+    max(16px, calc(1.5234375 * var(--u))) max(16px, calc(1.40625 * var(--u)));
   background: var(--color-white);
 }
 
@@ -77,53 +98,77 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: clamp(64px, 3.67vw, 94px);
+  height: max(64px, calc(3.671875 * var(--u)));
 }
 
 /* Размеры логотипов — как в макете: 325×94, 283×62, 178×107, 345×82.
-   Ширина задана долей полосы, поэтому логотипы масштабируются вместе с
-   карточкой и на 2560 совпадают с макетом. Wildberries и Яндекс Маркет
-   шире полосы, Леруа Мерлен выше её — в макете они так же выходят за
-   поля, поэтому ограничения ослаблены. */
+   Ширина задана долей текстовой колонки карточки (312px при 2560), поэтому
+   логотипы масштабируются вместе с карточкой и на 2560 совпадают с макетом.
+   Wildberries и Яндекс Маркет шире колонки, Леруа Мерлен выше её — в макете
+   они так же выходят за поля, поэтому ограничения ослаблены. */
 .buy-card__logo img {
   max-height: 114%;
   width: auto;
   height: auto;
 }
 
-.buy-logo--wb { max-width: 101.5%; }
-.buy-logo--ozon { max-width: 88.4%; }
-.buy-logo--lm { max-width: 55.6%; }
-.buy-logo--ym { max-width: 107.7%; }
+.buy-logo--wb { max-width: 104.2%; }
+.buy-logo--ozon { max-width: 90.7%; }
+.buy-logo--lm { max-width: 56.4%; }
+.buy-logo--ym { max-width: 110.3%; }
 
 .buy-card__name {
-  margin: clamp(16px, 1.17vw, 30px) 0 0;
-  font-size: clamp(17px, 0.94vw, 24px);
+  margin: max(16px, calc(1.3671875 * var(--u))) 0 0;
+  font-size: max(17px, calc(1.015625 * var(--u)));
   line-height: 1.2;
   font-weight: var(--fw-semibold);
   color: #252b37;
 }
 
 .buy-card__text {
-  margin: clamp(10px, 0.7vw, 18px) 0 0;
-  font-size: clamp(14px, 0.78vw, 20px);
-  line-height: 1.35;
+  margin: max(10px, calc(1.171875 * var(--u))) 0 0;
+  /* растр макета: строки шириной 292/266/151 и межстрочный 26px —
+     это 18.2px при line-height 1.43, а не 20px, как было по PSD-тегам */
+  font-size: max(14px, calc(0.7109375 * var(--u)));
+  line-height: 1.4286;
   font-weight: var(--fw-medium);
   color: #7d8695;
 }
 
+/* В макете описания разбиты на строки вручную (<br> в разметке), и самая
+   длинная строка — «и онлайн-каталоге Леруа Мерлен» (323px) — шире
+   текстовой колонки 312px. Логотип же центрируется по колонке, поэтому
+   расширяем только текст: на десктопе он заходит в правое поле карточки
+   на 16px, как в макете, а на узких экранах остаётся в полях. */
+@media (min-width: 1025px) {
+  .buy-card__text { margin-right: calc(-0.625 * var(--u)); }
+}
+
+/* Кнопка по растру: заливка 219×43, текст «Перейти» 98px по чернилам
+   (22.5px), стрелка 40px видимых внутри svg 44px, зазоры 27/21/32. */
 .buy-card__link {
   display: inline-flex;
   align-items: center;
-  gap: clamp(10px, 0.78vw, 20px);
+  gap: max(10px, calc(0.78125 * var(--u)));
   align-self: flex-start;
   margin-top: auto;
-  padding: clamp(8px, 0.47vw, 12px) clamp(14px, 1.4vw, 36px);
-  font-size: clamp(14px, 0.78vw, 20px);
+  padding: calc(0.29296875 * var(--u)) max(14px, calc(1.015625 * var(--u)));
+  font-size: max(14px, calc(0.87890625 * var(--u)));
+  line-height: 1.2;
   font-weight: var(--fw-regular);
   text-decoration: none;
   border-radius: 0;
   transition: box-shadow var(--ease-ui);
+}
+
+/* Высота по макету — 44px при 2560. Глобальный тач-таргет 44px из
+   responsive.css под zoom 0.9 оставлял кнопку заметно выше пропорции
+   (на 1920 это 39.6px вместо 33), поэтому на десктопе высота идёт за --u,
+   а на тач-устройствах остаётся 44. */
+.buy-card__link { min-height: max(33px, calc(1.71875 * var(--u))); }
+
+@media (pointer: coarse) {
+  .buy-card__link { min-height: 44px; }
 }
 
 /* на hover фон не меняется; тень — в цвете самой кнопки, плотная и с малым
@@ -134,7 +179,7 @@
 }
 
 .buy-card__link svg {
-  width: clamp(24px, 1.87vw, 48px);
+  width: max(22px, calc(1.71875 * var(--u)));
   height: auto;
   transition: transform 0.2s ease;
 }
@@ -167,27 +212,27 @@
 .buy-features {
   background: #f2f4f7;
   /* тот же макетный отступ, что и у героя: заголовок блока стоит на x≈308 */
-  padding-block: clamp(24px, 2.617vw, 67px) clamp(24px, 2.344vw, 60px);
-  padding-inline: calc(var(--container-pad) + clamp(0px, 3.2vw, 82px));
+  padding-block: max(24px, calc(2.6171875 * var(--u))) max(24px, calc(2.34375 * var(--u)));
+  padding-inline: calc(11.953125 * var(--u));
 }
 
 .buy-features__inner {
   display: grid;
   /* головная колонка 423px по макету (до разделителя x729 при 2560):
      «ПОКУПАЙТЕ УДОБНО» переносится на две строки, как в PSD */
-  grid-template-columns: clamp(200px, 16.52vw, 423px) clamp(0px, 19.6875vw, 504px) clamp(0px, 19.6484vw, 503px) minmax(0, 1fr);
+  grid-template-columns: max(200px, calc(16.5234375 * var(--u))) calc(19.6875 * var(--u)) calc(19.6484375 * var(--u)) minmax(0, 1fr);
   column-gap: 0;
   align-items: start;
 }
 
 .buy-features__head {
-  padding-right: clamp(16px, 1.5vw, 38px);
+  padding-right: max(16px, calc(1.484375 * var(--u)));
 }
 
 .buy-features__title {
   margin: 0;
   /* ink-замер макета: «ПОКУПАЙТЕ» 292px, межстрочный 57px */
-  font-size: clamp(22px, 1.71875vw, 44px);
+  font-size: max(22px, calc(1.71875 * var(--u)));
   line-height: 1.295;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
@@ -195,10 +240,10 @@
 }
 
 .buy-features__lead {
-  margin: clamp(10px, 0.781vw, 20px) 0 0;
-  max-width: clamp(240px, 13.05vw, 334px);
+  margin: max(10px, calc(0.78125 * var(--u))) 0 0;
+  max-width: max(240px, calc(13.046875 * var(--u)));
   /* макет: 3 строки, строки шириной 309/327/195, межстрочный 26px */
-  font-size: clamp(14px, 0.715vw, 18.3px);
+  font-size: max(14px, calc(0.71484375 * var(--u)));
   line-height: 1.421;
   font-weight: var(--fw-medium);
   color: #7d8695;
@@ -206,11 +251,13 @@
 
 .buy-feature {
   display: grid;
-  grid-template-columns: clamp(32px, 2.34vw, 60px) minmax(0, 1fr);
-  gap: clamp(10px, 0.94vw, 24px);
-  padding-left: clamp(16px, 1.17vw, 30px);
-  padding-top: clamp(0px, 0.234vw, 6px);
-  background: linear-gradient(#848ea0, #848ea0) no-repeat left 0 / 1px 100%;
+  grid-template-columns: max(32px, calc(2.34375 * var(--u))) minmax(0, 1fr);
+  gap: max(10px, calc(0.9375 * var(--u)));
+  padding-left: max(16px, calc(1.171875 * var(--u)));
+  padding-top: max(0px, calc(0.234375 * var(--u)));
+  /* Растр макета: разделитель 2px цвета #c2c7cb (194,199,203), а не
+     1px #848ea0 — прежний цвет в полтора раза темнее макетного. */
+  background: linear-gradient(#c2c7cb, #c2c7cb) no-repeat left 0 / 2px 100%;
 }
 
 /* Размеры ink-замеров макета 2560: щит 43×49, фургон 75×38, люди 70×34
@@ -224,14 +271,14 @@
   max-width: none;
 }
 
-.buy-feature__icon--shield { width: clamp(26px, 1.68vw, 43px); }
-.buy-feature__icon--truck { width: clamp(36px, 2.93vw, 75px); }
-.buy-feature__icon--people { width: clamp(40px, 2.8125vw, 72px); }
+.buy-feature__icon--shield { width: max(26px, calc(1.6796875 * var(--u))); }
+.buy-feature__icon--truck { width: max(36px, calc(2.9296875 * var(--u))); }
+.buy-feature__icon--people { width: max(40px, calc(2.8125 * var(--u))); }
 
 .buy-feature__title {
   margin: 0;
   /* макет: 18px с трекингом 0.5px, межстрочный 25px */
-  font-size: clamp(14px, 0.703vw, 18px);
+  font-size: max(14px, calc(0.703125 * var(--u)));
   line-height: 1.417;
   letter-spacing: 0.028em;
   font-weight: var(--fw-medium);
@@ -240,11 +287,11 @@
 }
 
 .buy-feature__text {
-  margin: clamp(8px, 0.86vw, 22px) 0 0;
+  margin: max(8px, calc(0.859375 * var(--u))) 0 0;
   /* воздух справа, чтобы текст не упирался в край колонки */
   padding-right: 15px;
   /* макет: 18.2px, строки 352/174 и 289/148, межстрочный 27.5px */
-  font-size: clamp(13px, 0.711vw, 18.2px);
+  font-size: max(13px, calc(0.7109375 * var(--u)));
   line-height: 1.51;
   font-weight: var(--fw-medium);
   color: #7d8695;
@@ -253,22 +300,11 @@
 /* Ширина текстовых блоков по макету: в PSD у каждой колонки своя
    текстовая рамка, поэтому переносы строк «WEISS / от производителя»
    и «доставка / по всей России» совпадают только при своей ширине. */
-.buy-feature:nth-child(2) .buy-feature__text { max-width: clamp(200px, 14.531vw, 372px); }
-.buy-feature:nth-child(3) .buy-feature__text { max-width: clamp(200px, 12.109vw, 310px); }
-.buy-feature:nth-child(4) .buy-feature__text { max-width: clamp(200px, 13.867vw, 355px); }
+.buy-feature:nth-child(2) .buy-feature__text { max-width: max(200px, calc(14.53125 * var(--u))); }
+.buy-feature:nth-child(3) .buy-feature__text { max-width: max(200px, calc(12.109375 * var(--u))); }
+.buy-feature:nth-child(4) .buy-feature__text { max-width: max(200px, calc(13.8671875 * var(--u))); }
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
-
-/* 1440 и ниже: макетный сдвиг контента (306px при 2560, это +82px к общему
-   отступу) в масштабе ноутбука давал 170px слева — контент заметно уже, чем
-   на остальных страницах. Добавочную часть ужимаем вдвое, общий
-   --container-pad не трогаем: он один на весь сайт. */
-@media (max-width: 1440px) {
-  .buy-hero,
-  .buy-features {
-    padding-inline: calc(var(--container-pad) + clamp(0px, 1.6vw, 41px));
-  }
-}
 
 @media (max-width: 1280px) {
   .buy-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
