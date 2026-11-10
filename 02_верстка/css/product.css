@@ -142,7 +142,9 @@ main {
 }
 
 .p-coloring:hover {
-  background: var(--color-brown-dark);
+  /* фон покоя #4d2c17 уже почти равен --color-brown-dark (#4b2a14), поэтому ховер
+     уходит на шаг темнее того же тона — иначе изменение заливки не читается */
+  background: #3b2212;
   color: var(--color-white);
   text-decoration: none;
   box-shadow: var(--shadow-hover-brown);
