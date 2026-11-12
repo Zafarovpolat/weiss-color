@@ -53,14 +53,35 @@ main {
 }
 
 .p-hero__can {
-  margin: calc(6.1328125 * var(--u)) 0 0;
+  /* позиция для тени; ширина по банке, чтобы проценты тени считались от неё */
+  position: relative;
+  align-self: start;
+  width: fit-content;
+  margin: calc(6.1328125 * var(--u)) auto 0;
   display: flex;
   justify-content: center;
   /* без этого flex растягивал банку по высоте ряда и обрезал низ */
   align-items: flex-start;
 }
 
+/* плоская тень у пола, как под банкой на главной (layout.css) и по макету */
+.p-hero__can::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: -45%;
+  bottom: 4%;
+  width: 110%;
+  height: 5.2%;
+  border-radius: 50%;
+  background: rgba(31, 41, 55, 0.25);
+  filter: blur(18px);
+  transform: rotate(-5deg);
+}
+
 .p-hero__can img {
+  position: relative;
+  z-index: 1;
   width: calc(12.734375 * var(--u));
   height: auto;
   /* в макете банка стоит на 6px правее центра колонки */
@@ -403,6 +424,10 @@ main {
     margin-top: 24px;
   }
 
+  .p-hero__can::after {
+    filter: blur(12px);
+  }
+
   .p-hero__can img {
     width: clamp(180px, 40vw, 300px);
   }
@@ -554,6 +579,10 @@ main {
 
   .p-hero__can img {
     width: clamp(150px, 34vw, 220px);
+  }
+
+  .p-hero__can::after {
+    filter: blur(9px);
   }
 
   .p-specs__row {
