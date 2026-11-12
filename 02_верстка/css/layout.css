@@ -76,7 +76,8 @@
   font-family: var(--font-digit);
   font-size: var(--fs-phone);
   font-weight: var(--fw-medium);
-  color: var(--color-ink);
+  /* макет: тёмно-серый #43484f, не навигационный синий */
+  color: #43484f;
   white-space: nowrap;
   transition: color var(--ease-ui), text-decoration-color var(--ease-ui);
 }
@@ -380,8 +381,9 @@
 .benefits__num {
   grid-area: 1 / 1;
   font-family: var(--font-num);
+  font-variant-numeric: lining-nums;
   font-size: var(--fs-num);
-  font-weight: var(--fw-regular);
+  font-weight: var(--fw-bold);
   line-height: 0.73;
   white-space: nowrap;
   color: var(--color-ink-deep);

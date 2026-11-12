@@ -121,8 +121,9 @@ main {
 }
 
 .p-volumes__item[aria-pressed="true"] {
-  border-color: var(--color-brown);
-  background: var(--color-white);
+  /* макет: выбранный объём — светлая коричневая рамка #b19480 и тёплый фон */
+  border-color: #b19480;
+  background: #faf8f6;
   color: #000000;
 }
 

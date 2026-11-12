@@ -84,7 +84,9 @@
      совпадают с пропорциями макета (437×335), и contain заполняет
      площадь без обрезки и без лишнего воздуха. */
   aspect-ratio: 437 / 335;
-  border: 2px solid #adadad;
+  /* по замечанию ПМ в макете обводки нет; рамка прозрачная, чтобы при
+     ховере коричневая обводка появлялась без сдвига сетки */
+  border: 2px solid transparent;
   transition: border-color 0.2s ease, box-shadow var(--ease-ui);
 }
 

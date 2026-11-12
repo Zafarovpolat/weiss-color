@@ -1,19 +1,32 @@
 /* ==========================================================================
    legal.css — экран М11 «Правовой документ» (шаблон политики).
-   Геометрия снята с PSD 2560w (spec/Шаблон_правового_документа):
-   герой-полоса с фото справа (y77–341), две колонки разделов:
-   левая x227–1428, правая x1343–2360, шаг номеров 01…09.
+   Геометрия снята с макета 2560w (spec/Шаблон_правового_документа):
+   полоса с фото до y559, девять разделов в две колонки (левая x224,
+   правая x1328), шаг номеров 01…09.
+
+   Размеры заданы в --u (1% ширины main, 25.6px при 2560): при 1920 макет
+   уменьшается целиком, кегли и отступы не расходятся, как было на vw.
    ========================================================================== */
+
+main {
+  container-type: inline-size;
+  --u: 1cqw;
+}
+
+@media (min-width: 2560px) {
+  main { --u: 25.6px; }
+}
 
 .legal-hero {
   position: relative;
   /* боковые поля — общий контейнер (как на всех страницах) */
-  padding-block: clamp(24px, 4.1vw, 105px) clamp(16px, 1.49vw, 38px);
+  padding-block: calc(3.8671875 * var(--u)) calc(0.1328125 * var(--u));
   padding-inline: var(--container-pad);
   background: #f7f8fa;
 }
 
-/* декоративная полоса с фото: в макете она заканчивается на середине заголовка */
+/* декоративная полоса с фото: в макете она заканчивается на y559,
+   под заголовком и вводным абзацем */
 .legal-hero::before {
   content: "";
   position: absolute;
@@ -30,9 +43,9 @@
 
 .legal-hero__eyebrow {
   margin: 0;
-  font-size: clamp(11px, 0.74vw, 19px);
+  font-size: calc(0.6640625 * var(--u));
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: #233146;
   overflow-wrap: break-word;
@@ -40,20 +53,20 @@
 }
 
 .legal-hero__title {
-  max-width: clamp(280px, 30.6vw, 784px);
-  margin: clamp(8px, 0.7vw, 18px) 0 0;
-  font-size: clamp(21px, 2.3vw, 59px);
-  line-height: 1.08;
+  max-width: calc(30.625 * var(--u));
+  margin: calc(0.7421875 * var(--u)) 0 0;
+  font-size: calc(2.3046875 * var(--u));
+  line-height: 1.27;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #233146;
 }
 
 .legal-hero__lead {
-  max-width: clamp(280px, 31vw, 692px);
-  margin: clamp(12px, 1.02vw, 26px) 0 0;
-  font-size: clamp(15px, 0.98vw, 25px);
-  line-height: 1.32;
+  max-width: calc(28 * var(--u));
+  margin: calc(0.75 * var(--u)) 0 0;
+  font-size: calc(0.8671875 * var(--u));
+  line-height: 1.5;
   font-weight: var(--fw-medium);
   color: #565c69;
 }
@@ -62,7 +75,7 @@
 
 .legal-body {
   /* боковые поля — общий контейнер (как на всех страницах) */
-  padding-block: clamp(24px, 2.2vw, 56px) clamp(32px, 2.5vw, 64px);
+  padding-block: calc(1.52 * var(--u)) calc(2.03 * var(--u));
   padding-inline: var(--container-pad);
   background: #f7f8fa;
 }
@@ -70,54 +83,53 @@
 .legal-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(24px, 3.5vw, 90px);
-  row-gap: clamp(20px, 2.66vw, 68px);
+  column-gap: calc(4.0625 * var(--u));
+  row-gap: calc(2.66 * var(--u));
   align-items: start;
 }
 
 /* Раздел: номер слева, заголовок и текст справа */
 .legal-section {
   display: grid;
-  grid-template-columns: clamp(44px, 3.83vw, 98px) minmax(0, 1fr);
+  grid-template-columns: calc(4.140625 * var(--u)) minmax(0, 1fr);
   align-items: start;
 }
 
 /* вертикальный ритм между разделами внутри колонки */
 .legal-column {
   display: grid;
-  gap: clamp(24px, 1.95vw, 50px);
+  gap: calc(0.703125 * var(--u));
   align-content: start;
 }
 
 .legal-section__num {
-  /* как и номера 01–09: Tinos (self-host, метрический клон Times) — Times
-     нельзя вшивать, а на Android/Linux его нет, см. FONTS.md */
+  /* цифры — антиква Times/Tinos, как в макете (высота знака 30px) */
   font-family: var(--font-num);
-  font-size: clamp(29px, 1.91vw, 49px);
-  line-height: 1;
-  /* в макете Times-Roman Regular, а у Tinos есть только один вес — 400 */
+  font-variant-numeric: lining-nums;
+  font-size: calc(1.79 * var(--u));
+  line-height: 0.9;
   font-weight: var(--fw-regular);
   color: #253346;
 }
 
 .legal-section__title {
   margin: 0;
-  font-size: clamp(19px, 1.15vw, 29px);
+  font-size: calc(1.015625 * var(--u));
   line-height: 1.2;
   font-weight: var(--fw-medium);
   color: #233146;
 }
 
 .legal-section__text {
-  margin: clamp(6px, 0.55vw, 14px) 0 0;
-  font-size: clamp(15px, 0.85vw, 21px);
+  margin: calc(0.3125 * var(--u)) 0 0;
+  font-size: calc(0.6328125 * var(--u));
   line-height: 1.45;
   font-weight: var(--fw-medium);
   color: #88919a;
 }
 
 .legal-section__text p { margin: 0; }
-.legal-section__text p + p { margin-top: 8px; }
+.legal-section__text p + p { margin-top: calc(0.3125 * var(--u)); }
 
 .legal-section__text ul {
   margin: 0;
@@ -125,7 +137,7 @@
   list-style: disc;
 }
 
-.legal-section__text li + li { margin-top: 2px; }
+.legal-section__text li + li { margin-top: calc(0.078125 * var(--u)); }
 
 /* Маркеры списка чуть темнее основного текста раздела */
 .legal-section__text li::marker {
@@ -150,22 +162,67 @@
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
 @media (max-width: 1280px) {
-  .legal-hero::before { background-position: right -120px top; }
-
-  .legal-columns { column-gap: 32px; }
-
-  .legal-hero__title { max-width: 100%; }
+  .legal-hero::before { background-position: right calc(-4.6875 * var(--u)) top; }
 }
 
+/* 1024 и ниже: макетные проценты дали бы 6–10px, поэтому кегли
+   переходят на мобильные значения в px */
 @media (max-width: 1024px) {
-  .legal-hero::before { display: none; }
-  .legal-columns { grid-template-columns: minmax(0, 1fr); }
+  .legal-hero {
+    padding-block: 32px 24px;
+  }
 
-  .legal-section__text { font-size: 14.5px; }
+  .legal-hero::before { display: none; }
+
+  .legal-hero__eyebrow { font-size: 12px; }
+
+  .legal-hero__title {
+    max-width: 100%;
+    margin-top: 12px;
+    font-size: 30px;
+  }
+
+  .legal-hero__lead {
+    max-width: 100%;
+    margin-top: 16px;
+    font-size: 15px;
+  }
+
+  .legal-br { display: none; }
+
+  .legal-body { padding-block: 24px 40px; }
+
+  .legal-columns {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+
+  .legal-column { gap: 28px; }
+
+  .legal-section { grid-template-columns: 56px minmax(0, 1fr); }
+
+  .legal-section__num { font-size: 30px; }
+
+  .legal-section__title { font-size: 18px; }
+
+  .legal-section__text {
+    margin-top: 8px;
+    font-size: 14.5px;
+  }
+
+  .legal-section__text p + p { margin-top: 8px; }
+
+  .legal-section__text li + li { margin-top: 2px; }
 }
 
 @media (max-width: 540px) {
-  .legal-section { grid-template-columns: 48px minmax(0, 1fr); }
+  .legal-hero__title { font-size: 25px; }
+
+  .legal-section { grid-template-columns: 44px minmax(0, 1fr); }
+
+  .legal-section__num { font-size: 26px; }
+
+  .legal-section__title { font-size: 17px; }
 
   .legal-section__text { font-size: 14px; }
 }

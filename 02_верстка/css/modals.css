@@ -55,10 +55,12 @@
 
 .mcard__title {
   margin: 0;
-  font-size: clamp(16px, 1.48vw, 24px);
+  /* макет окна 916×677: заголовок 29.4px Bold (ширина строки 668,
+     высота знака 26–27), без добавочного трекинга */
+  font-size: clamp(16px, 1.48vw, 29.4px);
   line-height: 1.15;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: var(--fw-bold, 700);
+  letter-spacing: 0;
   text-transform: uppercase;
   text-align: center;
   color: #252b37;
@@ -90,9 +92,11 @@
 
 .mcard-add__name {
   margin: clamp(20px, 3.46vw, 53px) 0 0;
-  font-size: clamp(14px, 1.56vw, 25px);
+  /* макет: подпись 20.6px Medium (штрих 2–3px, ширина 462) —
+     прежние 25px/600 были заметно толще и шире */
+  font-size: clamp(14px, 1.56vw, 20.6px);
   line-height: 1.2;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   letter-spacing: 0.01em;
   text-align: center;
   text-transform: uppercase;
@@ -157,15 +161,15 @@ dialog.mcard-add:focus-visible { outline: none; }
 .callback-photo__rule {
   width: clamp(32px, 1.99vw, 51px);
   height: 2px;
-  margin: clamp(20px, 2.66vw, 68px) 0 0;
-  background: #252b37;
+  margin: clamp(20px, 2.03vw, 52px) 0 0;
+  background: #787d8c;
   border: 0;
 }
 
 .callback-photo__slogan {
-  margin: clamp(12px, 1.95vw, 50px) 0 0;
-  font-size: clamp(12px, 0.78vw, 20px);
-  line-height: 1.5;
+  margin: clamp(12px, 1.56vw, 40px) 0 0;
+  font-size: clamp(12px, 0.82vw, 21px);
+  line-height: 1.4;
   font-weight: var(--fw-medium);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -175,13 +179,14 @@ dialog.mcard-add:focus-visible { outline: none; }
 .callback-form {
   display: flex;
   flex-direction: column;
-  padding: clamp(24px, 5.7vw, 145px) clamp(16px, 4.5vw, 115px)
-    clamp(24px, 3.2vw, 82px) clamp(16px, 4.2vw, 107px);
+  padding: clamp(24px, 5.12vw, 131px) clamp(16px, 2.11vw, 54px)
+    clamp(24px, 3.9vw, 100px) clamp(16px, 1.68vw, 43px);
+  background: #f8f8fa;
 }
 
 .callback-form__eyebrow {
   margin: 0;
-  font-size: max(12px, clamp(11px, 0.59vw, 15px));
+  font-size: clamp(12px, 0.82vw, 21px);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -190,8 +195,8 @@ dialog.mcard-add:focus-visible { outline: none; }
 
 .callback-form__title {
   margin: clamp(8px, 1.09vw, 28px) 0 0;
-  font-size: clamp(24px, 2.46vw, 63px);
-  line-height: 1.1;
+  font-size: clamp(24px, 2.95vw, 75.6px);
+  line-height: 1.19;
   font-weight: var(--fw-regular);
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -199,27 +204,28 @@ dialog.mcard-add:focus-visible { outline: none; }
 }
 
 .callback-form__text {
-  max-width: 34ch;
-  margin: clamp(10px, 1.33vw, 34px) 0 0;
+  max-width: 24em;
+  margin: clamp(10px, 0.8vw, 20.5px) 0 0;
   font-size: clamp(13px, 0.94vw, 24px);
-  line-height: 1.36;
+  line-height: 1.31;
   font-weight: var(--fw-medium);
   color: #4a4f5b;
 }
 
-/* стрелка ближе к тексту, чем в базовой кнопке */
-.callback-form .btn {
-  gap: clamp(6px, 0.55vw, 14px);
+.callback-form__break { display: none; }
+
+@media (min-width: 1025px) {
+  .callback-form__break { display: inline; }
 }
 
 .callback-field {
   position: relative;
   display: flex;
   align-items: center;
-  margin-top: clamp(12px, 1.56vw, 40px);
+  margin-top: clamp(12px, 0.82vw, 21px);
 }
 
-.callback-field + .callback-field { margin-top: clamp(10px, 1.17vw, 30px); }
+.callback-field + .callback-field { margin-top: clamp(10px, 1.4vw, 36px); }
 
 .callback-field svg,
 .callback-field__icon {
@@ -233,7 +239,7 @@ dialog.mcard-add:focus-visible { outline: none; }
 
 .callback-field input {
   width: 100%;
-  height: clamp(48px, 3.48vw, 89px);
+  height: clamp(48px, 3.28vw, 84px);
   padding: 0 clamp(12px, 1.02vw, 26px) 0 clamp(44px, 3.16vw, 81px);
   font-family: inherit;
   font-size: clamp(14px, 0.94vw, 24px);
@@ -258,24 +264,32 @@ dialog.mcard-add:focus-visible { outline: none; }
 
 .callback-form .btn {
   width: 100%;
-  min-height: clamp(48px, 2.81vw, 72px);
-  margin-top: clamp(14px, 1.95vw, 50px);
-  font-size: clamp(13px, 0.94vw, 24px);
-  letter-spacing: 0.06em;
+  min-height: clamp(48px, 2.73vw, 70px);
+  margin-top: clamp(14px, 1.8vw, 46px);
+  font-size: clamp(15px, 0.98vw, 25px);
+  letter-spacing: 0;
+  gap: clamp(8px, 0.86vw, 22px);
 }
+
+.callback-form .btn__arrow { width: clamp(30px, 2.58vw, 66px); }
 
 .callback-form__note {
   display: flex;
   align-items: center;
   gap: clamp(6px, 0.7vw, 18px);
-  margin: clamp(10px, 1.09vw, 28px) 0 0;
+  margin: clamp(10px, 1.4vw, 36px) 0 0;
   font-size: max(12px, clamp(10px, 0.66vw, 17px));
   font-weight: var(--fw-medium);
   color: #9fa5b3;
   white-space: nowrap;
 }
 
-.callback-form__note svg { width: clamp(14px, 0.86vw, 22px); height: auto; flex: none; }
+.callback-form__note svg {
+  width: clamp(14px, 0.86vw, 22px);
+  height: auto;
+  flex: none;
+  color: #555b5a;
+}
 
 @media (max-width: 1024px) {
   .callback-form__note { white-space: normal; align-items: flex-start; }
@@ -296,10 +310,10 @@ dialog.mcard-add:focus-visible { outline: none; }
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: clamp(24px, 5.3vw, 152px) clamp(16px, 5vw, 145px)
-    clamp(24px, 3vw, 80px);
+  padding: clamp(24px, 5.3vw, 152px) clamp(16px, 1.95vw, 50px)
+    clamp(24px, 3vw, 80px) clamp(16px, 4.3vw, 110px);
   text-align: center;
-  background: #fff;
+  background: #f8f8fa;
 }
 
 .callback-result__icon {
@@ -328,11 +342,11 @@ dialog.mcard-add:focus-visible { outline: none; }
 }
 
 .callback-result__text {
-  max-width: clamp(280px, 25vw, 640px);
+  max-width: 18em;
   margin: clamp(10px, 1.27vw, 26px) 0 0;
-  font-size: clamp(15px, 1.56vw, 32px);
+  font-size: clamp(15px, 1.35vw, 34.5px);
   line-height: 1.5;
-  font-weight: var(--fw-regular);
+  font-weight: var(--fw-medium);
   text-transform: uppercase;
   text-align: left;
   color: #4a4f5b;

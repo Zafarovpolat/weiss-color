@@ -27,7 +27,10 @@
   margin-top: clamp(8px, 0.47vw, 12px);
   font-size: clamp(30px, 2.11vw, 54px);
   line-height: 1.2;
-  font-weight: 500;
+  /* макет: «ЦВЕТ ACE PAINT F316» капсом и весом 400 (ink 5,3К у макета,
+     6,9К у 500); ширина 571 px */
+  font-weight: 400;
+  text-transform: uppercase;
   color: #233146;
 }
 
@@ -133,9 +136,10 @@
 .c-materials__title {
   font-size: clamp(22px, 1.25vw, 32px);
   line-height: 1.2;
-  font-weight: 500;
+  /* макет: 700 — ink 8,3К и ширина 884 px совпадают с 700, у 500 ink 5,5К */
+  font-weight: 700;
   text-transform: uppercase;
-  color: #253346;
+  color: #252b37;
 }
 
 .c-tabs {
@@ -148,7 +152,8 @@
 }
 
 .c-tabs__item {
-  color: var(--color-muted);
+  /* макет: неактивные фильтры светло-серые #9c9da2 */
+  color: #9c9da2;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -159,7 +164,7 @@
 
 .c-tabs__item.is-active {
   font-weight: 600;
-  color: #253346;
+  color: #252b37;
 }
 
 .c-tabs__sep {

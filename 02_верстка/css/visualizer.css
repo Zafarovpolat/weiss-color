@@ -41,9 +41,11 @@
 .viz-title span {
   display: block;
   margin-top: clamp(2px, 0.16vw, 4px);
-  font-size: clamp(20px, 1.21vw, 31px);
+  /* макет М09: подзаголовок крупнее (ink 183×24) и легче — 34/500;
+     при 31/600 он выглядел «другим шрифтом» из-за плотной буквы C */
+  font-size: clamp(20px, 1.33vw, 34px);
   line-height: 1.15;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .viz-help {
@@ -162,7 +164,8 @@
   margin-top: 0;
   padding: 0 clamp(16px, 1.17vw, 30px) 0 clamp(16px, 1.13vw, 29px);
   font-size: clamp(16px, 0.82vw, 21px);
-  font-weight: 500;
+  /* макет М09: «Каталог ACE PAINT» набран полужирным */
+  font-weight: 600;
   color: #515257;
   background: var(--color-white);
   border: 2px solid #bdbcbc;

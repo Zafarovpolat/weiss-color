@@ -39,8 +39,11 @@ main {
   position: absolute;
   inset: 0;
   z-index: -1;
-  /* фото чуть ниже: сдвигаем вниз от нижней кромки (cover даёт запас по высоте) */
-  background: #f0eff2 url("../assets/img/contacts-bg.png") left calc(100% + 4.296875 * var(--u)) / cover no-repeat;
+  /* Полотно фото — тот же кадр 2560×1440, что и макет, поэтому тянем его
+     по ширине (100% auto) и якорим по верху: растение остаётся на макетной
+     высоте при любой высоте окна. Cover с якорем по низу поднимал ветку на
+     строки «т./e./Продукцию…» на низких экранах (ноутбук 1871×787). */
+  background: #f0eff2 url("../assets/img/contacts-bg.png") calc(-0.35 * var(--u)) calc(-4.035 * var(--u)) / 100% auto no-repeat;
 }
 
 /* Крошки макета: 15.9px/16.67, medium, с расширенными пробелами вокруг «>». */
@@ -327,8 +330,9 @@ main {
 .contacts-consent a {
   color: #54575b;
   text-decoration: underline;
-  text-decoration-color: var(--color-brown);
-  text-underline-offset: 3px;
+  /* макет: подчёркивание холодное #4d4d6f, не коричневое */
+  text-decoration-color: #4d4d6f;
+  text-underline-offset: calc(0.1953125 * var(--u));
   transition: color var(--ease-ui), text-decoration-color var(--ease-ui);
 }
 
@@ -339,8 +343,8 @@ main {
 }
 
 .contacts-consent a:hover {
-  color: var(--color-brown-dark);
-  text-decoration-color: var(--color-brown-dark);
+  color: #4d4d6f;
+  text-decoration-color: #4d4d6f;
 }
 
 .contacts-submit {

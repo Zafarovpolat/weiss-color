@@ -118,6 +118,21 @@
   font-display: swap;
   src: url("../assets/fonts/tinos-latin-400-normal.woff2") format("woff2");
 }
+@font-face {
+  font-family: "Tinos";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/tinos-cyrillic-700-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Tinos";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/tinos-latin-700-normal.woff2") format("woff2");
+}
 
 /* ---------- Sovest — передан заказчиком (цифры и телефоны) ----------
    В макетах Sovest набран телефон в шапке, счётчик корзины, номера
@@ -154,9 +169,6 @@
   --color-btn-dark: #333333;     /* текст и контур светлых кнопок в покое */
   --color-btn-border: #b9babf;   /* контур светлых кнопок в покое — серый */
 
-  --shadow-brown: 0 0 27px 3px rgba(98, 56, 30, 0.35);
-  --shadow-teal: 0 0 27px 3px rgba(57, 117, 125, 0.35);
-
   /* ---------- Состояния наведения (единая система) ---------- */
   --color-brown-dark: #4b2a14;
   --color-teal-dark: #2c5f66;
@@ -173,7 +185,9 @@
   /* ---------- Шрифты ---------- */
   --font-main: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-aux: "Open Sans", var(--font-main);
-  --font-num: "Tinos", "Times New Roman", Times, Georgia, serif;  /* Tinos — self-host, клон Times */
+  /* Номера 01–09: в макете цифры набраны антиквой Times (высота знака 30px
+     при кегле 45.83px); Tinos — метрический клон Times с кириллицей. */
+  --font-num: "Tinos", "Times New Roman", Times, Georgia, serif;
   --font-digit: "Sovest", var(--font-main);  /* телефон, счётчик корзины, пагинация, поля телефона */
 
   --fw-regular: 400;
@@ -184,7 +198,7 @@
   /* ---------- Типографика (clamp от макета 2560) ---------- */
   --fs-h1: clamp(38px, 2.93vw, 75px);
   --lh-h1: 1.27;
-  --fs-lead: clamp(17px, 1.07vw, 27.4px);
+  --fs-lead: clamp(17px, 1.04vw, 26.6px);
   --fs-eyebrow: clamp(13px, 0.78vw, 20px);
   --fs-section-title: clamp(24px, 1.25vw, 32px);
   --fs-benefits-title: clamp(19px, 0.9vw, 23px);

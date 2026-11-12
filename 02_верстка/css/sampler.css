@@ -128,13 +128,23 @@
 }
 
 .sampler-aside__text {
-  max-width: 48ch;
+  /* в макете абзац 22.5px с переносами после «решение,» и «интерьере.»;
+     цвет холоднее основного — #4f5a6a */
+  /* ширина абзаца = колонке макета (1512…2302): при ней строки рвутся
+     после «решение,», «интерьере.» и «освещении», как в макете */
+  max-width: clamp(280px, 30.86vw, 790px);
   margin: clamp(8px, 0.86vw, 22px) 0 0;
-  font-size: clamp(13px, 0.94vw, 24px);
-  line-height: 1.36;
+  font-size: clamp(13px, 0.879vw, 22.5px);
+  line-height: 1.45;
   font-weight: var(--fw-medium);
-  color: #43484f;
+  color: #4f5a6a;
 }
+
+/* В макете первая строка заканчивается на «решение,» — точка переноса
+   ближе пикселя к пределу строки, поэтому на десктопе задаём её явно;
+   на узких экранах текст течёт свободно. */
+.sampler-br { display: none; }
+@media (min-width: 1281px) { .sampler-br { display: inline; } }
 
 /* --- Три преимущества --- */
 
@@ -288,7 +298,7 @@
   height: auto;
   /* в макете иконка по центру текстового блока */
   align-self: center;
-  color: #4a9fe0;
+  color: #70b4ed;
 }
 
 .sampler-notice p {
@@ -296,7 +306,7 @@
   font-size: clamp(12px, 0.7vw, 18px);
   line-height: 1.35;
   font-weight: var(--fw-medium);
-  color: #43484f;
+  color: #4f5a6a;
 }
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
