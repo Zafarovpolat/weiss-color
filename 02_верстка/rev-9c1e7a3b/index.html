@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Проверка правок 12.11 — до/после</title>
+<style>
+  :root { --ink:#233146; --mut:#6a737c; --line:#d7dbe2; --bg:#f6f7f9; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:28px 18px 64px; font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width:1200px; margin:0 auto; }
+  h1 { margin:0 0 6px; font-size:24px; font-weight:650; letter-spacing:-.01em; }
+  .sub { margin:0 0 28px; color:var(--mut); font-size:14px; }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 18px 22px; margin:0 0 22px; }
+  h2 { margin:0 0 4px; font-size:17px; font-weight:650; }
+  .where { margin:0 0 14px; color:var(--mut); font-size:13px; }
+  .shot { margin:0; }
+  .shot img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#eef1f4; }
+  .shot figcaption { margin:8px 0 0; font-size:13px; color:var(--mut); }
+  .tag { display:inline-block; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-right:8px; }
+  .tag.before { background:#fde8e8; color:#9b2323; }
+  .tag.after { background:#e3f4e8; color:#1d6b3a; }
+  .duo { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .duo figcaption { min-height:38px; }
+  table { width:100%; border-collapse:collapse; margin:14px 0 0; font-size:13.5px; }
+  th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  td.num { font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .ok { color:#1d6b3a; font-weight:600; }
+  .crop { max-width:760px; }
+  @media (max-width:760px) { .duo { grid-template-columns:1fr; } body { padding:18px 12px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Проверка правок — 12 ноября</h1>
+  <p class="sub">Скриншоты сняты в headless Chrome при ширине окна 2936&nbsp;px (как на вашем экране) и 2560&nbsp;px. Старая версия — коммит до правок, новая — текущая сборка.</p>
+
+  <section>
+    <h2>1. «Где купить» — блок «Покупайте удобно»</h2>
+    <p class="where">Окно 2936×1440. Слева было: блок прижат к левому краю полотна 2560, справа 682&nbsp;px пустоты.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="buy-band-before.jpg" alt="Блок «Покупайте удобно» до правки">
+        <figcaption><span class="tag before">Было</span>Поля 306 / 682&nbsp;px — блок уехал влево.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="buy-band-after.jpg" alt="Блок «Покупайте удобно» после правки">
+        <figcaption><span class="tag after">Стало</span>Поля 494 / 494&nbsp;px — полотно 2560 отцентровано.</figcaption>
+      </figure>
+    </div>
+    <table>
+      <tr><th>Окно</th><th>Слева / справа (было)</th><th>Слева / справа (стало)</th></tr>
+      <tr><td class="num">2560×1440</td><td class="num">306 / 306</td><td class="num">306 / 306 (без изменений)</td></tr>
+      <tr><td class="num">2936×1440</td><td class="num">306 / 682</td><td class="num ok">494 / 494</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>2. Карточка товара — «пятно» у банки</h2>
+    <p class="where">Окно 2936×1440, нижний левый угол банки. Фон героя тянулся по ширине окна (cover), а банка заморожена по макету — подложка не совпадала с полом.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="can-before.jpg" alt="Низ банки до правки">
+        <figcaption><span class="tag before">Было</span>Светлый прямоугольник под банкой — шов фона и вырезки.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="can-after.jpg" alt="Низ банки после правки">
+        <figcaption><span class="tag after">Стало</span>Фон 2560&nbsp;px: пол и тень переходят в банку без шва.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Прокрутка «на пол колеса»</h2>
+    <p class="where">Главная и «О компании», окно 2936×1300. Страница была 1467&nbsp;px при окне 1300: подвал уходил за экран на 167&nbsp;px. Теперь при ≥2560 и запасе до 12% высота подгоняется масштабом (0.9–1.0) — подвал виден сразу.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="scroll-index-before.jpg" alt="Главная до правки, 2936×1300">
+        <figcaption><span class="tag before">Было — главная</span>Низ блока обрезан, нужна прокрутка 167&nbsp;px.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="scroll-index-after.jpg" alt="Главная после правки, 2936×1300">
+        <figcaption><span class="tag after">Стало — главная</span>Целиком в экране, масштаб 0.9.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="scroll-about-before.jpg" alt="О компании до правки, 2936×1300">
+        <figcaption><span class="tag before">Было — о компании</span>Подвал за экраном.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="scroll-about-after.jpg" alt="О компании после правки, 2936×1300">
+        <figcaption><span class="tag after">Стало — о компании</span>Страница 1300&nbsp;px, прокрутки нет.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Контроль регрессий</h2>
+    <table>
+      <tr><th>Ширина окна</th><th>Страницы</th><th>Результат</th></tr>
+      <tr><td class="num">1920×950</td><td>о компании, где купить, товар, контакты, правовой</td><td class="ok">Попиксельно совпадает со старой версией</td></tr>
+      <tr><td class="num">2560×1440</td><td>о компании, где купить, товар, контакты, правовой</td><td class="ok">Попиксельно совпадает с макетом 2560</td></tr>
+      <tr><td class="num">2936×1440</td><td>все 7 экранов</td><td class="ok">Прокрутки нет, полотно по центру</td></tr>
+      <tr><td class="num">2936×1300</td><td>все 7 экранов</td><td class="ok">Подгонка 0.9 — подвал в экране, прокрутки нет</td></tr>
+      <tr><td class="num">3440×1440</td><td>все 7 экранов</td><td class="ok">Полотно по центру, прокрутки нет</td></tr>
+    </table>
+  </section>
+</div>
+</body>
+</html>
