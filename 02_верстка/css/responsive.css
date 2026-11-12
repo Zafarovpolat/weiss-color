@@ -738,3 +738,22 @@ dialog.mcard:not([open]) { display: none; }
   .invoice-actions .btn,
   .cart-summary .btn { width: 100%; }
 }
+
+/* --- Шире макета 2560: шапка и подвал живут в том же центрированном
+   полотне, что и контент. Без этого --u шапки рос вместе с окном, кегли и
+   отступы уезжали относительно макетных, а при подгонке по высоте (zoom)
+   шапка расходилась с контентом страницы. --- */
+@media (min-width: 2560px) {
+  .site-header,
+  .site-footer { --u: 25.6px; }
+
+  .header__inner {
+    padding-left: calc(2.34375 * var(--u) + var(--canvas-extra));
+    padding-right: calc(3.8671875 * var(--u) + var(--canvas-extra));
+  }
+
+  .footer__inner {
+    padding-left: calc(2.34375 * var(--u) + var(--canvas-extra));
+    padding-right: calc(7.7734375 * var(--u) + var(--canvas-extra));
+  }
+}

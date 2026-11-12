@@ -19,9 +19,10 @@ main {
 
 .legal-hero {
   position: relative;
-  /* боковые поля — общий контейнер (как на всех страницах) */
+  /* боковые поля — общий контейнер (как на всех страницах); на широких
+     экранах полотно центрируется, поэтому добавляем --canvas-extra */
   padding-block: calc(3.8671875 * var(--u)) calc(0.1328125 * var(--u));
-  padding-inline: var(--container-pad);
+  padding-inline: calc(var(--container-pad) + var(--canvas-extra));
   background: #f7f8fa;
 }
 
@@ -35,6 +36,13 @@ main {
   background: #eff1f4 url("../assets/img/legal-hero.png") right top / auto 100% no-repeat;
   z-index: 0;
 }
+
+/* Декор прижат к правому краю окна, как в макете: при 2560 фото 2448px
+   занимает почти всю полосу, а на 2936+ уходит вправо вместе с окном.
+   Привязывать его к центрированному полотну не нужно — сдвиг в
+   background-position через --canvas-extra семантически неверен (проценты
+   там считаются от свободного места «элемент − фото»), а составная сцена
+   с текстом от этого не зависит. */
 
 .legal-hero > * {
   position: relative;
@@ -74,9 +82,9 @@ main {
 /* --- Две колонки разделов --- */
 
 .legal-body {
-  /* боковые поля — общий контейнер (как на всех страницах) */
+  /* боковые поля — общий контейнер + сдвиг центрированного полотна */
   padding-block: calc(1.52 * var(--u)) calc(2.03 * var(--u));
-  padding-inline: var(--container-pad);
+  padding-inline: calc(var(--container-pad) + var(--canvas-extra));
   background: #f7f8fa;
 }
 
