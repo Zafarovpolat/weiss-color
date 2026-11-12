@@ -74,24 +74,49 @@
 .error-page__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(12px, 2.07vw, 53px);
+  gap: clamp(12px, 2.3vw, 59px);
   margin-top: clamp(20px, 1.777vw, 45.5px);
 }
 
 .error-page .btn {
-  min-height: clamp(48px, 2.46vw, 63px);
-  /* обе кнопки одним кеглем (у .btn--outline был базовый, мельче коричневой) */
-  font-size: clamp(15px, 0.86vw, 22px);
+  /* в макете коричневая кнопка 351×61: при кегле 27.5 блок кнопки вырос,
+     поэтому поля сверху/снизу меньше базовых 15 */
+  min-height: clamp(46px, 2.383vw, 61px);
+  padding-block: clamp(9px, 0.508vw, 13px);
+  /* в макете обе подписи 27.5 px (капитель 20 px) Medium и без разрядки —
+     базовые 600/0.08em давали жирнее и мельче */
+  font-size: clamp(15px, 1.0742vw, 27.5px);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
   border-radius: 0;
 }
 
-/* в макете вторая кнопка шире первой по паддингам (269 против 355) */
+/* в макете содержимое коричневой кнопки разведено по краям: подпись с полем 46,
+   стрелка — с полем 24, иначе при кегле 27 кнопка вырастает за 351 */
 .error-page__actions .btn--brown {
   min-width: clamp(170px, 13.71vw, 351px);
+  /* 42 px: у «Н» ещё ~4 px бокового просвета, чернила подписи встают на 409 */
+  padding-inline: clamp(18px, 1.64vw, 42px) clamp(12px, 0.9375vw, 24px);
+  justify-content: space-between;
+  /* у коричневой .btn gap 50px работает как минимум под space-between
+     и растягивает кнопку за 351 — здесь отступ задаёт сама ширина */
+  gap: 0;
+}
+
+/* в макете стрелка 49 px — крупнее базовых 42 */
+.error-page .btn__arrow {
+  width: clamp(24px, 2.09vw, 53.5px);
 }
 
 .error-page__actions .btn--outline {
-  min-width: clamp(160px, 10.5vw, 269px);
+  min-width: clamp(160px, 10.16vw, 260px);
+  /* в макете подпись тёмно-синяя, а не серая как в базовом .btn--outline */
+  color: #061e3f;
+}
+
+/* на hover подпись, как и у всех контурных кнопок, уходит в коричневый */
+.error-page__actions .btn--outline:hover {
+  color: var(--color-brown);
 }
 
 @media (max-width: 1024px) {
