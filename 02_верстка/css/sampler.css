@@ -229,7 +229,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: clamp(10px, 1.02vw, 26px);
+  /* только между количеством и кнопкой: row-gap складывался с margin-top
+     у «Продолжить покупки» и удваивал отступ */
+  column-gap: clamp(10px, 1.02vw, 26px);
+  row-gap: 0;
   margin-top: clamp(8px, 0.78vw, 20px);
 }
 
@@ -278,7 +281,8 @@
 .sampler-continue {
   flex: 1 1 100%;
   min-height: clamp(46px, 2.97vw, 76px);
-  margin-top: clamp(8px, 0.86vw, 22px);
+  /* отступ только здесь: row-gap у .sampler-buy больше не добавляется */
+  margin-top: clamp(16px, 1.9vw, 28px);
   /* в макете вторичная кнопка без белой заливки — фон страницы */
   background: transparent;
   color: #000000;
@@ -323,12 +327,19 @@
    ширине окна 1920 колонка сжималась на 15%, а текст — на 25%: строки не
    совпадали с макетом. cqw держит одинаковые пропорции на любой ширине. */
 @media (min-width: 1281px) {
-  .sampler-aside { container-type: inline-size; }
+  /* отступ сверху — 73 px от ширины колонки: в макете заголовок колонки
+     начинается на 70 px ниже верхней строки H1. Процент (не cqw) — единицы
+     контейнера на самом контейнере считаются от вьюпорта */
+  .sampler-aside { container-type: inline-size; padding-top: 9.24%; }
+
+  /* вторая строка забирает высоту правой колонки: иначе колонка, растянутая
+     на обе строки, раздувала первую и карточки уезжали вниз от заголовка */
+  .sampler-layout { grid-template-rows: auto 1fr; }
 
   .sampler-aside__title { font-size: 5.19cqw; }
   .sampler-aside__text {
     max-width: none;
-    margin-top: 2.78cqw;
+    margin-top: 3.67cqw;
     font-size: 2.85cqw;
     line-height: 1.45;
   }
@@ -339,20 +350,20 @@
     grid-template-columns: repeat(3, auto);
     justify-content: space-between;
     gap: 3.54cqw;
-    margin-top: 4.56cqw;
+    margin-top: 6.71cqw;
   }
   .sampler-benefit { gap: 1.77cqw; font-size: 2.28cqw; }
   .sampler-benefit svg { width: 4.81cqw; }
   .sampler-benefit:nth-child(2) svg { width: 5.06cqw; }
   .sampler-benefit:nth-child(3) svg { width: 7.72cqw; }
 
-  .sampler-price-row { margin-top: 5.06cqw; }
+  .sampler-price-row { margin-top: 9.49cqw; }
   .sampler-price { font-size: 5.95cqw; }
   .sampler-stock { gap: 1.77cqw; font-size: 2.28cqw; }
   .sampler-stock::before { width: 2.66cqw; height: 2.66cqw; }
 
-  .sampler-buy { gap: 6.33cqw; margin-top: 2.53cqw; }
-  .sampler-qty { gap: 1.39cqw; }
+  .sampler-buy { column-gap: 6.33cqw; margin-top: 2.91cqw; }
+  .sampler-qty { gap: 2.53cqw; }
   .sampler-qty__label { font-size: 2.28cqw; }
   .sampler-qty .qty__btn {
     width: 8.48cqw;
@@ -367,12 +378,12 @@
 
   .sampler-buy .btn { min-height: 9.11cqw; font-size: 2.78cqw; }
   .sampler-add { flex: 1 1 auto; }
-  .sampler-buy .sampler-continue { min-height: 9.37cqw; margin-top: 5.82cqw; }
+  .sampler-buy .sampler-continue { min-height: 9.37cqw; margin-top: 4.94cqw; }
 
   .sampler-notice {
     grid-template-columns: 5.57cqw minmax(0, 1fr);
     gap: 2.66cqw;
-    margin-top: 4.81cqw;
+    margin-top: 5.19cqw;
     /* справа поле шире: в макете абзац рвётся после «цвет» */
     padding: 2.53cqw 6.33cqw 2.53cqw 3.29cqw;
   }
