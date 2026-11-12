@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Проверка — «О компании» под макет 2560</title>
+<style>
+  :root { --ink:#233146; --mut:#6a737c; --line:#d7dbe2; --bg:#f6f7f9; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:28px 18px 64px; font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width:1200px; margin:0 auto; }
+  h1 { margin:0 0 6px; font-size:24px; font-weight:650; letter-spacing:-.01em; }
+  .sub { margin:0 0 28px; color:var(--mut); font-size:14px; }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 18px 22px; margin:0 0 22px; }
+  h2 { margin:0 0 4px; font-size:17px; font-weight:650; }
+  .where { margin:0 0 14px; color:var(--mut); font-size:13px; }
+  .shot { margin:0; }
+  .shot img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#eef1f4; }
+  .shot figcaption { margin:8px 0 0; font-size:13px; color:var(--mut); }
+  .tag { display:inline-block; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-right:8px; }
+  .tag.before { background:#fde8e8; color:#9b2323; }
+  .tag.after { background:#e3f4e8; color:#1d6b3a; }
+  .tag.ref { background:#e8eefb; color:#22428f; }
+  .duo { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .duo + .duo { margin-top:14px; }
+  .duo figcaption { min-height:38px; }
+  .narrow { max-width:420px; }
+  table { width:100%; border-collapse:collapse; margin:14px 0 0; font-size:13.5px; }
+  th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .ok { color:#1d6b3a; font-weight:600; }
+  .note { margin:12px 0 0; font-size:13px; color:var(--mut); }
+  ul.chg { margin:10px 0 0; padding-left:18px; font-size:14px; }
+  ul.chg li { margin:0 0 6px; }
+  code { font:13px/1.4 ui-monospace,Consolas,monospace; background:#f1f3f6; padding:1px 5px; border-radius:4px; }
+  @media (max-width:760px) { .duo { grid-template-columns:1fr; } body { padding:18px 12px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>«О компании» — приведение к макету 2560×1440</h1>
+  <p class="sub">Headless Chrome, кадры сняты с локальной сборки: «Было» — прод до правки (файлы из HEAD), «Стало» — после. Кропы 1:1 вырезаны из одного и того же места, поэтому видно расхождения по пикселям.</p>
+
+  <section>
+    <h2>1. Макет — что должно быть</h2>
+    <p class="where">Макет 2560×1440, страница целиком.</p>
+    <figure class="shot">
+      <img src="mock-2560.png" alt="Макет страницы «О компании»">
+      <figcaption><span class="tag ref">Макет</span>Заголовок светлый, преимущества стоят на 801, разделители 536 / 918 / 1300, логотипы на 1052.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>2. Крошки и заголовок</h2>
+    <p class="where">Кроп 1:1, 2560. Слева макет, справа наша страница.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="crop-title-mock.png" alt="Макет: крошки и заголовок">
+        <figcaption><span class="tag ref">Макет</span>Кегль крошек 16,5, «О Компании» с большой буквы, широкие пробелы вокруг «&gt;». Заголовок набран светлым начертанием.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="crop-title-after.png" alt="Стало: крошки и заголовок">
+        <figcaption><span class="tag after">Стало</span>Крошки 16,5 и «О Компании», заголовок 53&nbsp;px весом 400 (было 500 — слишком жирно).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Перенос в абзаце «Наша миссия»</h2>
+    <p class="where">Кроп 1:1, 2560. Общий <code>text-wrap: pretty</code> уводил «долговечных» на вторую строку — в макете строка кончается на нём.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="crop-mission-mock.png" alt="Макет: абзац о миссии">
+        <figcaption><span class="tag ref">Макет</span>«…красивых и долговечных / интерьеров.»</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="crop-mission-after.png" alt="Стало: абзац о миссии">
+        <figcaption><span class="tag after">Стало</span>Тот же перенос: кегль 18,5, <code>text-wrap: wrap</code> только для этого блока.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Преимущества — сетка и переносы</h2>
+    <p class="where">Кроп 1:1, 2560. Раньше колонки были равные (346 с зазором 32) — разделители и иконки не попадали в макет, текст стоял мельче и плотнее.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="crop-feat-mock.png" alt="Макет: блок преимуществ">
+        <figcaption><span class="tag ref">Макет</span>Иконки 240 / 569 / 954 / 1326, тексты 302 / 648 / 1029 / 1412, разделители 536 / 918 / 1300.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="crop-feat-after.png" alt="Стало: блок преимуществ">
+        <figcaption><span class="tag after">Стало</span>Колонки по разделителям 312 + 382 + 382 + 382, воздух слева у каждой карточки; заголовок и текст 16&nbsp;px, интерлиньяж 23,5, переносы строк как в макете.</figcaption>
+      </figure>
+    </div>
+    <ul class="chg">
+      <li>Ряд преимуществ начинается на 801 (отступ от вступления 81 вместо 84).</li>
+      <li>Между заголовком карточки и текстом 12&nbsp;px (было 6) — в макете строки стоят реже.</li>
+      <li>Логотипы партнёров прижаты к низу секции через <code>margin-top: auto</code>: <code>space-between</code> после изменения высот разъезжался и уводил ряд с макетной 1052.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Страница целиком, окно 2560×1440</h2>
+    <p class="where">Как видит клиент. Масштаб полотна 0,996 — это подгонка по высоте окна (общая для всего сайта), в обоих кадрах одинаковый.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="before-2560.png" alt="Страница 2560, до правки">
+        <figcaption><span class="tag before">Было</span>Жирный заголовок, «долговечных» на своей строке, равные колонки преимуществ, текст карточек 14&nbsp;px.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="after-2560.png" alt="Страница 2560, после правки">
+        <figcaption><span class="tag after">Стало</span>Совпадает с макетом по заголовку, переносам, сетке преимуществ и положению логотипов.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. Окно 1920×1080</h2>
+    <p class="where">Пропорции макета сохранены: колонки, отступы и переносы масштабируются вместе с полотном.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="before-1920.png" alt="Страница 1920, до правки">
+        <figcaption><span class="tag before">Было</span>Разделители на 411 / 694 / 978, тексты карточек вплотную к заголовкам.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="after-1920.png" alt="Страница 1920, после правки">
+        <figcaption><span class="tag after">Стало</span>Те же пропорции, что на 2560; страница по-прежнему влезает в экран без вертикального скролла.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. Окно 1440×900</h2>
+    <p class="where">Ноутбучная ширина: жёсткие переносы макета здесь дали бы рваные строки и лишнюю высоту, поэтому ниже полотна переносы отданы браузеру, а строки остались прежней плотности.</p>
+    <figure class="shot">
+      <img src="after-1440.png" alt="Страница 1440, после правки">
+      <figcaption><span class="tag after">Стало</span>Ни вертикального, ни горизонтального скролла: страница ровно 900&nbsp;px.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>8. Побочная правка: слипшиеся слова на телефоне</h2>
+    <p class="where">Ручные переносы макета — это <code>&lt;br&gt;</code> между словами без пробела. Там, где переносы скрыты (телефон, планшет), слова склеивались: «проверенныхпоставщиков», «качествана», «соответствоватьпотребностям». Плюс колонка вступления на телефоне сжималась до 210&nbsp;px.</p>
+    <div class="duo narrow">
+      <figure class="shot">
+        <img src="before-390.png" alt="Телефон 390, до правки">
+        <figcaption><span class="tag before">Было</span>390×844: «многоступенчатым контролем качествана всех этапах», колонка ~210&nbsp;px.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="after-390.png" alt="Телефон 390, после правки">
+        <figcaption><span class="tag after">Стало</span>Пробелы на месте, вступление на всю ширину — страница стала на ~390&nbsp;px короче.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Проверки</h2>
+    <table>
+      <tr><th>Проверка</th><th>Результат</th></tr>
+      <tr><td>Макет 2560: крошки, заголовок, вступление, преимущества, логотипы</td><td class="ok">совпадает (кропы 1:1 выше)</td></tr>
+      <tr><td>Горизонтальная прокрутка 390 / 768 / 1024 / 1280 / 1440 / 1920 / 2560</td><td class="ok">0 px</td></tr>
+      <tr><td>Вертикальная прокрутка 1440×900, 1500×900, 1600×900, 1920×1080, 2560×1440</td><td class="ok">0 px (до правки на 1440–1600 скролл появлялся)</td></tr>
+      <tr><td>1024 / 768 / 390 — карточки в 2 и 1 колонку</td><td class="ok">разделители и левый воздух сброшены, слова не склеены</td></tr>
+      <tr><td>Остальные страницы и компоненты</td><td class="ok">не затронуты: правка только в <code>about.css</code> и <code>about.html</code></td></tr>
+    </table>
+    <p class="note">Изменения: <code>css/about.css</code> — сетка преимуществ, кегли заголовка/вступления/карточек, крошки, прижатие логотипов; <code>pages/about.html</code> — крошки «О Компании», ручные переносы текстов карточек и пробелы после них.</p>
+  </section>
+</div>
+</body>
+</html>
