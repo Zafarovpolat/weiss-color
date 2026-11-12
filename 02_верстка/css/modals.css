@@ -70,16 +70,25 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: clamp(12px, 4.18vw, 107px);
+  gap: clamp(24px, 7vw, 110px);
   margin-top: clamp(24px, 3.9vw, 60px);
 }
 
+/* М23: кнопки макета 280×56, подпись 16px; размеры не тянем через vw —
+   окно фиксированное 916px, иначе на 1920 кнопки выходили на четверть короче */
 .mcard__actions .btn {
-  min-width: clamp(190px, 10.94vw, 280px);
-  min-height: clamp(48px, 3.75vw, 60px);
-  padding-inline: clamp(10px, 0.78vw, 20px);
-  font-size: clamp(13px, 0.68vw, 17px);
-  letter-spacing: 0.04em;
+  min-width: 280px;
+  min-height: 56px;
+  padding-inline: 20px;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+/* контурная «Продолжить покупку»: в макете заливка окна и серый текст */
+.mcard__actions .btn--outline {
+  color: #4c4b51;
+  background: transparent;
+  font-weight: var(--fw-regular);
 }
 
 /* --- М23 «Товар добавлен в корзину» --- */
