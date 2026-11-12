@@ -407,10 +407,13 @@ main {
   .p-hero__title {
     margin-top: 16px;
     font-size: 32px;
+    line-height: 1.22;
   }
 
   .p-hero__lead {
+    margin-top: 8px;
     font-size: 17px;
+    line-height: 1.5;
   }
 
   .p-volumes {
@@ -481,6 +484,13 @@ main {
   .p-desc {
     margin-top: 20px;
     font-size: 16px;
+    line-height: 1.5;
+    /* на узкой колонке выключка по обоим краям даёт провалы между словами */
+    text-align: left;
+  }
+
+  .p-desc p + p {
+    margin-top: 12px;
   }
 
   .p-specs {

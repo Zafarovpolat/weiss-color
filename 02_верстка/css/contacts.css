@@ -400,7 +400,10 @@ main {
      сетки, поэтому «где купить» можно поставить после формы */
   .contacts-text { display: contents; }
 
-  .contacts-title { font-size: 28px; }
+  .contacts-title {
+    font-size: 28px;
+    line-height: 1.15;
+  }
 
   .contacts-org,
   .contacts-list,
@@ -409,9 +412,15 @@ main {
     line-height: 1.28;
   }
 
-  .contacts-form-card__title { font-size: 20px; }
+  .contacts-form-card__title {
+    font-size: 20px;
+    line-height: 1.25;
+  }
 
-  .contacts-form-card__lead { font-size: 14px; }
+  .contacts-form-card__lead {
+    font-size: 14px;
+    line-height: 1.45;
+  }
 
   .contacts-form .field__input,
   .contacts-form .field__select,
