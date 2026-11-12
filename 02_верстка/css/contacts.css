@@ -513,8 +513,10 @@ main {
    долями полотна на .crumbs и .contacts-layout. */
 
 
-/* На узких экранах фоновая фотография (кресло/ваза в левой колонке)
-   попадает под форму и мешает читать — оставляем чистый фон. */
-@media (max-width: 900px) {
-  .contacts-page { background-image: none; }
+/* На узких экранах фото живёт в ::before; прижимаем его к левому нижнему
+   углу секции, иначе ветка попадает на заголовок и контакты. */
+@media (max-width: 1024px) {
+  .contacts-page::before {
+    background-position: left bottom;
+  }
 }
