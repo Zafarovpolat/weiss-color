@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Проверка — тень под банкой на карточке товара</title>
+<style>
+  :root { --ink:#233146; --mut:#6a737c; --line:#d7dbe2; --bg:#f6f7f9; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:28px 18px 64px; font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width:1200px; margin:0 auto; }
+  h1 { margin:0 0 6px; font-size:24px; font-weight:650; letter-spacing:-.01em; }
+  .sub { margin:0 0 28px; color:var(--mut); font-size:14px; }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 18px 22px; margin:0 0 22px; }
+  h2 { margin:0 0 4px; font-size:17px; font-weight:650; }
+  .where { margin:0 0 14px; color:var(--mut); font-size:13px; }
+  .shot { margin:0; }
+  .shot img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#eef1f4; }
+  .shot figcaption { margin:8px 0 0; font-size:13px; color:var(--mut); }
+  .tag { display:inline-block; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-right:8px; }
+  .tag.before { background:#fde8e8; color:#9b2323; }
+  .tag.after { background:#e3f4e8; color:#1d6b3a; }
+  .tag.ref { background:#e8eefb; color:#22428f; }
+  .duo { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .duo + .duo { margin-top:14px; }
+  .duo figcaption { min-height:38px; }
+  table { width:100%; border-collapse:collapse; margin:14px 0 0; font-size:13.5px; }
+  th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  td.num { font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .ok { color:#1d6b3a; font-weight:600; }
+  .note { margin:12px 0 0; font-size:13px; color:var(--mut); }
+  code { font:13px/1.4 ui-monospace,Consolas,monospace; background:#f1f3f6; padding:1px 5px; border-radius:4px; }
+  @media (max-width:760px) { .duo { grid-template-columns:1fr; } body { padding:18px 12px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Тень под банкой — карточка товара</h1>
+  <p class="sub">Скриншоты headless Chrome. «Было» — прод до правки, «Стало» — после. Кадры вырезаны у основания банки (пол — самое заметное место).</p>
+
+  <section>
+    <h2>1. Как задумано в макете</h2>
+    <p class="where">Макет 2560×1440, основание банки. Под банкой мягкая тень, уходящая влево по полу — свет падает справа.</p>
+    <figure class="shot">
+      <img src="mock-2560.png" alt="Макет: тень под банкой">
+      <figcaption><span class="tag ref">Макет</span>Тень у основания: мягкое пятно влево от банки, без резкой границы.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>2. Карточка товара, окно 2560×1440</h2>
+    <p class="where">Фото героя новое, пол под банкой чистый — банка «висела». Вернул такую же плоскую тень, как под банкой на главной странице.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="base-2560-before.png" alt="Основание банки, 2560, до правки">
+        <figcaption><span class="tag before">Было</span>Пол под банкой ровный, тени нет — банка не стоит на полу.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="base-2560-after.png" alt="Основание банки, 2560, после правки">
+        <figcaption><span class="tag after">Стало</span>Мягкая тень у основания, уходит влево — как на макете и на главной.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Карточка товара, окно 1920×950</h2>
+    <p class="where">Тот же кадр на ноутбучной ширине: тень масштабируется вместе с банкой, кант у пола без шва.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="base-1920-before.png" alt="Основание банки, 1920, до правки">
+        <figcaption><span class="tag before">Было</span>1920×950, основания банки.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="base-1920-after.png" alt="Основание банки, 1920, после правки">
+        <figcaption><span class="tag after">Стало</span>1920×950, основания банки.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Для сравнения — тень на главной</h2>
+    <p class="where">Тот же приём уже стоит на главной (коммит 736d36f). На карточке тени в коде раньше не было — теперь геометрия и плотность совпадают.</p>
+    <figure class="shot">
+      <img src="home-base-2560.png" alt="Главная: тень под банкой">
+      <figcaption><span class="tag ref">Главная</span>Плоский эллипс под банкой, 2560×1440.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Проверки</h2>
+    <table>
+      <tr><th>Проверка</th><th>Результат</th></tr>
+      <tr><td>Позиция и размер банки на 1920 / 2560 / 768 / 390</td><td class="ok">не изменились (совпадает с продом до правки)</td></tr>
+      <tr><td>Горизонтальная прокрутка 2550 / 2559 / 2560</td><td class="ok">0 px</td></tr>
+      <tr><td>Пиксельное сравнение с прод-сборкой</td><td class="ok">отличия только у основания банки</td></tr>
+      <tr><td>Прод после сборки</td><td class="ok">кадры совпадают с локальными побайтно</td></tr>
+    </table>
+    <p class="note">Тень — псевдоэлемент <code>.p-hero__can::after</code> в <code>css/product.css</code>; на телефонах размытие уменьшено (12&nbsp;px до 1024, 9&nbsp;px до 768), чтобы пятно не расползалось на маленькой банке.</p>
+  </section>
+</div>
+</body>
+</html>
