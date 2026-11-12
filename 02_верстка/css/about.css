@@ -41,6 +41,11 @@ main {
   background: #f0eff2 url("../assets/img/about-hero.png") right calc(-0.1171875 * var(--u)) top 51.8% / auto 117.4% no-repeat;
 }
 
+/* Крошки: макетный кегль 16.5 при 2560 (общий clamp даёт 15) */
+.about-page .crumbs {
+  font-size: max(13px, calc(0.64453125 * var(--u)));
+}
+
 /* Крошки: отступ до заголовка (в макете 22px при ширине 2560) */
 .about-page .crumbs span[aria-current] {
   display: inline-block;
@@ -52,7 +57,8 @@ main {
   margin: calc(0.78125 * var(--u)) 0 0;
   font-size: max(28px, calc(2.0703125 * var(--u)));
   line-height: 1.1;
-  font-weight: var(--fw-medium);
+  /* в макете заголовок светлее остальных заголовков страницы */
+  font-weight: 400;
   text-transform: uppercase;
   /* макет: чернила заголовка 221..608 (388px) — Montserrat 53 с трекингом -0.02em */
   letter-spacing: -0.02em;
@@ -62,16 +68,19 @@ main {
 .about-text {
   /* макет: колонка 1400px при 2560 */
   max-width: calc(54.6875 * var(--u));
-  margin: calc(2.1484375 * var(--u)) 0 0;
+  margin: calc(2.265625 * var(--u)) 0 0;
 }
 
 .about-text p {
   margin: 0;
-  /* макет: кегль 18.3, интерлиньяж 30px (чернила строк 335..709) */
-  font-size: max(14px, calc(0.71484375 * var(--u)));
+  /* макет: кегль 18.5, интерлиньяж 30px (чернила строк 335..709) */
+  font-size: max(14px, calc(0.72265625 * var(--u)));
   line-height: 1.639;
   font-weight: var(--fw-medium);
   color: #2a323a;
+  /* base.css ставит text-wrap: pretty — он переносит «ответственность» на
+     вторую строку, а в макете строка кончается на «ответственность за» */
+  text-wrap: wrap;
 }
 
 .about-text p + p { margin-top: calc(0.703125 * var(--u)); }
@@ -87,13 +96,20 @@ main {
 
 .about-features {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, calc(15.234375 * var(--u))));
-  gap: calc(1.25 * var(--u));
-  /* макет: ряд преимуществ 224..1704 — 1480px при 2560, колонки 346 */
-  max-width: calc(57.8125 * var(--u));
+  /* Колонки неравные, как в макете: ширина карточки задана расстоянием между
+     разделителями (536/918/1300 при 2560, шаг 382), а разделитель стоит на
+     правом крае трека. Поэтому треки 312 + 382 + 382 + 382 = 1458, а разный
+     воздух слева у карточек выравнивает иконки по макету. */
+  grid-template-columns:
+    calc(12.1875 * var(--u))
+    repeat(3, minmax(0, calc(14.921875 * var(--u))));
+  row-gap: calc(1.25 * var(--u));
+  column-gap: 0;
+  /* макет: разделители 536/918/1300, ряд кончается на 1618 */
+  max-width: calc(56.953125 * var(--u));
   /* макет: чернила преимуществ начинаются на 801, текст вступления
-     заканчивается на 717 — отступ 84 */
-  margin: calc(3.28125 * var(--u)) 0 0;
+     заканчивается на 714 — отступ 81 */
+  margin: calc(3.1640625 * var(--u)) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -111,10 +127,14 @@ main {
 /* Разделитель между преимуществами: тонкая серая линия справа у всех, кроме
    последнего пункта. Высота — по самой высокой карточке ряда (stretch). */
 .about-feature:not(:last-child) {
-  /* воздух между текстом и линией, иначе последняя строка упирается в неё */
-  padding-right: calc(1.5625 * var(--u));
   border-right: 2px solid #cccccc;
 }
+
+/* Воздух слева у каждой карточки — по макету (иконки 240/569/954/1326) */
+.about-feature:nth-child(1) { padding-left: calc(0.625 * var(--u)); }
+.about-feature:nth-child(2) { padding-left: calc(1.2890625 * var(--u)); }
+.about-feature:nth-child(3) { padding-left: calc(1.40625 * var(--u)); }
+.about-feature:nth-child(4) { padding-left: calc(1.015625 * var(--u)); }
 
 .about-feature__icon {
   display: block;
@@ -131,19 +151,31 @@ main {
 
 .about-feature__title {
   margin: 0;
-  font-size: max(14px, calc(0.703125 * var(--u)));
-  line-height: 1.25;
+  font-size: max(14px, calc(0.625 * var(--u)));
+  line-height: 1.2;
   font-weight: var(--fw-medium);
   text-transform: uppercase;
   color: #252b37;
 }
 
 .about-feature__text {
-  margin: calc(0.234375 * var(--u)) 0 0;
-  font-size: max(14px, calc(0.703125 * var(--u)));
-  line-height: 1.35;
+  margin: calc(0.46875 * var(--u)) 0 0;
+  font-size: max(14px, calc(0.625 * var(--u)));
+  line-height: 1.47;
   font-weight: var(--fw-medium);
   color: #7d8695;
+}
+
+/* Ниже макетного полотна карточки уже, и жёсткие переносы макета дают рваные
+   строки, а макетный интерлиньяж удлиняет ряд преимуществ — страница на
+   1440–1600 переставала влезать в экран. Там переносы отдаём браузеру
+   и держим прежние плотные строки. */
+@media (max-width: 1899px) {
+  .about-feature__text .about-br { display: none; }
+  .about-feature__text {
+    margin-top: calc(0.234375 * var(--u));
+    line-height: 1.35;
+  }
 }
 
 /* --- Логотипы партнёров --- */
@@ -201,17 +233,26 @@ main {
   .about-page {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* Не space-between: блоки стоят по макету сверху, а свободная высота
+       копится под логотипами — их к низу прижимает margin-top: auto */
+    justify-content: flex-start;
     padding-bottom: calc(6.9921875 * var(--u));
   }
+
+  .about-partners { margin-top: auto; }
 }
 
 /* --- Адаптив (проверяем 360 и 1024) --- */
 
 @media (max-width: 1280px) {
-  .about-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: calc(1.25 * var(--u));
+  }
+  /* макетный воздух слева — только для четырёх колонок */
+  .about-feature:nth-child(n) { padding-left: 0; }
   /* в две колонки разделитель нужен только между колонками (1-й и 3-й) */
-  .about-feature:not(:last-child) { padding-right: 0; border-right: 0; }
+  .about-feature:not(:last-child) { border-right: 0; }
   .about-feature:nth-child(odd) {
     padding-right: calc(1.5625 * var(--u));
     border-right: 2px solid #cccccc;
@@ -241,6 +282,10 @@ main {
 
 /* Мобилка: текст крупнее по интерлиньяжу и с более воздушными абзацами */
 @media (max-width: 768px) {
+  /* макетное ограничение колонки в 54.7u на телефоне сжимает её до 210px —
+     отдаём тексту всю ширину экрана */
+  .about-text { max-width: none; }
+
   .about-text p {
     line-height: 1.55;
   }
