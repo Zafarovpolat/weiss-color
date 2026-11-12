@@ -37,7 +37,9 @@
 
 .sampler-layout {
   display: grid;
-  grid-template-columns: minmax(0, 701fr) minmax(0, 473fr) minmax(0, 790fr);
+  /* правая колонка — 37,5% контейнера: в макете 786 из 2038. Доли fr
+     растягивали её вместе с более широким контейнером сайта (825 вместо 786) */
+  grid-template-columns: minmax(0, 701fr) minmax(0, 473fr) minmax(0, 37.5%);
   column-gap: clamp(12px, 1.17vw, 30px);
   row-gap: clamp(16px, 1.8vw, 46px);
   align-items: start;
@@ -145,6 +147,11 @@
    на узких экранах текст течёт свободно. */
 .sampler-br { display: none; }
 @media (min-width: 1281px) { .sampler-br { display: inline; } }
+
+/* перенос плашки после «цвет» — только на десктопе, на узких экранах текст
+   течёт свободно (иначе остаётся короткая последняя строка) */
+.sampler-notice-br { display: none; }
+@media (min-width: 1281px) { .sampler-notice-br { display: inline; } }
 
 /* --- Три преимущества --- */
 
@@ -264,7 +271,8 @@
 .sampler-buy .btn {
   min-height: clamp(46px, 2.77vw, 71px);
   font-size: clamp(15px, 0.94vw, 24px);
-  font-weight: var(--fw-regular);
+  letter-spacing: 0.02em;
+  font-weight: var(--fw-medium);
 }
 .sampler-add { flex: 1 1 clamp(220px, 20.9vw, 536px); }
 .sampler-continue {
@@ -273,10 +281,11 @@
   margin-top: clamp(8px, 0.86vw, 22px);
   /* в макете вторичная кнопка без белой заливки — фон страницы */
   background: transparent;
+  color: #000000;
 }
 
 /* текст вторичной кнопки чуть жирнее первичной */
-.sampler-buy .sampler-continue { font-weight: var(--fw-medium); }
+.sampler-buy .sampler-continue { font-weight: var(--fw-semibold); }
 
 /* --- Предупреждение о цвете --- */
 
@@ -307,6 +316,67 @@
   line-height: 1.35;
   font-weight: var(--fw-medium);
   color: #4f5a6a;
+}
+
+/* --- Десктоп: всё в правой колонке считается от её ширины --- */
+/* Макетная колонка 790 px; раньше кегли и контролы висели на vw, поэтому при
+   ширине окна 1920 колонка сжималась на 15%, а текст — на 25%: строки не
+   совпадали с макетом. cqw держит одинаковые пропорции на любой ширине. */
+@media (min-width: 1281px) {
+  .sampler-aside { container-type: inline-size; }
+
+  .sampler-aside__title { font-size: 5.19cqw; }
+  .sampler-aside__text {
+    max-width: none;
+    margin-top: 2.78cqw;
+    font-size: 2.85cqw;
+    line-height: 1.45;
+  }
+
+  .sampler-benefits {
+    /* колонки по содержимому: «Быстрая доставка» в макете — одна строка,
+       а равные 1fr-колонки на 1 px не давали ей влезть */
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+    gap: 3.54cqw;
+    margin-top: 4.56cqw;
+  }
+  .sampler-benefit { gap: 1.77cqw; font-size: 2.28cqw; }
+  .sampler-benefit svg { width: 4.81cqw; }
+  .sampler-benefit:nth-child(2) svg { width: 5.06cqw; }
+  .sampler-benefit:nth-child(3) svg { width: 7.72cqw; }
+
+  .sampler-price-row { margin-top: 5.06cqw; }
+  .sampler-price { font-size: 5.95cqw; }
+  .sampler-stock { gap: 1.77cqw; font-size: 2.28cqw; }
+  .sampler-stock::before { width: 2.66cqw; height: 2.66cqw; }
+
+  .sampler-buy { gap: 6.33cqw; margin-top: 2.53cqw; }
+  .sampler-qty { gap: 1.39cqw; }
+  .sampler-qty__label { font-size: 2.28cqw; }
+  .sampler-qty .qty__btn {
+    width: 8.48cqw;
+    height: 7.72cqw;
+    font-size: 4.56cqw;
+  }
+  .sampler-qty .qty__input {
+    width: 8.35cqw;
+    height: 7.72cqw;
+    font-size: 4.68cqw;
+  }
+
+  .sampler-buy .btn { min-height: 9.11cqw; font-size: 2.78cqw; }
+  .sampler-add { flex: 1 1 auto; }
+  .sampler-buy .sampler-continue { min-height: 9.37cqw; margin-top: 5.82cqw; }
+
+  .sampler-notice {
+    grid-template-columns: 5.57cqw minmax(0, 1fr);
+    gap: 2.66cqw;
+    margin-top: 4.81cqw;
+    /* справа поле шире: в макете абзац рвётся после «цвет» */
+    padding: 2.53cqw 6.33cqw 2.53cqw 3.29cqw;
+  }
+  .sampler-notice p { font-size: 2.28cqw; line-height: 1.45; }
 }
 
 /* --- Адаптив (проверяем 360 и 1024) --- */

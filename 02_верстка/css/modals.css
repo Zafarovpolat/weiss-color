@@ -82,13 +82,14 @@
   padding-inline: 20px;
   font-size: 16px;
   letter-spacing: 0.02em;
+  font-weight: var(--fw-medium);
 }
 
 /* контурная «Продолжить покупку»: в макете заливка окна и серый текст */
 .mcard__actions .btn--outline {
   color: #4c4b51;
   background: transparent;
-  font-weight: var(--fw-regular);
+  font-weight: var(--fw-medium);
 }
 
 /* --- М23 «Товар добавлен в корзину» --- */
