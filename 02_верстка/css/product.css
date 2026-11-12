@@ -74,8 +74,8 @@ main {
   width: 110%;
   height: 5.2%;
   border-radius: 50%;
-  background: rgba(31, 41, 55, 0.25);
-  filter: blur(18px);
+  background: rgba(31, 41, 55, 0.28);
+  filter: blur(20px);
   transform: rotate(-5deg);
 }
 
