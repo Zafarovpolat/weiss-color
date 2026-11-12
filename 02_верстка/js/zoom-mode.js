@@ -23,8 +23,9 @@
    съедает ~140px) страница прокручивается ровно на «пол колеса» и упирается
    в подвал. Если запас небольшой, ужимаем полотно до высоты окна — тот же
    вид, что при масштабе 90%, но без ручного зума. Работает только там, где
-   размеры заморожены на 2560 (--u: 25.6px): при пропорциональном --u html
-   zoom не меняет высоту. Длинные страницы (каталог, корзина) не трогаем. */
+   размеры заморожены (--u: 25.6px, порог 2550px — см. base.css): при
+   пропорциональном --u html zoom не меняет высоту. Длинные страницы
+   (каталог, корзина) не трогаем. */
 (function () {
   var MIN_ZOOM = 0.875;
   var MAX_OVERFLOW = 0.12;
@@ -33,17 +34,19 @@
 
   function fit() {
     if (de.classList.contains('zoom-09')) return;
-    if (window.innerWidth < 2560) { de.style.zoom = ''; return; }
+    if (window.innerWidth < 2550) { de.style.zoom = ''; return; }
     de.style.zoom = '1';
     var height = de.scrollHeight;
     var viewport = window.innerHeight;
-    if (!height || height <= viewport + 1) return;
+    /* 2px запаса нужны и когда страница влезает ровно впритык: при нулевом
+       запасе полоса прокрутки от округления появлялась, отнимала ширину,
+       страница становилась выше — и скролл начинал мигать. */
+    var target = viewport - 2;
+    if (!height || height <= target) return;
     if ((height - viewport) / height > MAX_OVERFLOW) return;
     /* После масштабирования текст может перенестись иначе; 1–2 поправки
-       доводят страницу до высоты окна. Минус 2px — чтобы округление
-       не оставляло однопиксельный скролл. */
-    var target = viewport - 2;
-    var zoom = target / height;
+       доводят страницу до высоты окна. */
+    var zoom = Math.min(1, target / height);
     for (var i = 0; i < 3; i++) {
       zoom = Math.max(MIN_ZOOM, zoom);
       de.style.zoom = zoom.toFixed(3);

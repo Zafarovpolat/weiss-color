@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Проверка правок 12.11 — фон героя и прокрутка</title>
+<style>
+  :root { --ink:#233146; --mut:#6a737c; --line:#d7dbe2; --bg:#f6f7f9; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:28px 18px 64px; font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width:1200px; margin:0 auto; }
+  h1 { margin:0 0 6px; font-size:24px; font-weight:650; letter-spacing:-.01em; }
+  .sub { margin:0 0 28px; color:var(--mut); font-size:14px; }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 18px 22px; margin:0 0 22px; }
+  h2 { margin:0 0 4px; font-size:17px; font-weight:650; }
+  .where { margin:0 0 14px; color:var(--mut); font-size:13px; }
+  .shot { margin:0; }
+  .shot img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#eef1f4; }
+  .shot figcaption { margin:8px 0 0; font-size:13px; color:var(--mut); }
+  .tag { display:inline-block; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-right:8px; }
+  .tag.before { background:#fde8e8; color:#9b2323; }
+  .tag.after { background:#e3f4e8; color:#1d6b3a; }
+  .duo { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .duo figure + figure { margin-top:0; }
+  .duo figcaption { min-height:38px; }
+  .crops .shot img { max-width:620px; }
+  table { width:100%; border-collapse:collapse; margin:14px 0 0; font-size:13.5px; }
+  th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  td.num { font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .ok { color:#1d6b3a; font-weight:600; }
+  .note { margin:12px 0 0; font-size:13px; color:var(--mut); }
+  @media (max-width:760px) { .duo { grid-template-columns:1fr; } body { padding:18px 12px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Проверка правок — 12 ноября, вечер</h1>
+  <p class="sub">Скриншоты headless Chrome, ширина окна 2559 и 2560&nbsp;px. «Было» — текущая прод-сборка, «Стало» — новая. Пятно у банки не трогали: фон героя вернули к прежнему поведению, как просили.</p>
+
+  <section>
+    <h2>1. Фон героя товара — вернули как было</h2>
+    <p class="where">Окно 2560×1440, левый край героя. Прошлая правка (фон 2560&nbsp;px) отлепляла снимок от края окна: слева появлялась светлая полоса, растение обрезалось. Правило удалено — фон снова <code>cover</code>, снимок прижат к краю окна.</p>
+    <div class="duo crops">
+      <figure class="shot">
+        <img src="left-before.jpg" alt="Левый край героя до правки">
+        <figcaption><span class="tag before">Было</span>Снимок отлеплен от края: слева плоская светлая полоса, листья растения обрезаны.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="left-after.jpg" alt="Левый край героя после правки">
+        <figcaption><span class="tag after">Стало</span>Снимок снова уходит за левый край окна, пол и стена идут без полосы.</figcaption>
+      </figure>
+    </div>
+    <div class="duo" style="margin-top:14px">
+      <figure class="shot">
+        <img src="full-before.jpg" alt="Карточка товара целиком, 2560, до правки">
+        <figcaption><span class="tag before">Было</span>2560×1440 целиком.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="full-after.jpg" alt="Карточка товара целиком, 2560, после правки">
+        <figcaption><span class="tag after">Стало</span>2560×1440 целиком. Пятно у низа банки осталось — уберём отдельно.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Остаточная прокрутка на окне 2559</h2>
+    <p class="where">Ваша ширина окна — 2559: у экрана 2560 снимается рамка окна. Заморозка макета включалась ровно с 2560, поэтому на 2559 вёрстка оставалась пропорциональной и упиралась в кромку окна без запаса: на главной страница выходила на 3&nbsp;px, и полоса прокрутки появлялась/исчезала. Теперь заморозка и подгонка по высоте работают с 2550, а подгонка всегда оставляет 2&nbsp;px запаса.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="scroll-home-before.jpg" alt="Главная, 2559×1310, до правки">
+        <figcaption><span class="tag before">Было — главная 2559×1310</span>Страница 1313&nbsp;px при окне 1310: прокрутка 3&nbsp;px.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="scroll-home-after.jpg" alt="Главная, 2559×1310, после правки">
+        <figcaption><span class="tag after">Стало — главная 2559×1310</span>Подгонка 0.908: страница ровно в окне, прокрутки нет.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="scroll-prod-before.jpg" alt="Карточка товара, 2559×1310, до правки">
+        <figcaption><span class="tag before">Было — товар 2559×1310</span>Подвал за экраном на 125&nbsp;px.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="scroll-prod-after.jpg" alt="Карточка товара, 2559×1310, после правки">
+        <figcaption><span class="tag after">Стало — товар 2559×1310</span>Подгонка 0.907: подвал в экране.</figcaption>
+      </figure>
+    </div>
+    <p class="note">На 2559 при высоте окна 1439 и на 2560×1440 прокрутки нет ни до, ни после — там не хватало только запаса: любая половина пикселя давала полосу прокрутки, которая отнимала ширину и пересчитывала вёрстку. Теперь запас 2&nbsp;px задаётся принудительно.</p>
+  </section>
+
+  <section>
+    <h2>Проверка</h2>
+    <table>
+      <tr><th>Окно</th><th>Страница</th><th>Было</th><th>Стало</th></tr>
+      <tr><td class="num">2559×1439</td><td>все 8 экранов</td><td>запас 0&nbsp;px</td><td class="ok">запас 2&nbsp;px, прокрутки нет</td></tr>
+      <tr><td class="num">2559×1310</td><td>главная</td><td>1313 / прокрутка 3</td><td class="ok">1310 / прокрутки нет</td></tr>
+      <tr><td class="num">2559×1310</td><td>товар</td><td>1435 / прокрутка 125</td><td class="ok">1310 / прокрутки нет</td></tr>
+      <tr><td class="num">2550×1439</td><td>товар</td><td>пропорциональная сетка</td><td class="ok">макетная сетка, прокрутки нет</td></tr>
+      <tr><td class="num">2560×1440</td><td>товар</td><td>прокрутки нет</td><td class="ok">прокрутки нет, фон cover</td></tr>
+      <tr><td class="num">2936×1440</td><td>все 8 экранов</td><td>—</td><td class="ok">полотно по центру, прокрутки нет</td></tr>
+      <tr><td class="num">1920×950</td><td>главная, товар, о компании, контакты, где купить, правовой</td><td>—</td><td class="ok">попиксельно совпадает с прод-сборкой</td></tr>
+      <tr><td class="num">390×844 / 1024×768 / 1440×900</td><td>товар</td><td>—</td><td class="ok">без изменений</td></tr>
+    </table>
+    <p class="note">Совпадение на 1920 проверено хешами PNG: 6 страниц, обе сборки, одинаковые SHA-1. Горизонтальной прокрутки нет ни на одной ширине (2550–2936).</p>
+  </section>
+</div>
+</body>
+</html>

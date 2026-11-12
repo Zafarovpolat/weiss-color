@@ -15,7 +15,7 @@
   padding-inline: 0;
 }
 
-@media (min-width: 2560px) {
+@media (min-width: 2550px) {
   .guide-page { --u: 25.6px; }
 }
 

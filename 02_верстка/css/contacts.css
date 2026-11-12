@@ -19,7 +19,7 @@ main {
   --u: 1cqw;
 }
 
-@media (min-width: 2560px) {
+@media (min-width: 2550px) {
   main { --u: 25.6px; }
 }
 
