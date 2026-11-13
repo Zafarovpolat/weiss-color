@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Проверка — правки по замечаниям 11.11</title>
+<style>
+  :root { --ink:#233146; --mut:#6a737c; --line:#d7dbe2; --bg:#f6f7f9; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:28px 18px 64px; font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width:1200px; margin:0 auto; }
+  h1 { margin:0 0 6px; font-size:24px; font-weight:650; letter-spacing:-.01em; }
+  .sub { margin:0 0 28px; color:var(--mut); font-size:14px; }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 18px 22px; margin:0 0 22px; }
+  h2 { margin:0 0 4px; font-size:17px; font-weight:650; }
+  .where { margin:0 0 14px; color:var(--mut); font-size:13px; }
+  .shot { margin:0; }
+  .shot img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#eef1f4; }
+  .shot.tight img { width:auto; max-width:100%; margin:0 auto; }
+  .shot figcaption { margin:8px 0 0; font-size:13px; color:var(--mut); }
+  .tag { display:inline-block; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-right:8px; }
+  .tag.before { background:#fde8e8; color:#9b2323; }
+  .tag.after { background:#e3f4e8; color:#1d6b3a; }
+  .tag.ref { background:#e8eefb; color:#22428f; }
+  .duo { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .trio { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .duo + .duo, .trio + .duo, .duo + .trio { margin-top:14px; }
+  .duo figcaption, .trio figcaption { min-height:38px; }
+  table { width:100%; border-collapse:collapse; margin:14px 0 0; font-size:13.5px; }
+  th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  td.num { font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .ok { color:#1d6b3a; font-weight:600; }
+  .note { margin:12px 0 0; font-size:13px; color:var(--mut); }
+  code { font:13px/1.4 ui-monospace,Consolas,monospace; background:#f1f3f6; padding:1px 5px; border-radius:4px; }
+  @media (max-width:760px) { .duo, .trio { grid-template-columns:1fr; } body { padding:18px 12px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Правки по замечаниям от 11.11 — до и после</h1>
+  <p class="sub">Скриншоты headless Chrome, окна 2560×1440 и 1920×1080, масштаб 1:1. «Было» — опубликованная версия до правки, «Стало» — текущая, «Макет» — растровый макет 2560×1440, вырезанный по тем же координатам.</p>
+
+  <section>
+    <h2>1. Общее: текст в подвале «Заказать звонок»</h2>
+    <p class="where">Главная, подвал. Замечание: текст в кнопке подвала меньше, чем в такой же кнопке шапки.</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/foot-2560-before.png" alt="Кнопка подвала до правки">
+        <figcaption><span class="tag before">Было</span>Подвал: 13 px, кнопка 229×52. Шапка при этом 16 px.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/foot-2560-after.png" alt="Кнопка подвала после правки">
+        <figcaption><span class="tag after">Стало</span>Подвал: 16 px, кнопка 229×51 — ровно как в шапке.</figcaption>
+      </figure>
+    </div>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/head-2560-after.png" alt="Кнопка шапки для сравнения">
+        <figcaption><span class="tag ref">Шапка</span>Та же кнопка в шапке: 16 px, 229×51 — подвал теперь совпадает с ней.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/foot-2560-mock.png" alt="Кнопка подвала в макете">
+        <figcaption><span class="tag ref">Макет</span>В макете подпись подвала набрана тем же кеглем, что и в шапке.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Главная 1.1 и 1.2: цвет кнопки героя и стрелка</h2>
+    <p class="where">Главная, первый экран, кнопка «Подробнее». Замечания: заливка светлее макета, стрелка отличается.</p>
+    <div class="trio">
+      <figure class="shot">
+        <img src="img/hero-2560-before.png" alt="Кнопка героя до правки">
+        <figcaption><span class="tag before">Было</span>Заливка <code>#62381e</code>, стрелка 42 px с тонким открытым остриём.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/hero-2560-after.png" alt="Кнопка героя после правки">
+        <figcaption><span class="tag after">Стало</span>Заливка <code>#4d2c17</code> — как в макете; стрелка 52 px, голова залитая.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/hero-2560-mock.png" alt="Кнопка героя в макете">
+        <figcaption><span class="tag ref">Макет</span>Макет: <code>#4d2c17</code>, стрелка 52 px, шток тонкий, голова — сплошной треугольник.</figcaption>
+      </figure>
+    </div>
+    <div class="trio">
+      <figure class="shot tight">
+        <img src="img/heroarrow-2560-before.png" alt="Стрелка героя до правки, увеличение 5×">
+        <figcaption><span class="tag before">Было</span>Увеличение 5×: остриё из двух штрихов.</figcaption>
+      </figure>
+      <figure class="shot tight">
+        <img src="img/heroarrow-2560-after.png" alt="Стрелка героя после правки, увеличение 5×">
+        <figcaption><span class="tag after">Стало</span>Увеличение 5×: залитый треугольник, как в макете.</figcaption>
+      </figure>
+      <figure class="shot tight">
+        <img src="img/heroarrow-2560-mock.png" alt="Стрелка героя в макете, увеличение 5×">
+        <figcaption><span class="tag ref">Макет</span>Увеличение 5×: та же форма головы.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Стрелки в кнопках на остальных страницах</h2>
+    <p class="where">Замечания: «Где купить» (4 кнопки «Перейти») и 404 («На главную»). Стрелка заменена во всей семье — на всех 25 экранах, включая модальное окно звонка.</p>
+    <figure class="shot tight">
+      <img src="img/buy-2560-before.png" alt="Стрелки на «Где купить» до правки">
+      <figcaption><span class="tag before">Было</span>«Где купить»: тонкое открытое остриё на всех четырёх кнопках.</figcaption>
+    </figure>
+    <figure class="shot tight" style="margin-top:12px">
+      <img src="img/buy-2560-after.png" alt="Стрелки на «Где купить» после правки">
+      <figcaption><span class="tag after">Стало</span>«Где купить»: залитая голова и тонкий шток.</figcaption>
+    </figure>
+    <figure class="shot tight" style="margin-top:12px">
+      <img src="img/buy-2560-mock.png" alt="Стрелки на «Где купить» в макете">
+      <figcaption><span class="tag ref">Макет</span>Макет «Внешние торговые площадки»: та же стрелка.</figcaption>
+    </figure>
+    <figure class="shot tight" style="margin-top:12px">
+      <img src="img/e404-2560-before.png" alt="Стрелка на 404 до правки">
+      <figcaption><span class="tag before">Было</span>404: остриё из двух штрихов, короче макета.</figcaption>
+    </figure>
+    <figure class="shot tight" style="margin-top:12px">
+      <img src="img/e404-2560-after.png" alt="Стрелка на 404 после правки">
+      <figcaption><span class="tag after">Стало</span>404, «На главную»: залитая голова.</figcaption>
+    </figure>
+    <figure class="shot tight" style="margin-top:12px">
+      <img src="img/e404-2560-mock.png" alt="Стрелка на 404 в макете">
+      <figcaption><span class="tag ref">Макет</span>Макет «Страница ошибки»: сплошной треугольник.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>4. Карточка товара 2: тени на фото галереи</h2>
+    <p class="where">Карточка товара, фото с банкой и растением. Замечание: тень от краски направлена в другую сторону, есть тень у растения.</p>
+    <div class="trio">
+      <figure class="shot tight">
+        <img src="img/shadow2-2560-before.png" alt="Тень под банкой до правки">
+        <figcaption><span class="tag before">Было</span>Отдельное тёмное пятно стояло над полом и тянулось влево — читалось как тень у растения.</figcaption>
+      </figure>
+      <figure class="shot tight">
+        <img src="img/shadow2-2560-after.png" alt="Тень под банкой после правки">
+        <figcaption><span class="tag after">Стало</span>Мягкий клин от левой кромки днища: свет падает справа, тень уходит влево и растворяется на полу.</figcaption>
+      </figure>
+      <figure class="shot tight">
+        <img src="img/shadow2-2560-mock.png" alt="Тень под банкой в макете">
+        <figcaption><span class="tag ref">Макет</span>Макет: то же направление, плотность у днища и плавный уход влево.</figcaption>
+      </figure>
+    </div>
+    <p class="note">Плотность сверена по пикселям: строка y=790, x=260–360 — у нас 234/227/223/216/210/203, в макете 231/229/223/221/208/187; правее банки и на полу под ней разница в пределах 1–2 единиц яркости. До растения (x&nbsp;&lt;&nbsp;260) фон 244 — тени там нет.</p>
+  </section>
+
+  <section>
+    <h2>5. Карточка товара 3: заголовки вкладок и линия</h2>
+    <p class="where">Карточка товара, «Описание товара» / «Технические характеристики». Замечание: в макете толще текст и линия под «Описание товара».</p>
+    <figure class="shot tight">
+      <img src="img/tabs-2560-before.png" alt="Вкладки до правки">
+      <figcaption><span class="tag before">Было</span>Вес 500, линия 2 px.</figcaption>
+    </figure>
+    <figure class="shot tight" style="margin-top:12px">
+      <img src="img/tabs-2560-after.png" alt="Вкладки после правки">
+      <figcaption><span class="tag after">Стало</span>Вес 600 (Semibold), линия 3 px.</figcaption>
+    </figure>
+    <figure class="shot tight" style="margin-top:12px">
+      <img src="img/tabs-2560-mock.png" alt="Вкладки в макете">
+      <figcaption><span class="tag ref">Макет</span>Semibold, линия 3 px — совпадает со «Стало».</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>6. Проверка на 1920×1080</h2>
+    <p class="where">Все правки держатся и на рабочем разрешении 1920 (страница масштабируется, кегли и толщины пересчитываются пропорционально).</p>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/hero-1920-before.png" alt="Кнопка героя 1920 до правки">
+        <figcaption><span class="tag before">Было, 1920</span>Светлая заливка, открытое остриё.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/hero-1920-after.png" alt="Кнопка героя 1920 после правки">
+        <figcaption><span class="tag after">Стало, 1920</span>Тёмная заливка, залитая голова 35 px.</figcaption>
+      </figure>
+    </div>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/foot-1920-after.png" alt="Кнопка подвала 1920 после правки">
+        <figcaption><span class="tag after">Стало, 1920</span>Подвал: 13,3 px — как шапка на этой ширине.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/head-1920-after.png" alt="Кнопка шапки 1920 для сравнения">
+        <figcaption><span class="tag ref">Шапка, 1920</span>Та же подпись и кегль.</figcaption>
+      </figure>
+    </div>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/buy-1920-before.png" alt="Стрелки «Где купить» 1920 до правки">
+        <figcaption><span class="tag before">Было, 1920</span>Открытое остриё.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/buy-1920-after.png" alt="Стрелки «Где купить» 1920 после правки">
+        <figcaption><span class="tag after">Стало, 1920</span>Залитая голова, 31 px.</figcaption>
+      </figure>
+    </div>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/e404-1920-before.png" alt="Кнопка 404 на 1920 до правки">
+        <figcaption><span class="tag before">Было, 1920</span>404: открытое остриё.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/e404-1920-after.png" alt="Кнопка 404 на 1920 после правки">
+        <figcaption><span class="tag after">Стало, 1920</span>404: залитая голова, 33 px.</figcaption>
+      </figure>
+    </div>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/shadow-1920-before.png" alt="Тень под банкой на 1920 до правки">
+        <figcaption><span class="tag before">Было, 1920</span>Тёмное пятно над полом.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/shadow-1920-after.png" alt="Тень под банкой на 1920 после правки">
+        <figcaption><span class="tag after">Стало, 1920</span>Мягкий клин у днища, как в макете.</figcaption>
+      </figure>
+    </div>
+    <div class="duo">
+      <figure class="shot">
+        <img src="img/tabs-1920-before.png" alt="Вкладки на 1920 до правки">
+        <figcaption><span class="tag before">Было, 1920</span>Вес 500, линия 2 px.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/tabs-1920-after.png" alt="Вкладки на 1920 после правки">
+        <figcaption><span class="tag after">Стало, 1920</span>Вес 600, линия 3 px.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <p class="note">Все правки опубликованы на проде. Скриншоты сделаны с реальной сборки 2560 и 1920, кропы вырезаны по одной и той же области для «Было», «Стало» и «Макета».</p>
+</div>
+</body>
+</html>
