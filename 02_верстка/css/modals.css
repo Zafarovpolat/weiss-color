@@ -281,7 +281,9 @@ dialog.mcard-add:focus-visible { outline: none; }
   gap: clamp(8px, 0.86vw, 22px);
 }
 
-.callback-form .btn__arrow { width: clamp(30px, 2.58vw, 66px); }
+/* в макете у стрелки формы голова 12×14 при общей длине 66; у залитого
+   глифа пропорции 11:15, поэтому по чернилам головы берём 56 px */
+.callback-form .btn__arrow { width: clamp(30px, 2.1875vw, 56px); }
 
 .callback-form__note {
   display: flex;

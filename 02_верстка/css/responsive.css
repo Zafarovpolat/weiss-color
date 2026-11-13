@@ -456,13 +456,16 @@
     font-size: calc(0.59375 * var(--u));
     letter-spacing: 0.04em;
   }
+  /* в макете подпись подвала ровно как в шапке — ink 170×12 в такой же
+     кнопке 230×51; прежние 13px делали её мельче шапочной */
   .footer__cta {
     flex: none;
     width: calc(8.984375 * var(--u));
-    height: calc(2.03125 * var(--u));
+    height: calc(1.9921875 * var(--u));
     min-height: 0;
     padding: 0;
-    font-size: calc(0.5078125 * var(--u));
+    font-size: calc(0.625 * var(--u));
+    letter-spacing: 0.02em;
     white-space: nowrap;
   }
 }

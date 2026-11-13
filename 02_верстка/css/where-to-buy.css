@@ -150,7 +150,7 @@ main {
 }
 
 /* Кнопка по растру: заливка 219×43, текст «Перейти» 98px по чернилам
-   (22.5px), стрелка 40px видимых внутри svg 44px, зазоры 27/21/32. */
+   (22.5px), зазоры 27/21/32; стрелка 41–42 px по чернилам. */
 .buy-card__link {
   display: inline-flex;
   align-items: center;
@@ -183,8 +183,10 @@ main {
   box-shadow: var(--buy-shadow);
 }
 
+/* стрелка по чернилам макета — 41–42 px; у залитого глифа чернила
+   занимают весь viewBox, поэтому прежние 44 давали перебор */
 .buy-card__link svg {
-  width: max(22px, calc(1.71875 * var(--u)));
+  width: max(22px, calc(1.64 * var(--u)));
   height: auto;
   transition: transform 0.2s ease;
 }

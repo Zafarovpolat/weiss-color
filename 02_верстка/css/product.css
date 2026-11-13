@@ -64,19 +64,26 @@ main {
   align-items: flex-start;
 }
 
-/* плоская тень у пола, как под банкой на главной (layout.css) и по макету */
+/* тень у макета — мягкий клин от левой кромки днища: от банки она плавно
+   уходит влево-вверх и растворяется. Заливка + blur давала отдельный тёмный
+   овал слева от банки, из-за него тень читалась как направленная к растению,
+   поэтому здесь градиент — у него нет видимой границы пятна */
 .p-hero__can::after {
   content: "";
   position: absolute;
   z-index: 0;
-  left: -45%;
-  bottom: 4%;
-  width: 110%;
-  height: 5.2%;
+  left: -26%;
+  bottom: 1.8%;
+  width: 86%;
+  height: 7%;
   border-radius: 50%;
-  background: rgba(31, 41, 55, 0.28);
-  filter: blur(20px);
-  transform: rotate(-5deg);
+  background: radial-gradient(
+    ellipse at 72% 48%,
+    rgba(31, 41, 55, 0.62),
+    rgba(31, 41, 55, 0.2) 48%,
+    rgba(31, 41, 55, 0) 84%
+  );
+  filter: blur(7px);
 }
 
 .p-hero__can img {
@@ -286,8 +293,10 @@ main {
   --p-col1: minmax(0, calc(27.5 * var(--u)));
   --p-col2: minmax(0, calc(35.625 * var(--u)));
   --p-col-gap: calc(9.3359375 * var(--u));
-  /* толщина линии под табами — одна переменная на серую и на тёмно-синюю */
-  --p-tab-line: 2px;
+  /* толщина линии под табами — одна переменная на серую и на тёмно-синюю.
+     В макете сегмент активного таба перекрывает серую линию на 1px и виден
+     двумя пикселями — отсюда 3px, а не 2px: при 2px браузер отдавал 1px. */
+  --p-tab-line: 3px;
   display: grid;
   grid-template-columns: var(--p-col1) var(--p-col2);
   column-gap: var(--p-col-gap);
@@ -319,7 +328,8 @@ main {
   border-bottom: var(--p-tab-line) solid transparent;
   font-size: calc(0.78125 * var(--u));
   line-height: 1.2;
-  font-weight: 500;
+  /* в макете оба таба набраны Semibold (по плотности ink 37.8%, у Medium — 32%) */
+  font-weight: 600;
   text-transform: uppercase;
   color: #4f4f52;
 }
