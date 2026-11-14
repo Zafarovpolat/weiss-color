@@ -142,6 +142,20 @@
     });
   });
 
+  /* Переход «Колеровка онлайн» с карточки товара несёт weiss_product:
+     инструкция М21 сразу открывается поверх визуализатора (ТЗ, п.6.4),
+     товар и фасовка при этом уже подставлены. */
+  const guideDialog = document.getElementById('guide-dialog');
+  if (guideDialog && typeof guideDialog.showModal === 'function'
+      && new URLSearchParams(location.search).has('weiss_product')) {
+    const openGuide = () => guideDialog.showModal();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', openGuide, { once: true });
+    } else {
+      openGuide();
+    }
+  }
+
   /* Демо-отправка: на этапе 1 бэкенда нет. Поля проверяет validation.js,
      после успеха показываем окно «Спасибо» поверх текущей страницы. */
   document.querySelectorAll('#callback-form, #callback-modal-form').forEach((form) => {
