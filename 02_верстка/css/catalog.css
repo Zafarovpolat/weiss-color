@@ -398,6 +398,13 @@ body.catalog-page main {
   background: var(--color-white);
 }
 
+/* Одна страница товаров: пагинации нет, и белая полоса каталога упиралась
+   в подвал — фильтр прилипал к нижней кромке. Держим тот же нижний отступ,
+   что даёт полоса пагинации (на 2560 в макете до подвала 71px). */
+.catalog:last-child {
+  padding-bottom: clamp(40px, 2.38vw, 61px);
+}
+
 /* 2560 (макет 1:1): в макете полоса фильтра свисает ниже сетки товаров, и
    пагинация стоит на уровне её нижней кромки — ячейки 1242..1272, до подвала
    71px. Отдаём фильтру те 40px, на которые он выступает, и пагинация встаёт
@@ -405,6 +412,15 @@ body.catalog-page main {
 @media (min-width: 2560px) {
   .filter {
     margin-bottom: -40px;
+  }
+
+  /* одна страница: свисающий фильтр не должен съедать нижний отступ секции */
+  .catalog:last-child .filter {
+    margin-bottom: 0;
+  }
+
+  .catalog:last-child {
+    padding-bottom: 71px;
   }
 
   /* страница каталога белая, подложка не нужна и только перекрывала бы
@@ -531,7 +547,13 @@ body.catalog-page main {
 .filter {
   align-self: start;
   margin-top: clamp(0px, 1.29vw, 33px);
-  padding: clamp(24px, 1.25vw, 32px) clamp(14px, 0.63vw, 16px) clamp(40px, 2.42vw, 62px) clamp(20px, 1.09vw, 28px);
+  /* Макет М15: карточка 224..601. Слева 28, справа 21: длинная подпись
+     «Краски для внутренних работ» доходит до x≈580, то есть почти до кромки,
+     и в одну строку. Кнопки и ползунок уже — 252..562, у них свой зазор 39
+     (см. --filter-gutter ниже). Раньше справа было 16 — подписи влезали, но
+     кнопки выглядели шире карточки; 39 — наоборот, рвало подписи на две строки. */
+  --filter-gutter: clamp(0px, 0.7vw, 18px);
+  padding: clamp(24px, 1.25vw, 32px) clamp(16px, 0.82vw, 21px) clamp(40px, 2.42vw, 62px) clamp(20px, 1.09vw, 28px);
   border: 1px solid #f0f0f0;
   border-radius: 4px;
   background: var(--color-white);
@@ -764,6 +786,22 @@ body.catalog-page main {
   border-color: var(--color-brown);
   color: var(--color-brown);
   box-shadow: var(--shadow-hover-outline);
+}
+
+/* Колонка фильтра: ползунок, цены и кнопки заканчиваются на кнопочной
+   колонке макета (252..562 при карточке 224..601), а подписи чекбоксов идут
+   шире неё до края карточки. До 1280 фильтр — горизонтальная панель,
+   там этот зазор не нужен. */
+@media (min-width: 1281px) {
+  .range,
+  .filter__prices {
+    margin-right: var(--filter-gutter);
+  }
+
+  .filter__apply,
+  .filter__reset {
+    width: calc(100% - var(--filter-gutter));
+  }
 }
 
 /* --- Адаптив (проверяем 360–1024) --- */
