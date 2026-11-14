@@ -163,6 +163,38 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   padding-inline: var(--container-pad);
 }
 
+/* Уведомления WooCommerce. В макете их нет: блок пуст и скрыт, пока всё
+   в порядке. Появляется только когда действие не удалось (оттенок не подошёл
+   товару, нет в наличии) — иначе ошибка добавления в корзину была не видна. */
+.wc-notices {
+  padding-top: clamp(12px, 0.94vw, 20px);
+}
+
+.wc-notices:empty {
+  display: none;
+}
+
+.wc-notices ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wc-notices .woocommerce-error,
+.wc-notices .woocommerce-message,
+.wc-notices .woocommerce-info {
+  margin: 0;
+  padding: clamp(10px, 0.63vw, 13px) clamp(14px, 0.94vw, 20px);
+  border-radius: 4px;
+  font-size: clamp(14px, 0.83vw, 16px);
+  line-height: 1.45;
+}
+
+.wc-notices .woocommerce-error {
+  background: #fdecec;
+  color: #9b2323;
+}
+
 /* Якорные заголовки не должны прятаться под фиксированными блоками */
 [id] { scroll-margin-top: 16px; }
 
