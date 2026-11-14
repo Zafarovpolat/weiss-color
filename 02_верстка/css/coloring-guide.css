@@ -189,12 +189,59 @@
   text-decoration: none;
 }
 
+/* --- Окно «Как это работает?» поверх визуализатора (М21) ---
+   В макете панель 1819×1051 при 2560: та же карточка 71.17u, крестик 24px
+   с центром в 56 px от правого и 49 px от верхнего края. Окно растянуто на
+   ширину страницы, чтобы cqw считался от той же ширины, что у страницы-
+   инструкции, и карточка совпадала с ней 1:1. */
+.guide-modal {
+  width: 100%;
+  max-width: 100%;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  container-type: inline-size;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.guide-modal::backdrop {
+  background: rgba(23, 30, 49, 0.45);
+}
+
+.guide-modal .guide-card {
+  --u: min(1cqw, 25.6px);
+  position: relative;
+  width: calc(71.171875 * var(--u));
+  margin: 0 auto;
+}
+
+.guide-modal .mcard__close {
+  top: calc(1.05 * var(--u));
+  right: calc(1.33 * var(--u));
+}
+
 /* --- Адаптив (проверяем до 1024) --- */
 
 @media (max-width: 1024px) {
   .guide-page {
     padding-block: clamp(24px, 2.3vw, 60px) clamp(40px, 3vw, 72px);
     padding-inline: var(--container-pad);
+  }
+
+  .guide-modal {
+    padding-inline: var(--container-pad);
+  }
+
+  .guide-modal .guide-card {
+    width: 100%;
+  }
+
+  .guide-modal .mcard__close {
+    top: 12px;
+    right: 12px;
   }
 
   .guide-card {

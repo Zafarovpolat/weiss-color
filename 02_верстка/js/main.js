@@ -117,22 +117,30 @@
   window.WCModal = { showResult };
 })();
 
-/* ---------- Модальное окно «Заказать звонок» (М25, п.9.3) ---------- */
+/* ---------- Модальные окна из разметки: «Заказать звонок» (М25, п.9.3),
+   «Как это работает?» (М21). Открытие — data-modal-open="<id окна>";
+   закрытие — крестик, клик по подложке и Escape (нативно у <dialog>). ---------- */
 (() => {
-  const dialog = document.getElementById('callback-dialog');
-
-  if (dialog && typeof dialog.showModal === 'function') {
-    document.querySelectorAll('[data-modal-open]').forEach((btn) => {
-      btn.addEventListener('click', () => dialog.showModal());
+  document.querySelectorAll('[data-modal-open]').forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      const target = document.getElementById(btn.getAttribute('data-modal-open'));
+      if (!target || typeof target.showModal !== 'function') return;
+      /* Ссылка «Как это работает?» без JS ведёт на страницу-инструкцию. */
+      event.preventDefault();
+      target.showModal();
     });
+  });
 
-    dialog.querySelector('[data-modal-close]')?.addEventListener('click', () => dialog.close());
+  document.querySelectorAll('dialog').forEach((dialog) => {
+    dialog.querySelectorAll('[data-modal-close]').forEach((btn) => {
+      btn.addEventListener('click', () => dialog.close());
+    });
 
     // Клик по подложке закрывает окно (клиент по краю — не кнопка)
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) dialog.close();
     });
-  }
+  });
 
   /* Демо-отправка: на этапе 1 бэкенда нет. Поля проверяет validation.js,
      после успеха показываем окно «Спасибо» поверх текущей страницы. */

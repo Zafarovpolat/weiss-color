@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="../css/modals.css">
   <link rel="stylesheet" href="../css/catalog.css">
   <link rel="stylesheet" href="../css/visualizer.css">
+  <link rel="stylesheet" href="../css/coloring-guide.css">
 </head>
 <body class="page-fill">
   <a class="skip-link" href="#main">К основному содержанию</a>
@@ -90,7 +91,7 @@
       <!-- Заголовок экрана + подсказка -->
       <div class="viz-head">
         <h1 class="viz-title">Колеровка цвета<span>ACE&nbsp;PAINT</span></h1>
-        <a class="viz-help" href="coloring-guide.html">Как это работает?</a>
+        <a class="viz-help" href="coloring-guide.html" data-modal-open="guide-dialog">Как это работает?</a>
       </div>
 
       <div class="viz-cols">
@@ -225,6 +226,71 @@
       </div>
     </div>
   </main>
+
+  <!-- Окно «Как это работает?» (М21): в макете — модалка поверх визуализатора -->
+  <dialog class="guide-modal" id="guide-dialog" aria-labelledby="guide-title">
+    <article class="guide-card">
+      <button class="mcard__close" type="button" data-modal-close aria-label="Закрыть окно">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M3 3l18 18M21 3 3 21" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <h2 class="guide-title" id="guide-title">Как это работает?</h2>
+      <p class="guide-sub">Выберите цвет, и мы заколеруем краску специально для вас</p>
+
+      <ol class="guide-steps">
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h3 class="guide-step__title">Выберите каталог</h3>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step1.png" width="326" height="390" alt="Веер образцов каталогов цветов Weiss" loading="lazy">
+          <p class="guide-step__text">Выберите удобный каталог <br>цветов: ACE PAINT, NCS, <br>RAL, Pantone или <br>фирменную палитру <br>WEISS.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h3 class="guide-step__title">Найдите нужный оттенок</h3>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step2.png" width="325" height="387" alt="Сетка оттенков с выбранным цветом" loading="lazy">
+          <p class="guide-step__text">Просматривайте палитру и <br>выберите понравившийся <br>цвет. Каждый оттенок <br>имеет код и название.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h3 class="guide-step__title">Проверьте на интерьере</h3>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step3.png" width="326" height="388" alt="Визуализация окрашенной гостиной до и после" loading="lazy">
+          <p class="guide-step__text">Используйте визуализацию, <br>чтобы посмотреть, как цвет <br>будет выглядеть в интерьере. <br>Меняйте поверхности <br>и освещение.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h3 class="guide-step__title">Мы заколеруем краску</h3>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step4.png" width="330" height="391" alt="Банка краски ACRILUX с мазком выбранного цвета" loading="lazy">
+          <p class="guide-step__text">После оформления заказа <br>мы заколеруем краску <br>на профессиональном <br>оборудовании точно <br>в выбранный цвет.</p>
+        </li>
+
+        <li class="guide-step">
+          <div class="guide-step__head">
+            <span class="guide-step__num" aria-hidden="true"></span>
+            <h3 class="guide-step__title">Получите готовый продукт</h3>
+          </div>
+          <img class="guide-step__img" src="../assets/img/guide-step5.png" width="328" height="386" alt="Упаковка заказа Weiss Color" loading="lazy">
+          <p class="guide-step__text">Вы получаете краску, готовую к применению, с указанием цвета и кода на этикетке.</p>
+        </li>
+      </ol>
+
+      <div class="guide-cta">
+        <button class="guide-cta__primary" type="button" data-modal-close>Выбрать цвет</button>
+        <a class="guide-cta__secondary" href="modal-sampler.html">Заказать пробный образец</a>
+      </div>
+    </article>
+  </dialog>
 
   <!-- Подвал: общий блок п.3.3 -->
   <footer class="site-footer">
