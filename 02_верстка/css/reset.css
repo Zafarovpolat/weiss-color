@@ -1,6 +1,8 @@
 /* reset.css — сброс браузерных стилей (нормализация). */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; padding: 0; }
+/* общий сброс отменяет браузерное margin:auto у модальных окон */
+dialog { margin: auto; }
 html, body { height: 100%; }
 img, picture, svg, video { display: block; max-width: 100%; }
 input, button, textarea, select { font: inherit; color: inherit; }
