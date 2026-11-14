@@ -239,6 +239,10 @@ body.catalog-page {
   flex: 1;
   min-width: 0;
   padding-top: clamp(10px, 0.55vw, 14px);
+  /* 5px — остаток до рамки, который был на 2560 после содержимого карточки:
+     сохраняем его, чтобы прижать цену и кнопку, но не увеличить высоту
+     карточки 236px. На 1920 и ниже нижнее поле шире — см. медиазапрос. */
+  padding-bottom: 5px;
   padding-right: var(--card-pad-r);
   display: flex;
   flex-direction: column;
@@ -254,10 +258,6 @@ body.catalog-page {
     --card-pad-r: clamp(12px, 1.1vw, 21px);
   }
 
-  /* Кнопка «В корзину» упиралась в нижнюю границу карточки: у .product__body
-     не было нижнего поля, и как только содержимое переставало умещаться в
-     min-height, кнопка прилипала к рамке (замер: зазор 2px на 1664 и ниже).
-     Нижнее поле равно верхнему — карточка остаётся симметричной по вертикали. */
   .product__body {
     padding-bottom: clamp(10px, 0.55vw, 14px);
   }
@@ -297,7 +297,11 @@ body.catalog-page {
 }
 
 .product__price {
-  margin-top: clamp(6px, 0.35vw, 9px);
+  /* Цена и кнопка прижаты к нижней границе карточки: свободное место
+     остаётся между описанием и ценой. padding-top — минимальный зазор,
+     когда места нет и auto-отступ схлопывается в 0. */
+  margin-top: auto;
+  padding-top: clamp(6px, 0.35vw, 9px);
   font-size: clamp(16px, 0.7vw, 18px);
   line-height: 1.3;
   font-weight: 600;
