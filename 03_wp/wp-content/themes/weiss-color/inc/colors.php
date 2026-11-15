@@ -93,6 +93,15 @@ function weiss_colors_column_index( $letters ) {
  * @return array Поле => номер колонки; пустой массив — шапка не распознана.
  */
 function weiss_colors_header_map( $header ) {
+	/* strtoupper() не меняет регистр кириллицы: «Продукт» из шаблона,
+	   выгрузки и реестра не совпадал с «ПРОДУКТ», колонка терялась и
+	   импорт стирал группу у загруженных цветов (замечание 94). */
+	$normalize = function ( $title ) {
+		$title = str_replace( "\xC2\xA0", ' ', (string) $title );
+		$title = trim( preg_replace( '/^\xEF\xBB\xBF/', '', $title ) );
+		return function_exists( 'mb_strtoupper' ) ? mb_strtoupper( $title, 'UTF-8' ) : strtoupper( $title );
+	};
+
 	$aliases = array(
 		'code'    => array( 'COLOURCODE', 'CODE', 'КОД' ),
 		'palette' => array( 'CARDNAME', 'PALETTE', 'ПАЛИТРА' ),
@@ -103,10 +112,13 @@ function weiss_colors_header_map( $header ) {
 		'hex'     => array( 'RGB_HTML', 'HEX', 'HEX_HTML', 'HTML' ),
 		'group'   => array( 'ПРОДУКТ', 'PRODUCT', 'ГРУППА' ),
 	);
+	foreach ( $aliases as $field => $names ) {
+		$aliases[ $field ] = array_map( $normalize, $names );
+	}
 
 	$map = array();
 	foreach ( array_values( $header ) as $index => $title ) {
-		$title = strtoupper( trim( preg_replace( '/^\xEF\xBB\xBF/', '', (string) $title ) ) );
+		$title = $normalize( $title );
 		if ( '' === $title ) {
 			continue;
 		}
@@ -156,7 +168,8 @@ function weiss_colors_import_file( $path, $ext = '', $name = '' ) {
 		@ini_set( 'memory_limit', '512M' );
 	}
 
-	$rows = 'xlsx' === $ext ? weiss_colors_read_xlsx( $path ) : weiss_colors_read_csv( $path );
+	$meta = array( 'group_column' => false );
+	$rows = 'xlsx' === $ext ? weiss_colors_read_xlsx( $path, $meta ) : weiss_colors_read_csv( $path, $meta );
 	if ( is_wp_error( $rows ) ) {
 		return $rows;
 	}
@@ -176,6 +189,7 @@ function weiss_colors_import_file( $path, $ext = '', $name = '' ) {
 		'incomplete'=> array(),
 		'duplicates'=> array(),
 		'failed'    => array(),
+		'group_column' => ! empty( $meta['group_column'] ),
 	);
 	$seen  = array();
 	$batch = array();
@@ -239,14 +253,16 @@ function weiss_colors_import_file( $path, $ext = '', $name = '' ) {
 		/* Повторный импорт не сбрасывает ручное скрытие: строка помечается
 		   заметкой «Скрыт в панели». Неполные строки остаются скрытыми, пока
 		   в файле не появятся RGB/HEX. Пустое название не затирает
-		   название, вписанное в панели. */
+		   название, вписанное в панели. Пустая группа не затирает группу:
+		   файл без колонки «Продукт» иначе стирал совместимость у всех
+		   цветов (замечание 94). */
 		$result = $wpdb->query( // phpcs:ignore WordPress.DB.PreparedSQL
 			"INSERT INTO {$table} (hash,palette,code,name,r,g,b,hex,product_group,active,note,updated_at)
 			 VALUES " . implode( ',', $values ) . '
 			 ON DUPLICATE KEY UPDATE
 			   palette=VALUES(palette), code=VALUES(code), r=VALUES(r), g=VALUES(g), b=VALUES(b),
 			   name=IF(CHAR_LENGTH(VALUES(name))=0, name, VALUES(name)), hex=VALUES(hex),
-			   product_group=VALUES(product_group),
+			   product_group=IF(CHAR_LENGTH(VALUES(product_group))=0, product_group, VALUES(product_group)),
 			   note = CASE
 			     WHEN VALUES(note) <> "" THEN VALUES(note)
 			     WHEN note = "Скрыт в панели" THEN "Скрыт в панели"
@@ -416,6 +432,7 @@ function weiss_colors_import_file( $path, $ext = '', $name = '' ) {
 		'rejected'   => $report['rejected'],
 		'incomplete' => $report['incomplete'],
 		'duplicates' => $report['duplicates'],
+		'group_column' => $report['group_column'],
 	), false );
 
 	return $report;
@@ -426,7 +443,7 @@ function weiss_colors_import_file( $path, $ext = '', $name = '' ) {
  * название). Раньше читался только первый лист, и данные с других листов
  * молча терялись.
  */
-function weiss_colors_read_xlsx( $path ) {
+function weiss_colors_read_xlsx( $path, &$meta ) {
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		return new WP_Error( 'weiss_import_zip', 'Расширение PHP zip не подключено: XLSX не прочитать.' );
 	}
@@ -503,6 +520,9 @@ function weiss_colors_read_xlsx( $path ) {
 				$known  = weiss_colors_header_map( $cells );
 				if ( $known ) {
 					$map = $known;
+					if ( isset( $known['group'] ) ) {
+						$meta['group_column'] = true;
+					}
 					continue;
 				}
 			}
@@ -514,6 +534,8 @@ function weiss_colors_read_xlsx( $path ) {
 			if ( $map ) {
 				$item = weiss_colors_row_from_map( $map, $cells );
 			} else {
+				/* Старый порядок A:H: группа в колонке G. */
+				$meta['group_column'] = true;
 				$item = array(
 					'code'    => $cells[0] ?? '',
 					'palette' => $cells[1] ?? '',
@@ -545,7 +567,7 @@ function weiss_colors_read_xlsx( $path ) {
 }
 
 /** Чтение CSV с теми же колонками; шапка обязательна. */
-function weiss_colors_read_csv( $path ) {
+function weiss_colors_read_csv( $path, &$meta ) {
 	$handle = fopen( $path, 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	if ( ! $handle ) {
 		return new WP_Error( 'weiss_import_csv', 'Не удалось открыть CSV.' );
@@ -571,6 +593,7 @@ function weiss_colors_read_csv( $path ) {
 			'В CSV нет колонок COLOURCODE и CARDNAME. Сохраните файл в UTF-8 или пересохраните из Excel как «CSV UTF-8».'
 		);
 	}
+	$meta['group_column'] = isset( $map['group'] );
 
 	$rows = array();
 	while ( false !== ( $line = fgetcsv( $handle, 0, $delimiter ) ) ) {
@@ -1435,6 +1458,9 @@ function weiss_colors_admin_page() {
 				отклонено: <?php echo count( $weiss_report['rejected'] ); ?>,
 				дублей: <?php echo count( $weiss_report['duplicates'] ); ?>.
 			</p>
+			<?php if ( array_key_exists( 'group_column', $weiss_report ) && ! $weiss_report['group_column'] ) : ?>
+				<div class="notice notice-warning inline"><p>В файле не найдена колонка «Продукт»: поле «Продукт» у загруженных цветов не менялось. Если группа должна обновиться, добавьте колонку «Продукт» и импортируйте файл снова.</p></div>
+			<?php endif; ?>
 			<table class="widefat striped" style="max-width:900px">
 				<thead><tr><th>Палитра</th><th>Исходных</th><th>Загружено</th><th>Активно</th><th>Неполных</th></tr></thead>
 				<tbody>

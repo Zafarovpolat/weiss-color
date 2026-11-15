@@ -70,7 +70,10 @@
 
   function syncPayment() {
     var value = selectedValue(paymentRadios);
-    if (payNote) payNote.toggleAttribute('data-visible', value === cardId);
+    /* Без карты (шлюз выключен) подсказка про Сбербанк не показывается:
+       раньше пустой id совпадал с пустым выбором, и текст висел под
+       единственным способом «По счёту» (замечание 100). */
+    if (payNote) payNote.toggleAttribute('data-visible', !!cardId && value === cardId);
     if (invoiceOpen) invoiceOpen.hidden = value !== 'bacs';
   }
 
@@ -108,10 +111,24 @@
     var invoiceOgrn = invoiceForm.querySelector('[name="ogrn"]');
     var invoiceOgrnLabel = invoiceForm.querySelector('[data-ogrn-label]');
     var invoiceInn = invoiceForm.querySelector('[name="inn"]');
+    var invoiceTitle = document.getElementById('invoice-title');
+    var invoiceHint = invoiceForm.querySelector('.invoice-dialog__hint');
 
     function syncInvoicePayer() {
       var checked = invoiceForm.querySelector('[name="payer"]:checked');
       var isIp = checked && checked.value === 'ip';
+
+      /* ТЗ 8.2: для ИП окно называется «Реквизиты ИП», а не юрлица. */
+      if (invoiceTitle) {
+        invoiceTitle.textContent = isIp
+          ? invoiceTitle.getAttribute('data-title-ip')
+          : invoiceTitle.getAttribute('data-title-legal');
+      }
+      if (invoiceHint) {
+        invoiceHint.textContent = isIp
+          ? invoiceHint.getAttribute('data-hint-ip')
+          : invoiceHint.getAttribute('data-hint-legal');
+      }
 
       if (invoiceKpp && invoiceKppField) {
         invoiceKpp.required = !isIp;
@@ -180,8 +197,16 @@
   var paymentRow = form.querySelector('.choice-row--payment');
   var deliveryTip = document.getElementById('delivery-tip');
 
+  /* Как weiss_price_number() на сервере: копейки показываются, только когда
+     они есть, иначе при тарифе 250,50 ₽ страница округляла итог до рубля,
+     а заказ хранил копейки (замечание 96). */
   function money(value) {
-    return String(Math.round(Number(value))).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + ' ₽';
+    var number = Number(value);
+    if (!isFinite(number)) number = 0;
+    var decimals = Math.abs(number - Math.round(number)) > 0.004 ? 2 : 0;
+    return number.toFixed(decimals)
+      .replace('.', ',')
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + ' ₽';
   }
 
   /* Тариф выбранного региона: null — регион ещё не выбран; cost === null —

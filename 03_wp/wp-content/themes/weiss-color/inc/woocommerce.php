@@ -532,8 +532,11 @@ function weiss_cart_ajax_update() {
 		} else {
 			$cart->set_quantity( $key, $quantity, true );
 
-			/* Склад и ограничения WooCommerce сообщают об ошибке уведомлением:
-			   без вывода в корзине количество молча возвращалось к прежнему. */
+			/* Склад и ограничения WooCommerce сообщают об ошибке уведомлением.
+			   check_cart_items() запускает проверку сразу: иначе при остатке 100
+			   корзина принимала 101 и показывала «В наличии», а причина
+			   появлялась только при следующем действии (замечание 99). */
+			$cart->check_cart_items();
 			$notices = wc_get_notices( 'error' );
 			if ( $notices ) {
 				$error = html_entity_decode( wp_strip_all_tags( $notices[0]['notice'] ), ENT_QUOTES, 'UTF-8' );
@@ -755,6 +758,31 @@ add_action( 'woocommerce_before_pay_action', function ( $order ) {
 } );
 
 /**
+ * Сообщение для страницы оплаты с неверной или уже ненужной ссылкой.
+ * В этом случае form-pay.php не выводится, а полосу уведомлений
+ * WooCommerce на оформлении тема скрывает — страница оставалась пустой
+ * (замечание 100).
+ */
+function weiss_pay_endpoint_message() {
+	if ( ! function_exists( 'is_wc_endpoint_url' ) || ! is_wc_endpoint_url( 'order-pay' ) ) {
+		return '';
+	}
+
+	$order_id = absint( get_query_var( 'order-pay' ) );
+	$key      = isset( $_GET['key'] ) ? wc_clean( wp_unslash( $_GET['key'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	$order    = $order_id ? wc_get_order( $order_id ) : false;
+
+	if ( ! $order || ! hash_equals( (string) $order->get_order_key(), (string) $key ) ) {
+		return 'Ссылка на оплату недействительна. Проверьте адрес или запросите новую ссылку у менеджера.';
+	}
+	if ( ! $order->needs_payment() ) {
+		return 'Этот заказ уже оплачен или отменён — повторная оплата недоступна.';
+	}
+
+	return '';
+}
+
+/**
  * На оформлении нет полосы уведомлений WooCommerce: в макете её нет,
  * а «товар добавлен в корзину» сдвигает крошки и заголовок. Ошибки
  * шаблон показывает сам в .checkout-notice.
@@ -802,10 +830,20 @@ add_action( 'woocommerce_checkout_create_order', function ( $order, $data ) {
 	}
 
 	/* Реквизиты сохраняем только для оплаты по счёту: у карты и заявки
-	   на расчёт форма всё равно присылает пустой набор полей. */
+	   на расчёт форма всё равно присылает пустой набор полей. Пустой набор
+	   не пишем: иначе у заявки физлица в карточке появлялся блок
+	   «Реквизиты для счёта: Юридическое лицо» без данных (замечание 100). */
 	if ( ! empty( $post['weiss_invoice'] ) && is_array( $post['weiss_invoice'] )
 		&& in_array( $order->get_payment_method(), array( 'bacs', 'weiss_quote' ), true ) ) {
-		$order->update_meta_data( '_weiss_invoice', array_map( 'wc_clean', $post['weiss_invoice'] ) );
+		$invoice = array_filter(
+			array_map( 'wc_clean', $post['weiss_invoice'] ),
+			function ( $value ) {
+				return '' !== trim( (string) $value );
+			}
+		);
+		if ( ! empty( $invoice['org'] ) || ! empty( $invoice['inn'] ) ) {
+			$order->update_meta_data( '_weiss_invoice', $invoice );
+		}
 	}
 }, 10, 2 );
 

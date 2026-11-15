@@ -206,6 +206,9 @@
 
 /* Поля формы */
 .field { display: grid; gap: 6px; margin-bottom: var(--space-sm); }
+/* display у .field перебивал атрибут hidden: у ИП поле «КПП *» оставалось
+   на экране (замечание 98). */
+.field[hidden] { display: none; }
 .field label { font-size: var(--fs-small); font-weight: var(--fw-medium); }
 .field input {
   width: 100%;

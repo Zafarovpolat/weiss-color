@@ -201,8 +201,11 @@ foreach ( $order->get_shipping_methods() as $weiss_shipping ) {
 	<?php
 	$weiss_invoice = (array) $order->get_meta( '_weiss_invoice' );
 	/* Реквизиты относятся только к оплате по счёту: у карты и заявки на
-	   расчёт этого блока нет, даже если поля формы пришли пустыми (ТЗ 8.2). */
-	if ( $weiss_invoice && in_array( $order->get_payment_method(), array( 'bacs', 'weiss_quote' ), true ) ) :
+	   расчёт этого блока нет, даже если поля формы пришли пустыми (ТЗ 8.2).
+	   Пустой набор не показываем: у заявки физлица оставался заголовок
+	   с плательщиком «Юридическое лицо» без данных (замечание 100). */
+	$weiss_invoice_filled = '' !== trim( (string) ( $weiss_invoice['org'] ?? '' ) ) || '' !== trim( (string) ( $weiss_invoice['inn'] ?? '' ) );
+	if ( $weiss_invoice_filled && in_array( $order->get_payment_method(), array( 'bacs', 'weiss_quote' ), true ) ) :
 		$weiss_invoice_labels = array(
 			'payer'   => 'Плательщик',
 			'org'     => 'Организация',

@@ -360,6 +360,17 @@ add_action( 'woocommerce_order_action_weiss_send_payment_link', function ( $orde
 	   открывается только для «Ожидает оплаты», а не для «На удержании» */
 	$order->update_meta_data( '_weiss_shipping_quote', '0' );
 	$order->update_meta_data( '_weiss_quote_resolved', current_time( 'mysql' ) );
+
+	/* Стоимость уже известна — строка доставки больше не «расчёт после
+	   оформления»: на странице оплаты оставалась пометка заявки (замечание 100).
+	   Пометок две: без тарифа и без выбранного региона. */
+	foreach ( $order->get_items( 'shipping' ) as $item ) {
+		$name = (string) $item->get_name();
+		if ( false !== mb_strpos( $name, 'расчёт после оформления' ) || false !== mb_strpos( $name, 'рассчитывается при оформлении' ) ) {
+			$item->set_name( 'Курьерская доставка' );
+			$item->save();
+		}
+	}
 	$order->update_status( 'pending', 'Стоимость доставки рассчитана: ' . wp_strip_all_tags( wc_price( $order->get_shipping_total() ) ) . '. Покупателю отправляется ссылка на оплату.' );
 
 	$url     = $order->get_checkout_payment_url();
@@ -467,10 +478,23 @@ function weiss_delivery_admin_page() {
 	if ( '' === trim( $raw ) ) {
 		$raw = weiss_delivery_tariffs_default();
 	}
+	$pickup_address = (string) get_option( 'weiss_pickup_address', '' );
+	$pickup_hours   = (string) get_option( 'weiss_pickup_hours', '' );
 
-	$errors = get_transient( 'weiss_delivery_errors_' . get_current_user_id() );
-	if ( $errors ) {
+	/* Черновик неудачного сохранения: раньше при ошибке введённый текст
+	   пропадал и таблицу приходилось набирать заново (замечание 101). */
+	$draft = get_transient( 'weiss_delivery_errors_' . get_current_user_id() );
+	if ( is_array( $draft ) && isset( $draft['errors'] ) ) {
 		delete_transient( 'weiss_delivery_errors_' . get_current_user_id() );
+		$errors         = (array) $draft['errors'];
+		$raw            = (string) ( $draft['raw'] ?? $raw );
+		$pickup_address = (string) ( $draft['pickup_address'] ?? $pickup_address );
+		$pickup_hours   = (string) ( $draft['pickup_hours'] ?? $pickup_hours );
+	} else {
+		$errors = $draft;
+		if ( $errors ) {
+			delete_transient( 'weiss_delivery_errors_' . get_current_user_id() );
+		}
 	}
 	?>
 	<div class="wrap">
@@ -492,13 +516,13 @@ function weiss_delivery_admin_page() {
 				<tr>
 					<th><label for="weiss-pickup-address">Адрес точки</label></th>
 					<td><input class="regular-text" type="text" id="weiss-pickup-address" name="weiss_pickup_address"
-						value="<?php echo esc_attr( get_option( 'weiss_pickup_address', '' ) ); ?>"
+						value="<?php echo esc_attr( $pickup_address ); ?>"
 						placeholder="Например, Москва, ул. Лесная, д. 10"></td>
 				</tr>
 				<tr>
 					<th><label for="weiss-pickup-hours">Часы работы</label></th>
 					<td><input class="regular-text" type="text" id="weiss-pickup-hours" name="weiss_pickup_hours"
-						value="<?php echo esc_attr( get_option( 'weiss_pickup_hours', '' ) ); ?>"
+						value="<?php echo esc_attr( $pickup_hours ); ?>"
 						placeholder="Например, пн–пт 10:00–19:00, сб 10:00–16:00">
 					<p class="description">Пока поля пустые, в оформлении выводится только «Самовывоз» и стоимость.</p></td>
 				</tr>
@@ -535,16 +559,23 @@ add_action( 'admin_post_weiss_delivery_save', function () {
 
 	$raw    = sanitize_textarea_field( wp_unslash( $_POST['weiss_delivery_tariffs'] ?? '' ) );
 	$errors = weiss_delivery_tariffs_errors( $raw );
+	$pickup_address = sanitize_text_field( wp_unslash( $_POST['weiss_pickup_address'] ?? '' ) );
+	$pickup_hours   = sanitize_text_field( wp_unslash( $_POST['weiss_pickup_hours'] ?? '' ) );
 
 	if ( $errors ) {
-		set_transient( 'weiss_delivery_errors_' . get_current_user_id(), $errors, 60 );
+		set_transient( 'weiss_delivery_errors_' . get_current_user_id(), array(
+			'errors'         => $errors,
+			'raw'            => $raw,
+			'pickup_address' => $pickup_address,
+			'pickup_hours'   => $pickup_hours,
+		), 60 );
 		wp_safe_redirect( add_query_arg( array( 'page' => 'weiss-delivery' ), admin_url( 'admin.php' ) ) );
 		exit;
 	}
 
 	update_option( 'weiss_delivery_tariffs', $raw );
-	update_option( 'weiss_pickup_address', sanitize_text_field( wp_unslash( $_POST['weiss_pickup_address'] ?? '' ) ) );
-	update_option( 'weiss_pickup_hours', sanitize_text_field( wp_unslash( $_POST['weiss_pickup_hours'] ?? '' ) ) );
+	update_option( 'weiss_pickup_address', $pickup_address );
+	update_option( 'weiss_pickup_hours', $pickup_hours );
 
 	wp_safe_redirect( add_query_arg( array(
 		'page'    => 'weiss-delivery',

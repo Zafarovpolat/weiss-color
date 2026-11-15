@@ -14,8 +14,15 @@
   const addBtn = document.querySelector('.p-price__btn[data-weiss-add]');
   const vizLink = document.querySelector('[data-weiss-viz-base]');
 
-  const format = (value) =>
-    String(Math.round(Number(value))).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '₽';
+  /* Копейки — только когда они есть (как weiss_price_compact): доплата
+     за колеровку бывает дробной, округление до рубля расходилось с корзиной. */
+  const format = (value) => {
+    const number = Number(value);
+    const decimals = Math.abs(number - Math.round(number)) > 0.004 ? 2 : 0;
+    return number.toFixed(decimals)
+      .replace('.', ',')
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '₽';
+  };
 
   const tinted = boxEl && boxEl.getAttribute('data-weiss-tint') === '1';
 

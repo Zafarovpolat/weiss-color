@@ -203,8 +203,14 @@
   });
 
   /* ---------- Карточка товара: цвет меняет совместимый продукт ---------- */
-  const formatPrice = (value) =>
-    String(Math.round(Number(value))).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  /* Копейки показываются, только когда они есть (как weiss_price_number). */
+  const formatPrice = (value) => {
+    const number = Number(value);
+    const decimals = Math.abs(number - Math.round(number)) > 0.004 ? 2 : 0;
+    return number.toFixed(decimals)
+      .replace('.', ',')
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+  };
 
   function applyProduct(product) {
     if (!product) return;

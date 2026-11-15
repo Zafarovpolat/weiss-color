@@ -184,13 +184,37 @@ add_action( 'current_screen', function ( $screen ) {
 } );
 
 /**
- * REST-маршруты настроек и статуса WooCommerce: под менеджером отдают
- * ключи и пароли эквайринга и служебные инструменты.
+ * REST-маршруты WooCommerce: менеджеру оставлены только торговые разделы.
+ * Запрет по списку запрещённого оставлял открытыми платёжные шлюзы с
+ * логином и паролем эквайринга, зоны доставки, налоги и вебхуки
+ * (замечание 95), поэтому здесь список разрешённого: всё остальное —
+ * настройки магазина и инструменты, они только у администратора.
+ * Ставки налогов и способы доставки менеджер может читать (справочник
+ * нужен в карточке товара и заказа), но не менять.
  * Фильтр стоит на rest_request_before_callbacks: возврат ошибки из
  * rest_pre_dispatch ломал пакетные запросы ядра (замечание 73).
  */
-function weiss_is_wc_admin_rest_route( $route ) {
-	return (bool) preg_match( '#^/wc/v\d+/(settings|system_status)(/|$)#', (string) $route );
+function weiss_wc_manager_route_allowed( $route, $method ) {
+	$route  = (string) $route;
+	$method = strtoupper( (string) $method );
+
+	if ( preg_match( '#^/wc-analytics/settings(/|$)#', $route ) ) {
+		return false;
+	}
+	if ( ! preg_match( '#^/wc/v\d+/([a-z_]+)#', $route, $match ) ) {
+		return true;
+	}
+
+	$allowed = array( 'orders', 'products', 'coupons', 'customers', 'reports', 'data' );
+	if ( in_array( $match[1], $allowed, true ) ) {
+		return true;
+	}
+
+	if ( 'GET' === $method && in_array( $match[1], array( 'taxes', 'shipping' ), true ) ) {
+		return true;
+	}
+
+	return false;
 }
 
 add_filter( 'rest_request_before_callbacks', function ( $response, $handler, $request ) {
@@ -200,7 +224,7 @@ add_filter( 'rest_request_before_callbacks', function ( $response, $handler, $re
 	if ( ! is_user_logged_in() || current_user_can( 'manage_options' ) ) {
 		return $response;
 	}
-	if ( weiss_is_wc_admin_rest_route( $request->get_route() ) ) {
+	if ( ! weiss_wc_manager_route_allowed( $request->get_route(), $request->get_method() ) ) {
 		return new WP_Error( 'weiss_forbidden', 'Недостаточно прав.', array( 'status' => 403 ) );
 	}
 	return $response;

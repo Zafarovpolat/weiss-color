@@ -9,3 +9,7 @@ node_modules/
 
 # служебные данные ассистента
 .workbuddy-ai/
+
+# доступы к стенду
+.ftp.env
+.db.env

@@ -97,3 +97,11 @@ if ( $weiss_wc_notice_band && function_exists( 'wc_print_notices' ) ) :
 	?>
 	<div class="container"><div class="wc-notices"><?php wc_print_notices(); ?></div></div>
 <?php endif; ?>
+<?php
+/* Неверная ссылка на оплату: форма не выводится, поэтому причину показываем
+   здесь — иначе страница заказа пустая (замечание 100). */
+$weiss_pay_message = function_exists( 'weiss_pay_endpoint_message' ) ? weiss_pay_endpoint_message() : '';
+if ( '' !== $weiss_pay_message ) :
+	?>
+	<div class="container"><div class="wc-notices"><div class="woocommerce-error"><?php echo esc_html( $weiss_pay_message ); ?></div></div></div>
+<?php endif; ?>

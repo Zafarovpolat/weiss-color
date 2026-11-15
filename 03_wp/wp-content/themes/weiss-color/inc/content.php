@@ -211,6 +211,9 @@ function weiss_content_sanitize( $input ) {
 	$texts  = array( 'redirects' );
 	$images = array( 'hero_bg', 'hero_can', 'coloring_fan', 'coloring_fan_mobile', 'coloring_scene', 'buy_1_logo', 'buy_2_logo', 'buy_3_logo', 'buy_4_logo' );
 
+	$existing = (array) get_option( 'weiss_content', array() );
+	$reported = array();
+
 	$clean = array();
 	foreach ( (array) $input as $key => $value ) {
 		$key = sanitize_key( $key );
@@ -222,16 +225,29 @@ function weiss_content_sanitize( $input ) {
 		} elseif ( in_array( $key, $emails, true ) ) {
 			$clean[ $key ] = sanitize_email( $value );
 			if ( '' !== trim( (string) $value ) && '' === $clean[ $key ] ) {
-				$labels = array(
-					'email'        => 'E-mail магазина',
-					'orders_email' => 'E-mail менеджера для заказов',
-				);
-				add_settings_error(
-					'weiss_content',
-					'weiss_content_' . $key,
-					sprintf( 'Поле «%s»: адрес не сохранён — проверьте формат.', isset( $labels[ $key ] ) ? $labels[ $key ] : $key ),
-					'error'
-				);
+				/* Неверный адрес не стирает прежний: он оставался на сайте,
+				   а покупателю писали уже не туда (замечание 101). */
+				$clean[ $key ] = isset( $existing[ $key ] ) ? (string) $existing[ $key ] : '';
+
+				/* Колбэк регистрации настройки WordPress вызывает дважды за
+				   сохранение — сообщение не должно дублироваться. */
+				if ( ! isset( $reported[ $key ] ) ) {
+					$reported[ $key ] = true;
+					$labels = array(
+						'email'        => 'E-mail магазина',
+						'orders_email' => 'E-mail менеджера для заказов',
+					);
+					add_settings_error(
+						'weiss_content',
+						'weiss_content_' . $key,
+						sprintf(
+							'Поле «%s»: адрес не изменён — проверьте формат.%s',
+							isset( $labels[ $key ] ) ? $labels[ $key ] : $key,
+							'' !== $clean[ $key ] ? ' Сохранён прежний адрес.' : ''
+						),
+						'error'
+					);
+				}
 			}
 		} elseif ( in_array( $key, $texts, true ) ) {
 			$clean[ $key ] = sanitize_textarea_field( $value );

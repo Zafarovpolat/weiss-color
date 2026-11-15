@@ -256,13 +256,17 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 
 		/* Чек по 54-ФЗ (ТЗ 8.5): состав заказа и НДС передаются только когда
 		   Заказчик подтвердил систему налогообложения и ставку. Пустая строка
-		   значит, что для выбранной ставки нет кода taxType у банка. */
+		   значит, что для выбранной ставки нет кода taxType у банка — в этом
+		   случае оплату картой не открываем: чек без состава незаконен
+		   (замечание 102). */
 		if ( 'yes' === $this->get_option( 'send_receipt', 'no' ) ) {
 			$bundle = $this->order_bundle( $order );
-			if ( '' !== $bundle ) {
-				$args['orderBundle'] = $bundle;
-				$args['taxSystem']   = (int) $this->get_option( 'tax_system', '0' );
+			if ( '' === $bundle ) {
+				wc_add_notice( 'Оплата картой временно недоступна: не задан код НДС для чека. Выберите оплату по счёту или свяжитесь с менеджером.', 'error' );
+				return array( 'result' => 'failure' );
 			}
+			$args['orderBundle'] = $bundle;
+			$args['taxSystem']   = (int) $this->get_option( 'tax_system', '0' );
 		}
 
 		$response = $this->request( 'register.do', $args );

@@ -374,8 +374,8 @@ if ( '' !== $weiss_notice_text ) {
 
 <dialog class="invoice-dialog" id="invoice-dialog" aria-labelledby="invoice-title">
 	<form class="invoice-dialog__body" id="invoice-form" method="dialog" novalidate>
-		<h2 class="invoice-dialog__title" id="invoice-title">Реквизиты юридического лица</h2>
-		<p class="invoice-dialog__hint">Заполните данные компании для выставления счета</p>
+		<h2 class="invoice-dialog__title" id="invoice-title" data-title-legal="Реквизиты юридического лица" data-title-ip="Реквизиты индивидуального предпринимателя">Реквизиты юридического лица</h2>
+		<p class="invoice-dialog__hint" data-hint-legal="Заполните данные компании для выставления счета" data-hint-ip="Заполните данные ИП для выставления счёта">Заполните данные компании для выставления счета</p>
 
 		<fieldset class="invoice-payer">
 			<legend class="invoice-payer__legend">Плательщик</legend>
