@@ -212,7 +212,9 @@ function weiss_content_sanitize( $input ) {
 	$images = array( 'hero_bg', 'hero_can', 'coloring_fan', 'coloring_fan_mobile', 'coloring_scene', 'buy_1_logo', 'buy_2_logo', 'buy_3_logo', 'buy_4_logo' );
 
 	$existing = (array) get_option( 'weiss_content', array() );
-	$reported = array();
+	/* WordPress вызывает колбэк дважды за сохранение (update_option и
+	   add_option), поэтому защита от повтора должна жить весь запрос. */
+	static $reported = array();
 
 	$clean = array();
 	foreach ( (array) $input as $key => $value ) {
@@ -271,7 +273,6 @@ function weiss_content_page() {
 	?>
 	<div class="wrap">
 		<h1>Содержимое сайта</h1>
-		<?php settings_errors( 'weiss_content' ); ?>
 		<p class="description">В полях — действующие значения. Очистите поле и сохраните, чтобы скрыть элемент на сайте.</p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'weiss_content' ); ?>

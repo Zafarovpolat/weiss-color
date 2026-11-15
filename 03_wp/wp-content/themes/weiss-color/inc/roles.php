@@ -140,6 +140,18 @@ add_filter( 'user_has_cap', function ( $allcaps, $caps, $args, $user ) {
 }, 999, 4 );
 
 /**
+ * Купоны WooCommerce держит внутри раздела «Маркетинг». Менеджеру этот
+ * раздел закрыт (замечание 103), поэтому промокоды переносим в основное
+ * меню WooCommerce — иначе права на купоны остаются, а пункта нет.
+ */
+add_filter( 'register_post_type_args', function ( $args, $post_type ) {
+	if ( 'shop_coupon' === $post_type && current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'manage_options' ) ) {
+		$args['show_in_menu'] = 'woocommerce';
+	}
+	return $args;
+}, 20, 2 );
+
+/**
  * Менеджеру не показываем чужие для торговли разделы, даже если плагин
  * выдал права: сайт, внешний вид, инструменты, пользователи.
  */
@@ -165,6 +177,35 @@ add_action( 'admin_menu', function () {
 	remove_submenu_page( 'woocommerce', 'wc-status' );
 	remove_submenu_page( 'woocommerce', 'wc-settings&tab=checkout' );
 	remove_submenu_page( 'woocommerce', 'wc-settings&tab=shipping' );
+
+	/* WooCommerce 11 выносит «Платежи» отдельным пунктом верхнего уровня
+	   со ссылкой на настройки, поэтому удаления подпункта недостаточно.
+	   Пункты WooCommerce Admin («Обзор», «Клиенты», «Аналитика»,
+	   «Маркетинг», «Расширения») у менеджера открываются пустыми — их
+	   тоже не показываем (замечание 103). */
+	global $menu, $submenu;
+
+	foreach ( (array) $menu as $position => $item ) {
+		$slug = isset( $item[2] ) ? (string) $item[2] : '';
+		if ( 0 === strpos( $slug, 'woocommerce-marketing' )
+			|| 0 === strpos( $slug, 'wc-settings' ) || 0 === strpos( $slug, 'admin.php?page=wc-settings' )
+			|| 0 === strpos( $slug, 'wc-admin' ) || 0 === strpos( $slug, 'admin.php?page=wc-admin' ) ) {
+			/* Не удаляем пункт: без него WordPress не находит страницу и
+			   отдаёт 500. Право manage_options скрывает пункт из меню и
+			   даёт штатный отказ 403 по прямому адресу. */
+			$menu[ $position ][1] = 'manage_options';
+		}
+	}
+
+	if ( isset( $submenu['woocommerce'] ) ) {
+		foreach ( $submenu['woocommerce'] as $index => $item ) {
+			$slug = isset( $item[2] ) ? (string) $item[2] : '';
+			if ( 0 === strpos( $slug, 'wc-admin' ) || 0 === strpos( $slug, 'wc-addons' )
+				|| 0 === strpos( $slug, 'wc-settings' ) || 'wc-status' === $slug ) {
+				unset( $submenu['woocommerce'][ $index ] );
+			}
+		}
+	}
 }, 99 );
 
 /** Прямой заход на настройки и статус WooCommerce менеджеру закрыт. */
@@ -176,7 +217,13 @@ add_action( 'current_screen', function ( $screen ) {
 		return;
 	}
 
-	$blocked = array( 'woocommerce_page_wc-settings', 'woocommerce_page_wc-status' );
+	$blocked = array(
+		'woocommerce_page_wc-settings',
+		'woocommerce_page_wc-status',
+		'woocommerce_page_wc-admin',
+		'woocommerce_page_wc-addons',
+		'toplevel_page_woocommerce-marketing',
+	);
 	if ( in_array( $screen->id, $blocked, true ) ) {
 		wp_safe_redirect( admin_url( 'admin.php?page=wc-orders' ) );
 		exit;

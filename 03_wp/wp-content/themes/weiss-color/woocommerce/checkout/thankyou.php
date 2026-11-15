@@ -6,7 +6,28 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/* Заказ не найден или ключ в ссылке неверный. WooCommerce показывает
+   такой экран пустым, поэтому объясняем, что произошло (замечание 100). */
 if ( ! $order ) {
+	?>
+	<article class="success-card">
+		<nav class="crumbs" aria-label="Хлебные крошки">
+			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a> &gt;
+			<span aria-current="page">Заказ не найден</span>
+		</nav>
+
+		<h1 class="success-title">Заказ не найден</h1>
+		<p class="success-lead">
+			Ссылка на заказ недействительна или устарела.<br>
+			Проверьте адрес или запросите новую ссылку у менеджера.
+		</p>
+
+		<div class="success-actions">
+			<a class="success-actions__primary" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>">Продолжить покупки</a>
+			<a class="success-actions__link" href="<?php echo esc_url( home_url( '/' ) ); ?>">На главную</a>
+		</div>
+	</article>
+	<?php
 	return;
 }
 
