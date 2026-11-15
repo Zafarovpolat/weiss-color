@@ -1,0 +1,186 @@
+/* ==========================================================================
+   М07 «Список оттенков» (экран «Колеровка цвета») — стили экрана.
+   Геометрия снята с PSD-композита 2560w (spec/Список_оттенков).
+   Крошки/пагинация — из catalog.css; каркас — layout.
+   ========================================================================== */
+
+.shades-page {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #f9f9fa 0%, #fafafb 100%);
+}
+
+/* --- Хлебные крошки: та же полоса, что у остальных страниц (общий .container) --- */
+
+.shades-head {
+  padding-top: clamp(20px, 1.33vw, 34px);
+}
+
+/* крошки — общий вид из components.css (13–15px) */
+
+/* текущая страница красится общим правилом .breadcrumbs [aria-current] */
+
+/* --- Контент экрана: заголовок, сетка, пагинация ---
+   Ширину и боковые поля даёт общий .container (base.css):
+   max-width 2112px + padding-inline var(--container-pad).
+   Своя полоса min(1633px, 100% - 40px) убрана — из-за неё страница
+   выбивалась из общего ритма. */
+
+/* Заголовок и сетка образцов живут в своём слое: максимум 1600px по центру.
+   Крошки и пагинация остаются на общей ширине контейнера. */
+.shades-inner {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+/* Колонка контента: при запасе высоты пагинация уходит к подвалу,
+   сетка образцов остаётся на месте. */
+.shades-main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.shades-title {
+  margin-top: clamp(16px, 1.48vw, 38px);
+  font-size: clamp(30px, 2.03vw, 52px);
+  line-height: 1.2;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+/* --- Сетка образцов: 8 колонок, карточка 195×205, зазор 10px --- */
+
+.shades-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: clamp(18px, 1.4vw, 36px);
+  list-style: none;
+}
+
+.shade-card {
+  display: flex;
+  flex-direction: column;
+  height: clamp(160px, 8.01vw, 205px);
+  padding: 8px 8px 0;
+  background: var(--color-white);
+  border: 1px solid #ebebed;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.shade-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.shade-card__swatch {
+  position: relative;
+  flex: 0 0 clamp(110px, 5.82vw, 149px);
+  background: #fceae6;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.shade-card__check {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: clamp(34px, 1.8vw, 46px);
+  height: clamp(34px, 1.8vw, 46px);
+  background: var(--color-teal);
+  border-radius: 50%;
+}
+
+.shade-card__label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 2px;
+  padding-right: clamp(10px, 1.29vw, 33px);
+  flex: 1;
+  font-size: clamp(13px, 0.78vw, 20px);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+/* Выбранная карточка: бирюзовая рамка 4px (свотч остаётся на месте) */
+
+.shade-card--active {
+  padding: 4px 4px 0;
+  border: 4px solid var(--color-teal);
+}
+
+/* --- Постраничная навигация (как на экране «Каталог») --- */
+
+.shades-page .pagination {
+  margin-top: clamp(18px, 1.19vw, 30px);
+  padding-bottom: clamp(40px, 2.77vw, 71px);
+}
+
+/* Свободная высота уходит в сетку образцов, а не в зазор над пагинацией.
+   На 1920×1080 страница ниже окна на 89px, и они копились между последним
+   рядом и пагинацией — пагинация прижата к подвалу, а сетка на масштабе 0.9
+   короче макета. Теперь ряд тянется по высоте (растёт свотч), пагинация
+   остаётся в макетных 30px под сеткой и у подвала. */
+@media (min-width: 1025px) {
+  .shades-inner {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .shades-grid { flex: 1 1 auto; }
+
+  .shade-card {
+    height: 100%;
+    min-height: clamp(160px, 8.01vw, 205px);
+  }
+
+  .shade-card__swatch {
+    flex: 1 1 auto;
+    min-height: clamp(110px, 5.82vw, 149px);
+  }
+
+  .shade-card__label { flex: 0 0 auto; }
+}
+
+/* --- Адаптив (проверяем до 1024) --- */
+
+@media (max-width: 1280px) {
+  .shades-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1024px) {
+  .shades-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .shade-card {
+    height: auto;
+    aspect-ratio: 195 / 205;
+  }
+
+  .shade-card__swatch {
+    flex-basis: 72%;
+  }
+
+  .shade-card__label {
+    justify-content: center;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 540px) {
+  .shades-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+}

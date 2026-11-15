@@ -1,0 +1,547 @@
+/* ==========================================================================
+   contacts.css — экран М04 «Контакты и форма обращения».
+   Геометрия снята с PSD 2560w (spec/Контакты_и_форма_обращения):
+   левая колонка текста 222px, форма — белая панель 859×936 (1299, 201).
+
+   Размеры записаны в «процентах макета»: --u — это 1% ширины полотна
+   (25.6px при 2560). vw здесь не годятся: при html{zoom:.9} (base.css)
+   полотно шире окна в 1/0.9, а vw по-прежнему считается от окна — кегли
+   и панель формы выходили на 10% меньше макета. От 2560 --u заморожен,
+   чтобы на широких экранах размеры остались макетными; полотно при этом
+   центрируется через --canvas-extra (base.css).
+   ========================================================================== */
+
+main {
+  /* контейнер нужен ради cqw: 1cqw = 1% ширины полотна main.
+     Боковые поля заданы детям, а не самому main, иначе cqw считался бы
+     от content-box уже сжатого полотна (1cqw ≠ 25.6px). */
+  container-type: inline-size;
+  --u: 1cqw;
+}
+
+@media (min-width: 2550px) {
+  main { --u: 25.6px; }
+}
+
+.contacts-page {
+  /* Верхний/нижний отступы — 43/38px при 2560. Здесь нельзя брать --u:
+     в собственных свойствах main единица cqw считается от вьюпорта, а не от
+     полотна, и при html{zoom:.9} на 1920 отступ выходил на 10% меньше
+     макетного. Процент же считается от ширины полотна; от 2560 замораживаем
+     его макетным значением в px, иначе при 2936 композиция уезжала вниз. */
+  padding-block: min(1.6796875%, 43px) min(1.484375%, 38px);
+  position: relative;
+  /* колонка: при запасе высоты группа «крошки + контент» встаёт по центру */
+  display: flex;
+  flex-direction: column;
+}
+
+/* фоновое фото макета: ваза с ветвью и пиала в левом нижнем углу.
+   Отдельный слой-ребёнок, чтобы --u считался от main, а не от вьюпорта. */
+.contacts-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* Полотно фото — тот же кадр 2560×1440, что и макет, поэтому тянем его
+     по ширине (100% auto) и якорим по верху: растение остаётся на макетной
+     высоте при любой высоте окна. Cover с якорем по низу поднимал ветку на
+     строки «т./e./Продукцию…» на низких экранах (ноутбук 1871×787). */
+  background: #f0eff2 url("../assets/img/contacts-bg.png") calc(-0.35 * var(--u)) calc(-4.035 * var(--u)) / 100% auto no-repeat;
+}
+
+/* Крошки макета: 15.9px/16.67, medium, с расширенными пробелами вокруг «>». */
+.contacts-page > .crumbs {
+  font-size: calc(0.62109375 * var(--u));
+  line-height: 1.3;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.029em;
+  word-spacing: 0.2em;
+}
+/* макет: и ссылка, и разделитель — #95969b */
+.contacts-page > .crumbs,
+.contacts-page > .crumbs a { color: #95969b; }
+
+/* Боковые поля макета: 222px слева и 404px справа при 2560. Шире макета
+   полотно центрируем — прибавка одинаковая с обеих сторон. */
+.contacts-page > .crumbs,
+.contacts-page > .contacts-layout {
+  padding-inline: calc(8.671875 * var(--u) + var(--canvas-extra))
+    calc(15.78125 * var(--u) + var(--canvas-extra));
+}
+
+/* Композиция макета прижата к верху: крошки сразу под шапкой, под панелью
+   формы остаётся свободное поле до подвала (в макете 1440 — 208px). */
+
+.contacts-layout {
+  display: grid;
+  /* вторая колонка — 856px при 2560; слева текст (заголовок, организация,
+     контакты и «где купить» идут обычным потоком), справа форма. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, calc(33.4375 * var(--u)));
+  justify-content: space-between;
+  column-gap: calc(1.875 * var(--u));
+  align-items: start;
+  margin-top: calc(1.14453125 * var(--u));
+}
+
+.contacts-text {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.contacts-info { min-width: 0; }
+
+/* --- Левая колонка --- */
+
+.contacts-title {
+  margin: calc(6.09765625 * var(--u)) 0 0 calc(-0.15625 * var(--u));
+  font-size: calc(2.08984375 * var(--u));
+  line-height: calc(2.12421875 * var(--u));
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  color: #233146;
+}
+
+.contacts-org {
+  margin: calc(1.9140625 * var(--u)) 0 0;
+  font-size: calc(0.9765625 * var(--u));
+  line-height: calc(1.5625 * var(--u));
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  color: #707070;
+}
+
+.contacts-org span { display: block; }
+
+.contacts-org__name { color: #707070; }
+
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: calc(1.640625 * var(--u)) 0 0;
+  font-size: calc(1.09375 * var(--u));
+  line-height: calc(1.5625 * var(--u));
+  font-weight: var(--fw-medium);
+  color: #707070;
+}
+
+.contacts-list a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.contacts-list a:hover { color: var(--color-brown); }
+
+.contacts-place {
+  margin: calc(1.640625 * var(--u)) 0 0;
+  /* перенос строк — как в макете: <br> в разметке, без ограничения ширины */
+  font-size: calc(0.9765625 * var(--u));
+  line-height: calc(1.5625 * var(--u));
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  color: #2a323a;
+}
+
+/* --- Панель формы --- */
+
+.contacts-form-card {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  max-width: calc(33.4375 * var(--u));
+  justify-self: end;
+  padding: calc(2.1484375 * var(--u)) calc(4.453125 * var(--u))
+    calc(1.5234375 * var(--u)) calc(4.4140625 * var(--u));
+  background: #f7f7f9;
+  border-radius: 6px;
+  box-shadow: 0 12px 36px rgba(23, 30, 49, 0.06);
+}
+
+.contacts-form-card__title {
+  margin: 0;
+  font-size: calc(1.484375 * var(--u));
+  line-height: calc(1.46484375 * var(--u));
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #252b37;
+}
+
+.contacts-form-card__lead {
+  margin: calc(1.11328125 * var(--u)) 0 0;
+  font-size: calc(0.79296875 * var(--u));
+  line-height: calc(0.8265625 * var(--u));
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: #707070;
+}
+
+.contacts-form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.91796875 * var(--u));
+  margin-top: calc(1.7515625 * var(--u));
+}
+
+.contacts-form .field__input,
+.contacts-form .field__select {
+  height: calc(2.734375 * var(--u));
+  padding-inline: calc(1.09375 * var(--u));
+  font-size: calc(0.78125 * var(--u));
+  /* поля без заливки — виден фон карточки, остаётся только рамка */
+  background: transparent;
+  border-color: #d2d2d2;
+  border-radius: 2px;
+}
+
+/* телефон в форме — тем же шрифтом, что и остальные поля (в макете
+   плейсхолдер набран Montserrat, а не цифровым Sovest) */
+.contacts-form .field__input[type="tel"] { font-family: var(--font-main); }
+
+.contacts-form .field__input::placeholder { color: #b2b4b3; opacity: 1; }
+
+.contacts-form textarea.field__input {
+  min-height: calc(7.6953125 * var(--u));
+  padding: calc(0.3515625 * var(--u)) calc(1.09375 * var(--u));
+  resize: vertical;
+}
+
+/* --- Кастомный селект региона ---
+   Нативный <select> под макет не оформить (список рисует ОС), поэтому
+   разметка — кнопка + ul[role="listbox"]. Значение уходит в скрытый
+   input[name="region"]; его проверяет validation.js (data-validate),
+   а фокус при ошибке переводится на кнопку (data-focus). */
+
+.select { position: relative; }
+
+.contacts-form .select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: calc(2.734375 * var(--u));
+  padding-inline: calc(1.09375 * var(--u));
+  font-family: inherit;
+  font-size: calc(0.78125 * var(--u));
+  font-weight: var(--fw-medium);
+  text-align: left;
+  /* текст селекта (и плейсхолдер «Выберите регион») — чёрный */
+  color: #000000;
+  background: transparent;
+  border: 1px solid #dcdcdc;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* выбранное значение — тем же чёрным, что и плейсхолдер */
+.contacts-form .select__trigger[data-filled] { color: #000000; }
+
+.select__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select__chevron {
+  flex: none;
+  /* в макете «Контактов» стрелка крупнее, чем в селектах чекаута;
+     по правке заказчика чуть уменьшена от макетных 27×15 */
+  width: calc(0.9765625 * var(--u));
+  height: auto;
+  color: #81848d;
+  transition: transform 0.2s ease;
+}
+
+.select.is-open .select__chevron { transform: rotate(180deg); }
+
+.select__trigger:hover { border-color: #b9b9c0; }
+
+/* :focus, а не :focus-visible: селект — кнопка, клик мышью
+   :focus-visible не даёт; открытый список подсветку сохраняет */
+.select__trigger:focus,
+.select.is-open .select__trigger {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
+}
+
+/* рамки полей формы задаются правилами .contacts-form (они идут после
+   checkout.css и перебивают общий фокус), поэтому фокус повторяем здесь */
+.contacts-form .field__input:focus-visible,
+.contacts-form .field__select:focus-visible,
+.contacts-form .select__trigger:focus {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
+}
+
+.select__trigger[aria-invalid="true"] { border-color: #d0433a; }
+
+.select__list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 264px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--color-white);
+  border: 1px solid #dcdcdc;
+  border-radius: 2px;
+  box-shadow: 0 10px 28px rgba(35, 49, 70, 0.14);
+}
+
+.select__list[hidden] { display: none; }
+
+.select__option {
+  padding: calc(0.390625 * var(--u)) calc(0.546875 * var(--u));
+  font-size: calc(0.78125 * var(--u));
+  font-weight: var(--fw-medium);
+  color: #000000;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.select__option.is-active { background: #f4f5f7; }
+
+.select__option[aria-selected="true"] { font-weight: var(--fw-semibold); }
+
+.select__option:focus { outline: none; }
+.select__option:focus-visible { outline: 2px solid rgba(57, 117, 125, 0.45); outline-offset: -2px; }
+
+.contacts-consent {
+  /* отступ до сообщения даёт gap формы, здесь только воздух карточки */
+  margin: 0;
+  font-size: calc(0.80078125 * var(--u));
+  line-height: calc(1.25 * var(--u));
+  font-weight: var(--fw-medium);
+  text-align: center;
+  color: #707070;
+}
+
+.contacts-consent a {
+  color: #54575b;
+  text-decoration: underline;
+  /* макет: подчёркивание холодное #4d4d6f, не коричневое */
+  text-decoration-color: #4d4d6f;
+  text-underline-offset: calc(0.1953125 * var(--u));
+  transition: color var(--ease-ui), text-decoration-color var(--ease-ui);
+}
+
+/* в макете между двумя ссылками соглашений на полстроки больше воздуха */
+.contacts-consent a:last-of-type {
+  display: inline-block;
+  margin-top: calc(0.46875 * var(--u));
+}
+
+.contacts-consent a:hover {
+  color: #4d4d6f;
+  text-decoration-color: #4d4d6f;
+}
+
+.contacts-submit {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: calc(2.734375 * var(--u));
+  /* в макете надпись стоит на 2px выше геометрического центра */
+  padding-bottom: calc(0.15625 * var(--u));
+  margin-top: calc(0.17578125 * var(--u));
+  font-family: inherit;
+  font-size: calc(0.9375 * var(--u));
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: var(--color-white);
+  background: var(--color-brown);
+  border: 1px solid var(--color-brown);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.contacts-submit:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
+
+/* Служебные поля валидации */
+
+.contacts-form__error {
+  display: none;
+  margin: 0;
+  font-size: calc(0.625 * var(--u));
+  color: #d0433a;
+}
+
+.contacts-form__error[data-visible] { display: block; }
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+/* 1024 и ниже: одна колонка. Организация и контакты встают в два столбца,
+   а «где купить» уезжает под форму. Кегли и поля возвращаются к мобильным
+   размерам: макетные проценты на планшете дали бы 10–11px. */
+@media (max-width: 1024px) {
+  .contacts-page > .crumbs,
+  .contacts-page > .contacts-layout {
+    padding-inline: var(--container-pad);
+  }
+
+  .contacts-layout { grid-template-columns: minmax(0, 1fr); }
+
+  /* обёртка «растворяется»: текст и «где купить» становятся элементами
+     сетки, поэтому «где купить» можно поставить после формы */
+  .contacts-text { display: contents; }
+
+  .contacts-title {
+    font-size: 28px;
+    line-height: 1.15;
+  }
+
+  .contacts-org,
+  .contacts-list,
+  .contacts-place {
+    font-size: 16px;
+    line-height: 1.28;
+  }
+
+  .contacts-form-card__title {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .contacts-form-card__lead {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .contacts-form .field__input,
+  .contacts-form .field__select,
+  .contacts-form .select__trigger {
+    height: 48px;
+    font-size: 14px;
+  }
+
+  .contacts-form textarea.field__input { min-height: 120px; }
+
+  .select__option { font-size: 14px; }
+
+  .contacts-consent {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .contacts-consent a:last-of-type { margin-top: 2px; }
+
+  .contacts-submit {
+    height: 48px;
+    font-size: 13px;
+  }
+
+  .contacts-form__error { font-size: 12px; }
+
+  .contacts-info {
+    order: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(20px, 3vw, 40px);
+    align-items: start;
+  }
+
+  .contacts-title {
+    grid-column: 1 / -1;
+    margin-top: clamp(20px, 4vw, 56px);
+  }
+
+  .contacts-org { grid-column: 1; }
+
+  /* рядом с организацией — с тем же верхним отступом, чтобы строки стояли в линию */
+  .contacts-list {
+    grid-column: 2;
+    margin-top: clamp(16px, 1.76vw, 45px);
+  }
+
+  /* телефон и почта не переносятся внутри себя */
+  .contacts-list span { white-space: nowrap; }
+
+  .contacts-form-card {
+    order: 2;
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: clamp(24px, 3vw, 40px);
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  .contacts-place {
+    order: 3;
+    grid-column: 1;
+    margin-inline: auto;
+    text-align: center;
+  }
+}
+
+/* 768 и ниже: контакты уходят под организацию и встают в строку */
+@media (max-width: 768px) {
+  .contacts-info { grid-template-columns: minmax(0, 1fr); }
+
+  .contacts-title { margin-top: clamp(16px, 3vw, 32px); }
+
+  .contacts-list {
+    grid-column: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px clamp(16px, 4vw, 28px);
+    margin-top: clamp(12px, 3vw, 18px);
+  }
+}
+
+@media (max-width: 540px) {
+  .contacts-form-card { padding: 24px 16px 28px; }
+}
+
+
+/* Широкие экраны: макетные поля 222px слева и 402px справа */
+/* Широкие экраны не требуют отдельных полей: 222/402px при 2560 уже заданы
+   долями полотна на .crumbs и .contacts-layout. */
+
+
+/* На узких экранах фото живёт в ::before; прижимаем его к левому нижнему
+   углу секции, иначе ветка попадает на заголовок и контакты. Нижний отступ
+   оставляет ветке полосу под текстом, чтобы она не задевала последнюю строку. */
+@media (max-width: 1024px) {
+  .contacts-page {
+    padding-bottom: min(29vw, 200px);
+  }
+
+  .contacts-page::before {
+    background-position: left bottom;
+  }
+}
+
+/* --- Шире макета: фото фиксируем на макетной ширине полотна ---
+   Иначе «100% auto» тянул снимок по окну, ваза увеличивалась и уезжала
+   влево от центрированного текста. Слой ::before сужаем до полотна
+   (left/right в процентах считаются от ширины страницы), чтобы
+   background-position остался макетным. */
+@media (min-width: 2560px) {
+  .contacts-page::before {
+    left: calc(50% - 1280px);
+    right: calc(50% - 1280px);
+    background-size: 2560px auto;
+    background-position: calc(-0.35 * var(--u)) calc(-4.035 * var(--u));
+  }
+}

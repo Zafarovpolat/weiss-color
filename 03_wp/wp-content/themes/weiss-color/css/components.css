@@ -1,0 +1,329 @@
+/* ==========================================================================
+   components.css — переиспользуемые компоненты:
+   кнопки, формы/модальное окно, текстовые атомы секций.
+   ========================================================================== */
+
+/* ---------- Кнопки ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2vw, 51px);
+  padding: clamp(13px, 0.59vw, 15px) clamp(18px, 1.8vw, 46px);
+  font-family: inherit;
+  font-size: var(--fs-btn);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-white);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  text-decoration: none;
+  transition: box-shadow var(--ease-ui), background-color var(--ease-ui),
+    border-color var(--ease-ui), color var(--ease-ui), filter var(--ease-ui);
+}
+.btn:hover { text-decoration: none; }
+.btn:active { filter: brightness(0.93); }
+
+.btn__arrow {
+  flex: none;
+  width: clamp(24px, 1.64vw, 42px);
+  height: auto;
+}
+
+/* Первичная CTA героя — коричневая; в макете заливка #62381e плоская,
+   без свечения вокруг кнопки */
+.btn--brown {
+  background: var(--color-brown);
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-regular);
+  gap: clamp(20px, 1.95vw, 50px);
+  padding-inline: clamp(18px, 1.37vw, 35px);
+  border-radius: 0;
+}
+.btn--brown:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+}
+.btn--brown:focus-visible { outline-color: var(--color-brown); }
+
+/* Вторичная CTA — бирюзовая (макет: #39757d, без свечения) */
+.btn--teal {
+  background: var(--color-teal);
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.04em;
+  gap: clamp(8px, 0.4vw, 10px);
+  padding-inline: clamp(18px, 1.1vw, 28px);
+}
+.btn--teal:hover {
+  background: var(--color-teal-dark);
+  box-shadow: var(--shadow-hover-teal);
+}
+.btn--teal:focus-visible { outline-color: var(--color-teal); }
+.btn--teal .btn__arrow { width: clamp(20px, 1.64vw, 42px); }
+
+/* Контурная кнопка «Заказать звонок» (шапка/подвал):
+   в покое тёмный текст и серый контур, на hover коричневыми становятся они */
+.btn--outline {
+  color: var(--color-btn-dark);
+  background: var(--color-white);
+  border-color: var(--color-btn-border);
+  border-width: 2px;
+  box-shadow: none;
+  padding-inline: clamp(20px, 1.68vw, 43px);
+}
+.btn--outline:hover {
+  color: var(--color-brown);
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-hover-outline);
+}
+
+/* Контурная на тёмном (подвал) — в макете более узкий «дышащий» контур */
+.btn--ghost {
+  color: var(--color-white);
+  background: transparent;
+  border-color: var(--color-white);
+  box-shadow: none;
+  padding-inline: clamp(18px, 1.1vw, 28px);
+}
+/* На тёмном подвале чёрная тень не видна — даём светлый ореол */
+.btn--ghost:hover {
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.22);
+}
+
+/* ---------- Текстовые атомы героя ---------- */
+.hero__eyebrow {
+  margin: 0;
+  font-family: var(--font-aux);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-eyebrow);
+}
+.hero__title {
+  margin: clamp(10px, 0.86vw, 22px) 0 0;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-h1);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-ink-deep);
+  max-width: 600px;
+}
+.hero__lead {
+  margin: clamp(16px, 1.25vw, 32px) 0 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-medium);
+  line-height: 1.5;
+  color: var(--color-lead);
+  max-width: 410px;
+}
+.hero .btn { margin-top: clamp(18px, 1.84vw, 47px); }
+
+/* ---------- Текстовые атомы секции колеровки ---------- */
+.coloring__title {
+  margin: 3px 0 clamp(12px, 1.05vw, 27px);
+  font-size: var(--fs-section-title);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
+  line-height: 0.6;
+  color: var(--color-ink);
+}
+.coloring__text {
+  margin: 0;
+  font-size: clamp(15px, 0.742vw, 19px);
+  font-weight: var(--fw-medium);
+  line-height: 1.4;
+  color: var(--color-muted);
+  max-width: 420px;
+}
+.coloring .btn { margin-top: clamp(16px, 1.05vw, 27px); }
+
+/* Веер — декоративный (aria-hidden). На 1280–1920 он сдвинут отрицательным
+   margin-left и накрывал правую половину кнопки «Подобрать цвет»: клик уходил
+   в прозрачные пиксели PNG, кнопка не нажималась. */
+.coloring__fan { pointer-events: none; }
+
+/* ---------- Заголовок секции преимуществ ---------- */
+.benefits__heading {
+  margin: 0;
+  font-size: var(--fs-benefits-title);
+  line-height: 1.45;
+  /* в макете набрано в два веса: «к профессионалам» жирнее остального текста */
+  font-weight: var(--fw-regular);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  max-width: 590px;
+}
+.benefits__heading-accent { font-weight: var(--fw-semibold); }
+
+/* ---------- Модальное окно «Заказать звонок» (М25) ---------- */
+.modal {
+  width: min(440px, calc(100vw - 32px));
+  padding: clamp(24px, 3vw, 40px);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 24px 64px rgba(6, 30, 63, 0.28);
+  color: var(--color-ink);
+}
+.modal::backdrop { background: rgba(6, 30, 63, 0.55); }
+
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+.modal__title { margin: 0; font-size: 22px; }
+.modal__close {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--color-muted);
+  border-radius: var(--radius-btn);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.modal__close:hover { color: var(--color-ink); background: var(--color-surface); }
+
+.modal__text {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+}
+
+/* Поля формы */
+.field { display: grid; gap: 6px; margin-bottom: var(--space-sm); }
+.field label { font-size: var(--fs-small); font-weight: var(--fw-medium); }
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: inherit;
+  /* кегль задают страницы (.field__input): этот селектор на элемент
+     перебивал бы их clamp'ы и держал 16px на всех ширинах */
+  color: var(--color-ink);
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-btn);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field input:hover { border-color: #b9b9c0; }
+.field input:user-invalid { border-color: #c0392b; }
+.field input:focus-visible {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
+}
+
+.modal .btn { width: 100%; margin-top: var(--space-xs); }
+.modal__note {
+  margin-top: var(--space-sm);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+/* ---------- Валидация форм (js/validation.js) ---------- */
+
+/* Текст ошибки под полем: .field и .sampler-qty — колонки,
+   .callback-field — flex-строка, поэтому переносим ошибку на свою строку */
+.field__error {
+  display: block;
+  margin-top: 2px;
+  font-size: clamp(12px, 0.63vw, 15px);
+  line-height: 1.35;
+  font-weight: var(--fw-medium);
+  color: #c0392b;
+}
+
+.callback-field { flex-wrap: wrap; }
+
+.callback-field .field__error {
+  flex: 0 0 100%;
+  margin-top: 6px;
+}
+
+/* Красная рамка невалидного поля — для всех типов контролов */
+.field__input[aria-invalid="true"],
+.field__select[aria-invalid="true"],
+.callback-field input[aria-invalid="true"] {
+  border-color: #c0392b;
+  box-shadow: 0 0 0 1px rgba(192, 57, 43, 0.18);
+}
+
+/* Счётчик количества: рамка у обёртки .qty, у самого input рамки нет */
+.qty:has(.qty__input[aria-invalid="true"]) {
+  border-color: #c0392b;
+  box-shadow: 0 0 0 1px rgba(192, 57, 43, 0.18);
+}
+
+/* Промокод в корзине (js/cart.js) */
+.promo__input[aria-invalid="true"] {
+  border-color: #c0392b;
+  box-shadow: 0 0 0 1px rgba(192, 57, 43, 0.18);
+}
+
+.promo__error {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(12px, 0.63vw, 15px);
+  line-height: 1.35;
+  font-weight: var(--fw-medium);
+  color: #c0392b;
+}
+
+.form-success {
+  margin: clamp(10px, 0.8vw, 16px) 0 0;
+  font-size: clamp(13px, 0.73vw, 18px);
+  line-height: 1.45;
+  font-weight: var(--fw-medium);
+  color: #2e6b4f;
+}
+
+/* --- Хлебные крошки: единый вид на всех страницах ---
+   Две разметки (.crumbs простым текстом и .breadcrumbs списком) должны
+   выглядеть одинаково: 13–15px, обычный вес, светлый разделитель,
+   текущая страница — серо-синяя и полужирная. */
+.crumbs,
+.breadcrumbs {
+  font-size: clamp(13px, 0.59vw, 15px);
+  line-height: 1.4;
+  /* цвет уходит на разделители — это текстовые узлы между ссылками */
+  color: #95969b;
+}
+
+.crumbs a,
+.breadcrumbs a {
+  color: #9c9da2;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.crumbs a:hover,
+.breadcrumbs a:hover { color: var(--color-brown); }
+
+.crumbs [aria-current],
+.breadcrumbs [aria-current] {
+  color: #54575b;
+  font-weight: 600;
+}
+
+/* Крошки внутренних страниц (ТЗ 3.1): лежат в верхнем отступе полосы или
+   сцены, поэтому макетная композиция не сдвигается. Позицию задаёт CSS
+   страницы; на узких экранах крошки встают в поток. */
+.crumbs--overlay {
+  position: absolute;
+  z-index: 3;
+}

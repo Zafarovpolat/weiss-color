@@ -1,0 +1,535 @@
+/* ==========================================================================
+   modals.css — модальные окна (п.3.4 ТЗ): М23 «Товар добавлен»,
+   М06 «Пробник», М25 «Заказать звонок», М17 «Результат отправки формы»,
+   М20 «Cookie-настройки».
+   Размеры сняты с PSD: окно М23 — 916×677, фон #f7f6fa, радиус 10.
+   ========================================================================== */
+
+/* --- Демо-подложка страниц-витрин модальных окон --- */
+
+.mcard-demo {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: clamp(16px, 2vw, 40px);
+  background: #e7e9ee;
+}
+
+/* --- Каркас окна --- */
+
+.mcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 916px;
+  padding: clamp(24px, 5vw, 68px) clamp(16px, 4.37vw, 40px)
+    clamp(24px, 3.5vw, 48px);
+  border-radius: 10px;
+  background: #f7f6fa;
+  box-shadow: 0 24px 64px rgba(23, 30, 49, 0.16);
+}
+
+.mcard__close {
+  position: absolute;
+  z-index: 3; /* фото-панель .callback-photo тоже positioned — иначе перекрывает */
+  top: clamp(8px, 1.4vw, 16px);
+  right: clamp(8px, 1.9vw, 22px);
+  display: grid;
+  place-items: center;
+  /* зона нажатия 44×44 (WCAG 2.5.5), иконка внутри — 24px */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: #252b37;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.mcard__close:hover { color: #62381e; }
+
+.mcard__close svg { width: 24px; height: 24px; }
+
+.mcard__title {
+  margin: 0;
+  /* макет окна 916×677: заголовок 29.4px Bold (ширина строки 668,
+     высота знака 26–27), без добавочного трекинга */
+  font-size: clamp(16px, 1.48vw, 29.4px);
+  line-height: 1.15;
+  font-weight: var(--fw-bold, 700);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-align: center;
+  color: #252b37;
+}
+
+.mcard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(24px, 7vw, 110px);
+  margin-top: clamp(24px, 3.9vw, 60px);
+}
+
+/* М23: кнопки макета 280×56, подпись 16px; размеры не тянем через vw —
+   окно фиксированное 916px, иначе на 1920 кнопки выходили на четверть короче */
+.mcard__actions .btn {
+  min-width: 280px;
+  min-height: 56px;
+  padding-inline: 20px;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  font-weight: var(--fw-medium);
+}
+
+/* контурная «Продолжить покупку»: в макете заливка окна и серый текст */
+.mcard__actions .btn--outline {
+  color: #4c4b51;
+  background: transparent;
+  font-weight: var(--fw-medium);
+}
+
+/* --- М23 «Товар добавлен в корзину» --- */
+
+.mcard-add__image {
+  width: clamp(120px, 12.4vw, 198px);
+  height: auto;
+  margin-top: clamp(20px, 3.26vw, 50px);
+}
+
+.mcard-add__name {
+  margin: clamp(20px, 3.46vw, 53px) 0 0;
+  /* макет: подпись 20.6px Medium (штрих 2–3px, ширина 462) —
+     прежние 25px/600 были заметно толще и шире */
+  font-size: clamp(14px, 1.56vw, 20.6px);
+  line-height: 1.2;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+/* --- М23 «Товар добавлен» как <dialog>: окно 916×677 --- */
+
+dialog.mcard-add {
+  width: min(916px, 94vw);
+  max-width: min(916px, 94vw);
+  max-height: 92dvh;
+  margin: auto;
+  overflow-y: auto;
+  border: 0;
+  background: #f7f6fa;
+  box-shadow: 0 30px 80px rgba(23, 30, 49, 0.28);
+}
+
+dialog.mcard-add::backdrop { background: rgba(23, 30, 49, 0.45); }
+
+/* фокус при открытии — на самом окне, обводка контейнера не нужна */
+dialog.mcard-add:focus,
+dialog.mcard-add:focus-visible { outline: none; }
+
+/* --- Адаптив --- */
+
+@media (max-width: 768px) {
+  .mcard { border-radius: 8px; }
+  .mcard__actions { flex-direction: column; width: 100%; }
+  .mcard__actions .btn { width: 100%; min-width: 0; }
+}
+
+/* --- М25 «Заказать звонок»: окно 1691×986, фото слева, форма справа --- */
+
+.mcard-callback {
+  display: grid;
+  grid-template-columns: minmax(0, 914fr) minmax(0, 777fr);
+  align-items: stretch;
+  max-width: 1691px;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.callback-photo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: clamp(24px, 4.15vw, 108px) clamp(16px, 3.79vw, 97px)
+    clamp(24px, 3vw, 76px);
+  background: #eef0f2 url("../assets/img/callback-bg.jpg") center / cover no-repeat;
+}
+
+.callback-photo__logo {
+  display: block;
+  width: clamp(120px, 11.6vw, 192px);
+  height: auto;
+}
+
+.callback-photo__rule {
+  width: clamp(32px, 1.99vw, 51px);
+  height: 2px;
+  margin: clamp(20px, 2.03vw, 52px) 0 0;
+  background: #787d8c;
+  border: 0;
+}
+
+.callback-photo__slogan {
+  margin: clamp(12px, 1.56vw, 40px) 0 0;
+  font-size: clamp(12px, 0.82vw, 21px);
+  line-height: 1.4;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #787d8c;
+}
+
+.callback-form {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 5.12vw, 131px) clamp(16px, 2.11vw, 54px)
+    clamp(24px, 3.9vw, 100px) clamp(16px, 1.68vw, 43px);
+  background: #f8f8fa;
+}
+
+.callback-form__eyebrow {
+  margin: 0;
+  font-size: clamp(12px, 0.82vw, 21px);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4a4f5b;
+}
+
+.callback-form__title {
+  margin: clamp(8px, 1.09vw, 28px) 0 0;
+  font-size: clamp(24px, 2.95vw, 75.6px);
+  line-height: 1.19;
+  font-weight: var(--fw-regular);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.callback-form__text {
+  max-width: 24em;
+  margin: clamp(10px, 0.8vw, 20.5px) 0 0;
+  font-size: clamp(13px, 0.94vw, 24px);
+  line-height: 1.31;
+  font-weight: var(--fw-medium);
+  color: #4a4f5b;
+}
+
+.callback-form__break { display: none; }
+
+@media (min-width: 1025px) {
+  .callback-form__break { display: inline; }
+}
+
+.callback-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: clamp(12px, 0.82vw, 21px);
+}
+
+.callback-field + .callback-field { margin-top: clamp(10px, 1.4vw, 36px); }
+
+.callback-field svg,
+.callback-field__icon {
+  position: absolute;
+  left: clamp(12px, 1.02vw, 26px);
+  width: clamp(18px, 1.25vw, 32px);
+  height: auto;
+  color: #252b37;
+  pointer-events: none;
+}
+
+.callback-field input {
+  width: 100%;
+  height: clamp(48px, 3.28vw, 84px);
+  padding: 0 clamp(12px, 1.02vw, 26px) 0 clamp(44px, 3.16vw, 81px);
+  font-family: inherit;
+  font-size: clamp(14px, 0.94vw, 24px);
+  font-weight: var(--fw-medium);
+  color: #233146;
+  background: #fff;
+  border: 1px solid #dcdde1;
+  border-radius: 4px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* В макете номер набран Sovest Bold, но у Sovest есть только Medium */
+.callback-field input[type="tel"] { font-family: var(--font-digit); }
+
+.callback-field input::placeholder { color: #9fa5b3; }
+.callback-field input:hover { border-color: #b9b9c0; }
+.callback-field input:focus-visible {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: var(--shadow-focus-field);
+}
+
+.callback-form .btn {
+  width: 100%;
+  min-height: clamp(48px, 2.73vw, 70px);
+  margin-top: clamp(14px, 1.8vw, 46px);
+  font-size: clamp(15px, 0.98vw, 25px);
+  letter-spacing: 0;
+  gap: clamp(8px, 0.86vw, 22px);
+}
+
+/* в макете у стрелки формы голова 12×14 при общей длине 66; у залитого
+   глифа пропорции 11:15, поэтому по чернилам головы берём 56 px */
+.callback-form .btn__arrow { width: clamp(30px, 2.1875vw, 56px); }
+
+.callback-form__note {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 0.7vw, 18px);
+  margin: clamp(10px, 1.4vw, 36px) 0 0;
+  font-size: max(12px, clamp(10px, 0.66vw, 17px));
+  font-weight: var(--fw-medium);
+  color: #9fa5b3;
+  white-space: nowrap;
+}
+
+.callback-form__note svg {
+  width: clamp(14px, 0.86vw, 22px);
+  height: auto;
+  flex: none;
+  color: #555b5a;
+}
+
+@media (max-width: 1024px) {
+  .callback-form__note { white-space: normal; align-items: flex-start; }
+  .callback-form__note svg { margin-top: 2px; }
+  .mcard-callback { grid-template-columns: minmax(0, 1fr); }
+  .callback-photo { min-height: clamp(160px, 30vw, 260px); }
+  .callback-photo__slogan { display: none; }
+}
+
+@media (max-width: 768px) {
+  .callback-photo__logo { width: 120px; }
+}
+
+/* --- М17 «Результат отправки формы»: то же окно, правая часть — успех --- */
+
+.mcard-result .callback-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(24px, 5.3vw, 152px) clamp(16px, 1.95vw, 50px)
+    clamp(24px, 3vw, 80px) clamp(16px, 4.3vw, 110px);
+  text-align: center;
+  background: #f8f8fa;
+}
+
+.callback-result__icon {
+  display: grid;
+  place-items: center;
+  width: clamp(80px, 9.1vw, 187px);
+  height: clamp(80px, 9.1vw, 187px);
+  border-radius: 50%;
+  background: #e2f2e3;
+}
+
+.callback-result__icon svg {
+  width: 46%;
+  height: auto;
+  color: #39757d;
+}
+
+.callback-result__title {
+  margin: clamp(16px, 3.66vw, 75px) 0 0;
+  font-size: clamp(34px, 4.69vw, 96px);
+  line-height: 1.05;
+  font-weight: var(--fw-regular);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.callback-result__text {
+  max-width: 18em;
+  margin: clamp(10px, 1.27vw, 26px) 0 0;
+  font-size: clamp(15px, 1.35vw, 34.5px);
+  line-height: 1.5;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  text-align: left;
+  color: #4a4f5b;
+}
+
+@media (max-width: 1024px) {
+  .mcard-result .callback-result { padding-block: clamp(32px, 6vw, 64px); }
+  .callback-result__text { max-width: 26ch; }
+}
+
+/* --- М20 «Cookie-уведомление»: панель 2364×245 --- */
+
+.cookie-demo {
+  display: flex;
+  align-items: flex-end;
+  min-height: 100dvh;
+  padding: clamp(16px, 1.17vw, 30px);
+  background: #dfe1e5;
+}
+
+.cookie-bar {
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(90px, 10.2vw, 261px) minmax(0, 1fr) auto clamp(0px, 8.2vw, 210px);
+  gap: clamp(16px, 1.09vw, 28px);
+  align-items: start;
+  width: 100%;
+  padding: clamp(14px, 1.17vw, 30px) clamp(16px, 1.56vw, 40px)
+    clamp(6px, 0.63vw, 16px) clamp(12px, 1.29vw, 33px);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(23, 30, 49, 0.12);
+  overflow: hidden;
+}
+
+.cookie-bar__img {
+  width: 100%;
+  height: auto;
+  margin-top: clamp(-6px, -0.24vw, 0px);
+}
+
+.cookie-bar__title {
+  margin: 0;
+  font-size: clamp(16px, 0.94vw, 24px);
+  line-height: 1.2;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #282932;
+}
+
+.cookie-bar__text {
+  max-width: clamp(320px, 26vw, 667px);
+  margin: clamp(6px, 0.47vw, 12px) 0 0;
+  font-size: clamp(12px, 0.7vw, 18px);
+  line-height: 1.35;
+  font-weight: var(--fw-medium);
+  color: #6e6f75;
+}
+
+.cookie-bar__link {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.86vw, 22px);
+  margin-top: clamp(8px, 0.78vw, 20px);
+  font-size: clamp(12px, 0.7vw, 18px);
+  font-weight: var(--fw-medium);
+  color: #4c4d51;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+/* подчёркивание на hover — рамкой только под текстом, не под стрелкой */
+.cookie-bar__label {
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--ease-ui);
+}
+
+.cookie-bar__link {
+  width: fit-content;
+  align-self: start;
+  transition: color var(--ease-ui);
+}
+
+.cookie-bar__link:hover { color: var(--color-brown-dark); text-decoration: none; }
+.cookie-bar__link:hover .cookie-bar__label { border-bottom-color: var(--color-brown-dark); }
+.cookie-bar__link svg { width: clamp(16px, 1.02vw, 26px); height: auto; }
+
+.cookie-bar__actions {
+  display: grid;
+  gap: clamp(6px, 0.47vw, 12px);
+  align-self: center;
+}
+
+.cookie-bar__actions .btn {
+  width: clamp(180px, 16.6vw, 427px);
+  min-height: clamp(44px, 3.05vw, 78px);
+  font-size: clamp(12px, 0.7vw, 18px);
+  letter-spacing: 0.1em;
+  padding-inline: clamp(12px, 0.78vw, 20px);
+  border-radius: 0;
+}
+
+/* ветка «липнет» к правому нижнему углу плашки и обрезается её скруглением */
+.cookie-bar__leaf {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: clamp(120px, 8.2vw, 210px);
+  height: auto;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 1280px) {
+  /* 2 колонки: картинка + текст; кнопки — отдельной строкой на всю ширину */
+  .cookie-bar {
+    grid-template-columns: clamp(70px, 12vw, 120px) minmax(0, 1fr);
+    row-gap: 16px;
+  }
+
+  .cookie-bar__actions {
+    grid-column: 1 / -1;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+  }
+
+  .cookie-bar__actions .btn { width: 100%; min-width: 0; }
+  .cookie-bar__leaf { display: none; }
+}
+
+@media (max-width: 540px) {
+  /* на узких экранах линия под текстом видна сразу (серым), на hover — коричневая */
+  .cookie-bar__label {
+    border-bottom-color: #c9cace;
+  }
+
+  .cookie-bar__link svg { display: none; }
+
+  .cookie-bar { grid-template-columns: minmax(0, 1fr); }
+  .cookie-bar__img { width: 80px; }
+  .cookie-bar__actions { grid-auto-flow: row; }
+  .cookie-bar__actions .btn { width: 100%; min-width: 0; }
+}
+
+
+/* --- Диалог «Заказать звонок» как <dialog> (шапка, подвал, CTA) --- */
+
+dialog.mcard-callback {
+  width: min(1691px, 96vw);
+  max-width: min(1691px, 96vw);
+  max-height: 92dvh;
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 30px 80px rgba(23, 30, 49, 0.28);
+}
+
+dialog.mcard-callback::backdrop { background: rgba(23, 30, 49, 0.45); }
+
+@media (max-width: 1024px) {
+  dialog.mcard-callback { width: min(560px, 94vw); }
+}
+
+/* Демо-подложки модалок растянуты на весь экран. На ширинах с масштабом
+   0.9 (1440–2559) 100dvh ужимается вместе с зумом на 10% — компенсируем,
+   чтобы фон доходил до нижнего края. От 2560px масштаб уже 1:1, там та же
+   компенсация давала подложку 1600px вместо 1440 и лишнюю прокрутку. */
+@media (min-width: 1440px) and (max-width: 2559.98px) {
+  .mcard-demo,
+  .cookie-demo { min-height: calc(100dvh / 0.9); }
+}

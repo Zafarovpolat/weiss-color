@@ -1,0 +1,1297 @@
+/* ==========================================================================
+   cart.css — экран М16 «Корзина и расчёт заказа».
+   Геометрия снята с PSD 2560w (spec/Корзина_и_расчёт_заказа).
+   Структура: [товары] 1435px + 24px + [панель заказа] 653px = 2112px.
+   ========================================================================== */
+
+/* --- Шапка страницы: хлебные крошки + H1 + счётчик + ссылка --- */
+
+.cart-page {
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-inline: var(--container-pad);
+  padding-bottom: 0;
+  /* фон как у страницы оттенков */
+  background: linear-gradient(180deg, #f9f9fa 0%, #fafafb 100%);
+  /* колонка: пагинация прижимается к низу экрана (margin-top: auto),
+     а не висит сразу под списком товаров */
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding-top: clamp(18px, 1.87vw, 48px);
+}
+
+/* Хлебные крошки (.crumbs) описаны общими правилами в components.css —
+   вид тот же, что у .breadcrumbs на остальных страницах. */
+
+.cart-head__row {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.33vw, 34px);
+  margin-top: clamp(14px, 1.33vw, 34px);
+}
+
+.cart-title {
+  font-size: clamp(32px, 1.97vw, 50px);
+  line-height: 1.1;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: #233146;
+}
+
+.cart-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(34px, 1.95vw, 50px);
+  padding-inline: clamp(14px, 1.21vw, 31px);
+  font-size: clamp(16px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  color: #9c9da2;
+  background: #f4f4f7;
+  /* плашка-«пилюля»: скругление по половине высоты */
+  border-radius: 999px;
+  white-space: nowrap;
+  /* в макете плашка чуть ниже оптического центра заголовка */
+  transform: translateY(clamp(0px, 0.16vw, 4px));
+}
+
+.cart-back {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.7vw, 18px);
+  margin-left: auto;
+  /* макет: 20 px и тёмно-серый #747c8c (у нас было 19 px и #a4a7b1) */
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  color: #747c8c;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.cart-back:hover {
+  color: var(--color-brown);
+  text-decoration: none;
+}
+
+/* на hover подчёркиваем не текстом, а нижней рамкой — только под надписью,
+   стрелка остаётся без линии; прозрачная рамка в покое держит высоту */
+.cart-back__text {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.cart-back:hover .cart-back__text {
+  border-bottom-color: var(--color-brown);
+}
+
+.cart-back svg {
+  flex: none;
+  /* заливная стрелка, viewBox 512×243.58 (aspect ~2.1) — вытянутая,
+     хвост длинный. Сама стрелка в разметке отзеркалена scale(-1 1) */
+  width: clamp(20px, 1.4vw, 36px);
+  height: auto;
+}
+
+/* --- Двухколоночная раскладка --- */
+
+.cart-layout {
+  display: grid;
+  /* Пропорции макета 1435 : 653, но в fr — иначе на 1440 браузер делил
+     свободное место поровну (584/584) и колонке товаров не хватало ширины. */
+  grid-template-columns: minmax(0, 1435fr) minmax(0, 653fr);
+  justify-content: space-between;
+  gap: clamp(20px, 0.94vw, 24px);
+  margin-top: clamp(20px, 1.56vw, 40px);
+  align-items: start;
+}
+
+/* Ниже 2300 панель заказа чуть шире макетной доли: на 1920 при пропорции
+   1435 : 653 она выходила 495px и читалась теснее, чем в макете. На самом
+   2560 оставляем ровно макет (653fr). */
+@media (min-width: 1281px) and (max-width: 2299px) {
+  .cart-layout { grid-template-columns: minmax(0, 1435fr) minmax(0, 700fr); }
+}
+
+/* --- Список позиций --- */
+
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 0.9vw, 23px);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.cart-item {
+  display: grid;
+  /* Пропорции макета (137 / 543 / 605 / 37) в fr: при сжатии колонки
+     товаров на 1440 фиксированные vw не ужимались и сумма наезжала
+     на иконку удаления. */
+  grid-template-columns:
+    clamp(64px, 5.35vw, 137px)
+    minmax(0, 543fr)
+    minmax(0, 605fr)
+    /* 44px — тач-таргет кнопки удаления (min-width в responsive.css);
+       при макетных 37 кнопка вылезала из своей колонки на сумму */
+    44px;
+  align-items: start;
+  padding: clamp(16px, 1.21vw, 31px) clamp(16px, 2.07vw, 53px)
+    clamp(16px, 0.94vw, 24px) clamp(16px, 2.34vw, 60px);
+  background: var(--color-white);
+  border-radius: clamp(6px, 0.39vw, 10px);
+  box-shadow: 0 2px 10px rgba(23, 30, 49, 0.04);
+}
+
+.cart-item__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* в макете банка 201px в карточке 256 — центрируем за счёт паддингов */
+  margin-top: 0;
+}
+
+/* Текстовая колонка: в макете начинается через 53px после банки */
+.cart-item__body {
+  margin-left: clamp(12px, 2.07vw, 53px);
+}
+
+.cart-item__name {
+  margin: 0;
+  font-size: clamp(17px, 0.89vw, 22.8px);
+  line-height: 1.32;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: #575961;
+}
+
+/* Строка «Объём / Цвет / В наличии» */
+
+.cart-item__meta {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 0.16vw, 4px);
+  margin-top: clamp(6px, 0.38vw, 10px);
+}
+
+.cart-item__spec {
+  margin: 0;
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  color: #9c9da2;
+}
+
+.cart-item__spec--color { color: #908e8e; }
+
+.cart-item__stock {
+  width: max-content;
+  max-width: 100%;
+  margin-top: clamp(6px, 0.55vw, 14px);
+  /* в макете фон чипа 153×43 при тексте 92px — паддинги 30/13 */
+  padding: clamp(6px, 0.51vw, 13px) clamp(10px, 1.17vw, 30px);
+  line-height: 1.2;
+  font-size: clamp(13px, 0.65vw, 16.7px);
+  font-weight: var(--fw-medium);
+  color: var(--color-ink-deep);
+  background: #f2f8fe;
+  border-radius: 4px;
+}
+
+/* Правая часть строки: цена / количество / сумма / удаление */
+
+.cart-item__cols {
+  display: grid;
+  /* Колонка суммы — по содержимому (auto): раньше она считалась от vw
+     и была уже текста, из-за чего «3 500 ₽» выезжало на иконку удаления.
+     Справа отступ, чтобы сумма не липла к корзине. */
+  grid-template-columns: minmax(0, 201fr) minmax(0, 238fr) auto;
+  padding-right: clamp(6px, 0.5vw, 12px);
+  align-items: start;
+  column-gap: 0;
+  /* в макете шапки колонок стоят на 41px ниже верха контента карточки */
+  margin-top: clamp(0px, 1.72vw, 44px);
+}
+
+/* justify-self работает только на грид-элементах, а заголовок лежит внутри
+   <div>-колонки. Поэтому центрируем саму колонку в её треке — визуально
+   заголовок встаёт по центру своей колонки. */
+.cart-item__cols > div {
+  justify-self: center;
+}
+
+.cart-item__col-title {
+  margin: 0;
+  line-height: 1.2;
+  font-size: clamp(13px, 0.63vw, 16px);
+  font-weight: var(--fw-medium);
+  color: #afacac;
+}
+
+/* justify-self к этим <p> не применить — они не грид-элементы, а лежат внутри
+   <div>-колонки. Центрируем текст внутри колонки: ширина колонки равна самому
+   широкому её ребёнку, поэтому заголовок, цена и сумма встают по одной оси. */
+.cart-item__col-title,
+.cart-item__price,
+.cart-item__total {
+  text-align: center;
+}
+
+.cart-item__price {
+  margin: clamp(18px, 1.45vw, 37px) 0 0;
+  line-height: 1.2;
+  font-size: clamp(18px, 0.98vw, 25px);
+  font-weight: var(--fw-semibold);
+  color: #9c9da2;
+}
+
+.cart-item__total {
+  margin: clamp(18px, 1.45vw, 37px) 0 0 0;
+  line-height: 1.2;
+  /* как у цены за штуку — сумма не должна быть мельче */
+  font-size: clamp(18px, 0.98vw, 25px);
+  font-weight: var(--fw-semibold);
+  color: #575961;
+  white-space: nowrap;
+}
+
+/* Колонка суммы — последняя, ширина у неё auto (по содержимому).
+   Правый отступ расширяет колонку, а её левый край уезжает влево:
+   сумма отходит от иконки удаления. Отступ на самом блоке, потому что
+   margin-right у значения не работал — колонку задавал заголовок «Сумма». */
+.cart-item__cols > div:last-child {
+  padding-right: clamp(24px, 2.2vw, 60px);
+}
+
+.cart-item__qty {
+  margin-top: clamp(6px, 0.66vw, 17px);
+  /* было margin-left: clamp(-43px, -1.68vw, 0px): на 1440–1600 степпер
+     выезжал влево за границу своей колонки (в макете смещение всего ~10px
+     при 2560). Центрируем его в колонке, как цену и сумму */
+  display: flex;
+  justify-content: center;
+}
+
+/* Степпер: − коричневая 61×54, поле и «+» по 56×55, рамка 1px #d7d7d7 */
+
+.qty {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #d7d7d7;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--color-white);
+}
+
+.qty__btn {
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 2.38vw, 61px);
+  height: clamp(40px, 2.11vw, 54px);
+  padding: 0;
+  font-family: inherit;
+  font-size: clamp(18px, 0.98vw, 25px);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+  background: var(--color-white);
+  border: 0;
+  cursor: pointer;
+  /* цвет иконки не анимируем: градиент фона не переходный, иначе «+» белеет с задержкой */
+  transition: background-color 0.2s ease;
+}
+
+/* «−» — тёплый коричневый градиент #976445→#805438 (пиксели макета:
+   корзина и пробник, затемнение к правому нижнему углу) */
+.qty__btn--minus {
+  color: var(--color-white);
+  background: linear-gradient(135deg, #976445 0%, #805438 100%);
+}
+
+/* «+» на hover — тот же градиент, что у минуса, иконка становится белой */
+.qty__btn:hover {
+  color: var(--color-white);
+  background: linear-gradient(135deg, #976445 0%, #805438 100%);
+}
+.qty__btn--minus:hover {
+  background: linear-gradient(135deg, #7c5239 0%, #69452e 100%);
+}
+
+.qty__input {
+  width: clamp(42px, 2.19vw, 56px);
+  height: clamp(40px, 2.11vw, 54px);
+  padding: 0;
+  font-family: inherit;
+  font-size: clamp(16px, 0.98vw, 25px);
+  font-weight: var(--fw-semibold);
+  text-align: center;
+  color: var(--color-ink);
+  background: var(--color-white);
+  border: 0;
+  border-inline: 1px solid #d7d7d7;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.qty__input::-webkit-outer-spin-button,
+.qty__input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+/* Удаление позиции */
+
+.cart-item__del {
+  justify-self: end;
+  /* в макете иконка стоит на уровне строки цены (109px от верха карточки) */
+  margin-top: clamp(20px, 3.09vw, 79px);
+  display: grid;
+  place-items: center;
+  width: clamp(28px, 1.45vw, 37px);
+  height: clamp(30px, 1.72vw, 44px);
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+/* Иконку задаём на самой картинке, а не через width: 100%.
+   Кнопка обязана держать тач-таргет 44px (min-width в responsive.css),
+   и при 100% корзинка растягивалась до 44×52 — вдвое крупнее макетных
+   37×44 при 2560. */
+.cart-item__del img {
+  width: clamp(24px, 1.45vw, 37px);
+  height: auto;
+}
+
+.cart-item__del:hover { opacity: 1; }
+
+/* --- Панель «Ваш заказ» --- */
+
+.order-panel {
+  margin-top: clamp(0px, 0.12vw, 3px);
+  padding: clamp(20px, 1.6vw, 41px) clamp(18px, 1.6vw, 41px)
+    clamp(20px, 1.6vw, 41px) clamp(18px, 1.64vw, 42px);
+  background: var(--color-white);
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(23, 30, 49, 0.04);
+}
+
+.order-panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: clamp(14px, 1.21vw, 31px);
+  border-bottom: 1px solid #dcdcdc;
+}
+
+.order-panel__title {
+  margin: 0;
+  line-height: 1.2;
+  font-size: clamp(24px, 1.37vw, 35px);
+  /* макет: 700 (ширина 193 и плотность штриха совпадают с Bold, у 500 — 183) */
+  font-weight: 700;
+  color: #161b2a;
+}
+
+.order-panel__count {
+  font-size: clamp(16px, 0.95vw, 24.4px);
+  /* макет: 600 — при той же ширине штрихи заметно толще */
+  font-weight: 600;
+  color: #3b3c3c;
+  white-space: nowrap;
+}
+
+/* Строки «Товары / Доставка» */
+
+.order-panel__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(15px, 0.95vw, 24.4px);
+  line-height: 1.2;
+  font-weight: var(--fw-medium);
+  color: var(--color-muted);
+}
+
+.order-panel__rows { padding-top: clamp(14px, 1.56vw, 40px); }
+.order-panel__row + .order-panel__row { margin-top: clamp(6px, 1.09vw, 28px); }
+
+.order-panel__value {
+  margin-left: auto;
+  color: var(--color-ink-deep);
+}
+
+/* Вопросик «доставка» + всплывающая подсказка */
+
+.tip {
+  position: relative;
+  display: inline-flex;
+  /* строка — flex с gap: 8px, плюс у кнопки 44px тач-таргета по 10px пустого
+     поля с каждой стороны от кружка. Отрицательный margin съедает часть этой
+     пустоты: «?» стоит рядом со словом «Доставка», но не прилипает к нему */
+  margin-left: -8px;
+}
+
+.tip__btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* кнопка держит тач-таргет 44px (см. responsive.css), а видимый кружок
+     рисуется псевдоэлементом — иначе круг получался вдвое крупнее макета
+     и «?» внутри терялся */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  /* знак занимает ~2/3 кружка — при 12px он читался как точка */
+  font-size: clamp(13px, 0.86vw, 22px);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  color: #9b9898;
+  background: none;
+  border: 0;
+  cursor: help;
+  transition: color 0.2s ease;
+}
+
+.tip__btn::before {
+  content: "";
+  position: absolute;
+  /* кружок по макету: 33px на 2560 — раньше был 36px и на 1920 выглядел
+     крупнее «Доставки» рядом */
+  width: clamp(20px, 1.29vw, 33px);
+  height: clamp(20px, 1.29vw, 33px);
+  border: 1px solid #c4c1c1;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+.tip__btn:hover,
+.tip__btn:focus-visible { color: var(--color-brown); }
+
+.tip__btn:hover::before,
+.tip__btn:focus-visible::before { border-color: var(--color-brown); }
+
+.tip__pop {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 2px);
+  transform: translateY(-50%);
+  z-index: 3;
+  width: clamp(230px, 16vw, 408px);
+  padding: clamp(12px, 0.7vw, 18px) clamp(12px, 0.78vw, 20px);
+  font-size: clamp(13px, 0.8vw, 20.4px);
+  line-height: 1.25;
+  font-weight: var(--fw-medium);
+  color: #78797c;
+  background: var(--color-white);
+  border-radius: 4px;
+  box-shadow: 0 4px 18px rgba(23, 30, 49, 0.16);
+  /* скрытая подсказка не участвует в раскладке: иначе на узких экранах
+     она шире вьюпорта и даёт горизонтальный скролл */
+  display: none;
+}
+
+/* треугольник-указатель: повёрнутый квадрат с тонкой рамкой и тенью.
+   Обычный белый треугольник на белой панели не видно. */
+.tip__pop::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -9px;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  background: var(--color-white);
+  border-left: 1px solid #e8e8eb;
+  border-bottom: 1px solid #e8e8eb;
+  box-shadow: -3px 3px 6px rgba(23, 30, 49, 0.1);
+  transform: rotate(45deg);
+}
+
+.tip__btn:hover + .tip__pop,
+.tip__btn:focus-visible + .tip__pop,
+.tip__pop:hover, .tip__pop:focus-within {
+  display: block;
+}
+
+/* Инфо-плашка о бесплатной доставке */
+
+.order-panel__info {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 0.86vw, 22px);
+  margin-top: clamp(14px, 1.45vw, 37px);
+  padding: clamp(10px, 0.82vw, 21px) clamp(10px, 0.94vw, 24px);
+  background: #f2f8fe;
+  border: 1px solid #dceafb;
+}
+
+/* В макете фургон 73×36 при 2560, прежние 56px были мельче */
+.order-panel__info img {
+  flex: none;
+  width: clamp(46px, 2.85vw, 73px);
+  height: auto;
+}
+
+.order-panel__info p {
+  margin: 0;
+  font-size: clamp(13px, 0.67vw, 17.2px);
+  line-height: 1.3;
+  font-weight: var(--fw-regular);
+  color: var(--color-ink-deep);
+}
+
+/* первая строка («Бесплатная доставка при заказе от 30 000₽») — SemiBold
+   из макета; 700 у Montserrat нет — браузер дорисовывал жирность сам */
+.order-panel__info strong {
+  display: block;
+  font-weight: var(--fw-semibold);
+}
+
+/* Промокод */
+
+.promo { margin-top: clamp(16px, 1.56vw, 40px); }
+
+.promo__label {
+  display: block;
+  margin-bottom: clamp(8px, 0.82vw, 21px);
+  line-height: 1.2;
+  font-size: clamp(15px, 0.82vw, 21px);
+  font-weight: var(--fw-semibold);
+  color: #575961;
+}
+
+.promo__row {
+  display: flex;
+  gap: clamp(8px, 0.66vw, 17px);
+}
+
+.promo__input {
+  flex: 1;
+  min-width: 0;
+  height: clamp(44px, 2.81vw, 72px);
+  padding-inline: clamp(12px, 1vw, 26px);
+  font-family: inherit;
+  font-size: clamp(14px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--color-ink-deep);
+  background: var(--color-white);
+  border: 1px solid #d7d7d7;
+  border-radius: 2px;
+}
+
+.promo__input::placeholder { color: #747c8c; opacity: 1; }
+
+/* фокус промокода — приглушённая коричневая рамка (на 1px толще обычной)
+   и мягкая тень */
+.promo__input:focus-visible {
+  outline: none;
+  border-width: 2px;
+  border-color: rgba(98, 56, 30, 0.55);
+  box-shadow: var(--shadow-focus-field);
+}
+
+.promo__btn {
+  flex: none;
+  width: clamp(120px, 8.09vw, 207px);
+  height: clamp(44px, 2.77vw, 71px);
+  padding: 0;
+  font-family: inherit;
+  font-size: clamp(14px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--color-white);
+  background: var(--color-teal);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.promo__btn:hover {
+  background: var(--color-teal-dark);
+  box-shadow: var(--shadow-hover-teal);
+}
+
+/* Итого */
+
+.order-panel__sum {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: clamp(16px, 1.37vw, 35px);
+  padding-top: clamp(14px, 1.56vw, 40px);
+  border-top: 1px solid #dcdcdc;
+}
+
+.order-panel__sum dt {
+  line-height: 1.2;
+  font-size: clamp(20px, 1.17vw, 30px);
+  font-weight: var(--fw-semibold);
+  color: #161b2a;
+}
+
+.order-panel__sum dd {
+  margin: 0;
+  line-height: 1.2;
+  font-size: clamp(24px, 1.54vw, 39.5px);
+  font-weight: var(--fw-semibold);
+  color: #161b2a;
+  white-space: nowrap;
+}
+
+/* Кнопки панели */
+
+.order-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.33vw, 34px);
+  margin-top: clamp(16px, 1.45vw, 37px);
+}
+
+.order-panel__checkout {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: clamp(48px, 2.81vw, 72px);
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: var(--color-white);
+  background: var(--color-brown);
+  border-radius: 0;
+  text-decoration: none;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.order-panel__checkout:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+  text-decoration: none;
+}
+
+.order-panel__continue {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: clamp(48px, 2.89vw, 74px);
+  font-size: clamp(15px, 0.78vw, 20px);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: var(--color-ink-deep);
+  background: var(--color-white);
+  border: 2px solid var(--color-btn-border);
+  border-radius: 0;
+  text-decoration: none;
+  transition: border-color var(--ease-ui), color var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.order-panel__continue:hover {
+  color: var(--color-brown-dark);
+  border-color: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-outline);
+  text-decoration: none;
+}
+
+/* --- Пагинация --- */
+
+.cart-pagination {
+  margin-top: auto;
+  padding-top: clamp(12px, 0.78vw, 20px);
+}
+.cart-pagination .pagination { padding-bottom: clamp(32px, 2.2vw, 56px); }
+
+/* --- Пустая корзина --- */
+
+.cart-empty {
+  margin-top: clamp(20px, 1.56vw, 40px);
+  padding: clamp(40px, 4vw, 100px) clamp(20px, 2vw, 50px);
+  text-align: center;
+  background: var(--color-white);
+  border-radius: 6px;
+}
+
+.cart-empty__title {
+  margin: 0;
+  font-size: clamp(22px, 1.25vw, 32px);
+  font-weight: var(--fw-medium);
+  color: #161b2a;
+}
+
+.cart-empty__text {
+  margin: clamp(10px, 0.8vw, 18px) 0 0;
+  font-size: clamp(15px, 0.78vw, 19px);
+  color: var(--color-muted);
+}
+
+.cart-empty__link {
+  display: inline-grid;
+  place-items: center;
+  min-width: clamp(200px, 11.6vw, 296px);
+  height: clamp(46px, 2.58vw, 66px);
+  margin-top: clamp(20px, 1.56vw, 40px);
+  font-size: clamp(13px, 0.65vw, 16.7px);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: var(--color-white);
+  background: var(--color-brown);
+  text-decoration: none;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.cart-empty__link:hover {
+  background: var(--color-brown-dark);
+  box-shadow: var(--shadow-hover-brown);
+  text-decoration: none;
+}
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 1280px) {
+  .cart-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(300px, 38%, 420px);
+  }
+
+  .cart-item {
+    grid-template-columns: 100px minmax(0, 1fr) auto;
+    column-gap: clamp(12px, 2vw, 28px);
+    row-gap: 8px;
+  }
+
+  .cart-item__body { margin-left: 0; }
+
+  /* шапки колонок и значения — в одну строку под банкой и названием */
+  .cart-item__cols {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: start;
+    column-gap: clamp(12px, 2vw, 28px);
+    margin-top: 0;
+  }
+
+  /* на узких экранах колонки встают в строку — центрирование из десктопа
+     отменяем, иначе шапки уезжают от своих значений */
+  .cart-item__cols > div { justify-self: start; }
+
+  .cart-item__col-title,
+  .cart-item__price,
+  .cart-item__total { text-align: left; }
+
+  .cart-item__qty,
+  .cart-item__total { margin-left: 0; }
+
+  .cart-item__qty { justify-content: flex-start; }
+
+  .cart-item__del {
+    grid-column: 3;
+    grid-row: 1;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .cart-layout { grid-template-columns: minmax(0, 1fr); }
+  .order-panel { order: 2; }
+}
+
+@media (max-width: 540px) {
+  .cart-head { flex-wrap: wrap; }
+
+  /* крупный текст на мобиле мельче: у заголовков и названия товара
+     min-значение clamp() рассчитано на десктоп и здесь выглядит огромным */
+  .cart-title { font-size: 26px; }
+  .cart-item__name { font-size: 14px; }
+  .order-panel__title { font-size: 21px; }
+  .order-panel__count { font-size: 14px; }
+
+  /* «Объем / Цвет» — тоже мельче; font-size у .cart-item__spec свой,
+     поэтому задаём и ему, иначе родитель не сработает */
+  .cart-item__meta,
+  .cart-item__spec { font-size: 13px; }
+
+  .cart-back { font-size: 13px; }
+
+  /* плашка «3 товара» рядом с заголовком — мельче вместе с ним */
+  .cart-count {
+    height: 30px;
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+
+  /* кнопки панели заказа: капсом при 15px текст слишком крупный для телефона */
+  .order-panel__checkout,
+  .order-panel__continue { font-size: 13px; }
+
+  /* ссылка уходит отдельной строкой под заголовок */
+  .cart-head__row {
+    flex-wrap: wrap;
+    row-gap: clamp(10px, 3vw, 16px);
+  }
+
+  .cart-back {
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  .cart-item {
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    padding: 16px;
+  }
+
+  .cart-item__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 14px;
+  }
+
+  .cart-item__del { justify-self: start; }
+
+  .promo__row { flex-direction: column; }
+  /* в колонке flex: 1 задаёт flex-basis 0 и обнуляет height — поле
+     схлопывается до строки текста, поэтому высоту держим явно */
+  .promo__input { flex: none; }
+  .promo__btn { width: 100%; }
+
+  /* подсказка остаётся сбоку от «?», как на десктопе, но уже: иначе она
+     вылезала бы за вьюпорт (раньше её сбрасывали под иконку).
+     190px = поля + «Доставка» + 44px тач-таргета кнопки + зазор */
+  .tip__pop {
+    top: 50%;
+    left: calc(100% + 2px);
+    transform: translateY(-50%);
+    width: min(230px, calc(100vw - 190px));
+  }
+}
+
+/* --- Компактный режим для невысоких десктоп-окон ---
+   Макет нарисован под 2560×1440 без панелей браузера. В окне 1920×1080
+   под контент остаётся ~950px, и корзина не помещалась. На невысоких
+   окнах сжимаем вертикальный ритм, фото и кегли только у корзины —
+   остальные страницы не затрагиваются. На 2560×1440 правила не работают
+   (макет 1:1), но на широких экранах в окне ниже макетной высоты — работают. */
+
+/* Широкие экраны (1921–2299) в невысоком окне: макетные поля в clamp
+   не успевают сжаться пропорционально ширине, и корзина уезжает вниз
+   (2048×1152 — на 14px). Включаем тот же компактный режим, пока высота
+   окна меньше 60% ширины — выше этого порога макет влезает сам.
+   На 2560 (2300 и шире) этот тир не работает: макет 1:1, как и было;
+   ниже 880px окна включаются только подтиры (они без max-width) — иначе
+   карточки и панель не помещаются в короткое окно.
+   1600–1920: компактный режим только ниже 1080, а окна 1080–1106
+   поджимаем лёгким тиром (см. ниже) — шапка, кегли и панель остаются
+   макетными, убирается только вертикальный запас.
+   Ровно 1280 — отдельная история: там базовый режим переключает карточку
+   в планшетную сетку 100px + 1fr + auto, и она требует ~1259px. */
+@media (min-width: 1280px) and (max-width: 1280px) and (max-height: 1269px),
+  (min-width: 1281px) and (max-width: 1599px) and (max-height: 1100px),
+  (min-width: 1600px) and (max-width: 1920px) and (max-height: 1079px),
+  (min-width: 1921px) and (max-width: 2299px) and (max-height: 60vw) {
+  /* Шапку не трогаем: в компактном режиме она опускалась до 64px и на 1920
+     выглядела «сжатой» по сравнению с остальными страницами. Высоту шапки
+     задаёт только макетная шкала (84–113px). */
+  .cart-body .cart-head { padding-top: 24px; }
+  .cart-body .cart-head__row { margin-top: 16px; }
+  .cart-body .cart-title { font-size: clamp(30px, 1.75vw, 38px); }
+  .cart-body .cart-count {
+    height: 38px;
+    padding-inline: 16px;
+    font-size: 15px;
+  }
+  .cart-body .cart-back { font-size: 16px; }
+  .cart-body .cart-layout { margin-top: 20px; }
+
+  .cart-body .cart-list { gap: 14px; }
+  .cart-body .cart-item {
+    grid-template-columns: clamp(56px, 4.8vw, 120px) minmax(0, 543fr) minmax(0, 605fr) 44px;
+    column-gap: 0;
+    row-gap: 0;
+    padding-top: 18px;
+    padding-bottom: 14px;
+  }
+  /* ширина колонки с банкой растёт от vw, и на 1920 банка делала карточку
+     выше панели заказа. В компактном режиме ограничиваем её по высоте окна */
+  .cart-body .cart-item__img {
+    width: auto;
+    max-width: 100%;
+    height: clamp(64px, 12vh, 110px);
+    margin-inline: auto;
+  }
+
+  /* на ровно 1280 общий медиазапрос перестраивал карточку в три ряда
+     и она становилась выше, чем на 1366. Возвращаем одну строку */
+  .cart-body .cart-item__body { margin-left: clamp(12px, 1.6vw, 30px); }
+  .cart-body .cart-item__cols {
+    grid-column: auto;
+    /* треки по содержимому: степпер (132px) шире прежней fr-колонки,
+       и при justify-self: center колонка цены вылезала влево на текст товара */
+    grid-template-columns: auto auto auto;
+    justify-content: space-between;
+    column-gap: 0;
+    justify-items: initial;
+    padding-right: 0;
+    margin-top: 22px;
+  }
+  .cart-body .cart-item__cols > div { justify-self: start; }
+  .cart-body .cart-item__cols > div:last-child {
+    justify-self: end;
+    padding-right: clamp(16px, 1.6vw, 36px);
+  }
+  .cart-body .cart-item__col-title,
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total { text-align: center; }
+  .cart-body .cart-item__del {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .cart-body .cart-item__name {
+    font-size: clamp(15px, 0.84vw, 21px);
+    line-height: 1.25;
+  }
+  .cart-body .cart-item__meta { margin-top: 5px; }
+  .cart-body .cart-item__spec { font-size: clamp(13px, 0.72vw, 18px); }
+  .cart-body .cart-item__stock {
+    margin-top: 8px;
+    padding: 6px 12px;
+  }
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total {
+    margin-top: 24px;
+    font-size: clamp(16px, 0.92vw, 23px);
+  }
+  .cart-body .cart-item__qty { margin-top: 8px; }
+  .cart-body .cart-item__del { margin-top: 40px; }
+
+  .cart-body .cart-pagination { padding-top: 16px; }
+  /* 40px вместо 28: на 1920×900 цифры стояли в 30px от подвала — «прилипли» */
+  .cart-body .cart-pagination .pagination { padding-bottom: 40px; }
+
+  .cart-body .order-panel { padding: 26px; }
+  .cart-body .order-panel__head { padding-bottom: 18px; }
+  .cart-body .order-panel__title { font-size: clamp(22px, 1.2vw, 30px); }
+  .cart-body .order-panel__count { font-size: 18px; }
+  .cart-body .order-panel__rows { padding-top: 24px; }
+  .cart-body .order-panel__row { font-size: clamp(14px, 0.85vw, 21px); }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 16px; }
+  .cart-body .order-panel__info {
+    margin-top: 20px;
+    padding: 12px 16px;
+  }
+  .cart-body .promo { margin-top: 20px; }
+  .cart-body .promo__label {
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  .cart-body .promo__input,
+  .cart-body .promo__btn { height: 48px; }
+  .cart-body .order-panel__sum {
+    margin-top: 18px;
+    padding-top: 20px;
+  }
+  .cart-body .order-panel__sum dt { font-size: clamp(19px, 1.05vw, 26px); }
+  .cart-body .order-panel__sum dd { font-size: clamp(22px, 1.3vw, 32px); }
+  .cart-body .order-panel__actions {
+    margin-top: 18px;
+    gap: 14px;
+  }
+  .cart-body .order-panel__checkout,
+  .cart-body .order-panel__continue { height: 50px; }
+
+  /* Ссылка «Продолжить покупки» и подвал в компактном режиме ниже макетных
+     44/80px: иначе корзина упирается в самый низ окна и пагинация
+     выглядит приклеенной к подвалу. */
+  .cart-body .cart-back { min-height: 32px; }
+  .cart-body .footer__inner {
+    min-height: 56px;
+    padding-block: 10px;
+  }
+  .cart-body .footer__logo img { height: 40px; }
+}
+
+/* Лёгкий режим для 1600–1920 при высоте 1080–1106: макетному виду
+   не хватает всего ~27px (на 1920 нужно ~1107px), поэтому ничего не
+   сжимаем — ни шапку, ни кегли, ни панель заказа, — а убираем только
+   верхний вертикальный запас. Корзина остаётся масштабом макета 0,75,
+   а не «компактным» вариантом. */
+@media (min-width: 1600px) and (max-width: 1920px) and (min-height: 1080px) and (max-height: 1106px) {
+  .cart-body .cart-head { padding-top: 20px; }
+  .cart-body .cart-head__row { margin-top: 16px; }
+  .cart-body .cart-layout { margin-top: 20px; }
+}
+
+/* Узкие окна (1280–1340): цена + степпер + сумма по 296px не встают в 249px
+   колонки, поэтому подпись над степпером скрываем (у кнопок есть aria-label),
+   а сумму прижимаем вправо */
+@media (min-width: 1280px) and (max-width: 1340px) and (max-height: 1269px) {
+  .cart-body .cart-item__cols {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .cart-body .cart-item__cols > div:nth-child(2) { display: none; }
+}
+
+/* 1281–1600: в базовой пропорции панель заказа выходит уже, чем
+   на ровно 1280 (там 38%), и от переносов строк вырастает: на 1440×720
+   корзина уезжала вниз на 14px. Ниже 394px панели текст начинает
+   переноситься, поэтому держим минимум 396px, дальше — доля 32% */
+@media (min-width: 1281px) and (max-width: 1600px) and (max-height: 1100px) {
+  .cart-body .cart-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(396px, 32%, 430px);
+  }
+}
+
+/* 900-е высоты (1440×900, 1366×900): первому уровню не хватает ~30px.
+   Сжимаем только панель заказа и ритм секции, кегли оставляем как в первом
+   уровне — полный второй уровень (ниже) для этих высот слишком мелкий. */
+/* На широких 1921–2299 (шапка там уже 90–101px) панель без этого сжатия
+   делает корзину выше окна в полосе 931–1000px, поэтому тир продлён. */
+@media (min-width: 1280px) and (max-height: 930px),
+  (min-width: 1921px) and (max-width: 2299px) and (max-height: 1000px) {
+  .cart-body .cart-layout { margin-top: 16px; }
+  .cart-body .cart-list { gap: 12px; }
+
+  .cart-body .order-panel { padding: 20px; }
+  .cart-body .order-panel__head { padding-bottom: 14px; }
+  .cart-body .order-panel__rows { padding-top: 18px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 12px; }
+  .cart-body .order-panel__info {
+    margin-top: 16px;
+    padding: 10px 14px;
+  }
+  .cart-body .promo { margin-top: 16px; }
+  .cart-body .order-panel__sum {
+    margin-top: 14px;
+    padding-top: 16px;
+  }
+  .cart-body .order-panel__actions { margin-top: 14px; }
+}
+
+/* 1921–2299: на самой границе тира (931–933px) не хватает 3px после
+   увеличения отступа под пагинацией — снимаем их с верхнего отступа */
+@media (min-width: 1921px) and (max-width: 2299px) and (max-height: 1000px) {
+  .cart-body .cart-head { padding-top: 20px; }
+}
+
+/* Ещё ниже (1366×768, 1440×800): дополнительное сжатие */
+@media (min-width: 1280px) and (max-height: 880px) {
+  /* Шапка больше не сжимается (−28px к прежнему режиму), поэтому
+     вертикальный запас снимаем с отступов секции, а не с шапки. */
+  .cart-body .cart-head { padding-top: 6px; }
+  .cart-body .cart-head__row { margin-top: 6px; }
+  .cart-body .cart-title { font-size: 26px; }
+  .cart-body .cart-count {
+    height: 32px;
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+  .cart-body .cart-back { font-size: 14px; }
+  .cart-body .cart-layout { margin-top: 8px; }
+
+  .cart-body .cart-list { gap: 6px; }
+  .cart-body .cart-item {
+    padding-top: 8px;
+    padding-bottom: 6px;
+  }
+  .cart-body .cart-item__name { font-size: 14px; }
+  .cart-body .cart-item__spec { font-size: 12px; }
+  .cart-body .cart-item__stock {
+    margin-top: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .cart-body .cart-item__cols { margin-top: 14px; }
+  .cart-body .cart-item__col-title { font-size: 12px; }
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total {
+    margin-top: 16px;
+    font-size: 16px;
+  }
+  .cart-body .cart-item__del { margin-top: 26px; }
+
+  .cart-body .order-panel { padding: 16px; }
+  .cart-body .order-panel__head { padding-bottom: 12px; }
+  .cart-body .order-panel__title { font-size: 21px; }
+  .cart-body .order-panel__count { font-size: 15px; }
+  .cart-body .order-panel__rows { padding-top: 12px; }
+  .cart-body .order-panel__row { font-size: 13px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 10px; }
+  .cart-body .order-panel__info {
+    margin-top: 10px;
+    padding: 8px 12px;
+  }
+  .cart-body .order-panel__info p { font-size: 12px; }
+  .cart-body .promo { margin-top: 10px; }
+  .cart-body .promo__label {
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .cart-body .order-panel__sum {
+    margin-top: 10px;
+    padding-top: 12px;
+  }
+  .cart-body .order-panel__sum dt { font-size: 17px; }
+  .cart-body .order-panel__sum dd { font-size: 21px; }
+  .cart-body .order-panel__actions {
+    margin-top: 12px;
+    gap: 10px;
+  }
+  .cart-body .order-panel__checkout,
+  .cart-body .order-panel__continue {
+    height: 44px;
+    font-size: 13px;
+  }
+
+  .cart-body .tip__btn { font-size: 14px; }
+  .cart-body .tip__btn::before {
+    width: 22px;
+    height: 22px;
+  }
+
+  .cart-body .cart-back { min-height: 28px; }
+  .cart-body .cart-pagination { padding-top: 8px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 24px; }
+
+  .cart-body .footer__inner {
+    min-height: 48px;
+    padding-block: 8px;
+  }
+  .cart-body .footer__logo img { height: 34px; }
+}
+
+/* Совсем низкие окна (1366×768 с панелями браузера): последний уровень сжатия.
+   Порог 720, а не 700: без сжатия шапки умеренный тир ≤ 880 заканчивается
+   ровно на 720px, и полоса 701–719 иначе уезжала вниз на 10px. */
+@media (min-width: 1280px) and (max-height: 720px) {
+  .cart-body .cart-head { padding-top: 10px; }
+  .cart-body .cart-head__row { margin-top: 8px; }
+  .cart-body .cart-title { font-size: 22px; }
+  .cart-body .cart-count {
+    height: 28px;
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+  .cart-body .cart-back { font-size: 12px; }
+  .cart-body .cart-layout { margin-top: 10px; }
+
+  .cart-body .cart-list { gap: 8px; }
+  .cart-body .cart-item {
+    padding-top: 8px;
+    padding-bottom: 6px;
+  }
+  .cart-body .cart-item__name { font-size: 13px; }
+  .cart-body .cart-item__meta { margin-top: 2px; }
+  .cart-body .cart-item__spec { font-size: 12px; }
+  .cart-body .cart-item__stock {
+    margin-top: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+  .cart-body .cart-item__cols { margin-top: 10px; }
+  .cart-body .cart-item__price,
+  .cart-body .cart-item__total {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .cart-body .cart-item__qty { margin-top: 4px; }
+  .cart-body .cart-item__del { margin-top: 20px; }
+
+  .cart-body .order-panel { padding: 10px; }
+  .cart-body .order-panel__head { padding-bottom: 6px; }
+  .cart-body .order-panel__title { font-size: 18px; }
+  .cart-body .order-panel__count { font-size: 13px; }
+  .cart-body .order-panel__rows { padding-top: 8px; }
+  .cart-body .order-panel__row { font-size: 12px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 6px; }
+  .cart-body .order-panel__info {
+    margin-top: 6px;
+    padding: 4px 8px;
+  }
+  .cart-body .promo { margin-top: 6px; }
+  .cart-body .promo__label {
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .cart-body .order-panel__sum {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+  .cart-body .order-panel__sum dt { font-size: 15px; }
+  .cart-body .order-panel__sum dd { font-size: 18px; }
+  .cart-body .order-panel__actions {
+    margin-top: 6px;
+    gap: 8px;
+  }
+  .cart-body .order-panel__checkout,
+  .cart-body .order-panel__continue {
+    height: 38px;
+    font-size: 12px;
+  }
+
+  .cart-body .cart-back { min-height: 28px; }
+  .cart-body .cart-pagination { padding-top: 10px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 20px; }
+
+  .cart-body .footer__inner {
+    min-height: 40px;
+    padding-block: 6px;
+  }
+  .cart-body .footer__logo img { height: 30px; }
+}
+
+/* Окно ниже 640px по высоте (768-й экран с панелями браузера).
+   Кегли уже минимальные, поэтому сжимаем только «хром» — заголовок,
+   отступы карточек и подвал; шапка остаётся макетной */
+@media (min-width: 1280px) and (max-height: 640px) {
+  .cart-body .cart-head { padding-top: 2px; }
+  .cart-body .cart-head__row { margin-top: 4px; }
+  .cart-body .cart-title { font-size: 20px; }
+  .cart-body .cart-count {
+    height: 24px;
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+  .cart-body .cart-back { font-size: 11px; }
+  .cart-body .cart-layout { margin-top: 4px; }
+
+  .cart-body .cart-list { gap: 6px; }
+  .cart-body .cart-item {
+    padding-top: 6px;
+    padding-bottom: 4px;
+  }
+  .cart-body .cart-item__cols { margin-top: 8px; }
+  .cart-body .cart-item__del { margin-top: 16px; }
+
+  .cart-body .order-panel { padding: 8px; }
+  .cart-body .order-panel__head { padding-bottom: 4px; }
+  .cart-body .order-panel__rows { padding-top: 6px; }
+  .cart-body .promo__input,
+  .cart-body .promo__btn { height: 42px; }
+  .cart-body .order-panel__row + .order-panel__row { margin-top: 4px; }
+  .cart-body .order-panel__info {
+    margin-top: 6px;
+    padding: 4px 8px;
+  }
+  .cart-body .promo { margin-top: 6px; }
+  .cart-body .order-panel__sum {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+  .cart-body .order-panel__actions { margin-top: 6px; }
+
+  .cart-body .cart-back { min-height: 26px; }
+  .cart-body .cart-pagination { padding-top: 6px; }
+  .cart-body .cart-pagination .pagination { padding-bottom: 16px; }
+
+  .cart-body .footer__inner {
+    min-height: 32px;
+    padding-block: 4px;
+  }
+  .cart-body .footer__logo img { height: 24px; }
+}

@@ -1,0 +1,1086 @@
+/* ==========================================================================
+   М02 «Каталог товаров» — стили экрана
+   Геометрия снята с PSD-композита 2560w (spec/Каталог_товаров_/composite.png).
+   Общие элементы (шапка, подвал, кнопки, контейнер) — в layout/components.
+   ========================================================================== */
+
+/* Страница каталога целиком на белом: серая подложка сайта просвечивала
+   в зазорах между полосой-шапкой, сеткой товаров и пагинацией. */
+body.catalog-page {
+  background: var(--color-white);
+}
+
+/* --- Полоса-шапка экрана: крошки, H1, преимущества, фон с растением --- */
+
+.page-head {
+  background: #f6f8fc url("../assets/img/cat-band.png") center 4px / cover no-repeat;
+}
+
+.page-head__inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(24px, 4vw, 120px);
+  /* макет: контент полосы 117..276 при шапке 117 — нижнее поле всего 17px */
+  padding-block: clamp(24px, 1.56vw, 40px) clamp(8px, 0.66vw, 17px);
+}
+
+/* Хлебные крошки: кегль и цвета — общие в components.css */
+.breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+/* Заголовок экрана (в PSD набран строчными, на макете — капс) */
+.page-head__title {
+  margin-top: clamp(12px, 0.78vw, 20px);
+  /* макет: капитель 40px, чернила заголовка 225..473 (249px) */
+  font-size: clamp(30px, 2.11vw, 54px);
+  letter-spacing: -0.028em;
+  line-height: 1.2;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+/* Преимущества справа в полосе */
+.features {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 3.52vw, 90px);
+  margin-top: clamp(0px, 0.59vw, 15px);
+  margin-right: clamp(0px, 9.7vw, 248px);
+  list-style: none;
+}
+
+.features__item {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 0.47vw, 12px);
+  font-size: clamp(13px, 0.63vw, 16px);
+  font-weight: 500;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+/* Высота снята с макета: иконки 49px при 2560, а не 60px */
+.features__item img {
+  flex: none;
+  height: clamp(28px, 1.92vw, 49px);
+  width: auto;
+}
+
+/* --- Сетка каталога: фильтр + карточки --- */
+
+.catalog {
+  display: grid;
+  grid-template-columns: clamp(280px, 14.73vw, 377px) minmax(0, 1fr);
+  /* макет: фильтр 224..601, сетка карточек начинается с x=735 (зазор 134) */
+  gap: clamp(32px, 5.23vw, 134px);
+  padding-block: clamp(24px, 1.13vw, 29px) 0;
+  /* в макете фон контента белый, а не серый фон страницы */
+  background: var(--color-white);
+}
+
+.catalog__main {
+  min-width: 0;
+}
+
+/* Сетка с макета: две карточки по 713 + зазор 33, правый край 2195.
+   Колонка не растягивается до края контейнера (2336). */
+@media (min-width: 1281px) {
+  .catalog__main {
+    max-width: 57.03vw;
+  }
+}
+
+/* Сортировка — прижата вправо */
+.sort {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: clamp(14px, 0.66vw, 17px);
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+/* Кастомный дропдаун сортировки (нативный <select> в макет не укладывался) */
+.sort__dropdown { position: relative; }
+
+.sort__trigger {
+  display: inline-flex;
+  align-items: center;
+  /* ширина по содержимому, но не уже макетных 140–167: длинные пункты
+     («по возрастанию цены») в фиксированную ширину не влезали и обрезались
+     многоточием */
+  width: auto;
+  min-width: clamp(140px, 6.53vw, 167px);
+  max-width: 100%;
+  padding: 0 24px 0 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sort__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sort__chevron {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 15px;
+  height: 11px;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+}
+
+.sort__trigger:hover,
+.sort__trigger:focus-visible,
+.sort__dropdown.is-open .sort__trigger { color: var(--color-brown); }
+
+.sort__trigger:focus-visible { outline: 2px solid var(--color-teal); outline-offset: 3px; }
+
+.sort__dropdown.is-open .sort__chevron { transform: translateY(-50%) rotate(180deg); }
+
+.sort__list {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 100%;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 32px));
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--color-white);
+  border: 1px solid #e8e8ea;
+  border-radius: 4px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.sort__list[hidden] { display: none; }
+
+.sort__option {
+  padding: 8px 12px;
+  border-radius: 3px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sort__option.is-active { background: #f4f5f7; color: var(--color-ink); }
+
+.sort__option[aria-selected="true"] { color: var(--color-ink); font-weight: 600; }
+
+.sort__option:focus { outline: none; }
+/* фокус ставится программно при открытии — держим кольцо мягким,
+   чтобы оно не читалось как рамка вокруг пункта */
+.sort__option:focus-visible { outline: 2px solid rgba(57, 117, 125, 0.45); outline-offset: -2px; }
+
+/* --- Карточки товаров --- */
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* макет: карточки 713, горизонтальный зазор 33, вертикальный шаг ряда 268 */
+  gap: clamp(20px, 1.25vw, 32px) clamp(16px, 1.29vw, 33px);
+  margin-top: clamp(8px, 0.78vw, 20px);
+  list-style: none;
+}
+
+.product {
+  /* внутренние боковые поля карточки: от них же считается минимальная ширина
+     медиа-колонки, поэтому вынесены в переменные */
+  --card-pad-l: clamp(24px, 3.75vw, 96px);
+  --card-pad-r: clamp(12px, 1vw, 26px);
+  display: flex;
+  /* макет: внешняя высота карточки 236 */
+  min-height: clamp(206px, 9.22vw, 236px);
+  border: 2px solid #eeeeee;
+  border-radius: 4px;
+  background: var(--color-white);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.product__media {
+  flex: none;
+  width: clamp(190px, 12.23vw, 313px);
+  /* Самая широкая картинка в карточках — 137px. Без этого минимума медиа-колонка
+     упиралась в текст: на 1440 зазор между банкой и .product__body становился 0,
+     на 1280–1700 — 6–8px. Теперь между ними всегда ≥12px. */
+  min-width: calc(var(--card-pad-l) + 137px + clamp(12px, 0.7vw, 18px));
+  padding-top: clamp(16px, 1.02vw, 26px);
+  padding-left: var(--card-pad-l);
+  display: flex;
+  align-items: flex-start;
+}
+
+.product__media img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.product__body {
+  flex: 1;
+  min-width: 0;
+  padding-top: clamp(10px, 0.55vw, 14px);
+  /* 5px — остаток до рамки, который был на 2560 после содержимого карточки:
+     сохраняем его, чтобы прижать цену и кнопку, но не увеличить высоту
+     карточки 236px. На 1920 и ниже нижнее поле шире — см. медиазапрос. */
+  padding-bottom: 5px;
+  padding-right: var(--card-pad-r);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* 1920 и ниже: внутренние поля карточки заметно уже — при макетных значениях
+   на 1920 это 72px слева и 19px справа, для рабочего стола слишком много.
+   На 2560 всё остаётся макетным. */
+@media (max-width: 1920px) {
+  .product {
+    --card-pad-l: clamp(20px, 2.6vw, 50px);
+    --card-pad-r: clamp(12px, 1.1vw, 21px);
+  }
+
+  .product__body {
+    padding-bottom: clamp(10px, 0.55vw, 14px);
+  }
+}
+
+/* 1440 и ниже: картинка чуть мельче, а её левое поле равно правому полю
+   текста — края карточки становятся симметричными. Ширину медиа-колонки
+   отпускаем в auto (иначе фиксированные 190px давали пустую полосу справа
+   от банки), а зазор задаём column-gap. */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .product {
+    --card-pad-l: var(--card-pad-r);
+    column-gap: clamp(12px, 1.4vw, 28px);
+  }
+  .product__media {
+    width: auto;
+    min-width: 0;
+  }
+  .product__media img { max-width: clamp(116px, 9.2vw, 132px); }
+}
+
+.product__title {
+  font-size: clamp(15px, 0.7vw, 18px);
+  line-height: 1.4;
+  /* 600 по просьбе клиента: названия товаров в карточках жирнее макета */
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #575961;
+}
+.product__desc {
+  max-width: clamp(220px, 12.7vw, 325px);
+  margin-top: clamp(4px, 0.23vw, 6px);
+  font-size: clamp(13px, 0.55vw, 14px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: #a0a1a5;
+}
+
+.product__price {
+  margin-top: clamp(6px, 0.35vw, 9px);
+  /* Минимальный зазор до кнопки: свободное место забирает auto-отступ
+     кнопки, а цена остаётся сразу под описанием. */
+  margin-bottom: clamp(10px, 0.59vw, 15px);
+  font-size: clamp(16px, 0.7vw, 18px);
+  line-height: 1.3;
+  font-weight: 600;
+  color: #575961;
+}
+
+.product__btn {
+  width: clamp(180px, 9.34vw, 239px);
+  height: clamp(42px, 1.88vw, 48px);
+  /* Кнопка прижата к низу карточки: у товара с коротким текстом внизу
+     остаётся ровный край, а цена идёт сразу за описанием. */
+  margin-top: auto;
+  padding: 0;
+  border: 2px solid #b9babf;
+  background: var(--color-white);
+  color: var(--color-ink);
+  font-size: clamp(13px, 0.59vw, 15px);
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background var(--ease-ui), border-color var(--ease-ui),
+    color var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.product__btn:hover {
+  background: var(--color-brown);
+  border-color: var(--color-brown);
+  color: var(--color-white);
+  box-shadow: var(--shadow-hover-brown);
+}
+
+/* Карточка ведёт на страницу товара: фото и заголовок — ссылки.
+   .product__btn теперь <a>, ему нужно центрирование текста как у кнопки. */
+.product__media {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.product__title a:hover { color: var(--color-brown); }
+
+.product__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* Карточка в состоянии наведения */
+.product:hover,
+.product:focus-within {
+  box-shadow: var(--shadow-hover-card);
+}
+
+/* --- Пагинация (по центру страницы, как на макете) --- */
+
+/* Единый вид пагинации на всех страницах (эталон — каталог):
+   квадратные ячейки цифр, «Назад/Вперед» по тексту, жирность 500. */
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 8px;
+  padding-block: clamp(28px, 2.2vw, 56px) clamp(40px, 2.38vw, 61px);
+  list-style: none;
+  font-size: clamp(15px, 0.7vw, 18px);
+  font-weight: 500;
+  /* сторона квадратной ячейки цифры — одна переменная на всё */
+  --pg-cell: clamp(26px, 1.25vw, 32px);
+}
+
+/* Каталог: пагинация — последняя полоса страницы. Если высота окна больше
+   контента (крупные экраны при масштабе 0.9), полоса уходит к подвалу,
+   а не оставляет пустоту под собой. Сверху/снизу делим прежнюю высоту
+   полосы, поэтому на точных 1440 страница не удлиняется. */
+body.catalog-page main {
+  display: flex;
+  flex-direction: column;
+}
+
+.pagination--catalog {
+  margin-top: auto;
+  padding-block: clamp(20px, 1.19vw, 30px) clamp(20px, 1.19vw, 31px);
+  background: var(--color-white);
+}
+
+/* Одна страница товаров: пагинации нет, и белая полоса каталога упиралась
+   в подвал — фильтр прилипал к нижней кромке. Держим тот же нижний отступ,
+   что даёт полоса пагинации (на 2560 в макете до подвала 71px). */
+.catalog:last-child {
+  padding-bottom: clamp(40px, 2.38vw, 61px);
+}
+
+/* 2560 (макет 1:1): в макете полоса фильтра свисает ниже сетки товаров, и
+   пагинация стоит на уровне её нижней кромки — ячейки 1242..1272, до подвала
+   71px. Отдаём фильтру те 40px, на которые он выступает, и пагинация встаёт
+   по макету; на 1920 и ниже фильтр и так ниже сетки, там ничего не меняется. */
+@media (min-width: 2560px) {
+  .filter {
+    margin-bottom: -40px;
+  }
+
+  /* одна страница: свисающий фильтр не должен съедать нижний отступ секции */
+  .catalog:last-child .filter {
+    margin-bottom: 0;
+  }
+
+  .catalog:last-child {
+    padding-bottom: 71px;
+  }
+
+  /* страница каталога белая, подложка не нужна и только перекрывала бы
+     нижнюю кромку фильтра, на которую заходит полоса пагинации */
+  .pagination--catalog {
+    background: none;
+    padding-block: 30px 71px;
+  }
+}
+
+/* Ссылка внутри ячейки (вариант разметки ul > li > a) заполняет квадрат */
+.pagination__item {
+  position: relative;
+}
+
+.pagination__item > a {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.pagination__item:first-child > a,
+.pagination__item:last-child > a {
+  position: static;
+  padding-inline: 4px;
+}
+
+.pagination a {
+  display: grid;
+  place-items: center;
+  border-radius: 0;
+  color: #43484f;
+  text-decoration: none;
+  transition: color var(--ease-ui), background-color var(--ease-ui);
+}
+
+.pagination a:hover {
+  color: var(--color-ink);
+  background: var(--color-hover-bg);
+}
+
+.pagination__item[aria-current="page"]:hover {
+  background: var(--grad-brown);
+  color: var(--color-white);
+}
+
+/* «Назад» чуть приглушённее цифр, но остаётся ссылкой */
+.pagination__item:first-child,
+.pagination__item:first-child > a {
+  color: #7d8087;
+}
+
+.pagination__item:first-child:hover,
+.pagination__item:first-child > a:hover {
+  color: #5b5e65;
+  background: var(--color-hover-bg);
+}
+
+.pagination__item[aria-disabled="true"] {
+  color: #a0a1a5;
+  /* неактивная «Назад» — приглушённее, но остаётся читаемой */
+  opacity: 0.65;
+  cursor: default;
+}
+
+/* Каждая цифра — ровный квадрат, стоят вплотную, поэтому заливка активной
+   страницы даёт квадрат, а не вытянутый прямоугольник.
+   min-width/min-height обнуляем — иначе тач-таргет 44px из responsive.css
+   растягивает ячейку и квадрат ломается («Назад/Вперед» остаются по тексту). */
+.pagination__item {
+  display: grid;
+  place-items: center;
+  width: var(--pg-cell);
+  height: var(--pg-cell);
+  min-width: 0;
+  min-height: 0;
+  font-weight: 500;
+}
+
+/* Номера страниц в макете набраны Sovest; «Назад/Вперед» остаются
+   на Montserrat — у Sovest только цифры. */
+.pagination__item:not(:first-child):not(:last-child) {
+  font-family: var(--font-digit);
+}
+
+.pagination__item:first-child,
+.pagination__item:last-child {
+  width: auto;
+  height: auto;
+  padding-inline: 4px;
+}
+
+/* «Назад/Вперед» отделяем от цифр сильнее, чем цифры друг от друга */
+.pagination__item:first-child {
+  margin-right: clamp(20px, 1.7vw, 44px);
+}
+
+.pagination__item:last-child {
+  margin-left: clamp(20px, 1.7vw, 44px);
+}
+
+.pagination__item[aria-current="page"] {
+  width: var(--pg-cell);
+  height: var(--pg-cell);
+  min-width: 0;
+  background: var(--grad-brown);
+  color: var(--color-white);
+  border-radius: 0;
+  transition: color var(--ease-ui);
+}
+
+.pagination__item[aria-current="page"]:hover {
+  color: var(--color-white);
+}
+
+/* В контекстах со своим ритмом (корзина, визуализатор в колонке) —
+   внешний отступ сверху не нужен, он задан секцией. */
+.cart-pagination .pagination,
+.viz-page .pagination { padding-top: 0; }
+
+/* --- Фильтр слева --- */
+
+.filter {
+  align-self: start;
+  margin-top: clamp(0px, 1.29vw, 33px);
+  /* Макет М15: карточка 224..601, поле 28 слева. Справа в макете 19 — ровно
+     столько, чтобы подпись «Краски для внутренних работ» встала в строку.
+     У нашего шрифта та же подпись шире ~6 px, поэтому берём 20: ещё один шаг
+     вправо — и она рвётся на две строки. Ползунок, цены и кнопки идут во всю
+     ширину карточки, отдельного зазора у них нет. */
+  padding: clamp(24px, 1.25vw, 32px) clamp(16px, 0.78vw, 20px) clamp(40px, 2.42vw, 62px) clamp(20px, 1.09vw, 28px);
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  background: var(--color-white);
+  /* в макете панель лежит с мягким рассеянным ореолом ~13px без смещения */
+  box-shadow: 0 0 clamp(8px, 0.5vw, 13px) rgba(0, 0, 0, 0.09);
+}
+
+.filter__title,
+.filter__subtitle {
+  font-size: clamp(20px, 0.94vw, 24px);
+  line-height: 1.2;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #575961;
+}
+
+.filter__group {
+  min-width: 0;
+  margin: clamp(20px, 1.17vw, 30px) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.filter__list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.05vw, 27px);
+  list-style: none;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 0.63vw, 16px);
+  cursor: pointer;
+}
+
+.check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+}
+
+.check__box {
+  flex: none;
+  /* PSD: чекбокс 24×24 при 2560 */
+  width: clamp(21px, 0.9375vw, 24px);
+  height: clamp(21px, 0.9375vw, 24px);
+  border: 1px solid #d4d5d9;
+  border-radius: 4px;
+  background: var(--color-white);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.check__box::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url("../assets/img/check.svg") no-repeat center;
+  background-size: 100%;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* Отмеченный пункт: градиентная коричневая подложка, рамку убираем */
+.check input:checked + .check__box {
+  background: var(--grad-brown);
+  border-color: transparent;
+}
+
+/* Наведение на пункт фильтра: рамка темнеет, текст — коричневый */
+.check:hover .check__box { border-color: var(--color-brown); }
+.check:hover .check__label { color: var(--color-brown); }
+.check:hover input:checked + .check__box {
+  background: var(--grad-brown-hover);
+  border-color: transparent;
+}
+
+.check input:checked + .check__box::after {
+  opacity: 1;
+}
+
+.check input:focus-visible + .check__box {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.check__label {
+  font-size: clamp(15px, 0.7vw, 18px);
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+/* Цена и ползунок */
+.filter__price {
+  margin-top: clamp(32px, 2.07vw, 53px);
+}
+
+.range {
+  --range-line: clamp(2px, 0.1172vw, 3px);
+  position: relative;
+  height: 25px;
+  margin-top: clamp(24px, 1.6vw, 41px);
+}
+
+/* в макете линия ползунка 3 px с прямыми торцами (было 6 px скруглённой);
+   ниже 2560 она тоньше пропорционально — при zoom .9 фиксированные 3 px
+   выглядели толще макета */
+.range__track {
+  position: absolute;
+  top: calc(50% - var(--range-line) / 2);
+  left: 0;
+  right: 0;
+  height: var(--range-line);
+  border-radius: 0;
+  background: #b9babf;
+}
+
+.range__fill {
+  position: absolute;
+  top: calc(50% - var(--range-line) / 2);
+  left: 20.4%;
+  right: 40.4%;
+  height: var(--range-line);
+  border-radius: 0;
+  background: var(--color-teal);
+}
+
+.range input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+/* в макете кружок 21 px (был 24) */
+.range input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: clamp(18px, 0.82vw, 21px);
+  height: clamp(18px, 0.82vw, 21px);
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-teal);
+}
+
+.range input[type="range"]::-moz-range-thumb {
+  pointer-events: auto;
+  width: clamp(18px, 0.82vw, 21px);
+  height: clamp(18px, 0.82vw, 21px);
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-teal);
+}
+
+.range input[type="range"]:focus-visible {
+  outline: none;
+}
+
+.range input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: var(--focus-ring);
+}
+
+.range input[type="range"]:focus-visible::-moz-range-thumb {
+  box-shadow: var(--focus-ring);
+}
+
+.filter__prices {
+  display: flex;
+  justify-content: space-between;
+  margin-top: clamp(8px, 0.39vw, 10px);
+  font-size: clamp(14px, 0.59vw, 15px);
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.filter__prices > span {
+  font-weight: 600;
+}
+
+.filter__prices output {
+  font-size: clamp(16px, 0.7vw, 18px);
+  font-weight: 500;
+  /* макет: цифры того же серого, что «от/до/₽», без тёмного акцента */
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Кнопки фильтра */
+.filter__apply,
+.filter__reset {
+  width: 100%;
+  height: clamp(46px, 2.19vw, 56px);
+  padding: 0;
+  /* макет: 16px medium без широкого трекинга, как у соседних подписей */
+  font-size: clamp(14px, 0.625vw, 16px);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.filter__apply {
+  margin-top: clamp(24px, 1.25vw, 32px);
+}
+
+.filter__reset {
+  margin-top: clamp(12px, 0.66vw, 17px);
+  border: 2px solid var(--color-btn-border);
+  background: var(--color-white);
+  /* макет: подпись вторичной кнопки серая #626366, а не тёмная как у CTA */
+  color: #626366;
+  transition: border-color var(--ease-ui), color var(--ease-ui),
+    box-shadow var(--ease-ui);
+}
+
+.filter__reset:hover {
+  border-color: var(--color-brown);
+  color: var(--color-brown);
+  box-shadow: var(--shadow-hover-outline);
+}
+
+/* Пустая выдача: пояснение и рабочий сброс фильтра */
+.catalog__empty {
+  padding: clamp(40px, 3.6vw, 64px) 0 clamp(32px, 3vw, 56px);
+}
+
+.catalog__empty p {
+  margin: 0 0 clamp(20px, 1.2vw, 28px);
+  max-width: 46ch;
+  font-size: clamp(16px, 0.7vw, 18px);
+  color: var(--color-muted);
+}
+
+/* --- Адаптив (проверяем 360–1024) --- */
+
+@media (max-width: 1280px) {
+  .features {
+    margin-right: 0;
+    gap: clamp(16px, 2vw, 40px);
+  }
+
+  .catalog__main {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .page-head__inner {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .pagination {
+    padding-top: 48px;
+  }
+
+  .features {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
+  .catalog {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .filter {
+    margin-top: 0;
+    padding-bottom: 32px;
+  }
+
+  .filter__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    column-gap: 24px;
+  }
+
+  .filter__actions-row {
+    display: flex;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  /* две карточки в ряд: одна колонка на планшете выглядит пусто */
+  .products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  /* карточка становится вертикальной: горизонтальная при ~300px рвёт текст */
+  .product {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .product__media {
+    width: auto;
+    /* в вертикальной карточке минимум не нужен — картинка идёт над текстом */
+    min-width: 0;
+    padding: 20px 16px 0;
+    justify-content: center;
+  }
+
+  .product__media img {
+    max-width: clamp(120px, 22vw, 190px);
+  }
+
+  .product__body {
+    padding: 14px 16px 18px;
+  }
+
+  .product__desc { max-width: none; }
+
+  .product__btn { width: 100%; }
+}
+
+@media (max-width: 620px) {
+  .products { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 540px) {
+  .features {
+    display: none;
+  }
+
+  .product {
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 24px;
+  }
+
+  .product__media {
+    width: auto;
+    padding: 24px 0 0;
+  }
+
+  .product__body {
+    align-items: center;
+    text-align: center;
+    padding-inline: 20px;
+  }
+
+  .product__desc {
+    max-width: 40ch;
+  }
+
+  .sort {
+    justify-content: flex-start;
+  }
+}
+
+/* Мобильная пагинация (единая для всех страниц): квадрат остаётся квадратом,
+   но крупнее — иначе 26px неудобно нажимать. */
+@media (max-width: 767px) {
+  .pagination__item,
+  .pagination__item[aria-current="page"] {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 16px;
+  }
+
+  .pagination__item:first-child,
+  .pagination__item:last-child {
+    width: auto;
+    min-width: 0;
+    padding-inline: 8px;
+  }
+}
+
+@media (max-width: 540px) {
+  .filter__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Мобильная карточка товара: крупный кегль рвал строки по одному слову --- */
+
+@media (max-width: 540px) {
+  .product__title { font-size: 15px; line-height: 1.3; }
+  .product__desc { font-size: 14px; line-height: 1.4; }
+  .product__price { font-size: 15px; }
+  .product__body { align-items: stretch; text-align: left; }
+  .product__desc { max-width: none; }
+}
+
+/* --- 1920 и ниже: раньше здесь каталог и его шапка получали более узкие
+   поля (clamp(20px, 6.5vw, 125px)). Убрано ради правила «у всех страниц
+   один контейнер»: поля задаёт только --container-pad. */
+
+/* --- 1280 и ниже: фильтр переезжает из левой колонки наверх ---
+   Каталог становится одноколоночным, а фильтр — панелью над карточками:
+   строка заголовка, строка чекбоксов в линию, и внизу цена вместе с
+   кнопками одной строкой. Блок стоит в конце файла, чтобы перекрывать
+   правила из @media (max-width: 1024px) выше. */
+@media (max-width: 1280px) {
+  .catalog {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(20px, 2.2vw, 28px);
+  }
+
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(14px, 1.5vw, 20px) clamp(16px, 2.4vw, 34px);
+    margin-top: 0;
+    padding: clamp(16px, 1.5vw, 22px) clamp(16px, 1.7vw, 24px);
+  }
+
+  .filter__title {
+    order: 1;
+    flex: 1 1 100%;
+    font-size: clamp(17px, 1.25vw, 20px);
+  }
+
+  /* чекбоксы — второй строкой во всю ширину панели */
+  .filter__group {
+    order: 2;
+    flex: 1 1 100%;
+    margin-top: 0;
+  }
+
+  .filter__list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: clamp(10px, 1vw, 16px) clamp(18px, 2.4vw, 34px);
+  }
+
+  /* нижняя строка: цена и кнопки в одну линию, ползунок забирает остаток */
+  .filter__price {
+    order: 3;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.1vw, 16px);
+    margin-top: 0;
+  }
+
+  .filter__subtitle {
+    font-size: clamp(14px, 0.95vw, 16px);
+    white-space: nowrap;
+  }
+
+  .range {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 72px;
+    margin-top: 0;
+  }
+
+  .filter__prices {
+    gap: 8px;
+    margin-top: 0;
+    white-space: nowrap;
+  }
+
+  .filter__apply { order: 4; }
+
+  .filter__reset { order: 5; }
+
+  .filter__apply,
+  .filter__reset {
+    flex: none;
+    width: auto;
+    height: clamp(42px, 3.2vw, 48px);
+    margin-top: 0;
+    padding: 0 clamp(16px, 1.7vw, 26px);
+    font-size: clamp(12px, 0.8vw, 14px);
+  }
+}
+
+/* 768 и ниже: нижняя строка разбирается — цена отдельно, кнопки отдельно,
+   но обе части по-прежнему идут после чекбоксов. */
+@media (max-width: 768px) {
+  .filter__price {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .filter__apply {
+    order: 4;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .filter__reset {
+    order: 5;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+/* Совсем узкие экраны: панель компактнее, чекбоксы — вертикальным списком */
+@media (max-width: 560px) {
+  .filter {
+    padding: 16px;
+  }
+
+  .filter__apply,
+  .filter__reset {
+    padding-inline: 12px;
+  }
+
+  .filter__list {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* 400 и ниже: подпись «Цена» у ползунка убираем — на узком экране она
+   съедает ~45px, которых не хватает самому ползунку. Доступное имя
+   ползунка при этом сохраняется: aria-labelledby ссылается на скрытый
+   элемент, а скрытые узлы всё равно участвуют в вычислении имени. */
+@media (max-width: 400px) {
+  .filter__subtitle {
+    display: none;
+  }
+}

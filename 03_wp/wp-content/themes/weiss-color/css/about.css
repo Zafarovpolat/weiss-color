@@ -1,0 +1,303 @@
+/* ==========================================================================
+   about.css — экран М14 «О компании и партнёрах».
+   Геометрия снята с PSD 2560w (spec/О_компании_и_партнёрах):
+   фото 2573×1444 справа на всю высоту экрана; текст 223,334 шириной 1326;
+   преимущества y≈802 (4 колонки, шаг ~382); логотипы партнёров 220..2339.
+
+   Размеры записаны в «процентах макета»: --u — это 1% ширины полотна
+   (25.6px при 2560). vw здесь не годятся: при html{zoom:.9} (base.css)
+   полотно шире окна в 1/0.9, а vw по-прежнему считается от окна — кегли,
+   сетка преимуществ и ряд логотипов выходили на 10–20% меньше макета,
+   и композиция «текст — фото — блоки» разъезжалась. От 2560 --u заморожен,
+   чтобы на широких экранах размеры остались макетными; полотно при этом
+   центрируется через --canvas-extra (base.css).
+   ========================================================================== */
+
+main {
+  /* контейнер нужен ради cqw: 1cqw = 1% ширины полотна main */
+  container-type: inline-size;
+  --u: 1cqw;
+}
+
+@media (min-width: 2550px) {
+  main { --u: 25.6px; }
+}
+
+.about-page {
+  position: relative;
+  /* макет: полоса контента 110..1343 = 1233 при шапке 110; у нас шапка 113,
+     поэтому высота 1230 возвращает подвал на 1343 и страница не скроллится */
+  min-height: calc(48.046875 * var(--u));
+  padding-block: calc(1.484375 * var(--u)) calc(2.5 * var(--u));
+
+  /* Цветной подложки нет — секция прозрачная, фон даёт страница.
+     Снимок 2573×1444 в макете стоит в натуральную величину от самого верха
+     страницы (верхние 118px прячутся под шапкой), а низ уходит под подвал.
+     Высота секции 1230 → фото = 117.4% её высоты даёт ровно 1444px,
+     вертикальный сдвиг 51.8% ставит верх снимка на 2px страницы:
+     (1230 − 1444) × 0.518 = −111 относительно верха секции.
+     Высота секции масштабируется через --u, поэтому фото ниже 2560
+     уменьшается ровно как в макете. */
+  background: #f0eff2 url("../assets/img/about-hero.png") right calc(-0.1171875 * var(--u)) top 51.8% / auto 117.4% no-repeat;
+}
+
+/* Крошки: макетный кегль 16.5 при 2560 (общий clamp даёт 15) */
+.about-page .crumbs {
+  font-size: max(13px, calc(0.64453125 * var(--u)));
+}
+
+/* Крошки: отступ до заголовка (в макете 22px при ширине 2560) */
+.about-page .crumbs span[aria-current] {
+  display: inline-block;
+  padding-bottom: calc(0.859375 * var(--u));
+}
+
+.about-title {
+  /* макет: между крошками и заголовком ещё 20px */
+  margin: calc(0.78125 * var(--u)) 0 0;
+  font-size: max(28px, calc(2.0703125 * var(--u)));
+  line-height: 1.1;
+  /* в макете заголовок светлее остальных заголовков страницы */
+  font-weight: 400;
+  text-transform: uppercase;
+  /* макет: чернила заголовка 221..608 (388px) — Montserrat 53 с трекингом -0.02em */
+  letter-spacing: -0.02em;
+  color: #233146;
+}
+
+.about-text {
+  /* макет: колонка 1400px при 2560 */
+  max-width: calc(54.6875 * var(--u));
+  margin: calc(2.265625 * var(--u)) 0 0;
+}
+
+.about-text p {
+  margin: 0;
+  /* макет: кегль 18.5, интерлиньяж 30px (чернила строк 335..709) */
+  font-size: max(14px, calc(0.72265625 * var(--u)));
+  line-height: 1.639;
+  font-weight: var(--fw-medium);
+  color: #2a323a;
+  /* base.css ставит text-wrap: pretty — он переносит «ответственность» на
+     вторую строку, а в макете строка кончается на «ответственность за» */
+  text-wrap: wrap;
+}
+
+.about-text p + p { margin-top: calc(0.703125 * var(--u)); }
+
+/* Жёсткие переносы абзацев 4–6 сняты с макета 2560. На узких экранах колонка
+   не вмещает макетные строки, и переносы давали короткие обрубки — там
+   отдаём перенос браузеру. */
+@media (max-width: 1439px) {
+  .about-br { display: none; }
+}
+
+/* --- Преимущества (4 колонки) --- */
+
+.about-features {
+  display: grid;
+  /* Колонки неравные, как в макете: ширина карточки задана расстоянием между
+     разделителями (536/918/1300 при 2560, шаг 382), а разделитель стоит на
+     правом крае трека. Поэтому треки 312 + 382 + 382 + 382 = 1458, а разный
+     воздух слева у карточек выравнивает иконки по макету. */
+  grid-template-columns:
+    calc(12.1875 * var(--u))
+    repeat(3, minmax(0, calc(14.921875 * var(--u))));
+  row-gap: calc(1.25 * var(--u));
+  column-gap: 0;
+  /* макет: разделители 536/918/1300, ряд кончается на 1618 */
+  max-width: calc(56.953125 * var(--u));
+  /* макет: чернила преимуществ начинаются на 801, текст вступления
+     заканчивается на 714 — отступ 81 */
+  margin: calc(3.1640625 * var(--u)) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Шире 1920 блок упирался в фоновое фото кресла — предел уже учтён выше. */
+
+.about-feature {
+  display: grid;
+  /* иконки из макета разной ширины (38–64px), поэтому колонка по контенту */
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: calc(0.9375 * var(--u));
+  align-items: start;
+}
+
+/* Разделитель между преимуществами: тонкая серая линия справа у всех, кроме
+   последнего пункта. Высота — по самой высокой карточке ряда (stretch). */
+.about-feature:not(:last-child) {
+  border-right: 2px solid #cccccc;
+}
+
+/* Воздух слева у каждой карточки — по макету (иконки 240/569/954/1326) */
+.about-feature:nth-child(1) { padding-left: calc(0.625 * var(--u)); }
+.about-feature:nth-child(2) { padding-left: calc(1.2890625 * var(--u)); }
+.about-feature:nth-child(3) { padding-left: calc(1.40625 * var(--u)); }
+.about-feature:nth-child(4) { padding-left: calc(1.015625 * var(--u)); }
+
+.about-feature__icon {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: calc(0.1171875 * var(--u));
+}
+
+/* Ширины — макетные при 2560 (38/46/43/62) */
+.about-feature:nth-child(1) .about-feature__icon { width: calc(1.484375 * var(--u)); }
+.about-feature:nth-child(2) .about-feature__icon { width: calc(1.796875 * var(--u)); }
+.about-feature:nth-child(3) .about-feature__icon { width: calc(1.6796875 * var(--u)); }
+.about-feature:nth-child(4) .about-feature__icon { width: calc(2.421875 * var(--u)); }
+
+.about-feature__title {
+  margin: 0;
+  font-size: max(14px, calc(0.625 * var(--u)));
+  line-height: 1.2;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: #252b37;
+}
+
+.about-feature__text {
+  margin: calc(0.46875 * var(--u)) 0 0;
+  font-size: max(14px, calc(0.625 * var(--u)));
+  line-height: 1.47;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+/* Ниже макетного полотна карточки уже, и жёсткие переносы макета дают рваные
+   строки, а макетный интерлиньяж удлиняет ряд преимуществ — страница на
+   1440–1600 переставала влезать в экран. Там переносы отдаём браузеру
+   и держим прежние плотные строки. */
+@media (max-width: 1899px) {
+  .about-feature__text .about-br { display: none; }
+  .about-feature__text {
+    margin-top: calc(0.234375 * var(--u));
+    line-height: 1.35;
+  }
+}
+
+/* --- Логотипы партнёров --- */
+
+.about-partners {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* макет: ряд идёт от 220 до 2339 по всей сетке */
+  justify-content: space-between;
+  gap: calc(3.046875 * var(--u));
+  max-width: calc(83.0078125 * var(--u));
+  /* макет: логотипы (чернила) 1056..1165, блок преимуществ кончается на 950 */
+  margin: calc(3.90625 * var(--u)) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-partners img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-height: calc(4.453125 * var(--u));
+  max-width: calc(7.3046875 * var(--u));
+  object-fit: contain;
+}
+
+/* Боковое поле — не на самом main: padding уменьшает content-box, от которого
+   считается 1cqw, и все макетные проценты съезжали на ширину полей.
+   Поэтому поле задано отступом блокам, как на «Контактах». */
+.about-page > .crumbs,
+.about-title,
+.about-text,
+.about-features,
+.about-partners { margin-left: calc(var(--container-pad) + var(--canvas-extra)); }
+
+/* 1025–1419: фото считается от ширины окна (52u — на 10% меньше макетной
+   пропорции, чтобы остался воздух до текста) и держится верха: полоса
+   118px уходит под шапку, как в макете. */
+@media (max-width: 1419px) {
+  .about-page {
+    background-size: auto calc(52 * var(--u));
+    background-position: right calc(-0.12 * var(--u)) top calc(-4.34 * var(--u));
+  }
+}
+
+/* --- Высокие широкие окна: композиция распределяется по высоте ---
+   В макете 2560×1440 под рядом партнёров 179px до футера, и контент
+   занимает высоту секции целиком — распределять нечего. Раньше стояло
+   110px, и лишние 69px разъезжались по всем зазорам (+17px на блок):
+   заголовок, преимущества и логотипы уезжали вниз, страница переставала
+   быть 1:1 с макетом. Теперь низ макетный, а свободная высота (окна выше
+   1440 или масштаб 0.9) по-прежнему раскладывается между блоками. */
+@media (min-width: 1700px) and (min-height: 1200px) {
+  .about-page {
+    display: flex;
+    flex-direction: column;
+    /* Не space-between: блоки стоят по макету сверху, а свободная высота
+       копится под логотипами — их к низу прижимает margin-top: auto */
+    justify-content: flex-start;
+    padding-bottom: calc(6.9921875 * var(--u));
+  }
+
+  .about-partners { margin-top: auto; }
+}
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 1280px) {
+  .about-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: calc(1.25 * var(--u));
+  }
+  /* макетный воздух слева — только для четырёх колонок */
+  .about-feature:nth-child(n) { padding-left: 0; }
+  /* в две колонки разделитель нужен только между колонками (1-й и 3-й) */
+  .about-feature:not(:last-child) { border-right: 0; }
+  .about-feature:nth-child(odd) {
+    padding-right: calc(1.5625 * var(--u));
+    border-right: 2px solid #cccccc;
+  }
+  .about-partners { gap: calc(1.5625 * var(--u)); }
+}
+
+@media (max-width: 1024px) {
+  .about-page {
+    min-height: 0;
+    padding-bottom: 40px;
+    background-image: none;
+  }
+
+  .about-features { grid-template-columns: minmax(0, 1fr); }
+  /* в одну колонку вертикальные разделители не нужны */
+  .about-feature,
+  .about-feature:nth-child(odd) { padding-right: 0; border-right: 0; }
+  .about-partners {
+    justify-content: flex-start;
+    gap: 20px;
+    /* логотипы отрываются от блока преимуществ чуть сильнее */
+    margin-top: 40px;
+  }
+  .about-partners img { max-width: 120px; max-height: 60px; }
+}
+
+/* Мобилка: текст крупнее по интерлиньяжу и с более воздушными абзацами */
+@media (max-width: 768px) {
+  /* макетное ограничение колонки в 54.7u на телефоне сжимает её до 210px —
+     отдаём тексту всю ширину экрана */
+  .about-text { max-width: none; }
+
+  .about-text p {
+    line-height: 1.55;
+  }
+
+  .about-text p + p {
+    margin-top: 14px;
+  }
+}
+
+/* --- Шире макета: фото остаётся прижатым к правому краю окна ---
+   К полотну его не привязываем: при 2560 снимок 2573px закрывает экран
+   целиком, а если на 2936+ центрировать его вместе с текстом, справа
+   остаётся плоская полоса и по столику у кресла идёт резкий вертикальный
+   срез. Полный выпуск вправо шва не даёт: левый край фото (366px при 2936)
+   попадает в ровную стену и неразличим. */

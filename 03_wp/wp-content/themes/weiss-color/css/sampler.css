@@ -1,0 +1,433 @@
+/* ==========================================================================
+   sampler.css — экран М06 «Заказ пробного образца цвета».
+   Геометрия снята с PSD 2560w (spec/Пробник_выбранного_цвета):
+   крошки 260,156; H1 261,226; квадрат цвета 259,387 701×753;
+   фото 990,387 473×753 (банка 1030,494 392×531);
+   правая колонка x1512: цена/наличие, счётчик, кнопки, плашка-предупреждение.
+   ========================================================================== */
+
+.sampler-page {
+  /* боковые поля — общий контейнер (как на всех страницах) */
+  padding-block: clamp(16px, 1.09vw, 28px) clamp(24px, 3vw, 77px);
+  padding-inline: var(--container-pad);
+  background: #f7f8fa;
+}
+
+.sampler-page .crumbs { margin-bottom: clamp(10px, 0.86vw, 22px); }
+
+.sampler-title {
+  margin: 0;
+  font-size: clamp(22px, 2.07vw, 53px);
+  line-height: 1.06;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.sampler-title__color {
+  display: block;
+  margin-top: clamp(2px, 0.24vw, 6px);
+  font-size: clamp(18px, 1.72vw, 44px);
+  font-weight: var(--fw-regular);
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+/* --- Раскладка: два «окна» (цвет + фото) и правая колонка --- */
+
+.sampler-layout {
+  display: grid;
+  /* правая колонка — 37,5% контейнера: в макете 786 из 2038. Доли fr
+     растягивали её вместе с более широким контейнером сайта (825 вместо 786) */
+  grid-template-columns: minmax(0, 701fr) minmax(0, 473fr) minmax(0, 37.5%);
+  column-gap: clamp(12px, 1.17vw, 30px);
+  row-gap: clamp(16px, 1.8vw, 46px);
+  align-items: start;
+}
+
+/* Раскладка по макету: H1 — над карточками на всю ширину (ссылка «Назад»
+   внутри него уходит вправо на линию заголовка), карточка цвета и фото — второй ряд. */
+.sampler-title {
+  position: relative;
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.sampler-aside { grid-column: 3; grid-row: 1 / 3; }
+.sampler-swatch { grid-column: 1; grid-row: 2; }
+.sampler-photo { grid-column: 2; grid-row: 2; }
+
+.sampler-swatch {
+  min-height: clamp(240px, 29.4vw, 753px);
+  border-radius: 2px;
+  background: #dac4bd;
+}
+
+.sampler-photo {
+  display: grid;
+  place-items: center;
+  min-height: clamp(240px, 29.4vw, 753px);
+  background: #eaebec;
+  border-radius: 2px;
+}
+
+.sampler-photo img {
+  width: clamp(140px, 15.3vw, 392px);
+  height: auto;
+}
+
+/* --- Правая колонка --- */
+
+/* Ссылка больше не в правой колонке, а внутри H1 — поэтому колонке нужен
+   отступ на её высоту (44 px — тач-таргет из responsive.css) + прежний зазор. */
+.sampler-aside { padding-top: calc(44px + clamp(12px, 1.56vw, 40px)); }
+
+.sampler-back {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.78vw, 20px);
+  margin-left: auto;
+  font-size: clamp(13px, 0.86vw, 22px);
+  font-weight: var(--fw-medium);
+  /* коричневый с подчёркиванием — только на hover, как у «Продолжить покупки» */
+  color: #a4a7b1;
+  text-decoration: none;
+  /* ссылка лежит внутри H1, а он uppercase — снимаем наследование */
+  text-transform: none;
+  transition: color 0.2s ease;
+}
+
+/* подчёркивание только под текстом, не под стрелкой; прозрачная линия
+   в покое держит высоту, чтобы строка не дёргалась */
+.sampler-back span {
+  padding-bottom: clamp(3px, 0.23vw, 6px);
+  border-bottom: 1px solid transparent;
+  font-weight: var(--fw-semibold);
+  transition: border-color 0.2s ease;
+}
+
+.sampler-back:hover { color: var(--color-brown); text-decoration: none; }
+.sampler-back:hover span { border-bottom-color: var(--color-brown); }
+
+/* заливная стрелка, как у «Продолжить покупки» в корзине:
+   viewBox 512×243.58, вытянутая, в разметке отзеркалена scale(-1 1) */
+.sampler-back svg { width: clamp(20px, 1.4vw, 36px); height: auto; }
+
+/* На десктопе ссылка стоит справа на линии H1 (внутри самого заголовка) */
+.sampler-head {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sampler-aside__title {
+  margin: 0;
+  font-size: clamp(19px, 1.6vw, 41px);
+  line-height: 1.1;
+  font-weight: var(--fw-medium);
+  color: #233146;
+}
+
+.sampler-aside__text {
+  /* в макете абзац 22.5px с переносами после «решение,» и «интерьере.»;
+     цвет холоднее основного — #4f5a6a */
+  /* ширина абзаца = колонке макета (1512…2302): при ней строки рвутся
+     после «решение,», «интерьере.» и «освещении», как в макете */
+  max-width: clamp(280px, 30.86vw, 790px);
+  margin: clamp(8px, 0.86vw, 22px) 0 0;
+  font-size: clamp(13px, 0.879vw, 22.5px);
+  line-height: 1.45;
+  font-weight: var(--fw-medium);
+  color: #4f5a6a;
+}
+
+/* В макете первая строка заканчивается на «решение,» — точка переноса
+   ближе пикселя к пределу строки, поэтому на десктопе задаём её явно;
+   на узких экранах текст течёт свободно. */
+.sampler-br { display: none; }
+@media (min-width: 1281px) { .sampler-br { display: inline; } }
+
+/* перенос плашки после «цвет» — только на десктопе, на узких экранах текст
+   течёт свободно (иначе остаётся короткая последняя строка) */
+.sampler-notice-br { display: none; }
+@media (min-width: 1281px) { .sampler-notice-br { display: inline; } }
+
+/* --- Три преимущества --- */
+
+.sampler-benefits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.09vw, 28px);
+  margin: clamp(12px, 1.41vw, 36px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sampler-benefit {
+  display: grid;
+  /* ширина колонки иконки — по самой иконке: в макете они разного размера
+     (веер 38, дом 40, грузовик 61 при 2560) */
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(6px, 0.55vw, 14px);
+  align-items: start;
+  font-size: clamp(11px, 0.7vw, 18px);
+  line-height: 1.3;
+  font-weight: var(--fw-medium);
+  /* в макете подписи светлее иконок */
+  color: #747c8c;
+}
+
+.sampler-benefit svg {
+  width: clamp(26px, 1.48vw, 38px);
+  height: auto;
+  color: #575656;
+}
+
+.sampler-benefit:nth-child(2) svg { width: clamp(27px, 1.56vw, 40px); }
+.sampler-benefit:nth-child(3) svg { width: clamp(34px, 2.38vw, 61px); }
+
+/* --- Цена и наличие --- */
+
+.sampler-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: clamp(14px, 1.6vw, 40px);
+}
+
+.sampler-price {
+  margin: 0;
+  /* по макету цифры 47px при 2560 (было 60 — заметно крупнее макета) */
+  font-size: clamp(24px, 1.84vw, 47px);
+  line-height: 1;
+  font-weight: var(--fw-semibold);
+  color: #233146;
+}
+
+.sampler-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(6px, 0.55vw, 14px);
+  font-size: clamp(12px, 0.7vw, 18px);
+  font-weight: var(--fw-medium);
+  color: var(--color-teal);
+}
+
+.sampler-stock::before {
+  content: "";
+  width: clamp(10px, 0.82vw, 21px);
+  height: clamp(10px, 0.82vw, 21px);
+  border-radius: 50%;
+  background: #37808a;
+}
+
+/* --- Покупка: количество + кнопки --- */
+
+.sampler-buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  /* только между количеством и кнопкой: row-gap складывался с margin-top
+     у «Продолжить покупки» и удваивал отступ */
+  column-gap: clamp(10px, 1.02vw, 26px);
+  row-gap: 0;
+  margin-top: clamp(8px, 0.78vw, 20px);
+}
+
+.sampler-qty { display: grid; gap: clamp(4px, 0.43vw, 11px); }
+
+.sampler-qty__label {
+  font-size: clamp(12px, 0.7vw, 18px);
+  font-weight: var(--fw-medium);
+  color: #43484f;
+}
+
+/* счётчик наследует .qty из cart.css; размеры — по макету: 201×61,
+   три ячейки по 67 px, цифра набрана Montserrat */
+.sampler-qty .qty {
+  border-radius: var(--radius-btn);
+  background: transparent;
+}
+
+.sampler-qty .qty__btn {
+  width: clamp(40px, 2.62vw, 67px);
+  height: clamp(44px, 2.38vw, 61px);
+  font-size: clamp(18px, 1.4vw, 36px);
+}
+
+/* неактивная ячейка («+») — прозрачная, как в макете; минус остаётся коричневым.
+   В покое только: на hover «+» получает общий коричневый градиент из cart.css */
+.sampler-qty .qty__btn:not(.qty__btn--minus):not(:hover) { background: transparent; }
+
+.sampler-qty .qty__input {
+  width: clamp(40px, 2.58vw, 66px);
+  height: clamp(44px, 2.38vw, 61px);
+  font-family: var(--font-main);
+  font-size: clamp(18px, 1.45vw, 37px);
+  font-weight: var(--fw-semibold);
+  background: transparent;
+}
+
+/* обе кнопки одного размера: в макете кегль у них одинаковый */
+.sampler-buy .btn {
+  min-height: clamp(46px, 2.77vw, 71px);
+  font-size: clamp(15px, 0.94vw, 24px);
+  letter-spacing: 0.02em;
+  font-weight: var(--fw-medium);
+}
+.sampler-add { flex: 1 1 clamp(220px, 20.9vw, 536px); }
+.sampler-continue {
+  flex: 1 1 100%;
+  min-height: clamp(46px, 2.97vw, 76px);
+  /* отступ только здесь: row-gap у .sampler-buy больше не добавляется */
+  margin-top: clamp(16px, 1.9vw, 28px);
+  /* в макете вторичная кнопка без белой заливки — фон страницы */
+  background: transparent;
+  color: #000000;
+}
+
+/* текст вторичной кнопки чуть жирнее первичной */
+.sampler-buy .sampler-continue { font-weight: var(--fw-semibold); }
+
+/* --- Предупреждение о цвете --- */
+
+.sampler-notice {
+  display: grid;
+  grid-template-columns: clamp(26px, 1.72vw, 44px) minmax(0, 1fr);
+  gap: clamp(8px, 0.98vw, 25px);
+  align-items: start;
+  margin-top: clamp(14px, 1.72vw, 44px);
+  padding: clamp(12px, 1.05vw, 27px) clamp(12px, 1.02vw, 26px);
+  background: #f2f8fe;
+  /* в макете тонкая рамка по кругу, без синей полосы слева */
+  border: 1px solid #d2d2d2;
+  border-radius: 2px;
+}
+
+.sampler-notice svg {
+  width: 100%;
+  height: auto;
+  /* в макете иконка по центру текстового блока */
+  align-self: center;
+  color: #70b4ed;
+}
+
+.sampler-notice p {
+  margin: 0;
+  font-size: clamp(12px, 0.7vw, 18px);
+  line-height: 1.35;
+  font-weight: var(--fw-medium);
+  color: #4f5a6a;
+}
+
+/* --- Десктоп: всё в правой колонке считается от её ширины --- */
+/* Макетная колонка 790 px; раньше кегли и контролы висели на vw, поэтому при
+   ширине окна 1920 колонка сжималась на 15%, а текст — на 25%: строки не
+   совпадали с макетом. cqw держит одинаковые пропорции на любой ширине. */
+@media (min-width: 1281px) {
+  /* отступ сверху — 73 px от ширины колонки: в макете заголовок колонки
+     начинается на 70 px ниже верхней строки H1. Процент (не cqw) — единицы
+     контейнера на самом контейнере считаются от вьюпорта */
+  .sampler-aside { container-type: inline-size; padding-top: 9.24%; }
+
+  /* вторая строка забирает высоту правой колонки: иначе колонка, растянутая
+     на обе строки, раздувала первую и карточки уезжали вниз от заголовка */
+  .sampler-layout { grid-template-rows: auto 1fr; }
+
+  .sampler-aside__title { font-size: 5.19cqw; }
+  .sampler-aside__text {
+    max-width: none;
+    margin-top: 3.67cqw;
+    font-size: 2.85cqw;
+    line-height: 1.45;
+  }
+
+  .sampler-benefits {
+    /* колонки по содержимому: «Быстрая доставка» в макете — одна строка,
+       а равные 1fr-колонки на 1 px не давали ей влезть */
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+    gap: 3.54cqw;
+    margin-top: 6.71cqw;
+  }
+  .sampler-benefit { gap: 1.77cqw; font-size: 2.28cqw; }
+  .sampler-benefit svg { width: 4.81cqw; }
+  .sampler-benefit:nth-child(2) svg { width: 5.06cqw; }
+  .sampler-benefit:nth-child(3) svg { width: 7.72cqw; }
+
+  .sampler-price-row { margin-top: 9.49cqw; }
+  .sampler-price { font-size: 5.95cqw; }
+  .sampler-stock { gap: 1.77cqw; font-size: 2.28cqw; }
+  .sampler-stock::before { width: 2.66cqw; height: 2.66cqw; }
+
+  .sampler-buy { column-gap: 6.33cqw; margin-top: 2.91cqw; }
+  .sampler-qty { gap: 2.53cqw; }
+  .sampler-qty__label { font-size: 2.28cqw; }
+  .sampler-qty .qty__btn {
+    width: 8.48cqw;
+    height: 7.72cqw;
+    font-size: 4.56cqw;
+  }
+  .sampler-qty .qty__input {
+    width: 8.35cqw;
+    height: 7.72cqw;
+    font-size: 4.68cqw;
+  }
+
+  .sampler-buy .btn { min-height: 9.11cqw; font-size: 2.78cqw; }
+  .sampler-add { flex: 1 1 auto; }
+  .sampler-buy .sampler-continue { min-height: 9.37cqw; margin-top: 4.94cqw; }
+
+  .sampler-notice {
+    grid-template-columns: 5.57cqw minmax(0, 1fr);
+    gap: 2.66cqw;
+    margin-top: 5.19cqw;
+    /* справа поле шире: в макете абзац рвётся после «цвет» */
+    padding: 2.53cqw 6.33cqw 2.53cqw 3.29cqw;
+  }
+  .sampler-notice p { font-size: 2.28cqw; line-height: 1.45; }
+}
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 1280px) {
+  .sampler-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    position: relative;
+  }
+  /* заголовок на всю ширину, карточки в ряд, правая колонка — под ними */
+  .sampler-title { grid-column: 1 / -1; grid-row: 1; }
+  .sampler-swatch { grid-column: 1; grid-row: 2; }
+  .sampler-photo { grid-column: 2; grid-row: 2; }
+  .sampler-aside {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    /* ссылка теперь в H1, отступ под неё колонке не нужен */
+    padding-top: 0;
+  }
+  .sampler-swatch, .sampler-photo { min-height: clamp(220px, 34vw, 420px); }
+}
+
+@media (max-width: 768px) {
+  .sampler-layout { grid-template-columns: minmax(0, 1fr); }
+  .sampler-title { grid-column: 1; grid-row: 1; }
+  /* ссылка становится последней строкой блока заголовка — под «Цвет F316» */
+  .sampler-head {
+    position: static;
+    justify-content: flex-start;
+    margin-top: clamp(10px, 2vw, 16px);
+  }
+  .sampler-head .sampler-back { margin-left: 0; }
+  .sampler-swatch { grid-column: 1; grid-row: 2; }
+  .sampler-photo { grid-column: 1; grid-row: 3; }
+  .sampler-aside { grid-column: 1; grid-row: 4; }
+  .sampler-swatch, .sampler-photo { min-height: 260px; }
+  .sampler-benefits { grid-template-columns: minmax(0, 1fr); }
+  .sampler-buy { flex-direction: column; align-items: stretch; }
+  /* в колонке flex-basis кнопки работает по высоте — снимаем */
+  .sampler-add { flex: none; width: 100%; }
+  .sampler-qty { justify-items: start; }
+  .sampler-buy .btn { width: 100%; }
+}

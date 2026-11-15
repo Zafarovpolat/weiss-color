@@ -1,0 +1,255 @@
+/* ==========================================================================
+   legal.css — экран М11 «Правовой документ» (шаблон политики).
+   Геометрия снята с макета 2560w (spec/Шаблон_правового_документа):
+   полоса с фото до y559, девять разделов в две колонки (левая x224,
+   правая x1328), шаг номеров 01…09.
+
+   Размеры заданы в --u (1% ширины main, 25.6px при 2560): при 1920 макет
+   уменьшается целиком, кегли и отступы не расходятся, как было на vw.
+   ========================================================================== */
+
+main {
+  container-type: inline-size;
+  --u: 1cqw;
+}
+
+@media (min-width: 2550px) {
+  main { --u: 25.6px; }
+}
+
+.legal-hero {
+  position: relative;
+  /* боковые поля — общий контейнер (как на всех страницах); на широких
+     экранах полотно центрируется, поэтому добавляем --canvas-extra */
+  padding-block: calc(3.8671875 * var(--u)) calc(0.1328125 * var(--u));
+  padding-inline: calc(var(--container-pad) + var(--canvas-extra));
+  background: #f7f8fa;
+}
+
+/* декоративная полоса с фото: в макете она заканчивается на y559,
+   под заголовком и вводным абзацем */
+.legal-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100%;
+  background: #eff1f4 url("../assets/img/legal-hero.png") right top / auto 100% no-repeat;
+  z-index: 0;
+}
+
+/* Декор прижат к правому краю окна, как в макете: при 2560 фото 2448px
+   занимает почти всю полосу, а на 2936+ уходит вправо вместе с окном.
+   Привязывать его к центрированному полотну не нужно — сдвиг в
+   background-position через --canvas-extra семантически неверен (проценты
+   там считаются от свободного места «элемент − фото»), а составная сцена
+   с текстом от этого не зависит. */
+
+.legal-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.legal-hero__eyebrow {
+  margin: 0;
+  font-size: calc(0.6640625 * var(--u));
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #233146;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.legal-hero__title {
+  max-width: calc(30.625 * var(--u));
+  margin: calc(0.7421875 * var(--u)) 0 0;
+  font-size: calc(2.3046875 * var(--u));
+  line-height: 1.27;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.legal-hero__lead {
+  max-width: calc(28 * var(--u));
+  margin: calc(0.75 * var(--u)) 0 0;
+  font-size: calc(0.8671875 * var(--u));
+  line-height: 1.5;
+  font-weight: var(--fw-medium);
+  color: #565c69;
+}
+
+/* --- Две колонки разделов --- */
+
+.legal-body {
+  /* боковые поля — общий контейнер + сдвиг центрированного полотна */
+  padding-block: calc(1.52 * var(--u)) calc(2.03 * var(--u));
+  padding-inline: calc(var(--container-pad) + var(--canvas-extra));
+  background: #f7f8fa;
+}
+
+.legal-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: calc(4.0625 * var(--u));
+  row-gap: calc(2.66 * var(--u));
+  align-items: start;
+}
+
+/* Раздел: номер слева, заголовок и текст справа */
+.legal-section {
+  display: grid;
+  grid-template-columns: calc(4.140625 * var(--u)) minmax(0, 1fr);
+  align-items: start;
+}
+
+/* вертикальный ритм между разделами внутри колонки */
+.legal-column {
+  display: grid;
+  gap: calc(0.703125 * var(--u));
+  align-content: start;
+}
+
+.legal-section__num {
+  /* цифры — антиква Times/Tinos, как в макете (высота знака 30px) */
+  font-family: var(--font-num);
+  font-variant-numeric: lining-nums;
+  font-size: calc(1.79 * var(--u));
+  line-height: 0.9;
+  font-weight: var(--fw-regular);
+  color: #253346;
+}
+
+.legal-section__title {
+  margin: 0;
+  font-size: calc(1.015625 * var(--u));
+  line-height: 1.2;
+  font-weight: var(--fw-medium);
+  color: #233146;
+}
+
+.legal-section__text {
+  margin: calc(0.3125 * var(--u)) 0 0;
+  font-size: calc(0.6328125 * var(--u));
+  line-height: 1.45;
+  font-weight: var(--fw-medium);
+  color: #88919a;
+}
+
+.legal-section__text p { margin: 0; }
+.legal-section__text p + p { margin-top: calc(0.3125 * var(--u)); }
+
+.legal-section__text ul {
+  margin: 0;
+  padding-left: 1.1em;
+  list-style: disc;
+}
+
+.legal-section__text li + li { margin-top: calc(0.078125 * var(--u)); }
+
+/* Маркеры списка чуть темнее основного текста раздела */
+.legal-section__text li::marker {
+  color: #6a737c;
+}
+
+/* Текстовые ссылки в документе: тёмный текст на коричневой линии,
+   при наведении темнеет до фирменного коричневого */
+.legal-section__text a {
+  color: #253346;
+  text-decoration: underline;
+  text-decoration-color: var(--color-brown);
+  text-underline-offset: 3px;
+  transition: color var(--ease-ui), text-decoration-color var(--ease-ui);
+}
+
+.legal-section__text a:hover {
+  color: var(--color-brown-dark);
+  text-decoration-color: var(--color-brown-dark);
+}
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 1280px) {
+  .legal-hero::before { background-position: right calc(-4.6875 * var(--u)) top; }
+}
+
+/* 1024 и ниже: макетные проценты дали бы 6–10px, поэтому кегли
+   переходят на мобильные значения в px */
+@media (max-width: 1024px) {
+  .legal-hero {
+    padding-block: 32px 24px;
+  }
+
+  .legal-hero::before { display: none; }
+
+  .legal-hero__eyebrow { font-size: 12px; }
+
+  .legal-hero__title {
+    max-width: 100%;
+    margin-top: 12px;
+    font-size: 30px;
+  }
+
+  .legal-hero__lead {
+    max-width: 100%;
+    margin-top: 16px;
+    font-size: 15px;
+  }
+
+  .legal-br { display: none; }
+
+  .legal-body { padding-block: 24px 40px; }
+
+  .legal-columns {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+
+  .legal-column { gap: 28px; }
+
+  .legal-section { grid-template-columns: 56px minmax(0, 1fr); }
+
+  .legal-section__num { font-size: 30px; }
+
+  .legal-section__title { font-size: 18px; }
+
+  .legal-section__text {
+    margin-top: 8px;
+    font-size: 14.5px;
+  }
+
+  .legal-section__text p + p { margin-top: 8px; }
+
+  .legal-section__text li + li { margin-top: 2px; }
+}
+
+@media (max-width: 540px) {
+  .legal-hero__title { font-size: 25px; }
+
+  .legal-section { grid-template-columns: 44px minmax(0, 1fr); }
+
+  .legal-section__num { font-size: 26px; }
+
+  .legal-section__title { font-size: 17px; }
+
+  .legal-section__text { font-size: 14px; }
+}
+
+/* --- Крошки (ТЗ 3.1) ---
+   Лежат в верхнем отступе полосы: заголовок и полоса остаются на макетных
+   позициях. На 1024 и ниже встают в поток над заголовком. */
+.legal-hero .crumbs--overlay {
+  /* .legal-hero > * делает детей relative; крошкам нужен absolute, иначе
+     они встают в поток и наезжают на надзаголовок. */
+  position: absolute;
+  top: calc(0.9 * var(--u));
+  left: calc(var(--container-pad) + var(--canvas-extra));
+  right: calc(var(--container-pad) + var(--canvas-extra));
+}
+
+@media (max-width: 1024px) {
+  .legal-hero .crumbs--overlay {
+    position: static;
+    margin: 0 0 14px;
+  }
+}

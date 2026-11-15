@@ -1,0 +1,16 @@
+/*
+Theme Name: Weiss Color
+Theme URI: https://weiss-color.vercel.app
+Author: Weiss Color project
+Description: Тема интернет-магазина Weiss Color по макетам М01–М25. Вёрстка этапа 1
+             (02_верстка) перенесена в шаблоны WordPress + WooCommerce без сборщика.
+Version: 0.1.0
+Requires at least: 6.6
+Tested up to: 6.8
+Requires PHP: 8.1
+License: proprietary
+Text Domain: weiss
+*/
+
+/* Стили темы лежат в css/ и подключаются в inc/enqueue.php по экранам.
+   Этот файл нужен WordPress только для заголовка темы — не добавляйте сюда правила. */

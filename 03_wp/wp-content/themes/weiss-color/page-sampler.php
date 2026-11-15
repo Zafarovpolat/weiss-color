@@ -1,0 +1,169 @@
+<?php
+/**
+ * Заказ пробного образца (М06). Разметка перенесена из 02_верстка/pages/modal-sampler.html;
+ * данные и ссылки — из WordPress.
+ */
+weiss_set_main_class( 'sampler-page' );
+get_header();
+
+$weiss_palette = isset( $_GET['palette'] ) ? sanitize_text_field( wp_unslash( $_GET['palette'] ) ) : '';
+$weiss_code    = isset( $_GET['code'] ) ? sanitize_text_field( wp_unslash( $_GET['code'] ) ) : '';
+$weiss_color   = ( $weiss_palette && $weiss_code ) ? weiss_color_get( $weiss_palette, $weiss_code ) : null;
+
+$weiss_palettes = weiss_page_url( 'palettes' );
+$weiss_product  = weiss_sampler_product();
+$weiss_have     = (bool) ( $weiss_color && $weiss_product );
+
+$weiss_color_label = $weiss_color ? $weiss_color->code : 'не выбран';
+$weiss_hex         = $weiss_color ? $weiss_color->hex : '#f4e7e1';
+$weiss_swatch_note = $weiss_color ? 'Цвет ' . $weiss_color->code . ' — ' . $weiss_color->palette : 'Цвет не выбран';
+$weiss_stock       = ( $weiss_product && $weiss_product->is_in_stock() ) ? 'В наличии' : 'Нет в наличии';
+$weiss_price       = $weiss_product ? $weiss_product->get_price() : '';
+/* Остаток — граница количества (ТЗ 6.6); без учёта остатков границы нет. */
+$weiss_max_qty     = ( $weiss_product && $weiss_product->managing_stock() && $weiss_product->get_stock_quantity() )
+	? (int) $weiss_product->get_stock_quantity()
+	: 0;
+
+$weiss_back = $weiss_color
+	? weiss_color_url( $weiss_color->palette, $weiss_color->code )
+	: $weiss_palettes;
+?>
+<nav class="crumbs" aria-label="Хлебные крошки">
+	<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a> &gt;
+	<a href="<?php echo esc_url( $weiss_palettes ); ?>">Колеровка цвета</a> &gt;
+	<?php if ( $weiss_color ) : ?>
+		<a href="<?php echo esc_url( weiss_shades_url( $weiss_color->palette ) ); ?>"><?php echo esc_html( $weiss_color->palette ); ?></a> &gt;
+		<a href="<?php echo esc_url( $weiss_back ); ?>">Цвет <?php echo esc_html( $weiss_color->code ); ?></a> &gt;
+	<?php endif; ?>
+	<span aria-current="page">Пробный образец</span>
+</nav>
+
+    <div class="sampler-layout">
+      <!-- заголовок живёт в той же сетке, что и правая колонка: на макете
+           «Назад к выбору цвета» стоит на уровне H1, а карточка цвета — ниже -->
+      <h1 class="sampler-title">
+        Заказ пробного образца
+        <span class="sampler-title__color">Цвет <?php echo esc_html( $weiss_color_label ); ?></span>
+
+        <!-- на десктопе ссылка уходит вправо на линию заголовка,
+             на ≤768 остаётся последней строкой этого блока -->
+        <div class="sampler-head">
+          <a class="sampler-back" href="<?php echo esc_url( $weiss_back ); ?>">
+            <!-- стрелка заливкой, как у «Продолжить покупки» в корзине;
+                 исходник смотрит вправо, поэтому отзеркалена -->
+            <svg viewBox="0 0 512 243.58" aria-hidden="true" focusable="false">
+              <path fill="currentColor" fill-rule="nonzero" transform="translate(512 0) scale(-1 1)"
+                    d="M373.57 0 512 120.75 371.53 243.58l-20.92-23.91 94.93-83L0 137.09v-31.75l445.55-.41-92.89-81.02z"/>
+            </svg>
+            <span>Назад к выбору цвета</span>
+          </a>
+        </div>
+      </h1>
+
+      <!-- цвет-квадрат: в проде подставляется цвет выбранного оттенка -->
+      <div class="sampler-swatch" role="img" aria-label="<?php echo esc_attr( $weiss_swatch_note ); ?>"
+           style="background:<?php echo esc_attr( $weiss_hex ); ?>"></div>
+
+      <div class="sampler-photo">
+        <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/img/sampler-can.png" width="392" height="531"
+             alt="Баночка пробного образца краски 300 мл в цвете <?php echo esc_attr( $weiss_color_label ); ?>" loading="lazy">
+      </div>
+
+      <aside class="sampler-aside" aria-labelledby="sampler-title">
+        <h2 class="sampler-aside__title" id="sampler-title">Пробный образец<?php echo $weiss_color ? ' цвета ' . esc_html( $weiss_color->code ) : ''; ?></h2>
+        <p class="sampler-aside__text">
+          Баночка краски 300 мл<?php echo $weiss_color ? ' в цвете ' . esc_html( $weiss_color->code ) : ''; ?> — идеальное решение,<br class="sampler-br"> чтобы оценить,
+          как оттенок выглядит именно в вашем интерьере. Нанесите на стену и посмотрите
+          на цвет при разном освещении в течение дня.
+        </p>
+
+        <ul class="sampler-benefits">
+          <li class="sampler-benefit">
+            <!-- веер цветовых карточек (как в макете) -->
+            <svg viewBox="0 0 50 54" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true">
+              <rect x="1.2" y="1.2" width="12.6" height="51.6" rx="1.5"/>
+              <path d="M1.2 38.5h12.6" stroke-width="2.6"/>
+              <circle cx="7.5" cy="45.5" r="1.9" fill="currentColor" stroke="none"/>
+              <path d="M17 52.5 22.5 5.5l9 3-11.5 44Z" stroke-linejoin="round"/>
+              <path d="M20 52.5 33 22.5l8 4-16 26Z" stroke-linejoin="round"/>
+              <path d="M18.5 43.5H45v9H18.5Z" stroke-linejoin="round"/>
+            </svg>
+            <span>Реальный цвет<br>в вашем интерьере</span>
+          </li>
+          <li class="sampler-benefit">
+            <!-- дом с окном и малярной кистью (как в макете) -->
+            <svg viewBox="0 0 52 48" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true">
+              <path d="M2 21.5 26 2l24 19.5" stroke-linejoin="round" stroke-linecap="round"/>
+              <path d="M7.5 20v25h37V20"/>
+              <rect x="18.5" y="21.5" width="13" height="13"/>
+              <path d="M49.5 25.5 43 32" stroke-linecap="round" stroke-width="3.2"/>
+              <path d="M41.5 30.5 38 34" stroke-width="6"/>
+              <path d="M39.6 33.2 32.4 39.9c-1 .9-2 1.6-3.2 2.1-.8.3-1.1-.6-.5-1.2l.7-.7 7.3-7.6Z" fill="currentColor" stroke="none"/>
+            </svg>
+            <span>Удобно<br>тестировать</span>
+          </li>
+          <li class="sampler-benefit">
+            <!-- грузовик с линиями скорости (как в макете) -->
+            <svg viewBox="0 0 76 44" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+              <path d="M2 10h15M2 19h10M2 28h14" stroke-width="3.6" stroke-linecap="round"/>
+              <rect x="21" y="6.5" width="30" height="27" rx="1"/>
+              <path d="M51 15.5h7.5l7.5 8.5v9.5H51Z" stroke-linejoin="round"/>
+              <circle cx="30" cy="34.5" r="4.5"/>
+              <circle cx="57.5" cy="34.5" r="4.5"/>
+            </svg>
+            <span>Быстрая доставка<br>от 3 до 7 дней</span>
+          </li>
+        </ul>
+
+        <?php if ( $weiss_have ) : ?>
+        <div class="sampler-price-row">
+          <p class="sampler-price"><?php echo esc_html( weiss_price_number( $weiss_price ) ); ?> ₽</p>
+          <span class="sampler-stock"><?php echo esc_html( $weiss_stock ); ?></span>
+        </div>
+
+        <form class="sampler-buy" action="<?php echo esc_url( $weiss_back ); ?>" method="post" novalidate
+              data-weiss-add="<?php echo esc_attr( $weiss_product->get_id() ); ?>"
+              data-weiss-palette="<?php echo esc_attr( $weiss_color->palette ); ?>"
+              data-weiss-code="<?php echo esc_attr( $weiss_color->code ); ?>"
+              data-weiss-url="<?php echo esc_url( $weiss_back ); ?>">
+          <div class="sampler-qty">
+            <label class="sampler-qty__label" for="sampler-qty">Количество</label>
+            <div class="qty">
+              <button class="qty__btn qty__btn--minus" type="button" data-qty="dec"
+                      aria-label="Уменьшить количество" aria-controls="sampler-qty">−</button>
+              <input class="qty__input" id="sampler-qty" name="qty" type="number"
+                     inputmode="numeric" min="1" step="1" value="1"<?php echo $weiss_max_qty ? ' max="' . esc_attr( $weiss_max_qty ) . '"' : ''; ?> aria-label="Количество, шт.">
+              <button class="qty__btn" type="button" data-qty="inc"
+                      aria-label="Увеличить количество" aria-controls="sampler-qty">+</button>
+            </div>
+          </div>
+
+          <button class="btn btn--brown sampler-add" type="submit">Добавить в корзину</button>
+          <a class="btn btn--outline sampler-continue" href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>">Продолжить покупки</a>
+        </form>
+        <?php else : ?>
+        <div class="sampler-price-row">
+          <p class="sampler-price">300 мл</p>
+          <span class="sampler-stock">Выберите цвет</span>
+        </div>
+
+        <a class="btn btn--brown sampler-add" href="<?php echo esc_url( $weiss_palettes ); ?>">Выбрать цвет</a>
+        <?php endif; ?>
+
+        <div class="sampler-notice">
+          <!-- в макете — заливной синий круг с белым «!» -->
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="22" fill="currentColor"/>
+            <rect x="19.9" y="9" width="4.2" height="16.5" rx="2.1" fill="#ffffff"/>
+            <circle cx="22" cy="31.4" r="2.5" fill="#ffffff"/>
+          </svg>
+          <p>
+            Цвет на экране отличается от реального.<br>
+            Рекомендуем заказывать пробный образец, чтобы оценить цвет<br class="sampler-notice-br">
+            в вашем интерьере.
+          </p>
+        </div>
+      </aside>
+    </div>
+<?php
+get_footer();

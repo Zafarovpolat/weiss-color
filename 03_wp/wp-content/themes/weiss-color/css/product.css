@@ -1,0 +1,619 @@
+/* ==========================================================================
+   М05 «Карточка товара» — стили экрана
+   Геометрия снята с PSD-композита 2560w (spec/Шаблон_карточки_товара).
+   Хлебные крошки — в catalog.css, общие элементы — layout/components.
+   ========================================================================== */
+
+/* --- Герой: фон-фото, банка, название, фасовки, цена --- */
+
+/* Размеры — в «процентах макета»: --u = 1% ширины полотна (25.6px при 2560).
+   vw не годятся: при html{zoom:.9} (base.css) полотно шире окна, а vw
+   считается от окна — блоки выходили на 10–40% крупнее макета. */
+main {
+  container-type: inline-size;
+  --u: 1cqw;
+}
+
+@media (min-width: 2550px) {
+  main { --u: 25.6px; }
+}
+
+.p-hero {
+  position: relative;
+  /* фото макета ниже верхней кромки героя на 8px */
+  min-height: calc(29.6484375 * var(--u));
+  background: #f3f3f5 url("../assets/img/product-hero.png") calc(50% + 0.0390625 * var(--u)) calc(0.3125 * var(--u)) / cover no-repeat;
+}
+
+.p-hero__inner {
+  position: relative;
+  padding-top: calc(1.62890625 * var(--u));
+}
+
+/* боковые поля макета — 222px при 2560. Обе сетки лежат в .container
+   (max-width 2560, margin auto), поэтому на широких экранах они уже
+   центрируются сами: --canvas-extra здесь добавлять нельзя, иначе поле
+   удваивалось (банка уезжала вправо, колонка характеристик сужалась). */
+.p-hero__inner,
+.p-details__grid {
+  padding-inline: calc(8.671875 * var(--u));
+}
+
+/* крошки — общий вид из components.css (13–15px); в макете 16.5px */
+.p-hero__breadcrumbs {
+  font-size: calc(0.61953125 * var(--u));
+  font-weight: var(--fw-medium);
+}
+
+/* текущая страница красится общим правилом .breadcrumbs [aria-current] */
+
+.p-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, calc(21.40625 * var(--u))) minmax(0, 1fr);
+}
+
+.p-hero__can {
+  /* позиция для тени; ширина по банке, чтобы проценты тени считались от неё */
+  position: relative;
+  align-self: start;
+  width: fit-content;
+  margin: calc(6.1328125 * var(--u)) auto 0;
+  display: flex;
+  justify-content: center;
+  /* без этого flex растягивал банку по высоте ряда и обрезал низ */
+  align-items: flex-start;
+}
+
+/* тень у макета — мягкий клин от левой кромки днища: от банки она плавно
+   уходит влево-вверх и растворяется. Заливка + blur давала отдельный тёмный
+   овал слева от банки, из-за него тень читалась как направленная к растению,
+   поэтому здесь градиент — у него нет видимой границы пятна */
+.p-hero__can::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: -26%;
+  bottom: 1.8%;
+  width: 86%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 72% 48%,
+    rgba(31, 41, 55, 0.62),
+    rgba(31, 41, 55, 0.2) 48%,
+    rgba(31, 41, 55, 0) 84%
+  );
+  filter: blur(7px);
+}
+
+.p-hero__can img {
+  position: relative;
+  z-index: 1;
+  width: calc(12.734375 * var(--u));
+  height: auto;
+  /* в макете банка стоит на 6px правее центра колонки */
+  margin-left: calc(0.4296875 * var(--u));
+}
+
+.p-hero__copy {
+  min-width: 0;
+}
+
+.p-hero__title {
+  margin-top: calc(1.6171875 * var(--u));
+  font-size: calc(2.109375 * var(--u));
+  line-height: calc(2.578125 * var(--u));
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.034em;
+  /* название приходит из каталога в обычном регистре — в макете оно набрано
+     капсом, поэтому кегль задаём здесь, а не в данных товара */
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.p-hero__lead {
+  /* отступ уменьшен на половину прибавки межстрочного: первая строка остаётся
+     на месте, вторая опускается до макетных 32px шага */
+  margin-top: calc(0.1767578 * var(--u));
+  font-size: calc(0.787890625 * var(--u));
+  line-height: calc(1.25 * var(--u));
+  font-weight: 500;
+  color: #43484f;
+}
+
+/* Выбор объёма */
+.p-volumes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(1.0546875 * var(--u));
+  /* компенсация прибавки межстрочного у лида — кнопки остаются на макетной высоте */
+  margin-top: calc(0.8232422 * var(--u));
+  /* кнопки в макете сдвинуты на 2px правее текстовой колонки */
+  margin-left: calc(0.078125 * var(--u));
+}
+
+.p-volumes__item {
+  min-width: calc(4.375 * var(--u));
+  height: calc(1.9921875 * var(--u));
+  /* в макете подпись стоит выше центра кнопки на 3px */
+  padding: 0 0 calc(0.234375 * var(--u));
+  border: calc(0.078125 * var(--u)) solid #d2d2d2;
+  background: transparent;
+  color: #000000;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: calc(0.890625 * var(--u));
+  font-weight: 400;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.p-volumes__item:hover {
+  border-color: var(--color-ink);
+}
+
+.p-volumes__item[aria-pressed="true"] {
+  /* макет: выбранный объём — светлая коричневая рамка #b19480 и тёплый фон */
+  border-color: #b19480;
+  background: #faf8f6;
+  color: #000000;
+}
+
+/* Кнопка «Колеровка онлайн» */
+.p-coloring {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(15.2734375 * var(--u));
+  height: calc(1.953125 * var(--u));
+  margin-top: calc(0.9375 * var(--u));
+  padding: calc(0.15625 * var(--u)) calc(1.8359375 * var(--u)) 0 calc(2.109375 * var(--u));
+  background: #4d2c17;
+  color: var(--color-white);
+  text-decoration: none;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.p-coloring:hover {
+  /* фон покоя #4d2c17 уже почти равен --color-brown-dark (#4b2a14), поэтому ховер
+     уходит на шаг темнее того же тона — иначе изменение заливки не читается */
+  background: #3b2212;
+  color: var(--color-white);
+  text-decoration: none;
+  box-shadow: var(--shadow-hover-brown);
+}
+
+.p-coloring span {
+  font-size: calc(0.640625 * var(--u));
+  font-weight: 500;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.p-coloring img {
+  width: calc(1.328125 * var(--u));
+  height: auto;
+}
+
+/* Выбранный цвет */
+.p-color {
+  margin-top: calc(0.6640625 * var(--u));
+  font-size: calc(0.703125 * var(--u));
+  line-height: 1.33;
+  color: var(--color-muted);
+}
+
+.p-color b {
+  font-weight: 600;
+  color: #253346;
+}
+
+/* Цвет — ссылка на каталог палитр (перелинковка «товар → колеровка»).
+   По макету значение серое (#6E6F75, как --color-muted), без подчёркивания —
+   раньше его роль играл border-bottom. Жирнее остального текста — 500. */
+.p-color a {
+  color: var(--color-muted);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.p-color a:hover {
+  color: var(--color-lead);
+}
+
+/* Блок цены */
+.p-price-box {
+  display: flex;
+  flex-direction: column;
+  width: calc(15.390625 * var(--u));
+  margin-top: calc(0.83984375 * var(--u));
+  padding: calc(0.5546875 * var(--u)) calc(0.859375 * var(--u)) calc(0.88671875 * var(--u)) calc(0.9375 * var(--u));
+  border: calc(0.078125 * var(--u)) solid #d2d2d2;
+  /* блок цены без заливки — только рамка, фон страницы виден */
+  background: transparent;
+}
+
+.p-price {
+  font-size: calc(1.2734375 * var(--u));
+  line-height: 1.2;
+  font-weight: 600;
+  /* в макете цифры расставлены с разрядкой */
+  letter-spacing: -0.01em;
+  color: #253346;
+}
+
+.p-price__note {
+  margin-top: calc(0.234375 * var(--u));
+  /* в макете примечание набрано Open Sans SemiBold; у Montserrat веса 500 нет
+     в семействе, поэтому прежний 500 браузер показывал как 400 */
+  font-family: "Open Sans", system-ui, sans-serif;
+  font-size: calc(0.60546875 * var(--u));
+  /* ink-замер макета: строки идут с шагом 21px */
+  line-height: calc(0.8203125 * var(--u));
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.p-price__btn {
+  align-self: flex-end;
+  width: calc(6.875 * var(--u));
+  height: calc(1.796875 * var(--u));
+  margin-top: calc(0.3125 * var(--u));
+  margin-left: auto;
+  padding: 0;
+  background: var(--color-teal);
+  /* кнопка «В корзину» — прямоугольная, без рамки и скруглений */
+  border: 0;
+  border-radius: 0;
+  color: var(--color-white);
+  font-family: "Open Sans", system-ui, sans-serif;
+  font-size: calc(0.625 * var(--u));
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: background var(--ease-ui), box-shadow var(--ease-ui);
+}
+
+.p-price__btn:hover {
+  background: var(--color-teal-dark);
+  color: var(--color-white);
+  box-shadow: var(--shadow-hover-teal);
+}
+
+/* --- Нижняя секция: описание + характеристики --- */
+
+.p-details {
+  background: #f6f5f8;
+  padding-block: calc(1.2890625 * var(--u)) calc(2.1875 * var(--u));
+}
+
+.p-details__grid {
+  /* Колонки в переменных: их повторяет .p-tabs, чтобы общая линия под
+     табами шла непрерывно, включая промежуток между колонками. */
+  --p-col1: minmax(0, calc(27.5 * var(--u)));
+  --p-col2: minmax(0, calc(35.625 * var(--u)));
+  --p-col-gap: calc(9.3359375 * var(--u));
+  /* толщина линии под табами — одна переменная на серую и на тёмно-синюю.
+     В макете сегмент активного таба перекрывает серую линию на 1px и виден
+     двумя пикселями — отсюда 3px, а не 2px: при 2px браузер отдавал 1px. */
+  --p-tab-line: 3px;
+  display: grid;
+  grid-template-columns: var(--p-col1) var(--p-col2);
+  column-gap: var(--p-col-gap);
+  row-gap: 0;
+  justify-content: start;
+}
+
+/* Ряд заголовков на всю ширину сетки + одна общая линия под ними.
+   По макету линия у всех табов одна, а тёмно-синяя — только под текстом
+   активного. */
+.p-tabs {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: var(--p-col1) var(--p-col2);
+  column-gap: var(--p-col-gap);
+  /* в макете линия на 5px длиннее колонок */
+  margin-right: calc(-0.1953125 * var(--u));
+  border-bottom: var(--p-tab-line) solid #d2d2d2;
+}
+
+.p-tab {
+  --p-tab-pad: calc(0.4296875 * var(--u));
+  /* ширина по тексту — от неё зависит длина тёмно-синего сегмента */
+  justify-self: start;
+  width: fit-content;
+  /* в макете тёмно-синий сегмент лежит на 1px выше серой линии */
+  margin-bottom: calc(-0.0390625 * var(--u));
+  padding-bottom: var(--p-tab-pad);
+  border-bottom: var(--p-tab-line) solid transparent;
+  font-size: calc(0.78125 * var(--u));
+  line-height: 1.2;
+  /* в макете оба таба набраны Semibold (по плотности ink 37.8%, у Medium — 32%) */
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #4f4f52;
+}
+
+/* в макете второй таб опущен на 4px относительно первого */
+.p-tabs > .p-tab:nth-child(2) {
+  position: relative;
+  top: calc(0.15625 * var(--u));
+}
+
+.p-tab--active {
+  border-bottom-color: #4d4d6f;
+}
+
+.p-desc {
+  margin-top: calc(1.4609375 * var(--u));
+  /* в макете абзац начинается на 3px правее табов */
+  margin-left: calc(0.1171875 * var(--u));
+  font-family: "Open Sans", system-ui, sans-serif;
+  /* ink-замер макета: кегль 21px, шаг строк 29.4px, разрядка +0.4px
+     (в PSD трекинг +20), текст выключен по обоим краям */
+  font-size: calc(0.8203125 * var(--u));
+  line-height: calc(1.1484375 * var(--u));
+  letter-spacing: calc(0.015625 * var(--u));
+  font-weight: 400;
+  text-align: justify;
+  color: var(--color-muted);
+}
+
+.p-desc p + p {
+  /* межстрочный интервал внутри абзаца 29.4px, между абзацами — 35.8px */
+  margin-top: calc(0.25 * var(--u));
+}
+
+/* Таблица характеристик */
+.p-specs {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.4296875 * var(--u));
+  margin-top: calc(0.46875 * var(--u));
+  list-style: none;
+}
+
+/* Макет: строка таблицы 58px, шаг 69px — двухстрочное значение
+   укладывается ровно в 2×28px без больших внутренних полей. */
+.p-specs__row {
+  display: grid;
+  grid-template-columns: calc(11.328125 * var(--u)) minmax(0, 1fr);
+  align-items: center;
+  gap: calc(1.0546875 * var(--u));
+  min-height: calc(2.265625 * var(--u));
+  padding: 1px calc(0.1171875 * var(--u)) 1px calc(1.0546875 * var(--u));
+  background: #ebebed;
+}
+
+/* В макете названия строк — SemiBold, значения — Regular; у Open Sans
+   веса 500 нет, поэтому прежний 500 у названий браузер показывал как 400. */
+.p-specs__label {
+  font-family: "Open Sans", system-ui, sans-serif;
+  font-size: calc(0.8203125 * var(--u));
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.p-specs__value {
+  font-family: "Open Sans", system-ui, sans-serif;
+  font-size: calc(0.8203125 * var(--u));
+  line-height: 1.33;
+  /* ink-замер макета: значения набраны с той же разрядкой +20,
+     но строка «Краткое описание» заполняет колонку целиком,
+     поэтому трекинг ограничен 0.26px, иначе она ломается на третью строку */
+  letter-spacing: calc(0.01015625 * var(--u));
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+/* --- Адаптив (проверяем 360–1024) --- */
+
+@media (max-width: 1024px) {
+  /* ниже 1025px — прежние пиксельные размеры: контейнерная доля дала бы
+     на телефоне кегли в разы меньше макетных */
+  .p-hero__inner,
+  .p-details__grid {
+    padding-inline: var(--container-pad);
+  }
+
+  .p-hero {
+    min-height: 0;
+    padding-bottom: 40px;
+    background-size: cover;
+  }
+
+  .p-hero__inner {
+    padding-top: 24px;
+  }
+
+  .p-hero__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .p-hero__can {
+    margin-top: 24px;
+  }
+
+  .p-hero__can::after {
+    filter: blur(12px);
+  }
+
+  .p-hero__can img {
+    width: clamp(180px, 40vw, 300px);
+  }
+
+  .p-hero__title {
+    margin-top: 16px;
+    font-size: 32px;
+    line-height: 1.22;
+  }
+
+  .p-hero__lead {
+    margin-top: 8px;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .p-volumes {
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .p-volumes__item {
+    min-width: 84px;
+    height: 44px;
+    padding: 0 8px;
+    border-width: 2px;
+    font-size: 17px;
+  }
+
+  .p-coloring {
+    width: min(300px, 100%);
+    height: 46px;
+    margin-top: 14px;
+    padding: 0 24px 0 28px;
+  }
+
+  .p-coloring span {
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  .p-coloring img {
+    width: 28px;
+  }
+
+  .p-color {
+    margin-top: 10px;
+    font-size: 15px;
+  }
+
+  .p-price-box {
+    width: min(344px, 100%);
+    margin-top: 16px;
+    padding: 14px 16px 16px 18px;
+    border-width: 2px;
+  }
+
+  .p-price {
+    font-size: 26px;
+    letter-spacing: 0.02em;
+  }
+
+  .p-price__note {
+    margin-top: 4px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .p-price__btn {
+    width: 150px;
+    height: 42px;
+    margin-top: 10px;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+
+  .p-tab {
+    --p-tab-pad: 8px;
+    font-size: 17px;
+  }
+
+  .p-desc {
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    /* на узкой колонке выключка по обоим краям даёт провалы между словами */
+    text-align: left;
+  }
+
+  .p-desc p + p {
+    margin-top: 12px;
+  }
+
+  .p-specs {
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .p-specs__row {
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 16px;
+    min-height: 50px;
+    padding: 1px 4px 1px 18px;
+  }
+
+  .p-specs__label,
+  .p-specs__value {
+    font-size: 16px;
+  }
+
+  .p-details__grid {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  /* На узком экране общая линия не нужна: табы возвращаются каждый в свою
+     колонку, у каждого заголовка своя линия (у активного — тёмно-синяя). */
+  .p-tabs {
+    display: contents;
+  }
+
+  .p-tab {
+    /* на узком экране линия снова во всю ширину колонки */
+    justify-self: stretch;
+    width: auto;
+    margin-bottom: 0;
+    border-bottom-color: #d2d2d2;
+  }
+
+  .p-tab--active {
+    border-bottom-color: var(--color-ink);
+  }
+
+  /* порядок: заголовок → его содержимое → второй заголовок → его содержимое */
+  .p-tab:nth-child(1) { order: 1; }
+  .p-details__col:nth-child(2) { order: 2; }
+  .p-tab:nth-child(2) { order: 3; margin-top: 40px; }
+  .p-details__col:nth-child(3) { order: 4; }
+
+  .p-details {
+    padding-block: 32px 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .p-price-box {
+    width: min(397px, 100%);
+  }
+
+  .p-hero__can img {
+    width: clamp(150px, 34vw, 220px);
+  }
+
+  .p-hero__can::after {
+    filter: blur(9px);
+  }
+
+  .p-specs__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding-block: 14px;
+  }
+
+  .p-hero__lead br {
+    display: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .p-volumes__item {
+    min-width: 76px;
+    height: 42px;
+  }
+
+  .p-coloring {
+    width: 100%;
+    max-width: 393px;
+  }
+}

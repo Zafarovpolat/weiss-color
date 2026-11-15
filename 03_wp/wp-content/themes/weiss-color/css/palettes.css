@@ -1,0 +1,173 @@
+/* ==========================================================================
+   М13 «Обзор палитр (28)» (экран «Колеровка цвета» с веерами) — стили.
+   Геометрия снята с PSD-композита 2560w (spec/Восемь_палитр_psd).
+   Крошки/пагинация — общие (catalog.css); каркас — layout.
+   ========================================================================== */
+
+.palettes-page {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #f4f4f7 0%, #f5f5f8 100%);
+}
+
+/* --- Хлебные крошки: та же полоса, что у остальных страниц (общий .container) --- */
+
+.palettes-head {
+  padding-top: clamp(24px, 1.52vw, 39px);
+}
+
+/* крошки — общий вид из components.css (13–15px) */
+
+/* текущая страница красится общим правилом .breadcrumbs [aria-current] */
+
+/* --- Контент: заголовок, сетка вееров, пагинация ---
+   Боковые поля и ширину задаёт общий .container (base.css, 2112px);
+   заголовок и сетка внутри него сжаты до макетной полосы 1881px. */
+
+/* Заголовок и сетка вееров живут в своём слое: полоса макета 1881px
+   (4 карточки по 437 + 3 зазора по 43) по центру страницы. Крошки и
+   пагинация остаются на общей ширине контейнера 2112px. */
+.palettes-inner {
+  width: 100%;
+  max-width: 1881px;
+  margin-inline: auto;
+}
+
+/* Колонка контента: при запасе высоты пагинация уходит к подвалу,
+   сетка вееров остаётся на месте. */
+.palettes-main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.palettes-title {
+  margin-top: clamp(16px, 1.6vw, 41px);
+  font-size: clamp(30px, 2.03vw, 52px);
+  line-height: 1.2;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #233146;
+}
+
+/* 4 колонки × 2 ряда; карточка 437×335, зазоры 43 / 41px */
+
+.palettes-grid {
+  display: grid;
+  /* Карточка не шире макетных 437px. Полоса макета 1881px: 4×437 + 3×43,
+     поэтому при 4 колонках 1fr карточки растягивались бы шире макета и
+     сетка читалась как «во всю ширину». Свободное место уходит в зазоры
+     (space-between), края сетки остаются выровнены по полосе 1881px. */
+  grid-template-columns: repeat(4, minmax(0, 437px));
+  justify-content: space-between;
+  column-gap: clamp(16px, 1.68vw, 43px);
+  row-gap: clamp(20px, 1.52vw, 39px);
+  margin-top: clamp(20px, 2.11vw, 54px);
+  list-style: none;
+}
+
+.palette-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+/* общий a:hover подчёркивает подпись — карточке это не нужно */
+.palette-card:hover,
+.palette-card:focus-visible { text-decoration: none; }
+
+.palette-card__media {
+  display: grid;
+  place-items: center;
+  /* раньше стояла фиксированная высота — при contain картинка вписывалась
+     в чужие пропорции и оставляла пустые полосы. Теперь пропорции контейнера
+     совпадают с пропорциями макета (437×335), и contain заполняет
+     площадь без обрезки и без лишнего воздуха. */
+  aspect-ratio: 437 / 335;
+  border: 2px solid #adadad;
+  transition: border-color 0.2s ease, box-shadow var(--ease-ui);
+}
+
+.palette-card:hover .palette-card__media,
+.palette-card:focus-visible .palette-card__media {
+  border-color: var(--color-teal);
+  box-shadow: var(--shadow-hover-card);
+}
+
+.palette-card__media img {
+  width: 100%;
+  height: 100%;
+  /* фото палитр (веера, роллеры) не обрезаем: вписываем целиком */
+  object-fit: contain;
+}
+
+/* Текстовая карточка (Acrilux): крупный логотип + подзаголовок капсом */
+
+.palette-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* по центру рамки на любом брейкпоинте: .palette-card__media — грид
+     с place-items: center, поэтому вертикальный центр держит сам контейнер,
+     а не ручной margin-top, который «плыл» на разных ширинах */
+  align-self: center;
+  justify-self: center;
+  margin-top: 0;
+  text-align: center;
+  padding-inline: 12px;
+}
+
+.palette-brand__name {
+  font-size: clamp(40px, 3.13vw, 80px);
+  line-height: 1.03;
+  font-weight: 500;
+  color: #2a323a;
+}
+
+.palette-brand__tag {
+  margin-top: clamp(14px, 1.05vw, 27px);
+  font-size: clamp(14px, 0.9vw, 23px);
+  line-height: 1;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+/* Подпись под карточкой */
+
+.palette-card__label {
+  margin-top: clamp(8px, 0.55vw, 14px);
+  font-size: clamp(13px, 0.66vw, 17px);
+  line-height: 1.4;
+  font-weight: 500;
+  text-align: center;
+  color: #2a323a;
+}
+
+/* --- Постраничная навигация --- */
+
+.palettes-page .pagination {
+  margin-top: auto;
+  padding-bottom: clamp(40px, 2.77vw, 71px);
+}
+
+/* --- Адаптив (проверяем до 1024) --- */
+
+@media (max-width: 1024px) {
+  .palettes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(16px, 2.5vw, 26px);
+    row-gap: clamp(20px, 3vw, 31px);
+  }
+
+  .palette-card__media {
+    height: auto;
+    aspect-ratio: 437 / 335;
+  }
+}
+
+@media (max-width: 540px) {
+  .palettes-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

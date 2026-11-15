@@ -1,0 +1,389 @@
+/* ==========================================================================
+   where-to-buy.css — экран М03 «Где купить».
+   Геометрия снята с растра макета 2560×1440 (01_исходники/макеты_png/
+   Внешние торговые площадки.png): герой-фото 100vw; карточки 384×424
+   на y519 (шаг 400, зазор 16); блок преимуществ с y1000 на фоне #f2f4f7.
+
+   Размеры записаны в «процентах макета»: --u — это 1% ширины макета
+   (25.6px на 2560). Прежние vw здесь не годятся: при html{zoom:.9}
+   (base.css) полотно шире окна в 1/0.9, а vw по-прежнему считается от
+   окна. Из-за этого на 1420–2559 карточки, кегли и отступы выходили на
+   10% мельче макета относительно фото героя (оно тянется по ширине):
+   ряд обрывался, не доходя до банки, «Перейти» был мельче макетного,
+   а описание Леруа Мерлен переносилось в 4 строки вместо 3. Проценты от
+   ширины main при масштабе 1:1 совпадают с vw и растут вместе с полотном
+   при зуме. От 2560 (там зум уже 1:1) --u заморожен на 25.6px, чтобы на
+   широких экранах размеры остались макетными; само полотно при этом
+   центрируется через --canvas-extra (base.css).
+   ========================================================================== */
+
+main {
+  /* контейнер нужен ради cqw: 1cqw = 1% ширины полотна main */
+  container-type: inline-size;
+  --u: 1cqw;
+}
+
+@media (min-width: 2550px) {
+  main { --u: 25.6px; }
+}
+
+.buy-hero {
+  position: relative;
+  min-height: max(420px, calc(34.6875 * var(--u)));
+  /* В макете контент этой страницы начинается с x≈306 при 2560,
+     а не с общего 224 — это 11.95% ширины (было: container-pad + 3.2vw). */
+  /* верх 67px: при шапке 110px ink-бокс строки заголовка встаёт на макетный
+     y198, кнопки карточек — на y519 (было 64px, всё выходило на 3px выше).
+     Низ уменьшен на те же 3px, чтобы высота героя осталась 888px. */
+  padding-block: max(24px, calc(2.6171875 * var(--u))) max(24px, calc(2.0703125 * var(--u)));
+  padding-inline: calc(11.953125 * var(--u) + var(--canvas-extra));
+  /* фото макета содержит и карточки, и блок преимуществ — показываем только
+     верхние 923px (небо + интерьер + банка), остальное собираем разметкой.
+     background-size намеренно не задаём: фиксированная высота полотна
+     (888px) ломала пропорции фото и налезала на карточки — пусть работает
+     «100% auto» из шорткода выше.
+     Верхняя кромка вырезки buy-hero.png на 32px выше кромки героя в макете
+     (постоянный dy=32 по всему фото), поэтому поднимаем фон на 1,25%
+     ширины полотна = 32px при 2560. */
+  background: #eceff4 url("../assets/img/buy-hero.png") center calc(-1.25 * var(--u)) / 100% auto no-repeat;
+}
+
+.buy-hero__title {
+  margin: 0;
+  max-width: max(280px, calc(30.859375 * var(--u)));
+  /* ink-замер макета: строка «ПРОДУКЦИЮ WEISS» 773px в две строки.
+     Montserrat Medium даёт эту ширину при 72px (при 75 — 807px, уходило в 3 строки). */
+  font-size: max(36px, calc(2.8125 * var(--u)));
+  /* межстрочный по макету 93px */
+  line-height: 1.2917;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: #233146;
+}
+
+.buy-hero__lead {
+  max-width: max(280px, calc(31.25 * var(--u)));
+  margin: max(14px, calc(1.4453125 * var(--u))) 0 0;
+  font-size: max(16px, calc(1.09375 * var(--u)));
+  /* межстрочный по макету 37px */
+  line-height: 1.3214;
+  font-weight: var(--fw-medium);
+  color: #061e3f;
+}
+
+/* --- Карточки маркетплейсов --- */
+
+.buy-cards {
+  display: grid;
+  /* ширина карточки — 384px на 2560 (15%), шаг 400px, зазор 16px.
+     Ряд идёт от 11.95% до 73.8% ширины, как в макете, на любом
+     десктопном масштабе, включая зум 0.9. */
+  grid-template-columns: repeat(4, minmax(0, calc(15 * var(--u))));
+  gap: max(8px, calc(0.625 * var(--u)));
+  margin-top: max(20px, calc(1.7578125 * var(--u)));
+  padding: 0;
+  list-style: none;
+}
+
+/* Поля карточки по макету: 30 сверху, 36 по бокам, 39 снизу —
+   кнопка «Перейти» прижата к низу и стоит на y861..903 при карточке
+   519..942. */
+.buy-card {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(16.5625 * var(--u));
+  padding: max(16px, calc(1.171875 * var(--u))) max(16px, calc(1.40625 * var(--u)))
+    max(16px, calc(1.5234375 * var(--u))) max(16px, calc(1.40625 * var(--u)));
+  background: var(--color-white);
+}
+
+/* Логотип: высота зоны у всех карточек одинаковая (94px в макете),
+   логотипы в ней стоят по центру */
+.buy-card__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: max(64px, calc(3.671875 * var(--u)));
+}
+
+/* Размеры логотипов — как в макете: 325×94, 283×62, 178×107, 345×82.
+   Ширина задана долей текстовой колонки карточки (312px при 2560), поэтому
+   логотипы масштабируются вместе с карточкой и на 2560 совпадают с макетом.
+   Wildberries и Яндекс Маркет шире колонки, Леруа Мерлен выше её — в макете
+   они так же выходят за поля, поэтому ограничения ослаблены. */
+.buy-card__logo img {
+  max-height: 114%;
+  width: auto;
+  height: auto;
+}
+
+.buy-logo--wb { max-width: 104.2%; }
+.buy-logo--ozon { max-width: 90.7%; }
+.buy-logo--lm { max-width: 56.4%; }
+.buy-logo--ym { max-width: 110.3%; }
+
+.buy-card__name {
+  margin: max(16px, calc(1.3671875 * var(--u))) 0 0;
+  font-size: max(17px, calc(1.015625 * var(--u)));
+  line-height: 1.2;
+  font-weight: var(--fw-semibold);
+  color: #252b37;
+}
+
+.buy-card__text {
+  margin: max(10px, calc(1.171875 * var(--u))) 0 0;
+  /* растр макета: строки шириной 292/266/151 и межстрочный 26px —
+     это 18.2px при line-height 1.43, а не 20px, как было по PSD-тегам */
+  font-size: max(14px, calc(0.7109375 * var(--u)));
+  line-height: 1.4286;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+/* В макете описания разбиты на строки вручную (<br> в разметке), и самая
+   длинная строка — «и онлайн-каталоге Леруа Мерлен» (323px) — шире
+   текстовой колонки 312px. Логотип же центрируется по колонке, поэтому
+   расширяем только текст: на десктопе он заходит в правое поле карточки
+   на 16px, как в макете, а на узких экранах остаётся в полях. */
+@media (min-width: 1025px) {
+  .buy-card__text { margin-right: calc(-0.625 * var(--u)); }
+}
+
+/* Кнопка по растру: заливка 219×43, текст «Перейти» 98px по чернилам
+   (22.5px), зазоры 27/21/32; стрелка 41–42 px по чернилам. */
+.buy-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: max(10px, calc(0.78125 * var(--u)));
+  align-self: flex-start;
+  margin-top: auto;
+  padding: calc(0.29296875 * var(--u)) max(14px, calc(1.015625 * var(--u)));
+  font-size: max(14px, calc(0.87890625 * var(--u)));
+  line-height: 1.2;
+  font-weight: var(--fw-regular);
+  text-decoration: none;
+  border-radius: 0;
+  transition: box-shadow var(--ease-ui);
+}
+
+/* Высота по макету — 44px при 2560. Глобальный тач-таргет 44px из
+   responsive.css под zoom 0.9 оставлял кнопку заметно выше пропорции
+   (на 1920 это 39.6px вместо 33), поэтому на десктопе высота идёт за --u,
+   а на тач-устройствах остаётся 44. */
+.buy-card__link { min-height: max(33px, calc(1.71875 * var(--u))); }
+
+@media (pointer: coarse) {
+  .buy-card__link { min-height: 44px; }
+}
+
+/* на hover фон не меняется; тень — в цвете самой кнопки, плотная и с малым
+   размытием (--buy-shadow задаётся в каждом модификаторе ниже) */
+.buy-card__link:hover {
+  text-decoration: none;
+  box-shadow: var(--buy-shadow);
+}
+
+/* стрелка по чернилам макета — 41–42 px; у залитого глифа чернила
+   занимают весь viewBox, поэтому прежние 44 давали перебор */
+.buy-card__link svg {
+  width: max(22px, calc(1.64 * var(--u)));
+  height: auto;
+  transition: transform 0.2s ease;
+}
+
+.buy-card__link:hover svg { transform: translateX(4px); }
+
+.buy-card__link--wb {
+  color: var(--color-white);
+  background: #8e2880;
+  --buy-shadow: 0 0 10px 1px #8e2880;
+}
+.buy-card__link--ozon {
+  color: var(--color-white);
+  background: #0059ff;
+  --buy-shadow: 0 0 10px 1px #0059ff;
+}
+.buy-card__link--lm {
+  color: var(--color-white);
+  background: #71bf44;
+  --buy-shadow: 0 0 10px 1px #71bf44;
+}
+.buy-card__link--ym {
+  color: #000;
+  background: #ffe133;
+  --buy-shadow: 0 0 10px 1px #ffe133;
+}
+
+/* --- Блок преимуществ --- */
+
+.buy-features {
+  background: #f2f4f7;
+  /* Поля по растру: полоса начинается на y1000, колонки — на y1065,
+     низ текста на y1277 при низе полосы y1343. Отступы одинаковые (65.25),
+     чтобы содержимое стояло по центру полосы: при разных полях flex-центровка
+     страницы (page-grow) сдвигала блок вниз на 4px. */
+  padding-block: calc(2.548828125 * var(--u));
+  padding-inline: calc(11.953125 * var(--u) + var(--canvas-extra));
+}
+
+.buy-features__inner {
+  display: grid;
+  /* головная колонка 423px по макету (до разделителя x729 при 2560):
+     «ПОКУПАЙТЕ УДОБНО» переносится на две строки, как в PSD */
+  grid-template-columns: max(200px, calc(16.5234375 * var(--u))) calc(19.6875 * var(--u)) calc(19.6484375 * var(--u)) minmax(0, 1fr);
+  column-gap: 0;
+  align-items: start;
+}
+
+.buy-features__head {
+  padding-right: max(16px, calc(1.484375 * var(--u)));
+}
+
+.buy-features__title {
+  margin: 0;
+  /* ink-замер макета: «ПОКУПАЙТЕ» 292px, межстрочный 57px */
+  font-size: max(22px, calc(1.71875 * var(--u)));
+  line-height: 1.295;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: #061e3f;
+}
+
+.buy-features__lead {
+  margin: max(10px, calc(0.78125 * var(--u))) 0 0;
+  max-width: max(240px, calc(13.046875 * var(--u)));
+  /* макет: 3 строки, строки шириной 309/327/195, межстрочный 26px */
+  font-size: max(14px, calc(0.71484375 * var(--u)));
+  line-height: 1.421;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+.buy-feature {
+  display: grid;
+  grid-template-columns: max(32px, calc(2.34375 * var(--u))) minmax(0, 1fr);
+  /* зазор 26px: в растре текстовая колонка начинается на x845, а не 843 */
+  gap: max(10px, calc(1.015625 * var(--u)));
+  padding-left: max(16px, calc(1.171875 * var(--u)));
+  padding-top: max(0px, calc(0.234375 * var(--u)));
+  /* Разделитель в макете — ровно 200px у всех трёх колонок (y1065..1264),
+     то есть длиннее текста; высота задана, иначе линия шла по высоте
+     содержимого и колонки получались разной длины (134/134/162). */
+  min-height: calc(7.8125 * var(--u));
+  /* Растр макета: разделитель 2px цвета #c2c7cb (194,199,203), а не
+     1px #848ea0 — прежний цвет в полтора раза темнее макетного. */
+  background: linear-gradient(#c2c7cb, #c2c7cb) no-repeat left 0 / 2px 100%;
+}
+
+/* Размеры ink-замеров макета 2560: щит 43×49, фургон 75×38, люди 70×34
+   (ширина файла больше видимой картинки из-за прозрачных полей viewBox). */
+.buy-feature__icon {
+  justify-self: center;
+  width: auto;
+  height: auto;
+  /* иконки шире колонки 60px — выпускаем их
+     в зазор сетки, иначе глобальный max-width:100% режет макетный размер */
+  max-width: none;
+}
+
+.buy-feature__icon--shield { width: max(26px, calc(1.6796875 * var(--u))); }
+.buy-feature__icon--truck {
+  width: max(36px, calc(2.9296875 * var(--u)));
+  /* в растре фургон стоит на 5px левее центра колонки и на 4px ниже щита —
+     это разные поля в самих вырезках, а не сдвиг колонки */
+  transform: translate(calc(-0.1953125 * var(--u)), max(1px, calc(0.15625 * var(--u))));
+}
+.buy-feature__icon--people {
+  /* ink макета 70×34: прежние 72px по ширине файла давали лишние 2px */
+  width: max(40px, calc(2.734375 * var(--u)));
+  transform: translateY(max(1px, calc(0.15625 * var(--u))));
+}
+
+.buy-feature__title {
+  /* в макете текстовая колонка начинается на 3px ниже верха иконки:
+     закрепки строк 18px/25px дают в браузере другой верхний полуинтервал */
+  margin: calc(0.1171875 * var(--u)) 0 0;
+  /* макет: 18px, межстрочный 25px. По растру это Bold с плотным трекингом
+     0.25px: Semibold с 0.5px давал ink 1011 при макетных 1192 и более
+     светлые буквы (mean 86 против 74). Bold с 0.014em — ink 1172 и те же
+     ширины строк, что в макете */
+  font-size: max(14px, calc(0.703125 * var(--u)));
+  line-height: 1.3889;
+  letter-spacing: 0.014em;
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  color: #252b37;
+}
+
+.buy-feature__text {
+  margin: max(8px, calc(0.859375 * var(--u))) 0 0;
+  /* воздух справа, чтобы текст не упирался в край колонки */
+  padding-right: 15px;
+  /* макет: 18.2px, строки 352/174 и 289/148, межстрочный 27.5px */
+  font-size: max(13px, calc(0.7109375 * var(--u)));
+  line-height: 1.51;
+  font-weight: var(--fw-medium);
+  color: #7d8695;
+}
+
+/* Ширина текстовых блоков по макету: в PSD у каждой колонки своя
+   текстовая рамка, поэтому переносы строк «WEISS / от производителя»
+   и «доставка / по всей России» совпадают только при своей ширине. */
+.buy-feature:nth-child(2) .buy-feature__text { max-width: max(200px, calc(14.53125 * var(--u))); }
+.buy-feature:nth-child(3) .buy-feature__text { max-width: max(200px, calc(12.109375 * var(--u))); }
+.buy-feature:nth-child(4) .buy-feature__text { max-width: max(200px, calc(13.8671875 * var(--u))); }
+
+/* --- Адаптив (проверяем 360 и 1024) --- */
+
+@media (max-width: 1280px) {
+  .buy-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .buy-features__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+  .buy-features__head { grid-column: 1 / -1; }
+  .buy-feature { padding-left: 20px; }
+  /* на ровно 1280 макетный перенос в третьей колонке уже не нужен:
+     преимущества здесь в две колонки */
+  .buy-feature__text .d-br { display: none; }
+
+  /* В две колонки карточки больше не тянутся до макетных 320px: при
+     min-height кнопка «Перейти» уезжала вниз и над ней оставалось до 96px
+     пустоты (margin-top: auto делил свободную высоту). Высоту задаёт
+     контент, а минимальный зазор над кнопкой — нижнее поле текста:
+     сама кнопка по-прежнему прижата к низу и в ряду стоит ровно. */
+  .buy-card { min-height: 0; }
+  .buy-card__text { margin-bottom: clamp(14px, 1.4vw, 22px); }
+}
+
+@media (max-width: 540px) {
+  .buy-cards { grid-template-columns: minmax(0, 1fr); }
+  .buy-card { min-height: 0; }
+}
+
+/* 560 и ниже: три преимущества — по одному в строку.
+   Боковые поля страницы уже идут от --container-pad, отдельно их не трогаем. */
+@media (max-width: 560px) {
+  .buy-features__inner { grid-template-columns: minmax(0, 1fr); }
+  .buy-feature { padding-left: 16px; }
+}
+
+/* --- Шире макета: фото героя держим макетной ширины ---
+   Контент заморожен и центрируется, а «100% auto» тянул снимок по окну:
+   интерьер и банка увеличивались относительно разметки. */
+@media (min-width: 2560px) {
+  .buy-hero { background-size: 2560px auto; }
+}
+
+/* --- Крошки (ТЗ 3.1) ---
+   В верхнем отступе героя, на линии левого края заголовка; композиция
+   макета не сдвигается. На узких экранах встают в поток. */
+.buy-hero .crumbs--overlay {
+  top: calc(0.55 * var(--u));
+  left: calc(11.953125 * var(--u) + var(--canvas-extra));
+  right: calc(var(--container-pad) + var(--canvas-extra));
+}
+
+@media (max-width: 767px) {
+  .buy-hero .crumbs--overlay {
+    position: static;
+    margin: 0 0 10px;
+  }
+}
