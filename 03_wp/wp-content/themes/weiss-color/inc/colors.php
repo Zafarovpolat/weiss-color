@@ -119,12 +119,14 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 				$row['product_group'], $row['active'], $row['note'], $now
 			);
 		}
+		/* Пустое название в файле не затирает название, вписанное в панели. */
 		$wpdb->query( // phpcs:ignore WordPress.DB.PreparedSQL
 			"INSERT INTO {$table} (hash,palette,code,name,r,g,b,hex,product_group,active,note,updated_at)
 			 VALUES " . implode( ',', $values ) . '
 			 ON DUPLICATE KEY UPDATE
 			   palette=VALUES(palette), code=VALUES(code), r=VALUES(r), g=VALUES(g), b=VALUES(b),
-			   hex=VALUES(hex), product_group=VALUES(product_group), active=VALUES(active),
+			   name=IF(CHAR_LENGTH(VALUES(name))=0, name, VALUES(name)), hex=VALUES(hex),
+			   product_group=VALUES(product_group), active=VALUES(active),
 			   note=VALUES(note), updated_at=VALUES(updated_at)'
 		);
 		$batch = array();
