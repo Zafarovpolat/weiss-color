@@ -26,6 +26,8 @@ get_header();
         );
         foreach ( $buy_cards as $i => $card ) :
           $name = weiss_opt( 'buy_' . $i . '_name' );
+          $text = trim( wp_strip_all_tags( weiss_opt_html( 'buy_' . $i . '_text' ) ) );
+          $url  = trim( (string) weiss_opt( 'buy_' . $i . '_url' ) );
         ?>
         <li class="buy-card">
           <span class="buy-card__logo">
@@ -37,18 +39,24 @@ get_header();
               $card['h'],
               array(
                 'class'   => 'buy-logo--' . $card['brand'],
-                'alt'     => 'Логотип ' . $name,
+                'alt'     => '' !== trim( (string) $name ) ? 'Логотип ' . $name : '',
                 'loading' => 'lazy',
               )
             );
             ?>
           </span>
-          <h3 class="buy-card__name"><?php echo esc_html( $name ); ?></h3>
-          <p class="buy-card__text"><?php echo weiss_opt_html( 'buy_' . $i . '_text' ); ?></p>
-          <a class="buy-card__link buy-card__link--<?php echo esc_attr( $card['brand'] ); ?>" href="<?php echo esc_url( weiss_opt( 'buy_' . $i . '_url' ) ); ?>" target="_blank" rel="noopener noreferrer">
-            Перейти
-            <svg viewBox="0 0 52 15" fill="none" aria-hidden="true"><path d="M0 6h44v3H0zM41 0l11 7.5L41 15z" fill="currentColor"/></svg>
-          </a>
+          <?php if ( '' !== trim( (string) $name ) ) : ?>
+            <h3 class="buy-card__name"><?php echo esc_html( $name ); ?></h3>
+          <?php endif; ?>
+          <?php if ( '' !== $text ) : ?>
+            <p class="buy-card__text"><?php echo weiss_opt_html( 'buy_' . $i . '_text' ); // phpcs:ignore WordPress.Security.EscapeOutput -- wp_kses в content.php ?></p>
+          <?php endif; ?>
+          <?php if ( '' !== $url ) : ?>
+            <a class="buy-card__link buy-card__link--<?php echo esc_attr( $card['brand'] ); ?>" href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer">
+              Перейти
+              <svg viewBox="0 0 52 15" fill="none" aria-hidden="true"><path d="M0 6h44v3H0zM41 0l11 7.5L41 15z" fill="currentColor"/></svg>
+            </a>
+          <?php endif; ?>
         </li>
         <?php endforeach; ?>
       </ul>

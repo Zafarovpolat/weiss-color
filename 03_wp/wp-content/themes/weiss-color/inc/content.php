@@ -137,6 +137,26 @@ function weiss_phone() {
 }
 
 /**
+ * Телефон со ссылкой: очищенная подпись скрывает его целиком, подпись без
+ * ссылки выводится текстом — на сайте не должно быть ссылок с пустым href.
+ */
+function weiss_phone_html( $class = '' ) {
+	$phone = weiss_phone();
+	$label = trim( (string) $phone['label'] );
+	if ( '' === $label ) {
+		return '';
+	}
+
+	$attr = '' !== $class ? ' class="' . esc_attr( $class ) . '"' : '';
+	$href = trim( (string) $phone['href'] );
+	if ( '' === $href ) {
+		return '<span' . $attr . ' translate="no">' . wp_kses_post( $label ) . '</span>';
+	}
+
+	return '<a' . $attr . ' href="' . esc_url( $href ) . '" translate="no">' . wp_kses_post( $label ) . '</a>';
+}
+
+/**
  * Канал связи: сохранённое пустое поле скрывает кнопку, а значение по
  * умолчанию подставляется только пока поле ни разу не сохраняли (ТЗ 3.1).
  */

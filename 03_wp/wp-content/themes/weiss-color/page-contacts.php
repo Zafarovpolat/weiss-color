@@ -36,8 +36,14 @@ get_header();
           </p>
 
           <p class="contacts-list">
-            <span>т. : <a href="<?php echo esc_url( weiss_phone()['href'] ); ?>" translate="no"><?php echo wp_kses_post( weiss_phone()['label'] ); ?></a></span>
-            <span>e. : <a href="mailto:<?php echo esc_attr( weiss_opt( 'email' ) ); ?>"><?php echo esc_html( weiss_opt( 'email' ) ); ?></a></span>
+            <?php $weiss_phone_html = weiss_phone_html(); ?>
+            <?php if ( '' !== $weiss_phone_html ) : ?>
+              <span>т. : <?php echo $weiss_phone_html; // phpcs:ignore WordPress.Security.EscapeOutput -- тег собран в content.php ?></span>
+            <?php endif; ?>
+            <?php $weiss_email = trim( (string) weiss_opt( 'email' ) ); ?>
+            <?php if ( '' !== $weiss_email ) : ?>
+              <span>e. : <a href="mailto:<?php echo esc_attr( $weiss_email ); ?>"><?php echo esc_html( $weiss_email ); ?></a></span>
+            <?php endif; ?>
           </p>
         </section>
 

@@ -169,7 +169,21 @@ else :
             <h2 class="legal-section__title">Контактная информация</h2>
             <div class="legal-section__text">
               <p>Если у вас есть вопросы по обработке персональных данных, вы можете связаться с нами:</p>
-              <p><?php echo esc_html( weiss_opt( 'seller_name' ) ); ?><?php echo weiss_opt( 'seller_address' ) ? ', ' . esc_html( weiss_opt( 'seller_address' ) ) : ''; ?> — <a href="mailto:<?php echo esc_attr( weiss_opt( 'email' ) ); ?>"><?php echo esc_html( weiss_opt( 'email' ) ); ?></a>, <a href="<?php echo esc_url( weiss_phone()['href'] ); ?>" translate="no"><?php echo wp_kses_post( weiss_phone()['label'] ); ?></a>.</p>
+              <?php
+              $weiss_legal_contact = esc_html( weiss_opt( 'seller_name' ) );
+              if ( weiss_opt( 'seller_address' ) ) {
+                  $weiss_legal_contact .= ', ' . esc_html( weiss_opt( 'seller_address' ) );
+              }
+              $weiss_legal_email = trim( (string) weiss_opt( 'email' ) );
+              if ( '' !== $weiss_legal_email ) {
+                  $weiss_legal_contact .= ' — <a href="mailto:' . esc_attr( $weiss_legal_email ) . '">' . esc_html( $weiss_legal_email ) . '</a>';
+              }
+              $weiss_legal_phone = weiss_phone_html();
+              if ( '' !== $weiss_legal_phone ) {
+                  $weiss_legal_contact .= ', ' . $weiss_legal_phone;
+              }
+              ?>
+              <p><?php echo $weiss_legal_contact; // phpcs:ignore WordPress.Security.EscapeOutput -- части экранированы выше ?>.</p>
             </div>
           </div>
         </article>

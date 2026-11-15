@@ -51,8 +51,7 @@
 			</ul>
 
 			<div class="header__contacts">
-				<?php $weiss_phone = weiss_phone(); ?>
-				<a class="header__phone" href="<?php echo esc_url( $weiss_phone['href'] ); ?>" translate="no"><?php echo wp_kses_post( $weiss_phone['label'] ); ?></a>
+				<?php echo weiss_phone_html( 'header__phone' ); // phpcs:ignore WordPress.Security.EscapeOutput -- тег собран в content.php ?>
 
 				<ul class="socials" aria-label="Связаться в мессенджере">
 					<?php
