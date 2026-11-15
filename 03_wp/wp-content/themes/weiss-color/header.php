@@ -17,7 +17,13 @@
 <header class="site-header">
 	<div class="header__inner">
 		<a class="logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="Weiss Color — на главную">
-			<img src="<?php echo esc_url( weiss_asset( 'img/logo.svg' ) ); ?>" width="186" height="52" alt="Weiss Color">
+			<?php
+			/* Логотип меняется в «Внешний вид → Настроить → Свойства сайта»;
+			   без выбранного файла — логотип темы из макета. */
+			$weiss_logo_id  = (int) get_theme_mod( 'custom_logo' );
+			$weiss_logo_src = $weiss_logo_id ? wp_get_attachment_image_url( $weiss_logo_id, 'full' ) : '';
+			?>
+			<img src="<?php echo esc_url( $weiss_logo_src ? $weiss_logo_src : weiss_asset( 'img/logo.svg' ) ); ?>" width="186" height="52" alt="Weiss Color">
 		</a>
 
 		<button class="burger" type="button" aria-expanded="false" aria-controls="site-menu">
@@ -84,6 +90,11 @@
 </header>
 
 <main id="main" class="<?php echo esc_attr( weiss_main_class() ); ?>">
-<?php if ( function_exists( 'wc_print_notices' ) ) : ?>
+<?php
+/* На оформлении и оплате заказа ошибки печатает сам шаблон в .checkout-notice:
+   если полоса здесь напечатает их первой, шаблон уже не увидит текст. */
+$weiss_wc_notice_band = ! function_exists( 'is_checkout' ) || ! is_checkout() || is_wc_endpoint_url( 'order-received' );
+if ( $weiss_wc_notice_band && function_exists( 'wc_print_notices' ) ) :
+	?>
 	<div class="container"><div class="wc-notices"><?php wc_print_notices(); ?></div></div>
 <?php endif; ?>

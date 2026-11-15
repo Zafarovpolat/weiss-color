@@ -44,25 +44,38 @@ function weiss_product_cart_target( $product, $variation_id = 0 ) {
 		return null;
 	}
 
+	/* В карте колеровки может стоять сама фасовка (вариация): кнопка
+	   должна вести на родительский товар с этой фасовкой. */
+	if ( $product->is_type( 'variation' ) ) {
+		$variation_id = $variation_id ? (int) $variation_id : $product->get_id();
+		$parent       = wc_get_product( $product->get_parent_id() );
+		if ( $parent ) {
+			$product = $parent;
+		}
+	}
+
 	$price      = (float) $product->get_price();
 	$variant    = 0;
 	$attributes = array();
 
-	if ( $product->is_type( 'variable' ) ) {
-		$children = (int) $variation_id ? array( (int) $variation_id ) : $product->get_children();
-		if ( $children ) {
-			$variant_product = wc_get_product( $children[0] );
-			if ( $variant_product && 'publish' === $variant_product->get_status() ) {
-				$variant    = (int) $children[0];
-				$price      = (float) $variant_product->get_price();
-				$attributes = $variant_product->get_variation_attributes();
-			}
+	if ( $product->is_type( 'variable' ) && (int) $variation_id ) {
+		$variant_product = wc_get_product( (int) $variation_id );
+		if ( $variant_product && 'publish' === $variant_product->get_status()
+			&& (int) $variant_product->get_parent_id() === $product->get_id() ) {
+			$variant    = (int) $variation_id;
+			$price      = (float) $variant_product->get_price();
+			$attributes = $variant_product->get_variation_attributes();
 		}
 	}
+
+	/* ТЗ 6.5: фасовку выбирает покупатель. Без явно выбранной фасовки
+	   первая не подставляется — иначе «В корзину» молча кладёт 1,1 л.
+	   Шаблоны в этом случае показывают «Выбрать фасовку» и ведут в карточку. */
 
 	return array(
 		'id'         => $product->get_id(),
 		'variation'  => $variant,
+		'variable'   => $product->is_type( 'variable' ),
 		'attributes' => $attributes,
 		'name'       => $product->get_name(),
 		'short'      => preg_replace( '/^acrilux\s+/iu', '', $product->get_name() ),
@@ -73,7 +86,7 @@ function weiss_product_cart_target( $product, $variation_id = 0 ) {
 	);
 }
 
-/** Первый совместимый товар и фасовка для цвета — цель кнопки «В корзину». */
+/** Первый совместимый товар для цвета — цель кнопки «В корзину». */
 function weiss_color_cart_target( $color ) {
 	$items = weiss_color_products( $color );
 	if ( ! $items ) {
@@ -306,6 +319,18 @@ add_action( 'woocommerce_checkout_create_order_line_item', function ( $item, $ca
 		$item->add_meta_data( 'Доплата за колеровку', $values['weiss_surcharge'] > 0 ? weiss_price_compact( $values['weiss_surcharge'] ) : 'включена в цену', true );
 	}
 }, 10, 4 );
+
+/**
+ * Админка выводит служебные ключи позиции целиком и дублирует «Цвет» и
+ * «Палитра» (замечание 78). Прячем только технические поля — выгрузка
+ * и подсчёт цены по-прежнему их читают.
+ */
+add_filter( 'woocommerce_hidden_order_itemmeta', function ( $hidden ) {
+	return array_merge(
+		(array) $hidden,
+		array( '_weiss_code', '_weiss_palette', '_weiss_base_price', '_weiss_tint_surcharge' )
+	);
+} );
 
 /** Оформление: цвет мог быть скрыт или товар заменён — проверяем заново (п. 5.5). */
 add_action( 'woocommerce_checkout_process', function () {

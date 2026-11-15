@@ -76,15 +76,46 @@ function weiss_content_defaults() {
 	);
 }
 
-/** Значение настройки; пустое поле означает значение из макета. */
-function weiss_opt( $key ) {	$defaults = weiss_content_defaults();
-	$values   = get_option( 'weiss_content', array() );
-	$value    = isset( $values[ $key ] ) ? $values[ $key ] : '';
-	if ( '' === trim( (string) $value ) ) {
-		return isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
+/**
+ * Значение настройки. Пока поле ни разу не сохраняли — значение из макета;
+ * после сохранения берётся ровно то, что записано, включая пустое: очищенное
+ * поле скрывает элемент, а не возвращает подпись из макета (замечание 80).
+ */
+function weiss_opt( $key ) {
+	$values = get_option( 'weiss_content', array() );
+	if ( is_array( $values ) && array_key_exists( $key, $values ) ) {
+		return $values[ $key ];
 	}
-	return $value;
+
+	$defaults = weiss_content_defaults();
+	return isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
 }
+
+/**
+ * Пока пустое значение означало «как в макете», сохранённые пустые строки
+ * ни на что не влияли. Теперь они скрывают элемент, поэтому старые пустые
+ * значения убираем один раз: иначе после обновления исчезли бы телефон,
+ * кнопки мессенджеров и карточки «Где купить».
+ */
+add_action( 'init', function () {
+	if ( '1' === get_option( 'weiss_content_empty_migrated' ) ) {
+		return;
+	}
+
+	$values = get_option( 'weiss_content', null );
+	if ( is_array( $values ) ) {
+		$values = array_filter( $values, function ( $value ) {
+			return '' !== trim( (string) $value );
+		} );
+		if ( $values ) {
+			update_option( 'weiss_content', $values );
+		} else {
+			delete_option( 'weiss_content' );
+		}
+	}
+
+	update_option( 'weiss_content_empty_migrated', '1', false );
+}, 9 );
 
 /** Текст с переносами макета: разрешены только <br> и <span> с классами. */
 function weiss_opt_html_kses( $value ) {
@@ -170,6 +201,18 @@ function weiss_content_sanitize( $input ) {
 			$clean[ $key ] = 'phone_href' === $key ? sanitize_text_field( $value ) : esc_url_raw( $value );
 		} elseif ( in_array( $key, $emails, true ) ) {
 			$clean[ $key ] = sanitize_email( $value );
+			if ( '' !== trim( (string) $value ) && '' === $clean[ $key ] ) {
+				$labels = array(
+					'email'        => 'E-mail магазина',
+					'orders_email' => 'E-mail менеджера для заказов',
+				);
+				add_settings_error(
+					'weiss_content',
+					'weiss_content_' . $key,
+					sprintf( 'Поле «%s»: адрес не сохранён — проверьте формат.', isset( $labels[ $key ] ) ? $labels[ $key ] : $key ),
+					'error'
+				);
+			}
 		} elseif ( in_array( $key, $texts, true ) ) {
 			$clean[ $key ] = sanitize_textarea_field( $value );
 		} elseif ( in_array( $key, $html, true ) ) {
@@ -192,6 +235,8 @@ function weiss_content_page() {
 	?>
 	<div class="wrap">
 		<h1>Содержимое сайта</h1>
+		<?php settings_errors( 'weiss_content' ); ?>
+		<p class="description">В полях — действующие значения. Очистите поле и сохраните, чтобы скрыть элемент на сайте.</p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'weiss_content' ); ?>
 
@@ -350,18 +395,21 @@ function weiss_content_media_script() {
 
 function weiss_content_row( $key, $label, $default, $type = 'text', $note = '' ) {
 	$values = get_option( 'weiss_content', array() );
-	$value  = isset( $values[ $key ] ) ? $values[ $key ] : '';
+	/* Показываем действующее значение, а не пустое поле с подсказкой:
+	   иначе первое сохранение записывало пустоту и убирало кнопки
+	   мессенджеров, телефоны и карточки «Где купить» (замечание 68). */
+	$value  = ( is_array( $values ) && array_key_exists( $key, $values ) ) ? $values[ $key ] : $default;
 	$id     = 'weiss-content-' . str_replace( '_', '-', $key );
 	?>
 	<tr>
 		<th scope="row"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?></label></th>
 		<td>
 			<?php if ( 'textarea' === $type ) : ?>
-				<textarea class="large-text code" rows="3" id="<?php echo esc_attr( $id ); ?>" name="weiss_content[<?php echo esc_attr( $key ); ?>]" placeholder="<?php echo esc_attr( $default ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
+				<textarea class="large-text code" rows="3" id="<?php echo esc_attr( $id ); ?>" name="weiss_content[<?php echo esc_attr( $key ); ?>]"><?php echo esc_textarea( $value ); ?></textarea>
 			<?php else : ?>
 				<input class="regular-text" type="<?php echo 'email' === $type ? 'email' : ( 'url' === $type ? 'url' : 'text' ); ?>"
 				       id="<?php echo esc_attr( $id ); ?>" name="weiss_content[<?php echo esc_attr( $key ); ?>]"
-				       value="<?php echo esc_attr( $value ); ?>" placeholder="<?php echo esc_attr( $default ); ?>">
+				       value="<?php echo esc_attr( $value ); ?>">
 			<?php endif; ?>
 			<?php if ( $note ) : ?>
 				<p class="description"><?php echo esc_html( $note ); ?></p>

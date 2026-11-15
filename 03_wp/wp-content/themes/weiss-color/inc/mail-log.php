@@ -195,8 +195,24 @@ add_action( 'admin_post_weiss_resend_mail', function () {
 		exit;
 	}
 
+	/* В журнал попадают заголовки из данных ошибки wp_mail, а там
+	   Content-Type уже отброшен. Без него HTML-письмо уходит как обычный
+	   текст с разметкой (замечание 70). */
+	$headers = is_array( $entry['headers'] ) ? $entry['headers'] : preg_split( '/\r\n|\r|\n/', (string) $entry['headers'] );
+	$headers = array_values( array_filter( array_map( 'trim', (array) $headers ) ) );
+	$has_type = false;
+	foreach ( $headers as $header ) {
+		if ( 0 === stripos( (string) $header, 'content-type:' ) ) {
+			$has_type = true;
+			break;
+		}
+	}
+	if ( ! $has_type ) {
+		$headers[] = 'Content-Type: text/html; charset=UTF-8';
+	}
+
 	$GLOBALS['weiss_resending_mail'] = true;
-	$sent = wp_mail( $entry['to'], $entry['subject'], $entry['message'], $entry['headers'], $entry['attachments'] );
+	$sent = wp_mail( $entry['to'], $entry['subject'], $entry['message'], $headers, $entry['attachments'] );
 	$GLOBALS['weiss_resending_mail'] = false;
 
 	/* запись убираем только после успешной отправки — иначе ошибка остаётся видимой */

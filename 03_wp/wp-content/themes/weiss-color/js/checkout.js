@@ -7,6 +7,46 @@
 (function () {
   'use strict';
 
+  /* --- Страница оплаты по ссылке: реквизиты для счёта (ТЗ 8.2, 7.5) --- */
+  /* Поля показываются только при выборе «По счёту»; пока блок скрыт, они
+     отключены и не уходят в POST, поэтому проверка на сервере видит пусто. */
+  (function initPayInvoice() {
+    var payForm = document.querySelector('#order_review.pay-form');
+    var block = payForm ? document.getElementById('pay-invoice') : null;
+    if (!block) return;
+
+    var payer = block.querySelector('[name="weiss_invoice[payer]"]');
+    var kpp = block.querySelector('[data-pay-kpp]');
+    var active = false;
+
+    function isIp() {
+      return payer && payer.value === 'ip';
+    }
+
+    function syncFields() {
+      var fields = block.querySelectorAll('input, select, textarea');
+      for (var i = 0; i < fields.length; i++) {
+        var inKpp = kpp && kpp.contains(fields[i]);
+        fields[i].disabled = !active || (inKpp && isIp());
+      }
+      if (kpp) kpp.hidden = isIp();
+    }
+
+    function sync() {
+      var checked = payForm.querySelector('input[name="payment_method"]:checked');
+      active = !!checked && checked.value === 'bacs';
+      block.hidden = !active;
+      syncFields();
+    }
+
+    payForm.addEventListener('change', function (event) {
+      if (event.target.name === 'payment_method') sync();
+      else if (event.target === payer) syncFields();
+    });
+
+    sync();
+  })();
+
   var form = document.getElementById('checkout-form');
   if (!form) return;
 

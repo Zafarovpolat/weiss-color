@@ -215,13 +215,15 @@ $weiss_is_empty    = empty( $weiss_items );
 				<div class="promo">
 					<label class="promo__label" for="promo-code">Промокод</label>
 					<div class="promo__row">
-						<input class="promo__input" id="promo-code" name="promo" type="text" maxlength="24"
-							pattern="[A-Za-z0-9-]{2,24}" data-error="Промокод — латинские буквы и цифры"
+						<input class="promo__input" id="promo-code" name="promo" type="text" maxlength="32"
+							pattern="[A-Za-zА-Яа-яЁё0-9_-]{2,32}" data-error="Промокод — буквы, цифры, дефис или подчёркивание"
 							placeholder="Введите промокод" autocomplete="off">
 						<button class="promo__btn" type="button">Применить</button>
 					</div>
 					<?php foreach ( $weiss_cart->get_applied_coupons() as $weiss_coupon ) : ?>
-						<span class="form-success">Промокод <?php echo esc_html( $weiss_coupon ); ?> применён</span>
+						<span class="form-success promo__applied">Промокод <?php echo esc_html( $weiss_coupon ); ?> применён
+							<button class="promo__remove" type="button" data-coupon="<?php echo esc_attr( $weiss_coupon ); ?>" aria-label="Отменить промокод <?php echo esc_attr( $weiss_coupon ); ?>">×</button>
+						</span>
 					<?php endforeach; ?>
 				</div>
 

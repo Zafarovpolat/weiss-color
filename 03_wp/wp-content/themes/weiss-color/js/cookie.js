@@ -44,8 +44,9 @@
 
   function writeCookie(consent) {
     var value = encodeURIComponent(JSON.stringify(consent));
+    var secure = location.protocol === 'https:' ? '; Secure' : '';
     document.cookie = NAME + '=' + value + '; Max-Age=' + (DAYS * 86400) +
-      '; Path=/; SameSite=Lax';
+      '; Path=/; SameSite=Lax' + secure;
   }
 
   function normalize(data) {

@@ -211,11 +211,23 @@
 
     const cart = root.querySelector('.viz-cart');
     if (cart) {
-      cart.setAttribute('data-weiss-add', product.id);
-      cart.setAttribute('data-weiss-variation', product.variation || 0);
-      cart.setAttribute('data-weiss-attributes', JSON.stringify(product.attributes || {}));
-      cart.setAttribute('data-weiss-name', product.name);
-      cart.setAttribute('data-weiss-url', product.url || window.location.href);
+      /* ТЗ 6.5: без выбранной фасовки не кладём в корзину первую — ведём
+         в карточку товара, где покупатель выбирает упаковку. */
+      if (cart.tagName === 'A') {
+        cart.setAttribute('href', product.url || window.location.href);
+      } else if (product.variable && !product.variation) {
+        const link = document.createElement('a');
+        link.className = cart.className;
+        link.textContent = 'Выбрать фасовку';
+        link.href = product.url || window.location.href;
+        cart.replaceWith(link);
+      } else {
+        cart.setAttribute('data-weiss-add', product.id);
+        cart.setAttribute('data-weiss-variation', product.variation || 0);
+        cart.setAttribute('data-weiss-attributes', JSON.stringify(product.attributes || {}));
+        cart.setAttribute('data-weiss-name', product.name);
+        cart.setAttribute('data-weiss-url', product.url || window.location.href);
+      }
     }
 
     const title = root.querySelector('.viz-product__title');

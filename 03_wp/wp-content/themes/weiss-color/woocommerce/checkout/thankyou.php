@@ -43,9 +43,36 @@ foreach ( $order->get_shipping_methods() as $weiss_shipping ) {
 		</svg>
 	</div>
 
-	<h1 class="success-title"><?php echo $order->has_status( 'failed' ) ? 'Заказ не оплачен' : 'Спасибо за заказ'; ?></h1>
+	<?php
+	/* Отменённый и возвращённый заказ — не «спасибо за заказ»: экран
+	   показывает фактическое состояние (замечание 85). */
+	$weiss_cancelled = $order->has_status( 'cancelled' );
+	$weiss_refunded  = $order->has_status( 'refunded' );
 
-	<?php if ( $order->has_status( 'failed' ) ) : ?>
+	if ( $weiss_cancelled ) {
+		$weiss_title = 'Заказ отменён';
+	} elseif ( $weiss_refunded ) {
+		$weiss_title = 'Заказ возвращён';
+	} elseif ( $order->has_status( 'failed' ) ) {
+		$weiss_title = 'Заказ не оплачен';
+	} else {
+		$weiss_title = 'Спасибо за заказ';
+	}
+	?>
+
+	<h1 class="success-title"><?php echo esc_html( $weiss_title ); ?></h1>
+
+	<?php if ( $weiss_cancelled ) : ?>
+		<p class="success-lead">
+			Заказ отменён. Если оплата проходила, деньги вернутся тем же способом.<br>
+			Оформить заказ заново можно в каталоге или по телефону.
+		</p>
+	<?php elseif ( $weiss_refunded ) : ?>
+		<p class="success-lead">
+			По заказу выполнен возврат. Деньги вернутся тем же способом,<br>
+			которым проходила оплата.
+		</p>
+	<?php elseif ( $order->has_status( 'failed' ) ) : ?>
 		<p class="success-lead">
 			Не удалось оплатить заказ.<br>
 			Попробуйте ещё раз или свяжитесь с нами по телефону.
@@ -68,7 +95,11 @@ foreach ( $order->get_shipping_methods() as $weiss_shipping ) {
 	   расчёт доставки (ТЗ 7.5) оплатой ещё не является. */
 	$weiss_quote = '1' === $order->get_meta( '_weiss_shipping_quote' );
 
-	if ( $order->is_paid() ) {
+	if ( $weiss_cancelled ) {
+		$weiss_pay_status = 'Заказ отменён';
+	} elseif ( $weiss_refunded ) {
+		$weiss_pay_status = 'Возврат выполнен';
+	} elseif ( $order->is_paid() ) {
 		$weiss_pay_status = 'Оплата подтверждена банком';
 	} elseif ( $order->has_status( 'failed' ) ) {
 		$weiss_pay_status = 'Оплата не прошла';
@@ -126,7 +157,10 @@ foreach ( $order->get_shipping_methods() as $weiss_shipping ) {
 							<?php echo $weiss_meta; // phpcs:ignore WordPress.Security.EscapeOutput -- WooCommerce экранирует метаданные ?>
 						</div>
 						<p class="success-summary__qty"><?php echo esc_html( $weiss_item->get_quantity() . ' шт.' ); ?></p>
-						<p class="success-summary__sum"><?php echo esc_html( weiss_price_number( $weiss_item->get_total() ) . ' ₽' ); ?></p>
+						<?php /* Сумма строки — до скидки: ниже отдельной строкой идёт
+						         «Товары» без скидки и «Скидка», и строки сходятся
+						         с итогом (замечание 85). */ ?>
+						<p class="success-summary__sum"><?php echo esc_html( weiss_price_number( $weiss_item->get_subtotal() ) . ' ₽' ); ?></p>
 					</li>
 				<?php endforeach; ?>
 			</ul>
@@ -262,7 +296,12 @@ foreach ( $order->get_shipping_methods() as $weiss_shipping ) {
 	</ul>
 
 	<div class="success-actions">
-		<a class="success-actions__primary" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>">Продолжить покупки</a>
-		<a class="success-actions__link" href="<?php echo esc_url( home_url( '/' ) ); ?>">На главную</a>
+		<?php if ( ! $weiss_cancelled && ! $weiss_refunded && $order->needs_payment() ) : ?>
+			<a class="success-actions__primary" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php echo $order->has_status( 'failed' ) ? 'Оплатить ещё раз' : 'Оплатить заказ'; ?></a>
+			<a class="success-actions__link" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>">Продолжить покупки</a>
+		<?php else : ?>
+			<a class="success-actions__primary" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>">Продолжить покупки</a>
+			<a class="success-actions__link" href="<?php echo esc_url( home_url( '/' ) ); ?>">На главную</a>
+		<?php endif; ?>
 	</div>
 </article>

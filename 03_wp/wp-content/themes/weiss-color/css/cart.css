@@ -575,6 +575,25 @@
   gap: clamp(8px, 0.66vw, 17px);
 }
 
+.promo__applied {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.promo__remove {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  line-height: 1;
+  color: #747c8c;
+  cursor: pointer;
+}
+
+.promo__remove:hover,
+.promo__remove:focus-visible { color: var(--color-ink-deep); }
+
 .promo__input {
   flex: 1;
   min-width: 0;

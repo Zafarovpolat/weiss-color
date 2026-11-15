@@ -110,22 +110,25 @@ add_filter( 'rest_endpoints', function ( $endpoints ) {
 	return $endpoints;
 } );
 
-/* Вторая линия: маршрут мог быть зарегистрирован после фильтра. */
-add_filter( 'rest_pre_dispatch', function ( $result, $server, $request ) {
-	if ( null !== $result ) {
-		return $result;
+/* Вторая линия: маршрут мог быть зарегистрирован после фильтра.
+   Ошибку возвращаем из rest_request_before_callbacks, а не из
+   rest_pre_dispatch: пакетный запрос ядра на WP_Error из pre_dispatch
+   падал с фатальной ошибкой (замечание 73). */
+add_filter( 'rest_request_before_callbacks', function ( $response, $handler, $request ) {
+	if ( null !== $response ) {
+		return $response;
 	}
 
 	$method = strtoupper( (string) $request->get_method() );
 	if ( ! in_array( $method, array( 'POST', 'PUT', 'PATCH' ), true ) ) {
-		return $result;
+		return $response;
 	}
 
 	if ( weiss_is_store_checkout_route( $request->get_route() ) ) {
 		return new WP_Error( 'rest_no_route', 'Маршрут не найден.', array( 'status' => 404 ) );
 	}
 
-	return $result;
+	return $response;
 }, 10, 3 );
 
 /* ТЗ 7.2: суммы считаются сервером с точностью до копеек. В настройках
@@ -146,6 +149,23 @@ add_filter( 'option_woocommerce_allowed_countries', function () {
 
 add_filter( 'option_woocommerce_specific_allowed_countries', function () {
 	return array( 'RU' );
+} );
+
+/** Метрические единицы и русские тексты согласия (замечание 90). */
+add_filter( 'option_woocommerce_weight_unit', function () {
+	return 'kg';
+} );
+
+add_filter( 'option_woocommerce_dimension_unit', function () {
+	return 'cm';
+} );
+
+add_filter( 'option_woocommerce_checkout_privacy_policy_text', function () {
+	return 'Ваши данные используются для обработки заказа и связи с вами. Подробнее — в [privacy_policy].';
+} );
+
+add_filter( 'option_woocommerce_registration_privacy_policy_text', function () {
+	return 'Ваши данные используются для работы личного кабинета. Подробнее — в [privacy_policy].';
 } );
 
 /**
@@ -457,6 +477,30 @@ add_action( 'woocommerce_admin_order_data_after_billing_address', function ( $or
 } );
 
 /**
+ * Служебные отметки заказа в карточке панели: дата согласия на обработку
+ * данных и признак заявки на расчёт (замечание 78). В выгрузке они были,
+ * а менеджер в панели их не видел.
+ */
+add_action( 'woocommerce_admin_order_data_after_order_details', function ( $order ) {
+	$consent = trim( (string) $order->get_meta( '_weiss_consent' ) );
+	$quote   = '1' === $order->get_meta( '_weiss_shipping_quote' );
+
+	if ( '' === $consent && ! $quote ) {
+		return;
+	}
+	?>
+	<div class="weiss-order-extra">
+		<?php if ( $quote ) : ?>
+			<p><strong>Заявка на расчёт доставки:</strong> да</p>
+		<?php endif; ?>
+		<?php if ( '' !== $consent ) : ?>
+			<p><strong>Согласие на обработку данных:</strong> <?php echo esc_html( $consent ); ?></p>
+		<?php endif; ?>
+	</div>
+	<?php
+} );
+
+/**
  * Корзина без перезагрузки: количество, удаление позиции и промокод
  * уходят на admin-ajax и возвращают заново отрисованный блок #weiss-cart.
  * Суммы считает WooCommerce, JS только подставляет готовую разметку.
@@ -496,6 +540,9 @@ function weiss_cart_ajax_update() {
 				wc_clear_notices();
 			}
 		}
+	} elseif ( isset( $_POST['remove_coupon'] ) ) {
+		$code = wc_format_coupon_code( wc_clean( wp_unslash( $_POST['remove_coupon'] ) ) );
+		$cart->remove_coupon( $code );
 	} elseif ( isset( $_POST['coupon'] ) ) {
 		$code = wc_format_coupon_code( wc_clean( wp_unslash( $_POST['coupon'] ) ) );
 		$cart->apply_coupon( $code );
@@ -612,14 +659,61 @@ function weiss_ogrn_valid( $ogrn ) {
 	return $control === (int) substr( $ogrn, -1 );
 }
 
+/**
+ * Проверка реквизитов для счёта (М22, ТЗ 8.2). Общая для оформления
+ * заказа и страницы оплаты по ссылке: поле проверяется на сервере,
+ * потому что окно заполняется в браузере и данные можно подменить.
+ *
+ * @return array Поле => сообщение об ошибке; пустой массив — всё верно.
+ */
+function weiss_invoice_validate( $invoice ) {
+	$invoice = is_array( $invoice ) ? $invoice : array();
+	$errors  = array();
+
+	$org   = isset( $invoice['org'] ) ? trim( (string) $invoice['org'] ) : '';
+	$payer = isset( $invoice['payer'] ) && 'ip' === $invoice['payer'] ? 'ip' : 'legal';
+	$inn   = preg_replace( '/\D+/', '', (string) ( $invoice['inn'] ?? '' ) );
+	$kpp   = preg_replace( '/\D+/', '', (string) ( $invoice['kpp'] ?? '' ) );
+	$ogrn  = preg_replace( '/\D+/', '', (string) ( $invoice['ogrn'] ?? '' ) );
+	$email = sanitize_email( (string) ( $invoice['email'] ?? '' ) );
+	$phone = preg_replace( '/\D+/', '', (string) ( $invoice['phone'] ?? '' ) );
+	$addr  = trim( (string) ( $invoice['address'] ?? '' ) );
+
+	if ( mb_strlen( $org ) < 2 ) {
+		$errors['org'] = 'Укажите название организации или ИП для счёта.';
+	}
+	if ( 'ip' === $payer ? 12 !== strlen( $inn ) : 10 !== strlen( $inn ) ) {
+		$errors['inn'] = 'ИНН для счёта — 10 цифр у юрлица или 12 у ИП.';
+	} elseif ( ! weiss_inn_valid( $inn ) ) {
+		$errors['inn'] = 'ИНН не проходит проверку контрольного числа — проверьте цифры.';
+	}
+	if ( 'legal' === $payer && 9 !== strlen( $kpp ) ) {
+		$errors['kpp'] = 'КПП для счёта — 9 цифр.';
+	}
+	if ( 'ip' === $payer ? 15 !== strlen( $ogrn ) : 13 !== strlen( $ogrn ) ) {
+		$errors['ogrn'] = 'ip' === $payer ? 'ОГРНИП — 15 цифр.' : 'ОГРН — 13 цифр.';
+	} elseif ( ! weiss_ogrn_valid( $ogrn ) ) {
+		$errors['ogrn'] = 'ОГРН не проходит проверку контрольного числа — проверьте цифры.';
+	}
+	if ( mb_strlen( $addr ) < 5 ) {
+		$errors['address'] = 'Укажите юридический адрес для счёта.';
+	}
+	if ( ! $email ) {
+		$errors['email'] = 'Укажите e-mail для счёта.';
+	}
+	if ( strlen( $phone ) < 10 ) {
+		$errors['phone'] = 'Укажите телефон для счёта.';
+	}
+
+	return $errors;
+}
+
 /** Согласие из макета проверяется и на сервере, не только в браузере. */
 add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors ) {
 	if ( empty( $_POST['weiss_consent'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		$errors->add( 'weiss_consent', 'Отметьте согласие на обработку персональных данных.' );
 	}
 
-	/* Реквизиты для счёта (М22, ТЗ 8.2): проверка на сервере, потому что
-	   окно заполняется в браузере и его данные можно подменить. */
 	$invoice = isset( $_POST['weiss_invoice'] ) ? (array) wp_unslash( $_POST['weiss_invoice'] ) : array(); // phpcs:ignore WordPress.Security.NonceVerification
 	$bacs    = isset( $_POST['payment_method'] ) && 'bacs' === $_POST['payment_method']; // phpcs:ignore WordPress.Security.NonceVerification
 	$org     = isset( $invoice['org'] ) ? trim( (string) $invoice['org'] ) : '';
@@ -628,41 +722,37 @@ add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors )
 		return;
 	}
 
-	$payer = isset( $invoice['payer'] ) && 'ip' === $invoice['payer'] ? 'ip' : 'legal';
-	$inn   = preg_replace( '/\D+/', '', (string) ( $invoice['inn'] ?? '' ) );
-	$kpp   = preg_replace( '/\D+/', '', (string) ( $invoice['kpp'] ?? '' ) );
-	$ogrn  = preg_replace( '/\D+/', '', (string) ( $invoice['ogrn'] ?? '' ) );
-	$email = sanitize_email( (string) ( $invoice['email'] ?? '' ) );
-	$phone = preg_replace( '/\D+/', '', (string) ( $invoice['phone'] ?? '' ) );
-
-	if ( mb_strlen( $org ) < 2 ) {
-		$errors->add( 'weiss_invoice_org', 'Укажите название организации или ИП для счёта.' );
-	}
-	if ( 'ip' === $payer ? 12 !== strlen( $inn ) : 10 !== strlen( $inn ) ) {
-		$errors->add( 'weiss_invoice_inn', 'ИНН для счёта — 10 цифр у юрлица или 12 у ИП.' );
-	} elseif ( ! weiss_inn_valid( $inn ) ) {
-		$errors->add( 'weiss_invoice_inn', 'ИНН не проходит проверку контрольного числа — проверьте цифры.' );
-	}
-	if ( 'legal' === $payer && 9 !== strlen( $kpp ) ) {
-		$errors->add( 'weiss_invoice_kpp', 'КПП для счёта — 9 цифр.' );
-	}
-	if ( 'ip' === $payer ? 15 !== strlen( $ogrn ) : 13 !== strlen( $ogrn ) ) {
-		$errors->add( 'weiss_invoice_ogrn', 'ip' === $payer ? 'ОГРНИП — 15 цифр.' : 'ОГРН — 13 цифр.' );
-	} elseif ( ! weiss_ogrn_valid( $ogrn ) ) {
-		$errors->add( 'weiss_invoice_ogrn', 'ОГРН не проходит проверку контрольного числа — проверьте цифры.' );
-	}
-	/* ТЗ 8.2: юридический адрес сохраняется для счёта у юрлица и у ИП */
-	$address = trim( (string) ( $invoice['address'] ?? '' ) );
-	if ( mb_strlen( $address ) < 5 ) {
-		$errors->add( 'weiss_invoice_address', 'Укажите юридический адрес для счёта.' );
-	}
-	if ( ! $email ) {
-		$errors->add( 'weiss_invoice_email', 'Укажите e-mail для счёта.' );
-	}
-	if ( strlen( $phone ) < 10 ) {
-		$errors->add( 'weiss_invoice_phone', 'Укажите телефон для счёта.' );
+	foreach ( weiss_invoice_validate( $invoice ) as $field => $message ) {
+		$errors->add( 'weiss_invoice_' . $field, $message );
 	}
 }, 10, 2 );
+
+/**
+ * Реквизиты на странице оплаты по ссылке (ТЗ 8.2, 7.5): при выборе
+ * «По счёту» покупатель заполняет их прямо здесь, иначе заказ юрлица
+ * приходил менеджеру без названия и ИНН.
+ */
+add_action( 'woocommerce_before_pay_action', function ( $order ) {
+	$method = isset( $_POST['payment_method'] ) ? wc_clean( wp_unslash( $_POST['payment_method'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	if ( 'bacs' !== $method ) {
+		return;
+	}
+
+	$invoice = isset( $_POST['weiss_invoice'] ) ? (array) wp_unslash( $_POST['weiss_invoice'] ) : array(); // phpcs:ignore WordPress.Security.NonceVerification
+	$errors  = weiss_invoice_validate( $invoice );
+
+	foreach ( $errors as $message ) {
+		wc_add_notice( $message, 'error' );
+	}
+
+	if ( $errors ) {
+		return;
+	}
+
+	$order->update_meta_data( '_weiss_invoice', array_map( 'wc_clean', $invoice ) );
+	$order->add_order_note( 'Покупатель указал реквизиты для счёта на странице оплаты.' );
+	$order->save();
+} );
 
 /**
  * На оформлении нет полосы уведомлений WooCommerce: в макете её нет,
@@ -673,6 +763,9 @@ add_action( 'template_redirect', function () {
 	if ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 		remove_action( 'woocommerce_before_checkout_form_cart_notices', 'woocommerce_output_all_notices', 10 );
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_output_all_notices', 10 );
+		/* На оплате по ссылке ошибки проверки реквизитов собирает form-pay.php;
+		   полоса WooCommerce напечатала бы их раньше и забрала текст. */
+		remove_action( 'before_woocommerce_pay', 'woocommerce_output_all_notices', 10 );
 	}
 } );
 
@@ -750,10 +843,13 @@ add_action( 'woocommerce_applied_coupon', function ( $code ) {
  * Точность денег — до копеек (ТЗ 7.2). WooCommerce хранит и умножает суммы
  * с точностью настройки, поэтому она обязана быть 2; нулевые копейки
  * в выводе не показываем, чтобы цены остались как в макете.
+ * Значение читаем и пишем напрямую в таблице: get_option() проходит через
+ * фильтр выше и всегда возвращает 2, а update_option() из-за этого считает
+ * значение неизменным и в базу не пишет (замечание 90).
  */
 add_action( 'init', function () {
-	if ( '2' !== (string) get_option( 'woocommerce_price_num_decimals' ) ) {
-		update_option( 'woocommerce_price_num_decimals', 2 );
+	if ( '2' !== (string) weiss_option_raw( 'woocommerce_price_num_decimals' ) ) {
+		weiss_set_option_raw( 'woocommerce_price_num_decimals', '2' );
 	}
 }, 5 );
 
@@ -763,3 +859,80 @@ add_filter( 'formatted_woocommerce_price', function ( $formatted, $price, $decim
 	}
 	return $formatted;
 }, 10, 5 );
+
+/** Значение настройки прямо из таблицы, минуя фильтры option_* темы. */
+function weiss_option_raw( $name ) {
+	global $wpdb;
+
+	return $wpdb->get_var( $wpdb->prepare(
+		"SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
+		$name
+	) );
+}
+
+/** Запись настройки в базу в обход фильтров option_* темы и общего кэша. */
+function weiss_set_option_raw( $name, $value ) {
+	global $wpdb;
+
+	$value = (string) $value;
+	if ( null === weiss_option_raw( $name ) ) {
+		$wpdb->insert(
+			$wpdb->options,
+			array(
+				'option_name'  => $name,
+				'option_value' => $value,
+				'autoload'     => 'yes',
+			)
+		);
+	} else {
+		$wpdb->update(
+			$wpdb->options,
+			array( 'option_value' => $value ),
+			array( 'option_name' => $name )
+		);
+	}
+
+	wp_cache_delete( $name, 'options' );
+	wp_cache_delete( 'alloptions', 'options' );
+}
+
+/**
+ * Заводские значения WooCommerce → метрические и русские (замечание 90).
+ * Фильтры выше уже отдают нужное на витрине, но в панели и в выгрузке
+ * настроек оставались фунты, дюймы и английский текст о данных. Пишем
+ * в базу один раз и только точные заводские значения, чтобы не затереть
+ * выбор администратора.
+ */
+add_action( 'init', function () {
+	if ( '1' === get_option( 'weiss_wc_settings_cleanup' ) ) {
+		return;
+	}
+
+	$values = array(
+		'woocommerce_weight_unit'    => 'kg',
+		'woocommerce_dimension_unit' => 'cm',
+	);
+	foreach ( $values as $name => $value ) {
+		if ( (string) weiss_option_raw( $name ) !== $value ) {
+			weiss_set_option_raw( $name, $value );
+		}
+	}
+
+	$texts = array(
+		'woocommerce_checkout_privacy_policy_text'     => array(
+			'Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our [privacy_policy].',
+			'Ваши данные используются для обработки заказа и связи с вами. Подробнее — в [privacy_policy].',
+		),
+		'woocommerce_registration_privacy_policy_text' => array(
+			'Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our [privacy_policy].',
+			'Ваши данные используются для работы личного кабинета. Подробнее — в [privacy_policy].',
+		),
+	);
+	foreach ( $texts as $name => $pair ) {
+		if ( $pair[0] === trim( (string) weiss_option_raw( $name ) ) ) {
+			weiss_set_option_raw( $name, $pair[1] );
+		}
+	}
+
+	update_option( 'weiss_wc_settings_cleanup', '1', false );
+}, 7 );

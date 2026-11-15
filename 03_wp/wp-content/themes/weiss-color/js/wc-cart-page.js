@@ -74,6 +74,13 @@
       return;
     }
 
+    const removeCoupon = event.target.closest('.promo__remove');
+    if (removeCoupon) {
+      event.preventDefault();
+      await sync({ remove_coupon: removeCoupon.getAttribute('data-coupon') });
+      return;
+    }
+
     const promo = event.target.closest('.promo__btn');
     if (promo) {
       event.preventDefault();

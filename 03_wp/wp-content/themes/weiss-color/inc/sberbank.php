@@ -78,7 +78,6 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 					'0' => 'Общая',
 					'1' => 'УСН, доход',
 					'2' => 'УСН, доход минус расход',
-					'3' => 'ЕНВД',
 					'4' => 'ЕСХН',
 					'5' => 'Патент',
 				),
@@ -90,9 +89,13 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 				'options' => array(
 					''   => 'Без НДС',
 					'0'  => 'НДС 0%',
+					'5'  => 'НДС 5% (УСН)',
+					'7'  => 'НДС 7% (УСН)',
 					'10' => 'НДС 10%',
 					'20' => 'НДС 20%',
+					'22' => 'НДС 22%',
 				),
+				'description' => 'Коды taxType для 5 %, 7 % и 22 % банк назначает отдельно: до ответа банка чек с этими ставками не передаётся. Код задаётся фильтром weiss_sber_tax_type_codes.',
 			),
 		);
 	}
@@ -147,29 +150,51 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 	/**
 	 * Состав чека для банка (orderBundle). Ставка НДС одна на заказ: в
 	 * магазине одна ставка, отдельные налоговые классы не ведутся.
+	 *
+	 * Коды taxType по документации банка: 0 — без НДС, 1 — 0 %, 2 — 10 %,
+	 * 6 — 20 %. Код 3 — это 18 %, а не 20 % (замечание 65). Ставки 5 %, 7 %
+	 * и 22 % банк кодирует отдельно; их коды задаются фильтром, а пока код
+	 * не задан, чек не передаётся — лучше без чека, чем с неверной ставкой.
 	 */
 	private function order_bundle( $order ) {
 		$vat   = (string) $this->get_option( 'vat', '' );
-		$rates = array( '' => 0, '0' => 1, '10' => 2, '20' => 3 ); // taxType Сбербанка
-		$type  = isset( $rates[ $vat ] ) ? $rates[ $vat ] : 0;
-		$items = array();
+		$codes = apply_filters( 'weiss_sber_tax_type_codes', array(
+			''   => 0,
+			'0'  => 1,
+			'10' => 2,
+			'20' => 6,
+		) );
+
+		if ( ! isset( $codes[ $vat ] ) ) {
+			$order->add_order_note( sprintf(
+				'Чек 54-ФЗ не передан: для ставки «%s» не задан код taxType у банка. Укажите код фильтром weiss_sber_tax_type_codes.',
+				'' === $vat ? 'без НДС' : $vat . ' %'
+			) );
+			return '';
+		}
+
+		$type     = (int) $codes[ $vat ];
+		$items    = array();
 		$position = 0;
 
-		$add = function ( $name, $qty, $sum ) use ( &$items, &$position, $vat, $type ) {
+		$add = function ( $name, $qty, $sum, $code ) use ( &$items, &$position, $vat, $type ) {
 			$sum = (float) $sum;
 			if ( $qty <= 0 || $sum < 0 ) {
 				return;
 			}
 			$position++;
+			/* itemCode обязателен; itemPrice не передаём: банк требует
+			   itemAmount = itemPrice × quantity, а округление единичной
+			   цены давало 99,99 вместо 100,00 (замечание 65). */
 			$row = array(
 				'positionId' => $position,
 				'name'       => mb_substr( wp_strip_all_tags( (string) $name ), 0, 128 ),
+				'itemCode'   => mb_substr( (string) $code, 0, 64 ),
 				'quantity'   => array(
 					'value'   => (string) wc_format_decimal( $qty, 2 ),
 					'measure' => 'шт.',
 				),
 				'itemAmount' => (int) round( $sum * 100 ),
-				'itemPrice'  => (int) round( $sum / $qty * 100 ),
 			);
 
 			if ( '' !== $vat ) {
@@ -184,11 +209,13 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 		};
 
 		foreach ( $order->get_items() as $item ) {
-			$add( $item->get_name(), (float) $item->get_quantity(), (float) $item->get_total() + (float) $item->get_total_tax() );
+			$product = $item->get_product();
+			$code    = $product && $product->get_sku() ? $product->get_sku() : (string) $item->get_product_id();
+			$add( $item->get_name(), (float) $item->get_quantity(), (float) $item->get_total() + (float) $item->get_total_tax(), $code );
 		}
 
 		foreach ( $order->get_items( 'shipping' ) as $item ) {
-			$add( 'Доставка', 1, (float) $item->get_total() + (float) $item->get_total_tax() );
+			$add( 'Доставка', 1, (float) $item->get_total() + (float) $item->get_total_tax(), 'delivery' );
 		}
 
 		return wp_json_encode( array( 'cartItems' => array( 'items' => $items ) ) );
@@ -228,10 +255,14 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 		);
 
 		/* Чек по 54-ФЗ (ТЗ 8.5): состав заказа и НДС передаются только когда
-		   Заказчик подтвердил систему налогообложения и ставку. */
+		   Заказчик подтвердил систему налогообложения и ставку. Пустая строка
+		   значит, что для выбранной ставки нет кода taxType у банка. */
 		if ( 'yes' === $this->get_option( 'send_receipt', 'no' ) ) {
-			$args['orderBundle'] = $this->order_bundle( $order );
-			$args['taxSystem']   = (int) $this->get_option( 'tax_system', '0' );
+			$bundle = $this->order_bundle( $order );
+			if ( '' !== $bundle ) {
+				$args['orderBundle'] = $bundle;
+				$args['taxSystem']   = (int) $this->get_option( 'tax_system', '0' );
+			}
 		}
 
 		$response = $this->request( 'register.do', $args );

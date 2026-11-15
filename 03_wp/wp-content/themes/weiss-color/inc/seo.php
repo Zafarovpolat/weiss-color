@@ -251,6 +251,31 @@ add_action( 'save_post', function ( $post_id ) {
 	update_post_meta( $post_id, '_weiss_meta_description', sanitize_textarea_field( wp_unslash( $_POST['weiss_meta_description'] ?? '' ) ) );
 } );
 
+/** Заготовки ядра в карте сайта: рубрика «Без рубрики» и пустая Uncategorized. */
+add_filter( 'wp_sitemaps_taxonomies_query_args', function ( $args, $taxonomy ) {
+	$exclude = isset( $args['exclude'] ) ? (array) $args['exclude'] : array();
+
+	if ( 'category' === $taxonomy ) {
+		$default = (int) get_option( 'default_category' );
+		if ( $default > 0 ) {
+			$exclude[] = $default;
+		}
+	}
+
+	if ( 'product_cat' === $taxonomy ) {
+		$uncategorized = get_term_by( 'slug', 'uncategorized', 'product_cat' );
+		if ( $uncategorized ) {
+			$exclude[] = (int) $uncategorized->term_id;
+		}
+	}
+
+	if ( $exclude ) {
+		$args['exclude'] = array_values( array_unique( array_map( 'intval', $exclude ) ) );
+	}
+
+	return $args;
+}, 10, 2 );
+
 /** Карта сайта ядра включена; служебные страницы в неё не попадают. */
 add_filter( 'wp_sitemaps_enabled', '__return_true' );
 
@@ -412,6 +437,21 @@ add_action( 'template_redirect', function () {
 		if ( 0 === strpos( $to, '/' ) && '//' !== substr( $to, 0, 2 ) ) {
 			$to = home_url( $to );
 		}
+
+		/* Абсолютный адрес старого домена: wp_safe_redirect() без списка
+		   разрешённых хостов уводил в /wp-admin/ (замечание 69). */
+		$scheme = strtolower( (string) wp_parse_url( $to, PHP_URL_SCHEME ) );
+		if ( '' !== $scheme && ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
+			return;
+		}
+		$host = strtolower( (string) wp_parse_url( $to, PHP_URL_HOST ) );
+		if ( '' !== $host ) {
+			add_filter( 'allowed_redirect_hosts', function ( $hosts ) use ( $host ) {
+				$hosts[] = $host;
+				return $hosts;
+			} );
+		}
+
 		wp_safe_redirect( $to, 301, 'Weiss 301' );
 		exit;
 	}

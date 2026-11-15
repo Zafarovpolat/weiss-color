@@ -94,11 +94,22 @@ add_action( 'admin_post_weiss_export', function () {
 	header( 'Content-Type: text/csv; charset=utf-8' );
 	header( 'Content-Disposition: attachment; filename="weiss-' . $kinds[ $kind ][0] . '-' . gmdate( 'Y-m-d' ) . '.csv"' );
 
-	$out = fopen( 'php://output', 'w' );
-	fwrite( $out, "\xEF\xBB\xBF" );
+	/* Файл собирается целиком и отправляется с Content-Length: обрыв
+	   ответа хостингом (замечание 71) теперь виден клиенту как ошибка
+	   загрузки, а не как файл, обрезанный посреди строки. */
+	@set_time_limit( 0 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	ignore_user_abort( true );
 
-	call_user_func( $kinds[ $kind ][1], $out );
-	fclose( $out );
+	$buffer = fopen( 'php://temp/maxmemory:33554432', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	fwrite( $buffer, "\xEF\xBB\xBF" );
+
+	call_user_func( $kinds[ $kind ][1], $buffer );
+
+	$size = ftell( $buffer );
+	rewind( $buffer );
+	header( 'Content-Length: ' . $size );
+	fpassthru( $buffer );
+	fclose( $buffer );
 	exit;
 } );
 
@@ -125,8 +136,9 @@ function weiss_export_orders( $out ) {
 		'Количество', 'Цена единицы', 'Сумма строки',
 		'Скидка', 'Доставка', 'Итого', 'Валюта',
 		'Имя', 'Телефон', 'E-mail', 'Регион', 'Адрес',
-		'Плательщик', 'Организация', 'ИНН', 'КПП', 'ОГРН/ОГРНИП', 'E-mail для счёта',
-		'Комментарий', 'Согласие', 'Письмо покупателю',
+		'Плательщик', 'Организация', 'ИНН', 'КПП', 'ОГРН/ОГРНИП',
+		'Юридический адрес', 'Телефон для счёта', 'E-mail для счёта', 'Реквизиты: комментарий',
+		'Чек', 'Комментарий', 'Согласие', 'Письмо покупателю',
 	) );
 
 	/* Заказы выгружаем порциями: на большом магазине весь список в памяти
@@ -145,6 +157,10 @@ function weiss_export_orders( $out ) {
 
 		foreach ( $orders as $order ) {
 			$invoice = (array) $order->get_meta( '_weiss_invoice' );
+			/* «Юрлицо» только когда реквизиты действительно заполнены:
+			   пустой массив остаётся у заявки и у физлица (замечание 72). */
+			$org   = isset( $invoice['org'] ) ? trim( (string) $invoice['org'] ) : '';
+			$payer = '' === $org ? '' : ( ( $invoice['payer'] ?? '' ) === 'ip' ? 'ИП' : 'Юрлицо' );
 			$base    = array(
 				$order->get_order_number(),
 				$order->get_date_created() ? $order->get_date_created()->date( 'd.m.Y H:i' ) : '',
@@ -159,12 +175,16 @@ function weiss_export_orders( $out ) {
 				$order->get_billing_email(),
 				$order->get_meta( '_weiss_region' ) ?: $order->get_billing_state(),
 				trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
-				( $invoice['payer'] ?? '' ) === 'ip' ? 'ИП' : ( $invoice ? 'Юрлицо' : '' ),
+				$payer,
 				$invoice['org'] ?? '',
 				$invoice['inn'] ?? '',
 				$invoice['kpp'] ?? '',
 				$invoice['ogrn'] ?? '',
+				$invoice['address'] ?? '',
+				$invoice['phone'] ?? '',
 				$invoice['email'] ?? '',
+				$invoice['comment'] ?? '',
+				(string) $order->get_meta( '_weiss_sber_receipt' ),
 				$order->get_customer_note(),
 				$order->get_meta( '_weiss_consent' ) ? 'да, ' . $order->get_meta( '_weiss_consent' ) : 'нет',
 				$order->get_meta( '_weiss_mail_sent' ) === 'no' ? 'ошибка' : ( $order->get_meta( '_weiss_mail_sent' ) === 'yes' ? 'отправлено' : '—' ),
@@ -290,8 +310,17 @@ function weiss_export_colors( $out ) {
 	) );
 
 	$table = weiss_colors_table();
+	$total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB
 	$rows  = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY palette ASC, code ASC" ); // phpcs:ignore WordPress.DB
 
+	/* Если запрос вернул меньше строк, чем в таблице, повторяем один раз.
+	   Строка-маркер в конце позволяет проверить полноту файла: импорт
+	   пропускает строки, начинающиеся с «#» (замечание 71). */
+	if ( count( $rows ) !== $total ) {
+		$rows = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY palette ASC, code ASC" ); // phpcs:ignore WordPress.DB
+	}
+
+	$written = 0;
 	foreach ( $rows as $color ) {
 		$compatible = array();
 		foreach ( weiss_color_products( $color ) as $item ) {
@@ -311,7 +340,18 @@ function weiss_export_colors( $out ) {
 			$color->note,
 			implode( ', ', array_unique( $compatible ) ),
 		) );
+		$written++;
 	}
+
+	$complete = count( $rows ) === $total && $written === $total;
+	weiss_export_csv_row( $out, array(
+		$complete ? '#КОНЕЦ ФАЙЛА' : '#ФАЙЛ НЕПОЛНЫЙ',
+		'цветов',
+		$written,
+		'в базе',
+		$total,
+		gmdate( 'Y-m-d H:i' ) . ' UTC',
+	) );
 }
 
 /**

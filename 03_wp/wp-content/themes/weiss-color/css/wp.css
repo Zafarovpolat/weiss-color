@@ -261,6 +261,30 @@
 
 .pay-consent a:hover { text-decoration: underline; }
 
+/* Реквизиты для счёта на странице оплаты по ссылке (ТЗ 8.2): блок
+   появляется только при выборе «По счёту». */
+.pay-invoice {
+  margin-top: clamp(10px, 0.7vw, 16px);
+  padding-top: clamp(10px, 0.7vw, 16px);
+  border-top: 1px solid #e9e4de;
+}
+
+.pay-invoice[hidden],
+.pay-invoice [data-pay-kpp][hidden] { display: none; }
+
+.pay-invoice__title {
+  margin: 0 0 clamp(4px, 0.3vw, 7px);
+  font-size: clamp(15px, 0.83vw, 21px);
+  font-weight: 600;
+}
+
+.pay-invoice__hint {
+  margin: 0 0 clamp(8px, 0.55vw, 14px);
+  font-size: clamp(12px, 0.66vw, 17px);
+  line-height: 1.35;
+  color: #6e6f75;
+}
+
 /* В реестре 28 палитр: список не растягивает сцену без предела, а
    прокручивается. Список остаётся в раскладке — иначе сцена центрирует
    одно поле, а раскрытый список уходит за подвал (было +40px прокрутки). */

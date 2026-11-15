@@ -33,7 +33,8 @@ $weiss_money = static function ( $value ) {
 $weiss_pickup  = weiss_shipping_method_option( 'local_pickup' );
 $weiss_courier = weiss_shipping_method_option( 'flat_rate' );
 $weiss_pickup_cost  = $weiss_pickup ? $weiss_pickup['cost'] : 0;
-$weiss_courier_cost = $weiss_courier ? $weiss_courier['cost'] : 0;
+/* Цену курьерской доставки до выбора региона не показываем: она берётся
+   из таблицы тарифов по региону, а не из зоны WooCommerce (ТЗ 7.5). */
 
 /* Итого без доставки: сумма позиций минус скидки по промокодам. */
 $weiss_base_total = (float) $weiss_cart->total - (float) $weiss_cart->get_shipping_total() - (float) $weiss_cart->get_shipping_tax();
@@ -123,7 +124,7 @@ if ( '' !== $weiss_notice_text ) {
 				</label>
 
 				<label class="choice">
-					<input class="choice__input" type="radio" name="shipping_method[0]" value="<?php echo esc_attr( $weiss_courier ? $weiss_courier['value'] : 'flat_rate' ); ?>" data-cost="<?php echo esc_attr( $weiss_courier_cost ); ?>">
+					<input class="choice__input" type="radio" name="shipping_method[0]" value="<?php echo esc_attr( $weiss_courier ? $weiss_courier['value'] : 'flat_rate' ); ?>" data-cost="0">
 					<span class="choice__radio" aria-hidden="true">
 						<svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
 							<path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
@@ -132,7 +133,7 @@ if ( '' !== $weiss_notice_text ) {
 					<img class="choice__icon" src="<?php echo esc_url( weiss_asset( 'icons/truck-courier.svg' ) ); ?>" width="48" height="35" alt="" aria-hidden="true">
 					<span>
 						<span class="choice__title">Курьерская доставка</span>
-						<span class="choice__note" id="courier-note"><?php echo esc_html( weiss_price_compact( $weiss_courier_cost ) ); ?></span>
+						<span class="choice__note" id="courier-note">Выберите регион</span>
 					</span>
 				</label>
 			</div>
@@ -346,7 +347,7 @@ if ( '' !== $weiss_notice_text ) {
 				<button class="tip__btn" type="button" aria-label="Подробнее о сроках доставки" aria-describedby="delivery-tip">?</button>
 				<span class="tip__pop" id="delivery-tip" role="tooltip" data-default="Срок доставки зависит от региона — точные сроки подтвердим при оформлении">Срок доставки зависит от региона — точные сроки подтвердим при оформлении</span>
 			</span>
-			<span class="checkout-delivery__value" id="delivery-value" data-pickup-cost="<?php echo esc_attr( $weiss_pickup_cost ); ?>" data-courier-cost="<?php echo esc_attr( $weiss_courier_cost ); ?>"><?php echo $weiss_pickup_cost > 0 ? esc_html( $weiss_money( $weiss_pickup_cost ) ) : 'Бесплатно'; ?></span>
+			<span class="checkout-delivery__value" id="delivery-value" data-pickup-cost="<?php echo esc_attr( $weiss_pickup_cost ); ?>"><?php echo $weiss_pickup_cost > 0 ? esc_html( $weiss_money( $weiss_pickup_cost ) ) : 'Бесплатно'; ?></span>
 		</p>
 
 		<dl class="checkout-total">

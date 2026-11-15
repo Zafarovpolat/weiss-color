@@ -1,11 +1,12 @@
 <?php
 /**
  * Селектор палитры (М19): тот же каталог, что на обзоре М18, — все 28 палитр.
+ * Скрытая в панели палитра сюда не попадает: её страница отдаёт 404.
  */
 weiss_set_main_class( 'selector-page' );
 get_header();
 
-$weiss_palettes = weiss_color_palettes();
+$weiss_palettes = weiss_color_palettes_active();
 ?>
 <div class="selector-stage">
 	<nav class="crumbs crumbs--overlay" aria-label="Хлебные крошки">

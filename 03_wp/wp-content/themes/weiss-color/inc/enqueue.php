@@ -34,13 +34,10 @@ function weiss_enqueue_assets() {
 		'color'            => array( 'catalog', 'color' ),
 		'coloring-guide'   => array( 'coloring-guide' ),
 		'contacts'         => array( 'catalog', 'checkout', 'contacts' ),
-		'invoice'          => array( 'checkout', 'invoice' ),
 		'legal'            => array( 'cart', 'legal' ),
 		'order-success'    => array( 'cart', 'success' ),
 		'palette-selector' => array( 'palette-selector' ),
 		'palettes'         => array( 'catalog', 'palettes' ),
-		'payment-card'     => array( 'payment-card' ),
-		'payment'          => array( 'checkout', 'payment' ),
 		'product'          => array( 'catalog', 'product' ),
 		'sampler'          => array( 'cart', 'sampler' ),
 		'shades'           => array( 'catalog', 'shades' ),
@@ -92,9 +89,6 @@ function weiss_enqueue_assets() {
 		'cart'             => array( 'wc-cart-page' ),
 		'checkout'         => array( 'checkout' ),
 		'contacts'         => array( 'contacts' ),
-		'invoice'          => array( 'invoice' ),
-		'payment-card'     => array( 'payment-card' ),
-		'payment'          => array( 'payment' ),
 	);
 
 	if ( isset( $per_screen[ $screen ] ) ) {
@@ -103,7 +97,7 @@ function weiss_enqueue_assets() {
 		}
 	}
 
-	$order = array( 'main', 'validation', 'phone-mask', 'ui', 'catalog', 'wc-catalog', 'wc-cart', 'wc-product', 'wc-cart-page', 'palette', 'ace-colors', 'visualizer', 'cart', 'checkout', 'contacts', 'invoice', 'payment-card', 'payment', 'cookie' );
+	$order = array( 'main', 'validation', 'phone-mask', 'ui', 'catalog', 'wc-catalog', 'wc-cart', 'wc-product', 'wc-cart-page', 'palette', 'visualizer', 'checkout', 'contacts', 'cookie' );
 	foreach ( $order as $name ) {
 		if ( ! isset( $js[ $name ] ) ) {
 			continue;

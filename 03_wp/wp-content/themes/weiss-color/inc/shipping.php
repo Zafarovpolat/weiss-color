@@ -18,6 +18,45 @@ function weiss_delivery_tariffs_default() {
 }
 
 /**
+ * Проверка таблицы тарифов перед сохранением. Раньше принималось всё:
+ * «abc» превращалось в бесплатную доставку, «-500» уменьшал итог заказа
+ * (замечание 66).
+ *
+ * @return array Список сообщений об ошибках; пустой — таблица корректна.
+ */
+function weiss_delivery_tariffs_errors( $raw ) {
+	$errors = array();
+	$seen   = array();
+
+	foreach ( preg_split( '/\R/u', (string) $raw ) as $index => $line ) {
+		$line = trim( $line );
+		if ( '' === $line ) {
+			continue;
+		}
+
+		$parts  = array_map( 'trim', explode( '|', $line ) );
+		$region = $parts[0];
+		if ( '' === $region ) {
+			$errors[] = 'Строка ' . ( $index + 1 ) . ': пустой регион.';
+			continue;
+		}
+		if ( isset( $seen[ $region ] ) ) {
+			$errors[] = 'Строка ' . ( $index + 1 ) . ': регион «' . $region . '» уже указан выше.';
+		}
+		$seen[ $region ] = true;
+
+		foreach ( array( 1 => 'стоимость', 3 => 'порог бесплатной доставки' ) as $field => $label ) {
+			$value = isset( $parts[ $field ] ) ? trim( str_replace( ',', '.', $parts[ $field ] ) ) : '';
+			if ( '' !== $value && ( ! is_numeric( $value ) || (float) $value < 0 ) ) {
+				$errors[] = 'Строка ' . ( $index + 1 ) . ': ' . $label . ' — нужно число не меньше нуля или пустое поле.';
+			}
+		}
+	}
+
+	return $errors;
+}
+
+/**
  * Разобранная таблица: «Регион» => array( cost => float|null, term => строка ).
  * Пустая стоимость означает «рассчитает менеджер», а не бесплатную доставку.
  * Пока Заказчик не передал тарифы, действует демо-таблица без цен и сроков:
@@ -41,12 +80,16 @@ function weiss_delivery_tariffs() {
 		if ( '' === $parts[0] ) {
 			continue;
 		}
-		$cost = isset( $parts[1] ) ? trim( $parts[1] ) : '';
-		$free = isset( $parts[3] ) ? trim( str_replace( ',', '.', $parts[3] ) ) : '';
+
+		$cost_raw = isset( $parts[1] ) ? str_replace( ',', '.', trim( $parts[1] ) ) : '';
+		$free_raw = isset( $parts[3] ) ? str_replace( ',', '.', trim( $parts[3] ) ) : '';
+		$cost     = ( ! $demo && '' !== $cost_raw && is_numeric( $cost_raw ) && (float) $cost_raw >= 0 ) ? (float) $cost_raw : null;
+		$free     = ( ! $demo && '' !== $free_raw && is_numeric( $free_raw ) && (float) $free_raw >= 0 ) ? (float) $free_raw : null;
+
 		$map[ $parts[0] ] = array(
-			'cost'      => ( $demo || '' === $cost ) ? null : (float) str_replace( ',', '.', $cost ),
+			'cost'      => $cost,
 			'term'      => $demo ? '' : ( isset( $parts[2] ) ? $parts[2] : '' ),
-			'free_from' => ( $demo || '' === $free ) ? null : (float) $free,
+			'free_from' => $free,
 		);
 	}
 
@@ -328,6 +371,7 @@ add_action( 'woocommerce_order_action_weiss_send_payment_link', function ( $orde
 		'Итог заказа с доставкой: ' . wp_strip_all_tags( $order->get_formatted_order_total() ) . '.',
 		'Оплатить заказ: ' . $url,
 		'',
+		'Ссылка персональная и действует, пока заказ не оплачен или не отменён.',
 		'Если данные не совпадают с ожидаемыми, ответьте на это письмо или позвоните нам.',
 	) );
 
@@ -342,6 +386,27 @@ add_action( 'woocommerce_order_action_weiss_send_payment_link', function ( $orde
 		$order->save();
 	}
 } );
+
+/**
+ * Заказ со ссылкой на оплату, счётом или заявкой на расчёт не отменяется
+ * автоматически через час, как обычный брошенный заказ. WooCommerce отменяет
+ * любой «Ожидает оплаты» старше 60 минут, и покупатель, открывший письмо
+ * позже, не смог бы оплатить — а по ТЗ 7.5 ссылка действует, пока заказ
+ * не оплачен или не отменён менеджером.
+ */
+add_filter( 'woocommerce_cancel_unpaid_order', function ( $cancel, $order ) {
+	if ( ! $order instanceof WC_Order ) {
+		return $cancel;
+	}
+
+	if ( $order->get_meta( '_weiss_pay_link_sent' )
+		|| $order->get_meta( '_weiss_quote_resolved' )
+		|| 'bacs' === $order->get_payment_method() ) {
+		return false;
+	}
+
+	return $cancel;
+}, 10, 2 );
 
 /**
  * Колонка «Доставка» в списке заказов: менеджер сразу видит заявки на
@@ -402,11 +467,21 @@ function weiss_delivery_admin_page() {
 	if ( '' === trim( $raw ) ) {
 		$raw = weiss_delivery_tariffs_default();
 	}
+
+	$errors = get_transient( 'weiss_delivery_errors_' . get_current_user_id() );
+	if ( $errors ) {
+		delete_transient( 'weiss_delivery_errors_' . get_current_user_id() );
+	}
 	?>
 	<div class="wrap">
 		<h1>Тарифы доставки</h1>
 		<?php if ( isset( $_GET['updated'] ) ) : ?>
 			<div class="notice notice-success is-dismissible"><p>Условия доставки сохранены.</p></div>
+		<?php endif; ?>
+		<?php if ( $errors ) : ?>
+			<div class="notice notice-error"><p>Тарифы не сохранены. Исправьте строки:</p>
+				<ul><?php foreach ( (array) $errors as $weiss_error ) : ?><li><?php echo esc_html( $weiss_error ); ?></li><?php endforeach; ?></ul>
+			</div>
 		<?php endif; ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="weiss_delivery_save">
@@ -458,7 +533,16 @@ add_action( 'admin_post_weiss_delivery_save', function () {
 
 	check_admin_referer( 'weiss_delivery_save' );
 
-	update_option( 'weiss_delivery_tariffs', sanitize_textarea_field( wp_unslash( $_POST['weiss_delivery_tariffs'] ?? '' ) ) );
+	$raw    = sanitize_textarea_field( wp_unslash( $_POST['weiss_delivery_tariffs'] ?? '' ) );
+	$errors = weiss_delivery_tariffs_errors( $raw );
+
+	if ( $errors ) {
+		set_transient( 'weiss_delivery_errors_' . get_current_user_id(), $errors, 60 );
+		wp_safe_redirect( add_query_arg( array( 'page' => 'weiss-delivery' ), admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	update_option( 'weiss_delivery_tariffs', $raw );
 	update_option( 'weiss_pickup_address', sanitize_text_field( wp_unslash( $_POST['weiss_pickup_address'] ?? '' ) ) );
 	update_option( 'weiss_pickup_hours', sanitize_text_field( wp_unslash( $_POST['weiss_pickup_hours'] ?? '' ) ) );
 

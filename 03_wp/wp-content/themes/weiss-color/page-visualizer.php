@@ -205,17 +205,26 @@ $weiss_sampler_url = add_query_arg(
             <a class="viz-info__btn" href="<?php echo esc_url( $weiss_sampler_url ); ?>">Заказать пробный образец</a>
           </aside>
 
+          <?php
+          /* ТЗ 6.5: фасовку выбирает покупатель. Без выбранной фасовки кнопка
+             ведёт в карточку товара, а не кладёт первую фасовку в корзину. */
+          $weiss_need_pack = $weiss_target && ! empty( $weiss_target['variable'] ) && empty( $weiss_target['variation'] );
+          ?>
           <?php if ( $weiss_target && $weiss_viz['items'] ) : ?>
           <div class="viz-buy">
             <span class="viz-price">от <?php echo esc_html( weiss_price_number( $weiss_target['price'] ) ); ?> ₽</span>
-            <button class="btn viz-cart" type="button"
-                    data-weiss-add="<?php echo esc_attr( $weiss_target['id'] ); ?>"
-                    data-weiss-variation="<?php echo esc_attr( $weiss_target['variation'] ); ?>"
-                    data-weiss-attributes="<?php echo esc_attr( wp_json_encode( $weiss_target['attributes'] ) ); ?>"
-                    data-weiss-palette="<?php echo esc_attr( $weiss_palette ); ?>"
-                    data-weiss-code="<?php echo esc_attr( $weiss_active_code ); ?>"
-                    data-weiss-name="<?php echo esc_attr( $weiss_target['name'] ); ?>"
-                    data-weiss-url="<?php echo esc_url( $weiss_target['url'] ); ?>">В корзину</button>
+            <?php if ( $weiss_need_pack ) : ?>
+              <a class="btn viz-cart" href="<?php echo esc_url( $weiss_target['url'] ); ?>">Выбрать фасовку</a>
+            <?php else : ?>
+              <button class="btn viz-cart" type="button"
+                      data-weiss-add="<?php echo esc_attr( $weiss_target['id'] ); ?>"
+                      data-weiss-variation="<?php echo esc_attr( $weiss_target['variation'] ); ?>"
+                      data-weiss-attributes="<?php echo esc_attr( wp_json_encode( $weiss_target['attributes'] ) ); ?>"
+                      data-weiss-palette="<?php echo esc_attr( $weiss_palette ); ?>"
+                      data-weiss-code="<?php echo esc_attr( $weiss_active_code ); ?>"
+                      data-weiss-name="<?php echo esc_attr( $weiss_target['name'] ); ?>"
+                      data-weiss-url="<?php echo esc_url( $weiss_target['url'] ); ?>">В корзину</button>
+            <?php endif; ?>
           </div>
           <?php endif; ?>
         </div>

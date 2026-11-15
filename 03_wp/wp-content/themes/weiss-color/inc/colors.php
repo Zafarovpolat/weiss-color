@@ -59,12 +59,85 @@ function weiss_colors_maybe_install() {
 add_action( 'init', 'weiss_colors_maybe_install', 1 );
 
 /**
+ * Текст из файла в UTF-8. Excel сохраняет «CSV (разделители — точка
+ * с запятой)» в Windows-1251: без перекодировки заголовки не совпадают
+ * с ожидаемыми, и импорт молча записывает пустые строки (замечание 64).
+ */
+function weiss_colors_to_utf8( $text ) {
+	$text = (string) $text;
+	if ( '' === $text || preg_match( '//u', $text ) ) {
+		return $text;
+	}
+
+	$converted = function_exists( 'mb_convert_encoding' )
+		? mb_convert_encoding( $text, 'UTF-8', 'Windows-1251' )
+		: @iconv( 'Windows-1251', 'UTF-8//IGNORE', $text ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+
+	return $converted ? $converted : $text;
+}
+
+/** Номер колонки по буквам из XLSX: A → 0, H → 7, AA → 26. */
+function weiss_colors_column_index( $letters ) {
+	$index = 0;
+	foreach ( str_split( strtoupper( (string) $letters ) ) as $char ) {
+		$index = $index * 26 + ( ord( $char ) - 64 );
+	}
+	return max( 0, $index - 1 );
+}
+
+/**
+ * Раскладка колонок по названиям. Шаблон и выгрузка цветов идут в одном
+ * порядке, старый реестр — в другом; пока XLSX читался по позициям,
+ * импорт шаблона стирал HEX и скрывал записи (замечание 63).
+ *
+ * @return array Поле => номер колонки; пустой массив — шапка не распознана.
+ */
+function weiss_colors_header_map( $header ) {
+	$aliases = array(
+		'code'    => array( 'COLOURCODE', 'CODE', 'КОД' ),
+		'palette' => array( 'CARDNAME', 'PALETTE', 'ПАЛИТРА' ),
+		'name'    => array( 'NAME', 'НАЗВАНИЕ', 'НАИМЕНОВАНИЕ' ),
+		'r'       => array( 'R', 'КРАСНЫЙ' ),
+		'g'       => array( 'G', 'ЗЕЛЁНЫЙ' ),
+		'b'       => array( 'B', 'СИНИЙ' ),
+		'hex'     => array( 'RGB_HTML', 'HEX', 'HEX_HTML', 'HTML' ),
+		'group'   => array( 'ПРОДУКТ', 'PRODUCT', 'ГРУППА' ),
+	);
+
+	$map = array();
+	foreach ( array_values( $header ) as $index => $title ) {
+		$title = strtoupper( trim( preg_replace( '/^\xEF\xBB\xBF/', '', (string) $title ) ) );
+		if ( '' === $title ) {
+			continue;
+		}
+		foreach ( $aliases as $field => $names ) {
+			if ( ! isset( $map[ $field ] ) && in_array( $title, $names, true ) ) {
+				$map[ $field ] = $index;
+			}
+		}
+	}
+
+	return isset( $map['code'], $map['palette'] ) ? $map : array();
+}
+
+/** Строка реестра по карте колонок; отсутствующие поля остаются пустыми. */
+function weiss_colors_row_from_map( $map, $values ) {
+	$row = array( 'code' => '', 'palette' => '', 'name' => '', 'r' => '', 'g' => '', 'b' => '', 'hex' => '', 'group' => '' );
+	foreach ( $map as $field => $index ) {
+		$row[ $field ] = isset( $values[ $index ] ) ? trim( (string) $values[ $index ] ) : '';
+	}
+	return $row;
+}
+
+/**
  * Импорт реестра. Возвращает отчёт со сверкой (ТЗ, п.5.3).
  *
  * @param string $path Путь к XLSX или CSV.
+ * @param string $ext  Расширение из имени загруженного файла.
+ * @param string $name Имя загруженного файла для отчёта.
  * @return array|WP_Error
  */
-function weiss_colors_import_file( $path, $ext = '' ) {
+function weiss_colors_import_file( $path, $ext = '', $name = '' ) {
 	global $wpdb;
 
 	if ( ! is_readable( $path ) ) {
@@ -91,7 +164,7 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 	$table     = weiss_colors_table();
 	$now       = current_time( 'mysql' );
 	$report    = array(
-		'file'      => basename( $path ),
+		'file'      => $name ? basename( $name ) : basename( $path ),
 		'rows'      => count( $rows ),
 		'imported'  => 0,
 		'active'    => 0,
@@ -102,11 +175,55 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 		'rejected'  => array(),
 		'incomplete'=> array(),
 		'duplicates'=> array(),
+		'failed'    => array(),
 	);
 	$seen  = array();
 	$batch = array();
+	$stats = array(
+		'imported' => 0,
+		'active'   => 0,
+		'inactive' => 0,
+		'palettes' => array(),
+		'details'  => array(),
+		'groups'   => array(),
+	);
 
-	$flush = function () use ( &$batch, &$report, $table, $now, $wpdb ) {
+	$merge_stats = function () use ( &$stats, &$report ) {
+		$report['imported'] += $stats['imported'];
+		$report['active']   += $stats['active'];
+		$report['inactive'] += $stats['inactive'];
+
+		foreach ( $stats['palettes'] as $palette => $count ) {
+			$report['palettes'][ $palette ] = ( $report['palettes'][ $palette ] ?? 0 ) + $count;
+		}
+		foreach ( $stats['details'] as $palette => $row ) {
+			if ( ! isset( $report['details'][ $palette ] ) ) {
+				$report['details'][ $palette ] = array( 'source' => 0, 'imported' => 0, 'active' => 0, 'inactive' => 0 );
+			}
+			foreach ( $row as $key => $value ) {
+				$report['details'][ $palette ][ $key ] += $value;
+			}
+		}
+		foreach ( $stats['groups'] as $group => $row ) {
+			if ( ! isset( $report['groups'][ $group ] ) ) {
+				$report['groups'][ $group ] = array( 'source' => 0, 'active' => 0 );
+			}
+			foreach ( $row as $key => $value ) {
+				$report['groups'][ $group ][ $key ] += $value;
+			}
+		}
+
+		$stats = array(
+			'imported' => 0,
+			'active'   => 0,
+			'inactive' => 0,
+			'palettes' => array(),
+			'details'  => array(),
+			'groups'   => array(),
+		);
+	};
+
+	$flush = function () use ( &$batch, &$stats, $merge_stats, &$report, $table, $now, $wpdb ) {
 		if ( ! $batch ) {
 			return;
 		}
@@ -123,7 +240,7 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 		   заметкой «Скрыт в панели». Неполные строки остаются скрытыми, пока
 		   в файле не появятся RGB/HEX. Пустое название не затирает
 		   название, вписанное в панели. */
-		$wpdb->query( // phpcs:ignore WordPress.DB.PreparedSQL
+		$result = $wpdb->query( // phpcs:ignore WordPress.DB.PreparedSQL
 			"INSERT INTO {$table} (hash,palette,code,name,r,g,b,hex,product_group,active,note,updated_at)
 			 VALUES " . implode( ',', $values ) . '
 			 ON DUPLICATE KEY UPDATE
@@ -142,6 +259,15 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 			   END,
 			   updated_at=VALUES(updated_at)'
 		);
+
+		/* Отчёт считается по факту записи: раньше счётчики росли ещё до
+		   запроса, и сбой пачки (или база в кодировке Windows-1251) давал
+		   «активно 1» при пустой таблице (замечание 64). */
+		if ( false === $result ) {
+			$report['failed'][] = array( 'rows' => count( $batch ), 'error' => $wpdb->last_error );
+		} else {
+			$merge_stats();
+		}
 		$batch = array();
 	};
 
@@ -208,24 +334,24 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 		);
 
 		$batch[] = $item;
-		$report['imported']++;
-		$report['active'] += $item['active'];
-		$report['inactive'] += $item['active'] ? 0 : 1;
-		$report['palettes'][ $palette ] = ( $report['palettes'][ $palette ] ?? 0 ) + 1;
+		$stats['imported']++;
+		$stats['active'] += $item['active'];
+		$stats['inactive'] += $item['active'] ? 0 : 1;
+		$stats['palettes'][ $palette ] = ( $stats['palettes'][ $palette ] ?? 0 ) + 1;
 
-		if ( ! isset( $report['details'][ $palette ] ) ) {
-			$report['details'][ $palette ] = array( 'source' => 0, 'imported' => 0, 'active' => 0, 'inactive' => 0 );
+		if ( ! isset( $stats['details'][ $palette ] ) ) {
+			$stats['details'][ $palette ] = array( 'source' => 0, 'imported' => 0, 'active' => 0, 'inactive' => 0 );
 		}
-		$report['details'][ $palette ]['source']++;
-		$report['details'][ $palette ]['imported']++;
-		$report['details'][ $palette ][ $item['active'] ? 'active' : 'inactive' ]++;
+		$stats['details'][ $palette ]['source']++;
+		$stats['details'][ $palette ]['imported']++;
+		$stats['details'][ $palette ][ $item['active'] ? 'active' : 'inactive' ]++;
 
 		$group = $item['product_group'];
-		if ( ! isset( $report['groups'][ $group ] ) ) {
-			$report['groups'][ $group ] = array( 'source' => 0, 'active' => 0 );
+		if ( ! isset( $stats['groups'][ $group ] ) ) {
+			$stats['groups'][ $group ] = array( 'source' => 0, 'active' => 0 );
 		}
-		$report['groups'][ $group ]['source']++;
-		$report['groups'][ $group ]['active'] += $item['active'];
+		$stats['groups'][ $group ]['source']++;
+		$stats['groups'][ $group ]['active'] += $item['active'];
 
 		if ( $note ) {
 			$report['incomplete'][] = array(
@@ -241,6 +367,32 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 		}
 	}
 	$flush();
+
+	/* Итог «активно» берём из базы: ручное скрытие и неполные записи
+	   меняют состояние так, что счёт по файлу врёт. Запрос идёт пачками
+	   по 500 хешей, чтобы не упираться в лимит пакета MySQL. */
+	if ( ! $report['failed'] && $seen ) {
+		$active_now = 0;
+		$by_palette = array();
+		foreach ( array_chunk( array_keys( $seen ), 500 ) as $chunk ) {
+			$placeholders = implode( ',', array_fill( 0, count( $chunk ), '%s' ) );
+			$found        = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQL
+				"SELECT palette, SUM(active = 1) AS active FROM {$table} WHERE hash IN ({$placeholders}) GROUP BY palette",
+				$chunk
+			) );
+			foreach ( (array) $found as $stat ) {
+				$by_palette[ $stat->palette ] = (int) $stat->active;
+				$active_now                  += (int) $stat->active;
+			}
+		}
+
+		$report['active']   = $active_now;
+		$report['inactive'] = max( 0, $report['imported'] - $active_now );
+		foreach ( $report['details'] as $palette => $row ) {
+			$report['details'][ $palette ]['active']   = isset( $by_palette[ $palette ] ) ? min( $by_palette[ $palette ], $row['imported'] ) : 0;
+			$report['details'][ $palette ]['inactive'] = $row['imported'] - $report['details'][ $palette ]['active'];
+		}
+	}
 
 	ksort( $report['palettes'], SORT_NATURAL | SORT_FLAG_CASE );
 	ksort( $report['details'], SORT_NATURAL | SORT_FLAG_CASE );
@@ -320,8 +472,9 @@ function weiss_colors_read_xlsx( $path ) {
 		}
 
 		$header = null;
+		$map    = array();
 		foreach ( $data->sheetData->row as $row ) {
-			$values = array();
+			$cells = array();
 			foreach ( $row->c as $cell ) {
 				$ref  = (string) $cell['r'];
 				$col  = preg_replace( '/\d+/', '', $ref );
@@ -332,33 +485,53 @@ function weiss_colors_read_xlsx( $path ) {
 				} elseif ( 'inlineStr' === $type && isset( $cell->is->t ) ) {
 					$value = (string) $cell->is->t;
 				}
-				$values[ $col ] = trim( $value );
+				$cells[ weiss_colors_column_index( $col ) ] = trim( $value );
 			}
 
-			/* Заголовок определяем по известным названиям колонок: лист может
-			   быть без шапки, тогда первая строка — данные. */
+			if ( ! $cells ) {
+				continue;
+			}
+			$width = max( array_keys( $cells ) ) + 1;
+			$cells = array_replace( array_fill( 0, $width, '' ), $cells );
+
+			/* Шапка определяется по названиям колонок: шаблон выгрузки и
+			   старый реестр идут в разном порядке, и чтение по позициям
+			   портило записи (замечание 63). Лист без шапки читается
+			   старым порядком A:H, как исходный реестр. */
 			if ( null === $header ) {
-				$header = $values;
-				$known  = array( 'COLOURCODE', 'CARDNAME', 'RGB_HTML', 'Продукт', 'Код', 'Палитра' );
-				if ( array_intersect( $known, array_map( 'strval', array_values( $values ) ) ) ) {
+				$header = $cells;
+				$known  = weiss_colors_header_map( $cells );
+				if ( $known ) {
+					$map = $known;
 					continue;
 				}
 			}
 
-			if ( ! array_filter( $values, fn( $v ) => '' !== trim( (string) $v ) ) ) {
+			if ( ! array_filter( $cells, fn( $v ) => '' !== trim( (string) $v ) ) ) {
 				continue;
 			}
 
-			$rows[] = array(
-				'code'    => $values['A'] ?? '',
-				'palette' => $values['B'] ?? '',
-				'name'    => $values['H'] ?? '',
-				'r'       => $values['C'] ?? '',
-				'g'       => $values['D'] ?? '',
-				'b'       => $values['E'] ?? '',
-				'hex'     => $values['F'] ?? '',
-				'group'   => $values['G'] ?? '',
-			);
+			if ( $map ) {
+				$item = weiss_colors_row_from_map( $map, $cells );
+			} else {
+				$item = array(
+					'code'    => $cells[0] ?? '',
+					'palette' => $cells[1] ?? '',
+					'name'    => $cells[7] ?? '',
+					'r'       => $cells[2] ?? '',
+					'g'       => $cells[3] ?? '',
+					'b'       => $cells[4] ?? '',
+					'hex'     => $cells[5] ?? '',
+					'group'   => $cells[6] ?? '',
+				);
+			}
+
+			/* Строка-маркер конца файла выгрузки не считается цветом. */
+			if ( isset( $item['code'][0] ) && '#' === $item['code'][0] ) {
+				continue;
+			}
+
+			$rows[] = $item;
 		}
 	}
 
@@ -371,7 +544,7 @@ function weiss_colors_read_xlsx( $path ) {
 	return $rows;
 }
 
-/** Чтение CSV с теми же колонками; заголовок обязателен. */
+/** Чтение CSV с теми же колонками; шапка обязательна. */
 function weiss_colors_read_csv( $path ) {
 	$handle = fopen( $path, 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	if ( ! $handle ) {
@@ -389,27 +562,28 @@ function weiss_colors_read_csv( $path ) {
 		fclose( $handle );
 		return new WP_Error( 'weiss_import_csv_empty', 'CSV пуст.' );
 	}
-	$header[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $header[0] );
-	$map = array_flip( array_map( 'trim', $header ) );
+	$header = array_map( 'weiss_colors_to_utf8', $header );
+	$map    = weiss_colors_header_map( $header );
+	if ( ! $map ) {
+		fclose( $handle );
+		return new WP_Error(
+			'weiss_import_columns',
+			'В CSV нет колонок COLOURCODE и CARDNAME. Сохраните файл в UTF-8 или пересохраните из Excel как «CSV UTF-8».'
+		);
+	}
 
 	$rows = array();
 	while ( false !== ( $line = fgetcsv( $handle, 0, $delimiter ) ) ) {
+		$line = array_map( 'weiss_colors_to_utf8', $line );
 		if ( ! array_filter( $line, fn( $v ) => '' !== trim( (string) $v ) ) ) {
 			continue;
 		}
-		$get = function ( $key ) use ( $map, $line ) {
-			return isset( $map[ $key ], $line[ $map[ $key ] ] ) ? $line[ $map[ $key ] ] : '';
-		};
-		$rows[] = array(
-			'code'    => $get( 'COLOURCODE' ),
-			'palette' => $get( 'CARDNAME' ),
-			'name'    => $get( 'NAME' ),
-			'r'       => $get( 'R' ),
-			'g'       => $get( 'G' ),
-			'b'       => $get( 'B' ),
-			'hex'     => $get( 'RGB_HTML' ),
-			'group'   => $get( 'Продукт' ),
-		);
+
+		$item = weiss_colors_row_from_map( $map, $line );
+		if ( isset( $item['code'][0] ) && '#' === $item['code'][0] ) {
+			continue;
+		}
+		$rows[] = $item;
 	}
 	fclose( $handle );
 
@@ -798,7 +972,10 @@ function weiss_product_color_group( $product_id ) {
  * до согласования артикулов (ТЗ, п.5.5).
  */
 function weiss_color_products( $color ) {
-	$group = strtolower( (string) ( $color->product_group ?? '' ) );
+	/* strtolower() не переводит кириллицу: «Лаки» оставалось в верхнем
+	   регистре и считалось краской (замечание 67). Фильтры SQL ищут
+	   без учёта регистра — здесь так же. */
+	$group = mb_strtolower( (string) ( $color->product_group ?? '' ), 'UTF-8' );
 	$wood  = false !== mb_strpos( $group, 'лаки' );
 
 	$groups = weiss_color_product_map();
@@ -987,7 +1164,7 @@ function weiss_colors_admin_page() {
 				$notice   = 'Поддерживаются XLSX и CSV.';
 				$is_error = true;
 			} else {
-				$report = weiss_colors_import_file( $file['tmp_name'], $ext );
+				$report = weiss_colors_import_file( $file['tmp_name'], $ext, $file['name'] );
 				if ( is_wp_error( $report ) ) {
 					$notice   = $report->get_error_message();
 					$is_error = true;
@@ -1001,6 +1178,10 @@ function weiss_colors_admin_page() {
 						count( $report['duplicates'] ),
 						count( $report['palettes'] )
 					);
+					if ( ! empty( $report['failed'] ) ) {
+						$notice  .= ' Не записано в базу: ' . array_sum( wp_list_pluck( $report['failed'], 'rows' ) ) . ' строк.';
+						$is_error = true;
+					}
 				}
 			}
 		}
@@ -1066,8 +1247,14 @@ function weiss_colors_admin_page() {
 					$notice .= ' Неполных записей без HEX осталось скрыто: ' . $skipped . '.';
 				}
 			} else {
+				/* Неполные записи сохраняют свою пометку: иначе после скрытия
+				   палитры «Неполная запись» превращалась в «Скрыт в панели»
+				   и причина пропадала (замечание 76). */
 				$updated = (int) $wpdb->query( $wpdb->prepare( // phpcs:ignore WordPress.DB
-					'UPDATE ' . $table . " SET active = 0, note = 'Скрыт в панели' WHERE palette = %s",
+					'UPDATE ' . $table . " SET active = 0,
+					   note = CASE WHEN hex = '' THEN note ELSE %s END
+					 WHERE palette = %s",
+					'Скрыт в панели',
 					$palette
 				) );
 				$notice  = 'Палитра «' . $palette . '» скрыта: ' . $updated . '.';
@@ -1091,6 +1278,15 @@ function weiss_colors_admin_page() {
 				$is_error = true;
 			} elseif ( ! preg_match( '/^#[0-9a-f]{6}$/', $hex ) ) {
 				$notice   = 'HEX-цвет в формате #RRGGBB.';
+				$is_error = true;
+			} elseif ( $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB
+				'SELECT id FROM ' . weiss_colors_table() . ' WHERE palette = %s AND code = %s',
+				$palette,
+				$code
+			) ) ) {
+				/* Раньше существующая запись молча перезаписывалась вместе с
+				   HEX и названием (замечание 76). */
+				$notice   = 'Цвет «' . $palette . ' / ' . $code . '» уже есть. Измените его в списке цветов, чтобы не затереть данные.';
 				$is_error = true;
 			} else {
 				$r = hexdec( substr( $hex, 1, 2 ) );
@@ -1136,10 +1332,13 @@ function weiss_colors_admin_page() {
 			$rates = array();
 			foreach ( array( 'paint', 'wood' ) as $group ) {
 				$raw = trim( sanitize_text_field( wp_unslash( $_POST['tint'][ $group ] ?? '' ) ) );
+				/* «500,50» с запятой — обычная запись в русской раскладке,
+				   раньше она отклонялась без пояснения (замечание 79). */
+				$raw = str_replace( ',', '.', $raw );
 				if ( '' === $raw ) {
 					$rates[ $group ] = '';
 				} elseif ( ! is_numeric( $raw ) || (float) $raw < 0 ) {
-					$notice   = 'Доплата за колеровку — неотрицательное число в рублях или пустое поле.';
+					$notice   = 'Доплата за колеровку — неотрицательное число в рублях: например, 500 или 500,50.';
 					$is_error = true;
 					$rates    = null;
 					break;

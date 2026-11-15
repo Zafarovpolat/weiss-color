@@ -65,9 +65,9 @@ add_action( 'wp_enqueue_scripts', 'weiss_dequeue_block_assets', 20 );
 add_filter( 'show_admin_bar', '__return_false' );
 
 /**
- * Чистка тестовых значений, оставшихся от проверок: неполное меню и
- * демонстрационные контакты. Выполняется один раз и только для точных
- * совпадений, поэтому реальные настройки не затрагивает.
+ * Чистка тестовых значений, оставшихся от проверок: неполное меню.
+ * Выполняется один раз и только для точных совпадений, поэтому реальные
+ * настройки не затрагивает.
  */
 function weiss_cleanup_test_content() {
 	if ( '1' === get_option( 'weiss_content_cleanup' ) ) {
@@ -90,33 +90,43 @@ function weiss_cleanup_test_content() {
 		set_theme_mod( 'nav_menu_locations', $locations );
 	}
 
-	$junk = array(
-		'phone_label'     => array( '+79991112233' ),
-		'email'           => array( 'atuin59354081@gmail.com' ),
-		'seller_name'     => array( 'ыфыыф' ),
-		'seller_address'  => array( 'Tashkent' ),
-		'social_max'      => array( 'https://m.yandex.ru/video/preview/8120127023709832939' ),
-		'social_telegram' => array( 'https://m.yandex.ru/video/preview/8120127023709832939' ),
-		'social_whatsapp' => array( 'https://m.yandex.ru/video/preview/8120127023709832939' ),
-	);
-
-	$values = get_option( 'weiss_content', array() );
-	if ( is_array( $values ) ) {
-		$dirty = false;
-		foreach ( $junk as $key => $matches ) {
-			if ( isset( $values[ $key ] ) && in_array( (string) $values[ $key ], $matches, true ) ) {
-				unset( $values[ $key ] );
-				$dirty = true;
-			}
-		}
-		if ( $dirty ) {
-			update_option( 'weiss_content', $values );
-		}
-	}
-
 	update_option( 'weiss_content_cleanup', '1', false );
 }
 add_action( 'init', 'weiss_cleanup_test_content', 3 );
+
+/**
+ * Служебные страницы WooCommerce созданы ядром с английскими названиями
+ * («Shop», «Cart», «My account»). Переименовываем один раз и только точные
+ * заводские значения, чтобы не затронуть переименованные вручную (ТЗ 11.7).
+ */
+function weiss_rename_wc_pages() {
+	if ( '1' === get_option( 'weiss_wc_titles_cleanup' ) || ! function_exists( 'wc_get_page_id' ) ) {
+		return;
+	}
+
+	$map = array(
+		'shop'      => 'Магазин',
+		'cart'      => 'Корзина',
+		'checkout'  => 'Оформление заказа',
+		'myaccount' => 'Личный кабинет',
+	);
+
+	$factory = array( 'Shop', 'Cart', 'Checkout', 'My account' );
+	foreach ( $map as $page => $title ) {
+		$id = (int) wc_get_page_id( $page );
+		if ( $id <= 0 ) {
+			continue;
+		}
+		$post = get_post( $id );
+		if ( ! $post || ! in_array( $post->post_title, $factory, true ) ) {
+			continue;
+		}
+		wp_update_post( array( 'ID' => $id, 'post_title' => $title ) );
+	}
+
+	update_option( 'weiss_wc_titles_cleanup', '1', false );
+}
+add_action( 'init', 'weiss_rename_wc_pages', 6 );
 
 /** Эмодзи-скрипты ядра не нужны и весят лишние килобайты. */
 function weiss_disable_emoji() {
@@ -171,6 +181,33 @@ add_filter( 'xmlrpc_methods', function ( $methods ) {
 	unset( $methods['system.multicall'], $methods['wp.getUsersBlogs'], $methods['wp.getUsers'] );
 	return $methods;
 } );
+
+/**
+ * ТЗ 11.3: формы комментариев и отзывов в теме нет, но wp-comments-post.php
+ * принимал их без регистрации и слал письма администратору. Закрываем
+ * комментарии и отзывы, их ленты и REST-маршруты (замечание 86).
+ */
+add_filter( 'comments_open', '__return_false', 20 );
+add_filter( 'pings_open', '__return_false', 20 );
+add_filter( 'option_default_comment_status', function () { return 'closed'; } );
+add_filter( 'option_default_ping_status', function () { return 'closed'; } );
+add_filter( 'option_woocommerce_enable_reviews', function () { return 'no'; } );
+add_filter( 'feed_links_show_comments_feed', '__return_false' );
+
+add_filter( 'rest_endpoints', function ( $endpoints ) {
+	unset( $endpoints['/wp/v2/comments'], $endpoints['/wp/v2/comments/(?P<id>[\d]+)'] );
+	return $endpoints;
+} );
+
+add_action( 'template_redirect', function () {
+	if ( is_comment_feed() ) {
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
+		exit;
+	}
+}, 1 );
 
 add_action( 'send_headers', function () {
 	if ( is_admin() ) {
