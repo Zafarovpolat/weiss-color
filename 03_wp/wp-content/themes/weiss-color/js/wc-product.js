@@ -59,6 +59,12 @@
     if (stockEl) stockEl.textContent = inStock ? 'В наличии' : 'Нет в наличии';
     if (heroImg && image) heroImg.src = image;
 
+    /* Товар не в наличии не продаётся (ТЗ 4.4): кнопка не должна выглядеть рабочей */
+    if (addBtn) {
+      addBtn.disabled = !inStock;
+      addBtn.textContent = inStock ? 'В корзину' : 'Нет в наличии';
+    }
+
     if (noticeEl) {
       const problem = !inStock
         ? 'Этой фасовки нет в наличии. Выберите другой объём.'

@@ -16,6 +16,11 @@
   var payNote = document.getElementById('pay-note');
   var invoiceOpen = document.getElementById('invoice-open');
 
+  /* Идентификатор шлюза карты берём из разметки: он не должен совпадать
+     с зашитой строкой, иначе подсказка про банк пропадает при смене id. */
+  var cardRadio = form.querySelector('input[name="payment_method"][data-card]');
+  var cardId = cardRadio ? cardRadio.value : '';
+
   function selectedValue(radios) {
     for (var i = 0; i < radios.length; i++) {
       if (radios[i].checked) return radios[i].value;
@@ -25,7 +30,7 @@
 
   function syncPayment() {
     var value = selectedValue(paymentRadios);
-    if (payNote) payNote.toggleAttribute('data-visible', value === 'weiss_card');
+    if (payNote) payNote.toggleAttribute('data-visible', value === cardId);
     if (invoiceOpen) invoiceOpen.hidden = value !== 'bacs';
   }
 
@@ -133,6 +138,7 @@
   var quoteNote = document.getElementById('checkout-quote-note');
   var quotePayment = document.getElementById('quote-payment');
   var paymentRow = form.querySelector('.choice-row--payment');
+  var deliveryTip = document.getElementById('delivery-tip');
 
   function money(value) {
     return String(Math.round(Number(value))).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + ' ₽';
@@ -184,6 +190,15 @@
         : needRegion ? 'Выберите регион'
         : quote ? 'Рассчитает менеджер'
         : cost > 0 ? money(cost) : 'Бесплатно';
+    }
+
+    /* Срок — из тарифной таблицы региона (ТЗ 7.5), без вписанных в шаблон дат. */
+    if (deliveryTip) {
+      deliveryTip.textContent = pickup
+        ? 'Самовывоз: о готовности заказа сообщим звонком или письмом.'
+        : tariff && tariff.term
+          ? 'Доставка: ' + tariff.term + '.'
+          : deliveryTip.getAttribute('data-default');
     }
 
     if (deliveryValue) {
@@ -399,6 +414,7 @@
       valueEl.textContent = options[index].textContent.trim();
       trigger.setAttribute('data-filled', '');
       input.value = options[index].textContent.trim();
+
       close(true);
       /* сообщаем валидатору, что значение изменилось */
       input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -410,6 +426,7 @@
       valueEl.textContent = placeholder;
       trigger.removeAttribute('data-filled');
       input.value = '';
+      input.disabled = false;
       close(false);
     }
 

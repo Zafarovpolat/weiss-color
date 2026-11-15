@@ -86,7 +86,7 @@ function weiss_enqueue_assets() {
 		'color'            => array( 'ui', 'wc-cart' ),
 		'palettes'         => array( 'ui' ),
 		'shades'           => array( 'ui' ),
-		'visualizer'       => array( 'palette', 'ace-colors', 'visualizer', 'wc-cart' ),
+		'visualizer'       => array( 'palette', 'visualizer', 'wc-cart' ),
 		'palette-selector' => array( 'palette' ),
 		'sampler'          => array( 'ui', 'wc-cart' ),
 		'cart'             => array( 'wc-cart-page' ),

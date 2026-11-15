@@ -336,6 +336,21 @@
   color: #6e6f75;
 }
 
+/* Адрес и часы точки самовывоза на экране спасибо (ТЗ 7.6) */
+.success-pickup {
+  max-width: clamp(320px, 46vw, 960px);
+  margin: clamp(8px, 0.47vw, 12px) auto 0;
+  font-size: clamp(13px, 0.73vw, 18px);
+  line-height: 1.45;
+  text-align: center;
+  color: #485770;
+}
+
+.success-pickup strong {
+  font-weight: var(--fw-semibold);
+  color: #061e3f;
+}
+
 
 /* Поиск по коду в текущей палитре (ТЗ, п.5.4). В макете М09 поля нет, а
    высота левой колонки задаёт высоту экрана, поэтому поиск стоит в одной

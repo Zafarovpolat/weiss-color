@@ -10,8 +10,24 @@ if ( ! $order ) {
 	return;
 }
 
+/* Шаблон рисует страницу сам, но события WooCommerce нужны: на них
+   платёжные шлюзы проверяют статус платежа при возврате покупателя.
+   Разметку темы вывод шлюзов не заменяет, поэтому он отбрасывается. */
+ob_start();
+do_action( 'woocommerce_thankyou_' . $order->get_payment_method(), $order->get_id() );
+do_action( 'woocommerce_thankyou', $order->get_id() );
+ob_end_clean();
+
 $weiss_phone = weiss_phone();
 $weiss_items = $order->get_items();
+
+/* Самовывоз: подсказка о сроке курьерской доставки не показывается (ТЗ 7.6). */
+$weiss_pickup = false;
+foreach ( $order->get_shipping_methods() as $weiss_shipping ) {
+	if ( 0 === strpos( (string) $weiss_shipping->get_method_id(), 'local_pickup' ) ) {
+		$weiss_pickup = true;
+	}
+}
 ?>
 <article class="success-card">
 	<nav class="crumbs" aria-label="Хлебные крошки">
@@ -27,7 +43,7 @@ $weiss_items = $order->get_items();
 		</svg>
 	</div>
 
-	<h1 class="success-title">Спасибо за заказ</h1>
+	<h1 class="success-title"><?php echo $order->has_status( 'failed' ) ? 'Заказ не оплачен' : 'Спасибо за заказ'; ?></h1>
 
 	<?php if ( $order->has_status( 'failed' ) ) : ?>
 		<p class="success-lead">
@@ -70,6 +86,23 @@ $weiss_items = $order->get_items();
 		<p class="success-quote">
 			Стоимость доставки для вашего региона рассчитает менеджер. Деньги не списаны:
 			после расчёта мы пришлём итог и ссылку на оплату.
+		</p>
+	<?php endif; ?>
+
+	<?php
+	/* ТЗ 7.6: при самовывозе показываем адрес и часы точки. */
+	$weiss_point = $weiss_pickup ? weiss_pickup_point() : array( 'address' => '', 'hours' => '' );
+	if ( $weiss_point['address'] || $weiss_point['hours'] ) :
+		?>
+		<p class="success-pickup">
+			<strong>Самовывоз:</strong>
+			<?php if ( $weiss_point['address'] ) : ?>
+				<?php echo esc_html( $weiss_point['address'] ); ?>
+			<?php endif; ?>
+			<?php if ( $weiss_point['hours'] ) : ?>
+				<?php echo $weiss_point['address'] ? '<br>' : ''; ?>
+				Часы самовывоза: <?php echo esc_html( $weiss_point['hours'] ); ?>
+			<?php endif; ?>
 		</p>
 	<?php endif; ?>
 
@@ -144,6 +177,8 @@ $weiss_items = $order->get_items();
 			'ogrn'    => 'ОГРН/ОГРНИП',
 			'address' => 'Юридический адрес',
 			'email'   => 'E-mail для счёта',
+			'phone'   => 'Телефон',
+			'comment' => 'Дополнительные реквизиты',
 		);
 		?>
 		<section class="success-invoice" aria-labelledby="success-invoice-title">
@@ -205,6 +240,7 @@ $weiss_items = $order->get_items();
 			</div>
 		</li>
 
+		<?php if ( ! $weiss_pickup ) : ?>
 		<li class="success-tip">
 			<span class="success-tip__icon" aria-hidden="true">
 				<svg viewBox="0 0 41 40" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -222,6 +258,7 @@ $weiss_items = $order->get_items();
 				<p class="success-tip__text">Мы сообщим точные сроки при подтверждении заказа.</p>
 			</div>
 		</li>
+		<?php endif; ?>
 	</ul>
 
 	<div class="success-actions">

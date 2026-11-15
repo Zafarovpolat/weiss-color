@@ -12,7 +12,26 @@ function weiss_mail_failures() {
 }
 
 function weiss_mail_failures_save( $log ) {
+	/* Новые записи идут первыми, поэтому первые 50 — это последние 50 ошибок. */
 	update_option( 'weiss_mail_failures', array_slice( array_values( $log ), 0, 50 ), false );
+}
+
+/**
+ * Связывает только что записанную ошибку с заказом: по этой связи повторная
+ * отправка обновит отметку «письмо отправлено» (ТЗ 8.7).
+ */
+function weiss_mail_link_order( $order, $recipient ) {
+	$log = weiss_mail_failures();
+	foreach ( $log as $index => $entry ) {
+		if ( ! empty( $entry['order_id'] ) || '' === (string) $recipient ) {
+			continue;
+		}
+		if ( false !== strpos( (string) $entry['to'], (string) $recipient ) ) {
+			$log[ $index ]['order_id'] = (int) $order->get_id();
+			weiss_mail_failures_save( $log );
+			return;
+		}
+	}
 }
 
 function weiss_mail_recipients( $to ) {
@@ -42,10 +61,15 @@ add_action( 'woocommerce_email_sent', function ( $sent, $email_id, $email ) {
 	if ( in_array( $email_id, $customer_emails, true ) ) {
 		$email->object->update_meta_data( '_weiss_mail_sent', $sent ? 'yes' : 'no' );
 		$email->object->save();
+
+		if ( ! $sent ) {
+			weiss_mail_link_order( $email->object, $email->get_recipient() );
+		}
 	}
 }, 10, 3 );
 
-add_action( 'wp_mail_failed', function ( $error ) {	/* повторная отправка из панели не должна плодить дубли в журнале */
+add_action( 'wp_mail_failed', function ( $error ) {
+	/* повторная отправка из панели не должна плодить дубли в журнале */
 	if ( ! empty( $GLOBALS['weiss_resending_mail'] ) ) {
 		return;
 	}
@@ -55,8 +79,8 @@ add_action( 'wp_mail_failed', function ( $error ) {	/* повторная отп
 		$args = array();
 	}
 
-	$log   = weiss_mail_failures();
-	$log[] = array(
+	$log = weiss_mail_failures();
+	array_unshift( $log, array(
 		'id'          => wp_generate_uuid4(),
 		'time'        => current_time( 'mysql' ),
 		'to'          => isset( $args['to'] ) ? weiss_mail_recipients( $args['to'] ) : '',
@@ -65,7 +89,8 @@ add_action( 'wp_mail_failed', function ( $error ) {	/* повторная отп
 		'headers'     => isset( $args['headers'] ) ? $args['headers'] : array(),
 		'attachments' => isset( $args['attachments'] ) ? $args['attachments'] : array(),
 		'error'       => $error->get_error_message(),
-	);
+		'order_id'    => 0,
+	) );
 	weiss_mail_failures_save( $log );
 } );
 
@@ -176,6 +201,15 @@ add_action( 'admin_post_weiss_resend_mail', function () {
 
 	/* запись убираем только после успешной отправки — иначе ошибка остаётся видимой */
 	if ( $sent ) {
+		if ( ! empty( $entry['order_id'] ) ) {
+			$order = wc_get_order( (int) $entry['order_id'] );
+			if ( $order ) {
+				$order->update_meta_data( '_weiss_mail_sent', 'yes' );
+				$order->add_order_note( 'Письмо покупателю отправлено повторно: ' . $entry['to'] . '.' );
+				$order->save();
+			}
+		}
+
 		$log = array_filter( $log, function ( $item ) use ( $id ) {
 			return $item['id'] !== $id;
 		} );

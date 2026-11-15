@@ -119,15 +119,28 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 				$row['product_group'], $row['active'], $row['note'], $now
 			);
 		}
-		/* Пустое название в файле не затирает название, вписанное в панели. */
+		/* Повторный импорт не сбрасывает ручное скрытие: строка помечается
+		   заметкой «Скрыт в панели». Неполные строки остаются скрытыми, пока
+		   в файле не появятся RGB/HEX. Пустое название не затирает
+		   название, вписанное в панели. */
 		$wpdb->query( // phpcs:ignore WordPress.DB.PreparedSQL
 			"INSERT INTO {$table} (hash,palette,code,name,r,g,b,hex,product_group,active,note,updated_at)
 			 VALUES " . implode( ',', $values ) . '
 			 ON DUPLICATE KEY UPDATE
 			   palette=VALUES(palette), code=VALUES(code), r=VALUES(r), g=VALUES(g), b=VALUES(b),
 			   name=IF(CHAR_LENGTH(VALUES(name))=0, name, VALUES(name)), hex=VALUES(hex),
-			   product_group=VALUES(product_group), active=VALUES(active),
-			   note=VALUES(note), updated_at=VALUES(updated_at)'
+			   product_group=VALUES(product_group),
+			   note = CASE
+			     WHEN VALUES(note) <> "" THEN VALUES(note)
+			     WHEN note = "Скрыт в панели" THEN "Скрыт в панели"
+			     ELSE ""
+			   END,
+			   active = CASE
+			     WHEN VALUES(active) = 0 THEN 0
+			     WHEN note = "Скрыт в панели" THEN 0
+			     ELSE 1
+			   END,
+			   updated_at=VALUES(updated_at)'
 		);
 		$batch = array();
 	};
@@ -162,8 +175,21 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 		$g     = isset( $row['g'] ) && is_numeric( $row['g'] ) ? (int) $row['g'] : null;
 		$b     = isset( $row['b'] ) && is_numeric( $row['b'] ) ? (int) $row['b'] : null;
 
+		/* RGB и HEX должны означать один цвет. Показывается HEX, поэтому он
+		   главный: RGB пересчитываем по нему. Без HEX строка неполная, даже
+		   если числа RGB в файле есть (так хранится TVT 3466). */
+		$r = isset( $row['r'] ) && is_numeric( $row['r'] ) ? (int) $row['r'] : null;
+		$g = isset( $row['g'] ) && is_numeric( $row['g'] ) ? (int) $row['g'] : null;
+		$b = isset( $row['b'] ) && is_numeric( $row['b'] ) ? (int) $row['b'] : null;
+
+		if ( $valid ) {
+			$r = hexdec( substr( $hex, 1, 2 ) );
+			$g = hexdec( substr( $hex, 3, 2 ) );
+			$b = hexdec( substr( $hex, 5, 2 ) );
+		}
+
 		$note = '';
-		if ( ! $valid || null === $r || null === $g || null === $b ) {
+		if ( ! $valid ) {
 			$note = 'Неполная запись: нет RGB/HEX, цвет недоступен до уточнения.';
 		}
 
@@ -243,7 +269,11 @@ function weiss_colors_import_file( $path, $ext = '' ) {
 	return $report;
 }
 
-/** Чтение листа XLSX (первый лист, колонки A:G как в реестре). */
+/**
+ * Чтение всех листов XLSX (колонки A:G как в реестре, при наличии H —
+ * название). Раньше читался только первый лист, и данные с других листов
+ * молча терялись.
+ */
 function weiss_colors_read_xlsx( $path ) {
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		return new WP_Error( 'weiss_import_zip', 'Расширение PHP zip не подключено: XLSX не прочитать.' );
@@ -273,50 +303,69 @@ function weiss_colors_read_xlsx( $path ) {
 		}
 	}
 
-	$sheet = $zip->getFromName( 'xl/worksheets/sheet1.xml' );
-	$zip->close();
-
-	if ( ! $sheet ) {
-		return new WP_Error( 'weiss_import_sheet', 'В XLSX нет первого листа.' );
-	}
-
-	$data = simplexml_load_string( $sheet );
-	if ( ! $data ) {
-		return new WP_Error( 'weiss_import_xml', 'Не удалось прочитать лист XLSX.' );
-	}
-
-	$rows   = array();
-	$header = null;
-	foreach ( $data->sheetData->row as $row ) {
-		$values = array();
-		foreach ( $row->c as $cell ) {
-			$ref = (string) $cell['r'];
-			$col = preg_replace( '/\d+/', '', $ref );
-			$type = (string) $cell['t'];
-			$value = (string) $cell->v;
-			if ( 's' === $type ) {
-				$value = isset( $shared[ (int) $value ] ) ? $shared[ (int) $value ] : '';
-			} elseif ( 'inlineStr' === $type && isset( $cell->is->t ) ) {
-				$value = (string) $cell->is->t;
-			}
-			$values[ $col ] = trim( $value );
+	$sheets = array();
+	for ( $i = 0; $i < $zip->numFiles; $i++ ) {
+		$name = (string) $zip->getNameIndex( $i );
+		if ( preg_match( '#^xl/worksheets/sheet\d+\.xml$#', $name ) ) {
+			$sheets[] = $name;
 		}
+	}
+	natsort( $sheets );
 
-		if ( null === $header ) {
-			$header = $values;
+	$rows = array();
+	foreach ( $sheets as $sheet_name ) {
+		$data = simplexml_load_string( (string) $zip->getFromName( $sheet_name ) );
+		if ( ! $data ) {
 			continue;
 		}
 
-		$rows[] = array(
-			'code'    => $values['A'] ?? '',
-			'palette' => $values['B'] ?? '',
-			'name'    => $values['H'] ?? '',
-			'r'       => $values['C'] ?? '',
-			'g'       => $values['D'] ?? '',
-			'b'       => $values['E'] ?? '',
-			'hex'     => $values['F'] ?? '',
-			'group'   => $values['G'] ?? '',
-		);
+		$header = null;
+		foreach ( $data->sheetData->row as $row ) {
+			$values = array();
+			foreach ( $row->c as $cell ) {
+				$ref  = (string) $cell['r'];
+				$col  = preg_replace( '/\d+/', '', $ref );
+				$type = (string) $cell['t'];
+				$value = (string) $cell->v;
+				if ( 's' === $type ) {
+					$value = isset( $shared[ (int) $value ] ) ? $shared[ (int) $value ] : '';
+				} elseif ( 'inlineStr' === $type && isset( $cell->is->t ) ) {
+					$value = (string) $cell->is->t;
+				}
+				$values[ $col ] = trim( $value );
+			}
+
+			/* Заголовок определяем по известным названиям колонок: лист может
+			   быть без шапки, тогда первая строка — данные. */
+			if ( null === $header ) {
+				$header = $values;
+				$known  = array( 'COLOURCODE', 'CARDNAME', 'RGB_HTML', 'Продукт', 'Код', 'Палитра' );
+				if ( array_intersect( $known, array_map( 'strval', array_values( $values ) ) ) ) {
+					continue;
+				}
+			}
+
+			if ( ! array_filter( $values, fn( $v ) => '' !== trim( (string) $v ) ) ) {
+				continue;
+			}
+
+			$rows[] = array(
+				'code'    => $values['A'] ?? '',
+				'palette' => $values['B'] ?? '',
+				'name'    => $values['H'] ?? '',
+				'r'       => $values['C'] ?? '',
+				'g'       => $values['D'] ?? '',
+				'b'       => $values['E'] ?? '',
+				'hex'     => $values['F'] ?? '',
+				'group'   => $values['G'] ?? '',
+			);
+		}
+	}
+
+	$zip->close();
+
+	if ( ! $rows ) {
+		return new WP_Error( 'weiss_import_sheet', 'В XLSX нет строк с цветами.' );
 	}
 
 	return $rows;
@@ -625,6 +674,7 @@ function weiss_color_materials() {
 		'bath'      => array( 'label' => 'Пропитка для бани', 'like' => 'пропитка' ),
 		'stain'     => array( 'label' => 'Состав для дерева', 'like' => 'состав для дерева' ),
 		'oil'       => array( 'label' => 'Масло', 'like' => 'масло' ),
+		'osb'       => array( 'label' => 'Для дерева', 'like' => 'осб' ),
 	);
 }
 
@@ -655,6 +705,9 @@ function weiss_color_map_defaults() {
 			'kitchen'   => array( 25 ),
 			'facade'    => array( 26 ),
 			'furniture' => array( 27 ),
+			/* «Для дерева» (поле реестра «осб»): артикул Заказчик не передал,
+			   поэтому вкладка появится после назначения товара в панели. */
+			'osb'       => array(),
 		),
 		/* Группа Б (ТЗ, п.5.5): категории по согласованному ассортименту.
 		   «Состав для дерева» без подтверждённого артикула остаётся пустым —
@@ -914,19 +967,30 @@ function weiss_colors_admin_page() {
 	}
 
 	$notice = '';
+	$is_error = false;
 
 	if ( isset( $_POST['weiss_colors_action'] ) && check_admin_referer( 'weiss_colors_admin' ) ) {
 		$action = sanitize_key( $_POST['weiss_colors_action'] );
+
+		/* ТЗ 10.1: массовый импорт реестра, ставки колеровки и совместимость —
+		   зона администратора, у менеджера остаются только торговые функции */
+		if ( in_array( $action, array( 'import', 'delete', 'map', 'tint', 'sampler' ), true ) && ! current_user_can( 'manage_options' ) ) {
+			$notice   = 'Недостаточно прав: импорт реестра, удаление цветов, доплату за колеровку и совместимость меняет администратор.';
+			$is_error = true;
+			$action   = '';
+		}
 
 		if ( 'import' === $action && ! empty( $_FILES['weiss_colors_file']['tmp_name'] ) ) {
 			$file = $_FILES['weiss_colors_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 			$ext  = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
 			if ( ! in_array( $ext, array( 'xlsx', 'csv' ), true ) ) {
-				$notice = 'Поддерживаются XLSX и CSV.';
+				$notice   = 'Поддерживаются XLSX и CSV.';
+				$is_error = true;
 			} else {
 				$report = weiss_colors_import_file( $file['tmp_name'], $ext );
 				if ( is_wp_error( $report ) ) {
-					$notice = $report->get_error_message();
+					$notice   = $report->get_error_message();
+					$is_error = true;
 				} else {
 					$notice = sprintf(
 						'Импорт: строк %d, активно %d, неполных %d, отклонено %d, дублей %d, палитр %d. Сверка — ниже.',
@@ -943,9 +1007,32 @@ function weiss_colors_admin_page() {
 
 		if ( 'toggle' === $action && ! empty( $_POST['color_id'] ) ) {
 			global $wpdb;
-			$id = (int) $_POST['color_id'];
-			$wpdb->query( $wpdb->prepare( 'UPDATE ' . weiss_colors_table() . ' SET active = 1 - active WHERE id = %d', $id ) ); // phpcs:ignore WordPress.DB
-			$notice = 'Статус цвета изменён.';
+			$id  = (int) $_POST['color_id'];
+			$row = $wpdb->get_row( $wpdb->prepare( 'SELECT active, hex FROM ' . weiss_colors_table() . ' WHERE id = %d', $id ) ); // phpcs:ignore WordPress.DB
+
+			if ( ! $row ) {
+				$notice   = 'Цвет не найден.';
+				$is_error = true;
+			} elseif ( ! $row->active && '' === (string) $row->hex ) {
+				/* ТЗ 5.3.1: неполную запись показывать нельзя */
+				$notice   = 'Неполную запись без HEX нельзя показать: сначала внесите цвет.';
+				$is_error = true;
+			} else {
+				$wpdb->query( $wpdb->prepare( // phpcs:ignore WordPress.DB
+					'UPDATE ' . weiss_colors_table() . ' SET active = %d, note = %s WHERE id = %d',
+					$row->active ? 0 : 1,
+					$row->active ? 'Скрыт в панели' : '',
+					$id
+				) );
+				$notice = $row->active ? 'Цвет скрыт.' : 'Цвет показан.';
+			}
+		}
+
+		if ( 'delete' === $action && ! empty( $_POST['color_id'] ) ) {
+			global $wpdb;
+			$deleted = $wpdb->delete( weiss_colors_table(), array( 'id' => (int) $_POST['color_id'] ), array( '%d' ) ); // phpcs:ignore WordPress.DB
+			$notice   = $deleted ? 'Цвет удалён.' : 'Цвет не найден.';
+			$is_error = ! $deleted;
 		}
 
 		if ( 'rename' === $action && ! empty( $_POST['color_id'] ) ) {
@@ -961,13 +1048,30 @@ function weiss_colors_admin_page() {
 		if ( 'palette_toggle' === $action && ! empty( $_POST['palette'] ) ) {
 			global $wpdb;
 			$palette = sanitize_text_field( wp_unslash( $_POST['palette'] ) );
-			$state   = 'show' === ( $_POST['state'] ?? '' ) ? 1 : 0;
-			$wpdb->query( $wpdb->prepare( // phpcs:ignore WordPress.DB
-				'UPDATE ' . weiss_colors_table() . ' SET active = %d WHERE palette = %s',
-				$state,
-				$palette
-			) );
-			$notice = $state ? 'Палитра «' . $palette . '» показана.' : 'Палитра «' . $palette . '» скрыта.';
+			$table   = weiss_colors_table();
+			$show    = 'show' === ( $_POST['state'] ?? '' );
+
+			if ( $show ) {
+				/* ТЗ 5.3.1: неполные записи без HEX остаются скрытыми */
+				$updated  = (int) $wpdb->query( $wpdb->prepare( // phpcs:ignore WordPress.DB
+					'UPDATE ' . $table . " SET active = 1, note = '' WHERE palette = %s AND hex <> ''",
+					$palette
+				) );
+				$skipped  = (int) $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB
+					'SELECT COUNT(*) FROM ' . $table . " WHERE palette = %s AND hex = ''",
+					$palette
+				) );
+				$notice   = 'Палитра «' . $palette . '» показана: ' . $updated . '.';
+				if ( $skipped ) {
+					$notice .= ' Неполных записей без HEX осталось скрыто: ' . $skipped . '.';
+				}
+			} else {
+				$updated = (int) $wpdb->query( $wpdb->prepare( // phpcs:ignore WordPress.DB
+					'UPDATE ' . $table . " SET active = 0, note = 'Скрыт в панели' WHERE palette = %s",
+					$palette
+				) );
+				$notice  = 'Палитра «' . $palette . '» скрыта: ' . $updated . '.';
+			}
 		}
 
 		if ( 'add_color' === $action ) {
@@ -983,9 +1087,11 @@ function weiss_colors_admin_page() {
 			}
 
 			if ( '' === $palette || '' === $code ) {
-				$notice = 'Для цвета нужны палитра и код.';
+				$notice   = 'Для цвета нужны палитра и код.';
+				$is_error = true;
 			} elseif ( ! preg_match( '/^#[0-9a-f]{6}$/', $hex ) ) {
-				$notice = 'HEX-цвет в формате #RRGGBB.';
+				$notice   = 'HEX-цвет в формате #RRGGBB.';
+				$is_error = true;
 			} else {
 				$r = hexdec( substr( $hex, 1, 2 ) );
 				$g = hexdec( substr( $hex, 3, 2 ) );
@@ -1033,8 +1139,9 @@ function weiss_colors_admin_page() {
 				if ( '' === $raw ) {
 					$rates[ $group ] = '';
 				} elseif ( ! is_numeric( $raw ) || (float) $raw < 0 ) {
-					$notice = 'Доплата за колеровку — неотрицательное число в рублях или пустое поле.';
-					$rates   = null;
+					$notice   = 'Доплата за колеровку — неотрицательное число в рублях или пустое поле.';
+					$is_error = true;
+					$rates    = null;
 					break;
 				} else {
 					$rates[ $group ] = (string) round( (float) $raw, 2 );
@@ -1043,6 +1150,39 @@ function weiss_colors_admin_page() {
 			if ( is_array( $rates ) ) {
 				update_option( 'weiss_tint_surcharge', $rates, false );
 				$notice = 'Доплата за колеровку сохранена.';
+			}
+		}
+
+		if ( 'sampler' === $action ) {
+			$lines   = preg_split( '/\r\n|\r|\n/', (string) wp_unslash( $_POST['sampler_colors'] ?? '' ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			$keys    = array();
+			$unknown = array();
+
+			foreach ( (array) $lines as $line ) {
+				$line = trim( $line );
+				if ( '' === $line ) {
+					continue;
+				}
+				/* Формат строки — «палитра | код»: названия палитр бывают с «&» и «/» */
+				$parts = array_map( 'trim', explode( '|', $line, 2 ) );
+				if ( count( $parts ) < 2 || '' === $parts[0] || '' === $parts[1] || ! weiss_color_get( $parts[0], $parts[1] ) ) {
+					$unknown[] = $line;
+					continue;
+				}
+				$keys[] = weiss_sampler_color_key( $parts[0], $parts[1] );
+			}
+
+			if ( $unknown ) {
+				$notice   = 'Не найдены цвета: ' . implode( ', ', array_slice( $unknown, 0, 5 ) )
+					. ( count( $unknown ) > 5 ? ' и ещё ' . ( count( $unknown ) - 5 ) : '' )
+					. '. Проверьте формат «палитра | код».';
+				$is_error = true;
+			} else {
+				$keys = array_values( array_unique( $keys ) );
+				update_option( 'weiss_sampler_colors', $keys, false );
+				$notice = $keys
+					? 'Перечень цветов пробника сохранён: ' . count( $keys ) . '.'
+					: 'Перечень пуст: пробник доступен для всех активных цветов.';
 			}
 		}
 	}
@@ -1057,7 +1197,7 @@ function weiss_colors_admin_page() {
 	<div class="wrap">
 		<h1>Колеровка: палитры и цвета</h1>
 		<?php if ( $notice ) : ?>
-			<div class="notice notice-success"><p><?php echo esc_html( $notice ); ?></p></div>
+			<div class="notice <?php echo $is_error ? 'notice-error' : 'notice-success'; ?>"><p><?php echo esc_html( $notice ); ?></p></div>
 		<?php endif; ?>
 
 		<p>
@@ -1069,18 +1209,20 @@ function weiss_colors_admin_page() {
 			<?php endif; ?>
 		</p>
 
-		<h2>Импорт реестра</h2>
-		<form method="post" enctype="multipart/form-data">
-			<?php wp_nonce_field( 'weiss_colors_admin' ); ?>
-			<input type="hidden" name="weiss_colors_action" value="import">
-			<input type="file" name="weiss_colors_file" accept=".xlsx,.csv" required>
-			<button class="button button-primary" type="submit">Импортировать</button>
-			<p class="description">Повторный импорт обновляет записи по ключу «палитра + код». Неполные строки сохраняются скрытыми.</p>
-			<p>
-				<a class="button" href="<?php echo esc_url( weiss_export_url( 'colors-template' ) ); ?>">Скачать шаблон CSV</a>
-				<a class="button" href="<?php echo esc_url( weiss_export_url( 'colors-rejected' ) ); ?>">Отклонённые строки (CSV)</a>
-			</p>
-		</form>
+		<?php if ( current_user_can( 'manage_options' ) ) : ?>
+			<h2>Импорт реестра</h2>
+			<form method="post" enctype="multipart/form-data">
+				<?php wp_nonce_field( 'weiss_colors_admin' ); ?>
+				<input type="hidden" name="weiss_colors_action" value="import">
+				<input type="file" name="weiss_colors_file" accept=".xlsx,.csv" required>
+				<button class="button button-primary" type="submit">Импортировать</button>
+				<p class="description">Повторный импорт обновляет записи по ключу «палитра + код». Неполные строки сохраняются скрытыми.</p>
+				<p>
+					<a class="button" href="<?php echo esc_url( weiss_export_url( 'colors-template' ) ); ?>">Скачать шаблон CSV</a>
+					<a class="button" href="<?php echo esc_url( weiss_export_url( 'colors-rejected' ) ); ?>">Отклонённые строки (CSV)</a>
+				</p>
+			</form>
+		<?php endif; ?>
 
 		<?php $weiss_report = get_option( 'weiss_colors_last_report' ); ?>
 		<?php if ( is_array( $weiss_report ) ) : ?>
@@ -1174,6 +1316,7 @@ function weiss_colors_admin_page() {
 		</table>
 
 		<?php $weiss_map = weiss_color_product_map(); $weiss_choices = weiss_colors_admin_product_choices(); ?>
+		<?php if ( current_user_can( 'manage_options' ) ) : ?>
 		<h2>Совместимость цветов с товарами</h2>
 		<p class="description">
 			На странице оттенка покупатель видит совместимые товары выбранной группы.
@@ -1238,6 +1381,25 @@ function weiss_colors_admin_page() {
 			</table>
 			<p><button class="button button-primary" type="submit">Сохранить доплату</button></p>
 		</form>
+
+		<?php
+		$weiss_sampler_list = array();
+		foreach ( weiss_sampler_colors() as $weiss_key ) {
+			$weiss_sampler_list[] = str_replace( "\x1f", ' | ', $weiss_key );
+		}
+		?>
+		<h2>Пробник 300 мл</h2>
+		<p class="description">
+			Перечень цветов, которые продаются пробником (ТЗ 6.6). Одна строка — «палитра | код».
+			Пока список пуст, пробник доступен для всех активных цветов.
+		</p>
+		<form method="post">
+			<?php wp_nonce_field( 'weiss_colors_admin' ); ?>
+			<input type="hidden" name="weiss_colors_action" value="sampler">
+			<textarea name="sampler_colors" rows="6" class="large-text code" spellcheck="false"><?php echo esc_textarea( implode( "\n", $weiss_sampler_list ) ); ?></textarea>
+			<p><button class="button button-primary" type="submit">Сохранить перечень</button></p>
+		</form>
+		<?php endif; ?>
 
 		<h2>Добавить цвет</h2>
 		<form method="post">
@@ -1313,12 +1475,23 @@ function weiss_colors_admin_page() {
 						<td><?php echo $color->hex ? '<span style="display:inline-block;width:28px;height:18px;border:1px solid #ccc;background:' . esc_attr( $color->hex ) . '"></span> ' . esc_html( $color->hex ) : '—'; ?></td>
 						<td><?php echo $color->active ? 'активен' : 'скрыт'; ?><?php echo $color->note ? '<br><small>' . esc_html( $color->note ) . '</small>' : ''; ?></td>
 						<td>
-							<form method="post">
-								<?php wp_nonce_field( 'weiss_colors_admin' ); ?>
-								<input type="hidden" name="weiss_colors_action" value="toggle">
-								<input type="hidden" name="color_id" value="<?php echo (int) $color->id; ?>">
-								<button class="button button-small" type="submit"><?php echo $color->active ? 'Скрыть' : 'Показать'; ?></button>
-							</form>
+							<div style="display:flex;gap:4px">
+								<form method="post">
+									<?php wp_nonce_field( 'weiss_colors_admin' ); ?>
+									<input type="hidden" name="weiss_colors_action" value="toggle">
+									<input type="hidden" name="color_id" value="<?php echo (int) $color->id; ?>">
+									<button class="button button-small" type="submit"><?php echo $color->active ? 'Скрыть' : 'Показать'; ?></button>
+								</form>
+								<?php if ( current_user_can( 'manage_options' ) ) : ?>
+								<form method="post">
+									<?php wp_nonce_field( 'weiss_colors_admin' ); ?>
+									<input type="hidden" name="weiss_colors_action" value="delete">
+									<input type="hidden" name="color_id" value="<?php echo (int) $color->id; ?>">
+									<button class="button button-small button-link-delete" type="submit"
+										onclick="return confirm(<?php echo esc_attr( wp_json_encode( 'Удалить цвет «' . $color->palette . ' / ' . $color->code . '»? Повторный импорт вернёт запись.' ) ); ?>);">Удалить</button>
+								</form>
+								<?php endif; ?>
+							</div>
 						</td>
 					</tr>
 				<?php endforeach; ?>

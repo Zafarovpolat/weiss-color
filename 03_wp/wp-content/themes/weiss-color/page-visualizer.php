@@ -74,7 +74,7 @@ $weiss_sampler_url = add_query_arg(
 	weiss_page_url( 'sampler' )
 );
 ?>
-<div class="viz-main" data-palette="<?php echo esc_attr( $weiss_palette ); ?>" data-code="<?php echo esc_attr( $weiss_code ); ?>" data-page="<?php echo esc_attr( $weiss_viz_page ); ?>" data-product="<?php echo esc_attr( $weiss_product_id ); ?>" data-variation="<?php echo esc_attr( $weiss_variation_id ); ?>" data-group="<?php echo esc_attr( $weiss_group ); ?>">
+<div class="viz-main" data-palette="<?php echo esc_attr( $weiss_palette ); ?>" data-code="<?php echo esc_attr( $weiss_code ); ?>" data-page="<?php echo esc_attr( $weiss_viz_page ); ?>" data-pages="<?php echo esc_attr( $weiss_viz['max_pages'] ); ?>" data-product="<?php echo esc_attr( $weiss_product_id ); ?>" data-variation="<?php echo esc_attr( $weiss_variation_id ); ?>" data-group="<?php echo esc_attr( $weiss_group ); ?>">
 
       <nav class="crumbs crumbs--overlay" aria-label="Хлебные крошки">
         <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a> &gt;

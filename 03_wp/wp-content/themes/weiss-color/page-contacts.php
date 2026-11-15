@@ -20,6 +20,19 @@ get_header();
             <?php if ( weiss_opt( 'seller_address' ) ) : ?>
               <span><?php echo esc_html( weiss_opt( 'seller_address' ) ); ?></span>
             <?php endif; ?>
+            <?php
+            /* Реквизиты продавца (ТЗ 9.3): выводятся, когда заполнены в панели */
+            $weiss_requisites = array();
+            foreach ( array( 'seller_inn' => 'ИНН', 'seller_kpp' => 'КПП', 'seller_ogrn' => 'ОГРН' ) as $weiss_req_key => $weiss_req_label ) {
+                $weiss_req_value = trim( (string) weiss_opt( $weiss_req_key ) );
+                if ( '' !== $weiss_req_value ) {
+                    $weiss_requisites[] = $weiss_req_label . ' ' . $weiss_req_value;
+                }
+            }
+            if ( $weiss_requisites ) :
+                ?>
+                <span><?php echo esc_html( implode( ', ', $weiss_requisites ) ); ?></span>
+            <?php endif; ?>
           </p>
 
           <p class="contacts-list">

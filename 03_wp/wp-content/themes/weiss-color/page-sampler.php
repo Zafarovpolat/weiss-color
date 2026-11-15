@@ -12,7 +12,9 @@ $weiss_color   = ( $weiss_palette && $weiss_code ) ? weiss_color_get( $weiss_pal
 
 $weiss_palettes = weiss_page_url( 'palettes' );
 $weiss_product  = weiss_sampler_product();
-$weiss_have     = (bool) ( $weiss_color && $weiss_product );
+/* ТЗ 6.6: перечень разрешённых цветов пробника задаёт магазин */
+$weiss_allowed  = ( $weiss_color && weiss_sampler_allows( $weiss_color ) );
+$weiss_have     = (bool) ( $weiss_allowed && $weiss_product );
 
 $weiss_color_label = $weiss_color ? $weiss_color->code : 'не выбран';
 $weiss_hex         = $weiss_color ? $weiss_color->hex : '#f4e7e1';
@@ -111,7 +113,7 @@ $weiss_back = $weiss_color
               <circle cx="30" cy="34.5" r="4.5"/>
               <circle cx="57.5" cy="34.5" r="4.5"/>
             </svg>
-            <span>Быстрая доставка<br>от 3 до 7 дней</span>
+            <span>Доставка по России</span>
           </li>
         </ul>
 
@@ -144,7 +146,7 @@ $weiss_back = $weiss_color
         <?php else : ?>
         <div class="sampler-price-row">
           <p class="sampler-price">300 мл</p>
-          <span class="sampler-stock">Выберите цвет</span>
+          <span class="sampler-stock"><?php echo ( $weiss_color && ! $weiss_allowed ) ? 'Цвет не продаётся пробником' : 'Выберите цвет'; ?></span>
         </div>
 
         <a class="btn btn--brown sampler-add" href="<?php echo esc_url( $weiss_palettes ); ?>">Выбрать цвет</a>

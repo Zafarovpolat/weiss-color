@@ -267,6 +267,14 @@
   list-style: none;
 }
 
+/* Сообщение, если оттенки не загрузились: молча пустой список не оставляем */
+.viz-load-error {
+  margin-top: clamp(14px, 0.7vw, 18px);
+  font-size: clamp(12px, 0.62vw, 16px);
+  line-height: 1.45;
+  color: #9a6647;
+}
+
 .viz-swatch {
   width: 100%;
   display: flex;

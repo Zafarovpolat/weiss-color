@@ -76,12 +76,76 @@ add_action( 'pre_get_posts', function ( $query ) {
 
 /**
  * Оформление идёт только через форму темы: она проверяет согласие,
- * реквизиты, цвет и колеровку. Штатный маршрут Store API создавал заказ
- * в обход этих проверок, поэтому закрыт (ТЗ 7.2, 11.3).
+ * реквизиты, цвет и колеровку. Маршруты Store API создавали заказ в обход
+ * этих проверок, поэтому создание заказа через них закрыто (ТЗ 7.2, 11.3).
+ * Store API держит несколько адресов: /wc/store/checkout, /wc/store/v1/checkout
+ * и адреса конкретного заказа, поэтому закрываем по шаблону.
  */
+function weiss_is_store_checkout_route( $route ) {
+	return (bool) preg_match( '#/wc/store(?:/v\d+)?/checkout#', (string) $route );
+}
+
 add_filter( 'rest_endpoints', function ( $endpoints ) {
-	unset( $endpoints['/wc/store/v1/checkout'] );
+	foreach ( array_keys( $endpoints ) as $route ) {
+		if ( ! weiss_is_store_checkout_route( $route ) ) {
+			continue;
+		}
+
+		foreach ( (array) $endpoints[ $route ] as $index => $handler ) {
+			$methods = isset( $handler['methods'] ) ? $handler['methods'] : array();
+			/* До нормализации core методы лежат строкой «GET, POST» или
+			   массивом, после — ключами. Понимаем оба вида. */
+			$methods = is_string( $methods ) ? explode( ',', $methods ) : (array) $methods;
+			$methods = array_map( 'strtoupper', array_map( 'trim', $methods ) );
+			if ( array_intersect( array( 'POST', 'PUT', 'PATCH' ), $methods ) ) {
+				unset( $endpoints[ $route ][ $index ] );
+			}
+		}
+
+		if ( empty( $endpoints[ $route ] ) ) {
+			unset( $endpoints[ $route ] );
+		}
+	}
+
 	return $endpoints;
+} );
+
+/* Вторая линия: маршрут мог быть зарегистрирован после фильтра. */
+add_filter( 'rest_pre_dispatch', function ( $result, $server, $request ) {
+	if ( null !== $result ) {
+		return $result;
+	}
+
+	$method = strtoupper( (string) $request->get_method() );
+	if ( ! in_array( $method, array( 'POST', 'PUT', 'PATCH' ), true ) ) {
+		return $result;
+	}
+
+	if ( weiss_is_store_checkout_route( $request->get_route() ) ) {
+		return new WP_Error( 'rest_no_route', 'Маршрут не найден.', array( 'status' => 404 ) );
+	}
+
+	return $result;
+}, 10, 3 );
+
+/* ТЗ 7.2: суммы считаются сервером с точностью до копеек. В настройках
+   магазина стояли целые рубли, из-за чего скидка с некруглой цены
+   округлялась. Показываем копейки только когда они ненулевые. */
+add_filter( 'option_woocommerce_price_num_decimals', function () {
+	return 2;
+} );
+
+add_filter( 'option_woocommerce_price_trim_zeros', function () {
+	return 'yes';
+} );
+
+/** Продажа — только по России: регионы и тарифы заданы для РФ (ТЗ 7.4). */
+add_filter( 'option_woocommerce_allowed_countries', function () {
+	return 'specific';
+} );
+
+add_filter( 'option_woocommerce_specific_allowed_countries', function () {
+	return array( 'RU' );
 } );
 
 /**
@@ -142,6 +206,43 @@ function weiss_catalog_price_sql( $clauses, $query ) {
 	return $clauses;
 }
 add_filter( 'posts_clauses', 'weiss_catalog_price_sql', 99999, 2 );
+
+/**
+ * ТЗ 4.2: на карточке цена «от» — минимальная доступная фасовка. Сортировка
+ * «по убыванию цены» должна опираться на то же число. WooCommerce для DESC
+ * берёт максимальную цену, поэтому товар с дорогой крупной фасовкой вставал
+ * первым, хотя на витрине у него «от 3 500».
+ */
+function weiss_catalog_price_desc_sql( $clauses, $query ) {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return $clauses;
+	}
+	if ( ! $query->is_post_type_archive( 'product' ) && ! $query->is_tax( 'product_cat' ) ) {
+		return $clauses;
+	}
+
+	$requested = isset( $_GET['orderby'] ) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	if ( 'price-desc' !== $requested ) {
+		return $clauses;
+	}
+
+	global $wpdb;
+
+	$variation_min = "( SELECT MIN( pmp.meta_value + 0 ) FROM {$wpdb->posts} pv
+		INNER JOIN {$wpdb->postmeta} pmp ON pmp.post_id = pv.ID AND pmp.meta_key = '_price'
+		WHERE pv.post_parent = {$wpdb->posts}.ID AND pv.post_type = 'product_variation'
+		AND pv.post_status = 'publish' AND pmp.meta_value <> ''
+		AND NOT EXISTS ( SELECT 1 FROM {$wpdb->postmeta} pmsv
+			WHERE pmsv.post_id = pv.ID AND pmsv.meta_key = '_stock_status' AND pmsv.meta_value = 'outofstock' ) )";
+
+	$own_price = "( SELECT pm.meta_value + 0 FROM {$wpdb->postmeta} pm
+		WHERE pm.post_id = {$wpdb->posts}.ID AND pm.meta_key = '_price' LIMIT 1 )";
+
+	$clauses['orderby'] = "COALESCE( {$variation_min}, {$own_price}, 0 ) DESC, {$wpdb->posts}.ID DESC";
+
+	return $clauses;
+}
+add_filter( 'posts_clauses', 'weiss_catalog_price_desc_sql', 99999, 2 );
 
 /**
  * Сортировка «по популярности» (ТЗ 4.2): сначала редактируемый приоритет
@@ -476,6 +577,41 @@ add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
 	return $fields;
 }, 20 );
 
+/** Контрольные числа ИНН (10 цифр — юрлицо, 12 — ИП) и ОГРН/ОГРНИП. */
+function weiss_inn_valid( $inn ) {
+	if ( ! preg_match( '/^\d{10}$|^\d{12}$/', $inn ) ) {
+		return false;
+	}
+
+	$digits = array_map( 'intval', str_split( $inn ) );
+	$check  = function ( $weights ) use ( $digits ) {
+		$sum = 0;
+		foreach ( $weights as $i => $weight ) {
+			$sum += $digits[ $i ] * $weight;
+		}
+		return $sum % 11 % 10;
+	};
+
+	if ( 10 === strlen( $inn ) ) {
+		return $check( array( 2, 4, 10, 3, 5, 9, 4, 6, 8 ) ) === $digits[9];
+	}
+
+	return $check( array( 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 ) ) === $digits[10]
+		&& $check( array( 3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8 ) ) === $digits[11];
+}
+
+function weiss_ogrn_valid( $ogrn ) {
+	if ( ! preg_match( '/^\d{13}$|^\d{15}$/', $ogrn ) ) {
+		return false;
+	}
+
+	$divisor = 13 === strlen( $ogrn ) ? 11 : 13;
+	$base    = (int) substr( $ogrn, 0, -1 );
+	$control = $base % $divisor % 10;
+
+	return $control === (int) substr( $ogrn, -1 );
+}
+
 /** Согласие из макета проверяется и на сервере, не только в браузере. */
 add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors ) {
 	if ( empty( $_POST['weiss_consent'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -504,15 +640,21 @@ add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors )
 	}
 	if ( 'ip' === $payer ? 12 !== strlen( $inn ) : 10 !== strlen( $inn ) ) {
 		$errors->add( 'weiss_invoice_inn', 'ИНН для счёта — 10 цифр у юрлица или 12 у ИП.' );
+	} elseif ( ! weiss_inn_valid( $inn ) ) {
+		$errors->add( 'weiss_invoice_inn', 'ИНН не проходит проверку контрольного числа — проверьте цифры.' );
 	}
 	if ( 'legal' === $payer && 9 !== strlen( $kpp ) ) {
-		$errors->add( 'weiss_invoice_kpp', 'КПП для счёта — 9 цифр. У ИП КПП не требуется.' );
-	}
-	if ( '' !== $kpp && 9 !== strlen( $kpp ) ) {
 		$errors->add( 'weiss_invoice_kpp', 'КПП для счёта — 9 цифр.' );
 	}
 	if ( 'ip' === $payer ? 15 !== strlen( $ogrn ) : 13 !== strlen( $ogrn ) ) {
 		$errors->add( 'weiss_invoice_ogrn', 'ip' === $payer ? 'ОГРНИП — 15 цифр.' : 'ОГРН — 13 цифр.' );
+	} elseif ( ! weiss_ogrn_valid( $ogrn ) ) {
+		$errors->add( 'weiss_invoice_ogrn', 'ОГРН не проходит проверку контрольного числа — проверьте цифры.' );
+	}
+	/* ТЗ 8.2: юридический адрес сохраняется для счёта у юрлица и у ИП */
+	$address = trim( (string) ( $invoice['address'] ?? '' ) );
+	if ( mb_strlen( $address ) < 5 ) {
+		$errors->add( 'weiss_invoice_address', 'Укажите юридический адрес для счёта.' );
 	}
 	if ( ! $email ) {
 		$errors->add( 'weiss_invoice_email', 'Укажите e-mail для счёта.' );
@@ -603,3 +745,21 @@ add_action( 'woocommerce_applied_coupon', function ( $code ) {
 		}
 	}
 }, 20 );
+
+/**
+ * Точность денег — до копеек (ТЗ 7.2). WooCommerce хранит и умножает суммы
+ * с точностью настройки, поэтому она обязана быть 2; нулевые копейки
+ * в выводе не показываем, чтобы цены остались как в макете.
+ */
+add_action( 'init', function () {
+	if ( '2' !== (string) get_option( 'woocommerce_price_num_decimals' ) ) {
+		update_option( 'woocommerce_price_num_decimals', 2 );
+	}
+}, 5 );
+
+add_filter( 'formatted_woocommerce_price', function ( $formatted, $price, $decimals, $decimal_separator, $thousand_separator ) {
+	if ( 2 === (int) $decimals && abs( (float) $price - round( (float) $price ) ) < 0.005 ) {
+		return number_format( round( (float) $price ), 0, $decimal_separator, $thousand_separator );
+	}
+	return $formatted;
+}, 10, 5 );

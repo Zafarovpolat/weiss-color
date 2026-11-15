@@ -45,6 +45,9 @@
 
 .c-hero__photo {
   margin: 0;
+  /* стены на фото прозрачные — фон фигуры и есть выбранный цвет (ТЗ 5.5) */
+  background-color: #fff;
+  line-height: 0;
 }
 
 .c-hero__photo img {

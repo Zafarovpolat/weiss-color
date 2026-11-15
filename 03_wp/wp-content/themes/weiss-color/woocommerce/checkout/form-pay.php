@@ -12,17 +12,21 @@ $weiss_totals = $order->get_order_item_totals();
 $weiss_first  = true;
 
 /* Карта первой — как в оформлении заказа, даже если в настройках
-   WooCommerce счёт стоит выше. */
-$weiss_order = array( 'weiss_card' => 0, 'bacs' => 1 );
+   WooCommerce счёт стоит выше. Шлюз ищем по классу, не по id. */
+$weiss_card_gateway = weiss_card_gateway( $available_gateways );
+$weiss_card_id      = $weiss_card_gateway ? $weiss_card_gateway->id : '';
+$weiss_order        = $weiss_card_id ? array( $weiss_card_id => 0, 'bacs' => 1 ) : array( 'bacs' => 0 );
+
 uksort( $available_gateways, function ( $a, $b ) use ( $weiss_order ) {
 	$left  = isset( $weiss_order[ $a ] ) ? $weiss_order[ $a ] : 9;
 	$right = isset( $weiss_order[ $b ] ) ? $weiss_order[ $b ] : 9;
 	return $left <=> $right;
 } );
-$weiss_icons  = array(
-	'weiss_card' => array( 'icons/card.svg', 51, 32, 'Visa, MasterCard, Мир' ),
-	'bacs'       => array( 'icons/document.svg', 40, 51, 'С НДС или без НДС' ),
-);
+
+$weiss_icons = array( 'bacs' => array( 'icons/document.svg', 40, 51, 'С НДС или без НДС' ) );
+if ( $weiss_card_id ) {
+	$weiss_icons[ $weiss_card_id ] = array( 'icons/card.svg', 51, 32, 'Visa, MasterCard, Мир' );
+}
 ?>
 <form id="order_review" method="post" class="checkout-layout pay-form">
 

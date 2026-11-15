@@ -269,9 +269,13 @@ function weiss_product_card_image( $product ) {
 	return (int) WC()->cart->get_cart_contents_count();
 }
 
-/** Число в денежном виде макета: 3 500 (пробел как разделитель тысяч). */
+/** Число в денежном виде макета: 3 500 (пробел как разделитель тысяч).
+    Копейки показываются только когда они есть: ТЗ 7.2 требует точности
+    до копеек, а макет рисует круглые суммы без дробной части. */
 function weiss_price_number( $value ) {
-	return number_format( (float) $value, 0, ',', ' ' );
+	$value = (float) $value;
+	$decimals = abs( $value - round( $value ) ) > 0.004 ? 2 : 0;
+	return number_format( $value, $decimals, ',', ' ' );
 }
 
 /** Цена в карточке каталога: «от 3 500 руб.» (макет М15). */
@@ -284,7 +288,12 @@ function weiss_price_compact( $value ) {
 	return weiss_price_number( $value ) . '₽';
 }
 
-/** Минимум и максимум цены по опубликованным товарам — границы ползунка фильтра. */
+/**
+ * Минимум и максимум цены по товарам, которые видно в каталоге, — границы
+ * ползунка фильтра. Цену товара с фасовками задают фасовки: собственная
+ * _price родителя хранит минимум и верхнюю границу не показывает. Товары,
+ * исключённые из каталога (пробник), в шкалу не попадают.
+ */
 function weiss_price_bounds() {
 	static $bounds = null;
 	if ( null !== $bounds ) {
@@ -292,15 +301,31 @@ function weiss_price_bounds() {
 	}
 
 	global $wpdb;
+
+	$hidden = "EXISTS ( SELECT 1 FROM {$wpdb->term_relationships} wtr
+		INNER JOIN {$wpdb->term_taxonomy} wtt ON wtt.term_taxonomy_id = wtr.term_taxonomy_id
+		INNER JOIN {$wpdb->terms} wte ON wte.term_id = wtt.term_id
+		WHERE wtr.object_id = p.ID AND wtt.taxonomy = 'product_visibility'
+		AND wte.slug IN ( 'exclude-from-catalog', 'exclude-from-search' ) )";
+
+	$own = "SELECT pm.meta_value + 0 AS price
+		FROM {$wpdb->posts} p
+		INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = '_price'
+		WHERE p.post_type = 'product' AND p.post_status = 'publish' AND pm.meta_value <> ''
+		AND NOT EXISTS ( SELECT 1 FROM {$wpdb->posts} pv
+			WHERE pv.post_parent = p.ID AND pv.post_type = 'product_variation' AND pv.post_status = 'publish' )
+		AND NOT {$hidden}";
+
+	$variations = "SELECT vp.meta_value + 0 AS price
+		FROM {$wpdb->posts} p
+		INNER JOIN {$wpdb->posts} pv ON pv.post_parent = p.ID AND pv.post_type = 'product_variation' AND pv.post_status = 'publish'
+		INNER JOIN {$wpdb->postmeta} vp ON vp.post_id = pv.ID AND vp.meta_key = '_price'
+		WHERE p.post_type = 'product' AND p.post_status = 'publish' AND vp.meta_value <> ''
+		AND NOT {$hidden}";
+
 	$row = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		"SELECT MIN(CAST(pm.meta_value AS DECIMAL(10,2))) AS min_price,
-		        MAX(CAST(pm.meta_value AS DECIMAL(10,2))) AS max_price
-		   FROM {$wpdb->postmeta} pm
-		   JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-		  WHERE pm.meta_key = '_price'
-		    AND p.post_type = 'product'
-		    AND p.post_status = 'publish'
-		    AND pm.meta_value <> ''"
+		"SELECT MIN( price ) AS min_price, MAX( price ) AS max_price
+		   FROM ( {$own} UNION ALL {$variations} ) wprices"
 	);
 
 	$min = $row && null !== $row->min_price ? (float) $row->min_price : 0;

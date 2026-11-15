@@ -83,7 +83,31 @@ function weiss_color_cart_target( $color ) {
 	return weiss_product_cart_target( $items[0]['product'] );
 }
 
-/** Совместим ли цвет с товаром (ТЗ, п. 5.5): пробник принимает любой цвет. */
+/** Ключ цвета для перечня пробника: палитра и код без учёта регистра. */
+function weiss_sampler_color_key( $palette, $code ) {
+	return mb_strtolower( trim( (string) $palette ) ) . "\x1f" . mb_strtolower( trim( (string) $code ) );
+}
+
+/** Перечень разрешённых цветов пробника (ТЗ 6.6). Пусто — разрешены все активные. */
+function weiss_sampler_colors() {
+	$list = get_option( 'weiss_sampler_colors', array() );
+	return is_array( $list ) ? $list : array();
+}
+
+function weiss_sampler_allows( $color ) {
+	if ( ! $color || empty( $color->active ) ) {
+		return false;
+	}
+
+	$list = weiss_sampler_colors();
+	if ( ! $list ) {
+		return true;
+	}
+
+	return in_array( weiss_sampler_color_key( $color->palette, $color->code ), $list, true );
+}
+
+/** Совместим ли цвет с товаром (ТЗ, п. 5.5): пробник берёт только разрешённые цвета (п. 6.6). */
 function weiss_color_fits_product( $color, $product_id, $variation_id = 0 ) {
 	$product = wc_get_product( (int) $product_id );
 	if ( ! $product ) {
@@ -93,7 +117,7 @@ function weiss_color_fits_product( $color, $product_id, $variation_id = 0 ) {
 		return false;
 	}
 	if ( 'yes' === get_post_meta( $product->get_id(), '_weiss_sampler', true ) ) {
-		return true;
+		return weiss_sampler_allows( $color );
 	}
 	if ( $product->is_type( 'variation' ) ) {
 		$product = wc_get_product( $product->get_parent_id() );
@@ -152,6 +176,11 @@ add_filter( 'woocommerce_add_to_cart_validation', function ( $passed, $product_i
 		return false;
 	}
 
+	if ( $sampler && ! weiss_sampler_allows( $color ) ) {
+		wc_add_notice( 'Пробник этого цвета не продаётся. Выберите цвет из перечня, утверждённого магазином.', 'error' );
+		return false;
+	}
+
 	if ( ! weiss_color_fits_product( $color, $product_id, $variation_id ) ) {
 		wc_add_notice( 'Этот оттенок не подходит для выбранного товара или фасовки. Выберите цвет заново.', 'error' );
 		return false;
@@ -207,12 +236,19 @@ add_action( 'woocommerce_before_calculate_totals', function ( $cart ) {
 
 		$product_id   = (int) $item['product_id'];
 		$variation_id = (int) ( $item['variation_id'] ?? 0 );
-		$base         = isset( $item['weiss_base_price'] ) ? (float) $item['weiss_base_price'] : weiss_tint_base_price( $product_id, $variation_id );
-		$surcharge    = weiss_tint_surcharge( $product_id, $variation_id );
+
+		/* Цена фасовки берётся заново (ТЗ 7.2): если её изменили после
+		   добавления в корзину, покупатель видит текущую, а не старую. */
+		$base = weiss_tint_base_price( $product_id, $variation_id );
+		if ( null === $base && isset( $item['weiss_base_price'] ) ) {
+			$base = (float) $item['weiss_base_price'];
+		}
+		$surcharge = weiss_tint_surcharge( $product_id, $variation_id );
 
 		/* Неизвестная доплата: позиция остаётся по базовой цене, а оформление
 		   блокируется проверкой в woocommerce_checkout_process. */
 		if ( null !== $base ) {
+			$cart->cart_contents[ $key ]['weiss_base_price'] = $base;
 			$cart->cart_contents[ $key ]['weiss_unit_price'] = round( $base + ( null === $surcharge ? 0 : $surcharge ), 2 );
 		}
 		$cart->cart_contents[ $key ]['weiss_surcharge'] = $surcharge;

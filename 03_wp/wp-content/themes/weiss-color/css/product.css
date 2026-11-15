@@ -274,10 +274,18 @@ main {
   transition: background var(--ease-ui), box-shadow var(--ease-ui);
 }
 
-.p-price__btn:hover {
+.p-price__btn:hover:not(:disabled) {
   background: var(--color-teal-dark);
   color: var(--color-white);
   box-shadow: var(--shadow-hover-teal);
+}
+
+/* Нет в наличии: кнопка не выглядит рабочей (ТЗ 4.4) */
+.p-price__btn:disabled {
+  background: #b9bcc2;
+  color: var(--color-white);
+  cursor: default;
+  box-shadow: none;
 }
 
 /* --- Нижняя секция: описание + характеристики --- */

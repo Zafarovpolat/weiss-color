@@ -112,12 +112,14 @@ get_header();
 			</fieldset>
 
 			<?php
-			/* Границы ползунка и стартовые значения — как в макете М15 (0–20000,
-			   700–12 000). Реальный диапазон цен учитывается в фильтре запроса. */
+			/* Границы ползунка — по реальным ценам каталога, а не по числам
+			   макета: иначе шкала показывает 700–12 000 при товарах от 2 900. */
 			$weiss_bounds     = weiss_price_bounds();
-			$weiss_slider_max = max( 20000, $weiss_bounds['max'] );
-			$weiss_view_min   = $weiss_min ? $weiss_min : 700;
-			$weiss_view_max   = $weiss_max ? $weiss_max : 12000;
+			$weiss_slider_min = (int) floor( $weiss_bounds['min'] );
+			$weiss_slider_max = (int) ceil( $weiss_bounds['max'] );
+			$weiss_slider_max = $weiss_slider_max > $weiss_slider_min ? $weiss_slider_max : $weiss_slider_min + 1000;
+			$weiss_view_min   = $weiss_min ? $weiss_min : $weiss_slider_min;
+			$weiss_view_max   = $weiss_max ? $weiss_max : $weiss_slider_max;
 			?>
 			<div class="filter__price">
 				<h3 class="filter__subtitle" id="price-label">Цена</h3>
@@ -125,9 +127,9 @@ get_header();
 				<div class="range" role="group" aria-labelledby="price-label">
 					<span class="range__track" aria-hidden="true"></span>
 					<span class="range__fill" aria-hidden="true"></span>
-					<input type="range" min="0" max="<?php echo esc_attr( $weiss_slider_max ); ?>"
+					<input type="range" min="<?php echo esc_attr( $weiss_slider_min ); ?>" max="<?php echo esc_attr( $weiss_slider_max ); ?>"
 					       step="100" value="<?php echo esc_attr( $weiss_view_min ); ?>" aria-label="Цена от" data-range-min>
-					<input type="range" min="0" max="<?php echo esc_attr( $weiss_slider_max ); ?>"
+					<input type="range" min="<?php echo esc_attr( $weiss_slider_min ); ?>" max="<?php echo esc_attr( $weiss_slider_max ); ?>"
 					       step="100" value="<?php echo esc_attr( $weiss_view_max ); ?>" aria-label="Цена до" data-range-max>
 				</div>
 

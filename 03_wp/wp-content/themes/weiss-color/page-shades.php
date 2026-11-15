@@ -88,7 +88,7 @@ get_header();
 <div class="shades-main container">
 	<div class="shades-inner">
 	<div class="shades-headline">
-		<h1 class="shades-title">Колеровка цвета</h1>
+		<h1 class="shades-title">Оттенки палитры</h1>
 
 		<div class="shades-toolbar">
 			<p class="shades-count">

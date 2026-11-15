@@ -63,6 +63,37 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 				'type'    => 'password',
 				'default' => '',
 			),
+			'send_receipt' => array(
+				'title'       => 'Передавать чек в банк (54-ФЗ)',
+				'type'        => 'checkbox',
+				'label'       => 'Включать состав заказа и НДС в запрос register.do',
+				'description' => 'Включайте после того, как Заказчик назовёт систему налогообложения и ставку НДС: без этих данных чек будет неверным.',
+				'default'     => 'no',
+			),
+			'tax_system'  => array(
+				'title'   => 'Система налогообложения',
+				'type'    => 'select',
+				'default' => '0',
+				'options' => array(
+					'0' => 'Общая',
+					'1' => 'УСН, доход',
+					'2' => 'УСН, доход минус расход',
+					'3' => 'ЕНВД',
+					'4' => 'ЕСХН',
+					'5' => 'Патент',
+				),
+			),
+			'vat'         => array(
+				'title'   => 'НДС в чеке',
+				'type'    => 'select',
+				'default' => '',
+				'options' => array(
+					''   => 'Без НДС',
+					'0'  => 'НДС 0%',
+					'10' => 'НДС 10%',
+					'20' => 'НДС 20%',
+				),
+			),
 		);
 	}
 
@@ -113,6 +144,56 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 		return $body;
 	}
 
+	/**
+	 * Состав чека для банка (orderBundle). Ставка НДС одна на заказ: в
+	 * магазине одна ставка, отдельные налоговые классы не ведутся.
+	 */
+	private function order_bundle( $order ) {
+		$vat   = (string) $this->get_option( 'vat', '' );
+		$rates = array( '' => 0, '0' => 1, '10' => 2, '20' => 3 ); // taxType Сбербанка
+		$type  = isset( $rates[ $vat ] ) ? $rates[ $vat ] : 0;
+		$items = array();
+		$position = 0;
+
+		$add = function ( $name, $qty, $sum ) use ( &$items, &$position, $vat, $type ) {
+			$sum = (float) $sum;
+			if ( $qty <= 0 || $sum < 0 ) {
+				return;
+			}
+			$position++;
+			$row = array(
+				'positionId' => $position,
+				'name'       => mb_substr( wp_strip_all_tags( (string) $name ), 0, 128 ),
+				'quantity'   => array(
+					'value'   => (string) wc_format_decimal( $qty, 2 ),
+					'measure' => 'шт.',
+				),
+				'itemAmount' => (int) round( $sum * 100 ),
+				'itemPrice'  => (int) round( $sum / $qty * 100 ),
+			);
+
+			if ( '' !== $vat ) {
+				$tax_sum = (float) $vat > 0 ? $sum * (float) $vat / ( 100 + (float) $vat ) : 0;
+				$row['tax'] = array(
+					'taxType' => $type,
+					'taxSum'  => (int) round( $tax_sum * 100 ),
+				);
+			}
+
+			$items[] = $row;
+		};
+
+		foreach ( $order->get_items() as $item ) {
+			$add( $item->get_name(), (float) $item->get_quantity(), (float) $item->get_total() + (float) $item->get_total_tax() );
+		}
+
+		foreach ( $order->get_items( 'shipping' ) as $item ) {
+			$add( 'Доставка', 1, (float) $item->get_total() + (float) $item->get_total_tax() );
+		}
+
+		return wp_json_encode( array( 'cartItems' => array( 'items' => $items ) ) );
+	}
+
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
 		if ( ! $order ) {
@@ -134,20 +215,26 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 		/* orderNumber в Сбербанке должен быть уникальным для каждой попытки. */
 		$number = $order->get_id() . '-' . gmdate( 'YmdHis' );
 
-		$response = $this->request(
-			'register.do',
-			array(
-				'orderNumber' => $number,
-				'amount'      => $amount,
-				'currency'    => '643',
-				'language'    => 'ru',
-				'description' => 'Заказ № ' . $order->get_order_number() . ' на сайте Weiss Color',
-				'returnUrl'   => $order->get_checkout_order_received_url(),
-				'failUrl'     => $order->get_checkout_payment_url(),
-				'email'       => (string) $order->get_billing_email(),
-				'phone'       => preg_replace( '/\D+/', '', (string) $order->get_billing_phone() ),
-			)
+		$args = array(
+			'orderNumber' => $number,
+			'amount'      => $amount,
+			'currency'    => '643',
+			'language'    => 'ru',
+			'description' => 'Заказ № ' . $order->get_order_number() . ' на сайте Weiss Color',
+			'returnUrl'   => $order->get_checkout_order_received_url(),
+			'failUrl'     => $order->get_checkout_payment_url(),
+			'email'       => (string) $order->get_billing_email(),
+			'phone'       => preg_replace( '/\D+/', '', (string) $order->get_billing_phone() ),
 		);
+
+		/* Чек по 54-ФЗ (ТЗ 8.5): состав заказа и НДС передаются только когда
+		   Заказчик подтвердил систему налогообложения и ставку. */
+		if ( 'yes' === $this->get_option( 'send_receipt', 'no' ) ) {
+			$args['orderBundle'] = $this->order_bundle( $order );
+			$args['taxSystem']   = (int) $this->get_option( 'tax_system', '0' );
+		}
+
+		$response = $this->request( 'register.do', $args );
 
 		if ( is_wp_error( $response ) ) {
 			$order->add_order_note( 'Сбербанк: платёж не создан — ' . $response->get_error_message() );
@@ -206,7 +293,13 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 		$amount = isset( $response['amount'] ) ? (int) $response['amount'] : 0;
 
 		if ( 1 === $status && ! $order->is_paid() ) {
-			$order->add_order_note( 'Сбербанк: сумма заблокирована, но ещё не списана (статус 1). Ожидается подтверждение платежа.' );
+			/* Заметка о блокировке пишется один раз на платёж: возврат
+			   покупателя вызывает проверку повторно. */
+			if ( (string) $order->get_meta( '_weiss_sber_lock_note' ) !== $bank_order_id ) {
+				$order->add_order_note( 'Сбербанк: сумма заблокирована, но ещё не списана (статус 1). Ожидается подтверждение платежа.' );
+				$order->update_meta_data( '_weiss_sber_lock_note', $bank_order_id );
+				$order->save();
+			}
 			return false;
 		}
 
@@ -224,7 +317,18 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 			}
 
 			$order->payment_complete( $bank_order_id );
+			$order->update_meta_data( '_weiss_sber_paid_order_id', $bank_order_id );
+			$order->save();
 			$order->add_order_note( 'Оплата подтверждена Сбербанком. Идентификатор платежа банка: ' . $bank_order_id . '.' );
+
+			/* Номер фискального чека банк возвращает в статусе платежа (ТЗ 8.5). */
+			$receipt = isset( $response['fiscalReceiptNumber'] ) ? sanitize_text_field( (string) $response['fiscalReceiptNumber'] ) : '';
+			if ( '' !== $receipt && (string) $order->get_meta( '_weiss_sber_receipt' ) !== $receipt ) {
+				$order->update_meta_data( '_weiss_sber_receipt', $receipt );
+				$order->save();
+				$order->add_order_note( 'Сбербанк: чек зарегистрирован, номер ' . $receipt . '.' );
+			}
+
 			return true;
 		}
 
@@ -237,9 +341,17 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
-		$bank_order_id = $order ? (string) $order->get_meta( '_weiss_sber_order_id' ) : '';
+		if ( ! $order || ! $order->is_paid() ) {
+			return new WP_Error( 'weiss_sber_refund', 'Нет подтверждённого платежа банка для возврата.' );
+		}
 
-		if ( ! $order || '' === $bank_order_id || ! $order->is_paid() ) {
+		/* Возврат идёт по тому платежу, которым заказ оплачен: последняя
+		   попытка могла остаться неуспешной (ТЗ 8.6). */
+		$bank_order_id = (string) $order->get_meta( '_weiss_sber_paid_order_id' );
+		if ( '' === $bank_order_id ) {
+			$bank_order_id = (string) $order->get_meta( '_weiss_sber_order_id' );
+		}
+		if ( '' === $bank_order_id ) {
 			return new WP_Error( 'weiss_sber_refund', 'Нет подтверждённого платежа банка для возврата.' );
 		}
 
@@ -268,6 +380,25 @@ add_filter( 'woocommerce_payment_gateways', function ( $gateways ) {
 	$gateways[] = 'Weiss_Gateway_Sberbank';
 	return $gateways;
 } );
+
+/**
+ * Шлюз оплаты картой среди доступных способов. Формы темы ищут его по
+ * классу, а не по идентификатору: id менялся, и карта пропадала из
+ * оформления, хотя шлюз был включён.
+ */
+function weiss_card_gateway( $gateways = null ) {
+	if ( null === $gateways ) {
+		$gateways = WC()->payment_gateways ? WC()->payment_gateways->get_available_payment_gateways() : array();
+	}
+
+	foreach ( (array) $gateways as $gateway ) {
+		if ( $gateway instanceof Weiss_Gateway_Sberbank ) {
+			return $gateway;
+		}
+	}
+
+	return null;
+}
 
 /** Уведомление банка: статус подтверждается отдельным запросом к Сбербанку. */
 add_action( 'woocommerce_api_weiss_sberbank', function () {
@@ -317,6 +448,8 @@ add_action( 'woocommerce_api_weiss_sberbank', function () {
 /**
  * Возврат покупателя: проверяем статус по идентификатору платежа.
  * Открытие страницы успеха само по себе оплату не подтверждает (ТЗ 8.4).
+ * Шаблон «Спасибо за заказ» вызывает это событие сам, поэтому проверка
+ * срабатывает и без уведомления банка.
  */
 add_action( 'woocommerce_thankyou', function ( $order_id ) {
 	$order = wc_get_order( $order_id );

@@ -39,7 +39,7 @@ $weiss_courier_cost = $weiss_courier ? $weiss_courier['cost'] : 0;
 $weiss_base_total = (float) $weiss_cart->total - (float) $weiss_cart->get_shipping_total() - (float) $weiss_cart->get_shipping_tax();
 
 $weiss_gateways = WC()->payment_gateways->get_available_payment_gateways();
-$weiss_card     = isset( $weiss_gateways['weiss_card'] ) ? $weiss_gateways['weiss_card'] : null;
+$weiss_card     = weiss_card_gateway( $weiss_gateways );
 $weiss_bacs     = isset( $weiss_gateways['bacs'] ) ? $weiss_gateways['bacs'] : null;
 
 $weiss_shop_url = get_permalink( wc_get_page_id( 'shop' ) );
@@ -105,6 +105,20 @@ if ( '' !== $weiss_notice_text ) {
 					<span>
 						<span class="choice__title">Самовывоз</span>
 						<span class="choice__note"><?php echo $weiss_pickup_cost > 0 ? esc_html( weiss_price_compact( $weiss_pickup_cost ) ) : 'Бесплатно'; ?></span>
+						<?php
+						/* Адрес и часы точки самовывоза (ТЗ 7.6) — из «Тарифов доставки» */
+						$weiss_point = weiss_pickup_point();
+						if ( $weiss_point['address'] || $weiss_point['hours'] ) :
+							?>
+							<span class="choice__point">
+								<?php if ( $weiss_point['address'] ) : ?>
+									<span>Адрес: <?php echo esc_html( $weiss_point['address'] ); ?></span>
+								<?php endif; ?>
+								<?php if ( $weiss_point['hours'] ) : ?>
+									<span>Часы самовывоза: <?php echo esc_html( $weiss_point['hours'] ); ?></span>
+								<?php endif; ?>
+							</span>
+						<?php endif; ?>
 					</span>
 				</label>
 
@@ -152,27 +166,10 @@ if ( '' !== $weiss_notice_text ) {
 					</div>
 				</div>
 
-				<div class="field">
-					<span class="field__label" id="city-label">Город<span class="field__req">*</span></span>
-					<div class="select" data-select>
-						<button class="select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false"
-								aria-labelledby="city-label city-value">
-							<span class="select__value" id="city-value">Выберите город</span>
-							<svg class="select__chevron" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-								<path d="M1 1.5 6 6.5l5-5" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-						</button>
-						<ul class="select__list" role="listbox" aria-labelledby="city-label" hidden>
-							<li class="select__option" role="option" aria-selected="false" tabindex="-1">Москва</li>
-							<li class="select__option" role="option" aria-selected="false" tabindex="-1">Санкт-Петербург</li>
-							<li class="select__option" role="option" aria-selected="false" tabindex="-1">Тверь</li>
-							<li class="select__option" role="option" aria-selected="false" tabindex="-1">Тула</li>
-							<li class="select__option" role="option" aria-selected="false" tabindex="-1">Другой город</li>
-						</ul>
-						<input type="hidden" name="billing_city" value="" required data-error="Выберите город"
-							   data-validate data-focus=".select__trigger">
-					</div>
-				</div>
+				<label class="field">
+					<span class="field__label">Город<span class="field__req">*</span></span>
+					<input class="field__input" type="text" name="billing_city" autocomplete="address-level2" placeholder="Например, Казань" required>
+				</label>
 
 				<label class="field">
 					<span class="field__label">Улица<span class="field__req">*</span></span>
@@ -186,7 +183,7 @@ if ( '' !== $weiss_notice_text ) {
 
 				<label class="field">
 					<span class="field__label">Квартира / офис</span>
-					<input class="field__input" type="text" name="weiss_flat" inputmode="numeric" maxlength="6" pattern="[0-9]{1,6}" data-error="Номер квартиры или офиса — только цифры" placeholder="Например, 25">
+					<input class="field__input" type="text" name="weiss_flat" maxlength="10" placeholder="Например, 25 или 12А">
 				</label>
 
 				<label class="field">
@@ -202,7 +199,7 @@ if ( '' !== $weiss_notice_text ) {
 			<div class="choice-row choice-row--payment" role="radiogroup" aria-labelledby="payment-title">
 				<?php if ( $weiss_card ) : ?>
 					<label class="choice">
-						<input class="choice__input" type="radio" name="payment_method" value="<?php echo esc_attr( $weiss_card->id ); ?>">
+						<input class="choice__input" type="radio" name="payment_method" value="<?php echo esc_attr( $weiss_card->id ); ?>" data-card="1">
 						<span class="choice__radio" aria-hidden="true">
 							<svg class="choice__check" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.2" aria-hidden="true">
 								<path d="m4 10.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/>
@@ -347,9 +344,7 @@ if ( '' !== $weiss_notice_text ) {
 			Доставка
 			<span class="tip">
 				<button class="tip__btn" type="button" aria-label="Подробнее о сроках доставки" aria-describedby="delivery-tip">?</button>
-				<span class="tip__pop" id="delivery-tip" role="tooltip">
-					Доставка занимает от 3 до 7 дней, в зависимости от удаленности вашего региона
-				</span>
+				<span class="tip__pop" id="delivery-tip" role="tooltip" data-default="Срок доставки зависит от региона — точные сроки подтвердим при оформлении">Срок доставки зависит от региона — точные сроки подтвердим при оформлении</span>
 			</span>
 			<span class="checkout-delivery__value" id="delivery-value" data-pickup-cost="<?php echo esc_attr( $weiss_pickup_cost ); ?>" data-courier-cost="<?php echo esc_attr( $weiss_courier_cost ); ?>"><?php echo $weiss_pickup_cost > 0 ? esc_html( $weiss_money( $weiss_pickup_cost ) ) : 'Бесплатно'; ?></span>
 		</p>

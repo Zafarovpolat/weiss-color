@@ -167,7 +167,7 @@ function weiss_export_orders( $out ) {
 				$invoice['email'] ?? '',
 				$order->get_customer_note(),
 				$order->get_meta( '_weiss_consent' ) ? 'да, ' . $order->get_meta( '_weiss_consent' ) : 'нет',
-				$order->get_meta( '_weiss_mail_sent' ) === 'no' ? 'ошибка' : ( $order->get_meta( '_weiss_mail_sent' ) === 'sent' ? 'отправлено' : '—' ),
+				$order->get_meta( '_weiss_mail_sent' ) === 'no' ? 'ошибка' : ( $order->get_meta( '_weiss_mail_sent' ) === 'yes' ? 'отправлено' : '—' ),
 			);
 
 			$items = $order->get_items();
@@ -282,8 +282,10 @@ function weiss_export_products( $out ) {
 function weiss_export_colors( $out ) {
 	global $wpdb;
 
+	/* Заголовки файла — как у импорта (COLOURCODE/CARDNAME/NAME/RGB_HTML):
+	   выгрузку можно загрузить обратно без переименования колонок. */
 	weiss_export_csv_row( $out, array(
-		'Палитра', 'Код', 'Название', 'R', 'G', 'B', 'HEX', 'Группа продукта',
+		'COLOURCODE', 'CARDNAME', 'NAME', 'R', 'G', 'B', 'RGB_HTML', 'Продукт',
 		'Статус', 'Примечание', 'Совместимые товары',
 	) );
 
@@ -297,8 +299,8 @@ function weiss_export_colors( $out ) {
 		}
 
 		weiss_export_csv_row( $out, array(
-			$color->palette,
 			$color->code,
+			$color->palette,
 			$color->name,
 			$color->r,
 			$color->g,
@@ -317,7 +319,7 @@ function weiss_export_colors( $out ) {
  * в исходном файле (п.5.2). Строки-примеры не пишем, чтобы их не импортировали.
  */
 function weiss_export_colors_template( $out ) {
-	weiss_export_csv_row( $out, array( 'COLOURCODE', 'CARDNAME', 'R', 'G', 'B', 'RGB_HTML', 'Продукт' ) );
+	weiss_export_csv_row( $out, array( 'COLOURCODE', 'CARDNAME', 'NAME', 'R', 'G', 'B', 'RGB_HTML', 'Продукт' ) );
 }
 
 /** Строки последнего импорта, требующие исправления: номер, палитра, код, причина. */

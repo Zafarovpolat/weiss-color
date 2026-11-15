@@ -20,6 +20,8 @@ function weiss_delivery_tariffs_default() {
 /**
  * Разобранная таблица: «Регион» => array( cost => float|null, term => строка ).
  * Пустая стоимость означает «рассчитает менеджер», а не бесплатную доставку.
+ * Пока Заказчик не передал тарифы, действует демо-таблица без цен и сроков:
+ * заказ оформляется заявкой на расчёт, деньги не списываются (ТЗ 7.5).
  */
 function weiss_delivery_tariffs() {
 	static $map = null;
@@ -27,8 +29,9 @@ function weiss_delivery_tariffs() {
 		return $map;
 	}
 
-	$raw = (string) get_option( 'weiss_delivery_tariffs', '' );
-	if ( '' === trim( $raw ) ) {
+	$raw  = (string) get_option( 'weiss_delivery_tariffs', '' );
+	$demo = '' === trim( $raw );
+	if ( $demo ) {
 		$raw = weiss_delivery_tariffs_default();
 	}
 
@@ -41,9 +44,9 @@ function weiss_delivery_tariffs() {
 		$cost = isset( $parts[1] ) ? trim( $parts[1] ) : '';
 		$free = isset( $parts[3] ) ? trim( str_replace( ',', '.', $parts[3] ) ) : '';
 		$map[ $parts[0] ] = array(
-			'cost'      => '' === $cost ? null : (float) str_replace( ',', '.', $cost ),
-			'term'      => isset( $parts[2] ) ? $parts[2] : '',
-			'free_from' => '' === $free ? null : (float) $free,
+			'cost'      => ( $demo || '' === $cost ) ? null : (float) str_replace( ',', '.', $cost ),
+			'term'      => $demo ? '' : ( isset( $parts[2] ) ? $parts[2] : '' ),
+			'free_from' => ( $demo || '' === $free ) ? null : (float) $free,
 		);
 	}
 
@@ -109,6 +112,17 @@ function weiss_cart_delivery_info( $cart = null ) {
 	}
 
 	return $info;
+}
+
+/**
+ * Адрес и часы точки самовывоза (ТЗ 7.4, 7.6). Заполняются утверждённой
+ * таблицей Заказчика в «WooCommerce → Тарифы доставки».
+ */
+function weiss_pickup_point() {
+	return array(
+		'address' => trim( (string) get_option( 'weiss_pickup_address', '' ) ),
+		'hours'   => trim( (string) get_option( 'weiss_pickup_hours', '' ) ),
+	);
 }
 
 /** Регион из отправленной формы или из адреса покупателя WooCommerce. */
@@ -392,11 +406,29 @@ function weiss_delivery_admin_page() {
 	<div class="wrap">
 		<h1>Тарифы доставки</h1>
 		<?php if ( isset( $_GET['updated'] ) ) : ?>
-			<div class="notice notice-success is-dismissible"><p>Тарифы сохранены.</p></div>
+			<div class="notice notice-success is-dismissible"><p>Условия доставки сохранены.</p></div>
 		<?php endif; ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="weiss_delivery_save">
 			<?php wp_nonce_field( 'weiss_delivery_save' ); ?>
+			<h2>Самовывоз</h2>
+			<p>Адрес и часы показываются покупателю в оформлении заказа при выбранном самовывозе и в письме о заказе (ТЗ 7.6). Данные берутся из утверждённой таблицы Заказчика.</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th><label for="weiss-pickup-address">Адрес точки</label></th>
+					<td><input class="regular-text" type="text" id="weiss-pickup-address" name="weiss_pickup_address"
+						value="<?php echo esc_attr( get_option( 'weiss_pickup_address', '' ) ); ?>"
+						placeholder="Например, Москва, ул. Лесная, д. 10"></td>
+				</tr>
+				<tr>
+					<th><label for="weiss-pickup-hours">Часы работы</label></th>
+					<td><input class="regular-text" type="text" id="weiss-pickup-hours" name="weiss_pickup_hours"
+						value="<?php echo esc_attr( get_option( 'weiss_pickup_hours', '' ) ); ?>"
+						placeholder="Например, пн–пт 10:00–19:00, сб 10:00–16:00">
+					<p class="description">Пока поля пустые, в оформлении выводится только «Самовывоз» и стоимость.</p></td>
+				</tr>
+			</table>
+			<h2>Регионы и тарифы</h2>
 			<p>По одной строке на регион: <code>Регион | Стоимость, ₽ | Срок | Бесплатно от, ₽</code>. Список регионов на оформлении заказа строится из этой таблицы.</p>
 			<p>Четвёртое поле — порог бесплатной доставки: он сравнивается с суммой товаров после скидки. Пустое поле — бесплатной доставки в регионе нет.</p>
 			<p>Пустая стоимость — регион без тарифа: заказ оформляется как заявка на расчёт, деньги не списываются, менеджер присылает итог и ссылку на оплату.</p>
@@ -427,6 +459,8 @@ add_action( 'admin_post_weiss_delivery_save', function () {
 	check_admin_referer( 'weiss_delivery_save' );
 
 	update_option( 'weiss_delivery_tariffs', sanitize_textarea_field( wp_unslash( $_POST['weiss_delivery_tariffs'] ?? '' ) ) );
+	update_option( 'weiss_pickup_address', sanitize_text_field( wp_unslash( $_POST['weiss_pickup_address'] ?? '' ) ) );
+	update_option( 'weiss_pickup_hours', sanitize_text_field( wp_unslash( $_POST['weiss_pickup_hours'] ?? '' ) ) );
 
 	wp_safe_redirect( add_query_arg( array(
 		'page'    => 'weiss-delivery',

@@ -8,15 +8,24 @@
 function weiss_meta_description() {
 	if ( is_singular() ) {
 		$post_id = get_queried_object_id();
-		$custom  = (string) get_post_meta( $post_id, '_weiss_meta_description', true );
-		if ( '' !== trim( $custom ) ) {
+		$custom  = trim( (string) get_post_meta( $post_id, '_weiss_meta_description', true ) );
+		if ( '' !== $custom ) {
 			return $custom;
 		}
 
-		$excerpt = get_the_excerpt( $post_id );
-		if ( $excerpt ) {
-			return wp_strip_all_tags( $excerpt );
+		$excerpt = trim( wp_strip_all_tags( (string) get_the_excerpt( $post_id ) ) );
+		if ( '' !== $excerpt ) {
+			return $excerpt;
 		}
+
+		$content = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( strip_shortcodes( (string) get_post_field( 'post_content', $post_id ) ) ) ) );
+		if ( '' !== $content ) {
+			return $content;
+		}
+
+		/* У страниц без текста описание по заголовку: иначе на всех страницах
+		   повторялась одна подпись сайта (ТЗ 11.7). */
+		return sprintf( '%s — интернет-магазин красок Weiss Color.', get_the_title( $post_id ) );
 	}
 
 	if ( is_tax() || is_category() || is_tag() ) {
@@ -24,6 +33,13 @@ function weiss_meta_description() {
 		if ( $term && ! empty( $term->description ) ) {
 			return wp_strip_all_tags( $term->description );
 		}
+		if ( $term && ! empty( $term->name ) ) {
+			return sprintf( 'Товары в разделе «%s» — интернет-магазин Weiss Color.', $term->name );
+		}
+	}
+
+	if ( function_exists( 'is_shop' ) && is_shop() ) {
+		return 'Каталог красок, лаков и пропиток Weiss Color: фасовки, цены и подбор цвета.';
 	}
 
 	return get_bloginfo( 'description' );
@@ -71,6 +87,14 @@ function weiss_sitemap_excluded_ids() {
 		$ids[] = $success->ID;
 	}
 
+	/* /color/ без параметров отвечает 404, «Образец страницы» — заготовка ядра. */
+	foreach ( array( 'color', 'sample-page' ) as $path ) {
+		$page = get_page_by_path( $path );
+		if ( $page ) {
+			$ids[] = $page->ID;
+		}
+	}
+
 	$ids = array_merge( $ids, get_posts( array(
 		'post_type'      => 'page',
 		'posts_per_page' => -1,
@@ -81,6 +105,27 @@ function weiss_sitemap_excluded_ids() {
 
 	return array_values( array_unique( array_map( 'intval', $ids ) ) );
 }
+
+/** Запись «Привет, мир!» — заготовка ядра, в карту сайта не нужна. */
+function weiss_sitemap_excluded_post_ids() {
+	$ids   = array();
+	$hello = get_page_by_path( 'hello-world', OBJECT, 'post' );
+	if ( ! $hello ) {
+		$first = get_post( 1 );
+		if ( $first && 'post' === $first->post_type && in_array( $first->post_title, array( 'Привет, мир!', 'Hello world!' ), true ) ) {
+			$hello = $first;
+		}
+	}
+	if ( $hello ) {
+		$ids[] = $hello->ID;
+	}
+	return $ids;
+}
+
+/** Авторских страниц нет — список пользователей в карте сайта тоже не нужен. */
+add_filter( 'wp_sitemaps_add_provider', function ( $provider, $name ) {
+	return 'users' === $name ? false : $provider;
+}, 10, 2 );
 
 add_action( 'wp_head', function () {
 	$description = weiss_meta_description();
@@ -132,6 +177,45 @@ add_filter( 'document_title_parts', function ( $parts ) {
 	return $parts;
 }, 20 );
 
+/** Тот же перевод и у заголовка на странице, а не только во вкладке. */
+add_filter( 'the_title', function ( $title, $post_id = 0 ) {
+	if ( is_admin() || ! function_exists( 'wc_get_page_id' ) ) {
+		return $title;
+	}
+	if ( (int) $post_id === (int) wc_get_page_id( 'myaccount' ) && is_account_page() ) {
+		return 'Личный кабинет';
+	}
+	return $title;
+}, 10, 2 );
+
+/**
+ * Авторский архив раскрывает логин администратора (ТЗ 11.7). Закрываем его
+ * и перебор /?author=N — отдаём 404, как у несуществующей страницы.
+ */
+add_action( 'template_redirect', function () {
+	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+		return;
+	}
+	if ( ! is_author() ) {
+		return;
+	}
+
+	global $wp_query;
+	$wp_query->set_404();
+	status_header( 404 );
+	nocache_headers();
+	include get_404_template();
+	exit;
+}, 1 );
+
+/** ?author=N не перенаправляем на /author/… — сразу 404, без выдачи логина. */
+add_filter( 'redirect_canonical', function ( $redirect, $requested ) {
+	if ( isset( $_GET['author'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		return false;
+	}
+	return $redirect;
+}, 10, 2 );
+
 /* Панель: поля SEO у страниц, записей и товаров. */
 add_action( 'add_meta_boxes', function () {
 	foreach ( array( 'page', 'post', 'product' ) as $type ) {
@@ -173,6 +257,13 @@ add_filter( 'wp_sitemaps_enabled', '__return_true' );
 add_filter( 'wp_sitemaps_posts_query_args', function ( $args, $post_type ) {
 	if ( 'page' === $post_type ) {
 		$exclude = weiss_sitemap_excluded_ids();
+		if ( $exclude ) {
+			$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? $args['post__not_in'] : array(), $exclude );
+		}
+	}
+
+	if ( 'post' === $post_type ) {
+		$exclude = weiss_sitemap_excluded_post_ids();
 		if ( $exclude ) {
 			$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? $args['post__not_in'] : array(), $exclude );
 		}
@@ -229,13 +320,34 @@ add_filter( 'redirect_canonical', function ( $redirect, $requested ) {
  * сброситься при переносе базы, поэтому для стенда она принудительно
  * выключена: ядро само отдаёт noindex и закрывает robots.txt.
  */
+function weiss_is_staging_host() {
+	$host = strtolower( (string) wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
+	return 'weisscolor.ruso.agency' === $host
+		|| 'localhost' === $host
+		|| '127.0.0.1' === $host
+		|| (bool) preg_match( '/\.(local|test|localhost)$/', $host );
+}
+
 add_filter( 'pre_option_blog_public', function ( $value ) {
-	$host = (string) wp_parse_url( home_url( '/' ), PHP_URL_HOST );
-	if ( 'weisscolor.ruso.agency' === $host ) {
-		return '0';
-	}
-	return $value;
+	return weiss_is_staging_host() ? '0' : $value;
 } );
+
+/**
+ * Запрет индексации хранится и в базе: иначе после смены адреса стенда
+ * настройка «Разрешить поисковикам» открыла бы сайт (ТЗ 11.7). На боевом
+ * домене флаг не трогаем — его включает администратор при запуске.
+ */
+add_action( 'init', function () {
+	if ( ! weiss_is_staging_host() ) {
+		return;
+	}
+
+	global $wpdb;
+	$stored = $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", 'blog_public' ) ); // phpcs:ignore WordPress.DB
+	if ( '0' !== (string) $stored ) {
+		update_option( 'blog_public', '0' );
+	}
+}, 5 );
 
 /**
  * Перенаправления 301 по реестру Заказчика (ТЗ 11.7). Реестр вводится в

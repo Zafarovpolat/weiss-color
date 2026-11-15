@@ -47,6 +47,10 @@ $weiss_tinting_off     = 'no' === get_post_meta( $weiss_product->get_id(), '_wei
 $weiss_first_sku       = $weiss_variations ? $weiss_variations[0]['sku'] : (string) $weiss_product->get_sku();
 $weiss_in_stock        = $weiss_variations ? $weiss_variations[0]['stock'] : $weiss_product->is_in_stock();
 $weiss_stock_label     = $weiss_in_stock ? 'В наличии' : 'Нет в наличии';
+/* Базовый цвет без колеровки (ТЗ 4.4): у лаков и составов по дереву он не белый */
+$weiss_base_label      = 'wood' === weiss_product_color_group( $weiss_product->get_id() )
+	? 'Без колеровки'
+	: 'Белый (без колеровки)';
 
 /* Цвет приходит из каталога оттенков: пара palette+code в адресе. */
 $weiss_palette  = isset( $_GET['palette'] ) ? sanitize_text_field( wp_unslash( $_GET['palette'] ) ) : '';
@@ -178,7 +182,7 @@ get_header();
 					<?php elseif ( $weiss_selected ) : ?>
 						<a href="<?php echo esc_url( $weiss_color_url ); ?>"><?php echo esc_html( $weiss_selected->code . ' — ' . $weiss_selected->palette ); ?></a>
 					<?php else : ?>
-						<a href="<?php echo esc_url( $weiss_color_url ); ?>">Белый (без колеровки)</a>
+						<a href="<?php echo esc_url( $weiss_color_url ); ?>"><?php echo esc_html( $weiss_base_label ); ?></a>
 					<?php endif; ?>
 				</p>
 				<?php if ( $weiss_color_reset ) : ?>
@@ -213,7 +217,8 @@ get_header();
 						data-weiss-url="<?php echo esc_url( add_query_arg( array_filter( array(
 							'palette' => $weiss_selected ? $weiss_selected->palette : '',
 							'code'    => $weiss_selected ? $weiss_selected->code : '',
-						) ), get_permalink( $weiss_product->get_id() ) ) ); ?>">В корзину</button>
+						) ), get_permalink( $weiss_product->get_id() ) ) ); ?>"
+						<?php disabled( ! $weiss_in_stock ); ?>><?php echo $weiss_in_stock ? 'В корзину' : 'Нет в наличии'; ?></button>
 				</div>
 			</div>
 		</div>

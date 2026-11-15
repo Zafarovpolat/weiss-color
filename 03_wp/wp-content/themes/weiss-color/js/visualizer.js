@@ -23,7 +23,11 @@
   const COLORS = Array.isArray(window.ACE_COLORS) ? window.ACE_COLORS.slice() : [];
   const PER_PAGE = 18;
   const remote = window.weissViz && window.weissViz.ajaxUrl ? window.weissViz : null;
-  let TOTAL_PAGES = Math.max(1, Math.ceil(COLORS.length / PER_PAGE));
+  /* В WordPress страница уже отрисована сервером: число страниц берём из
+     разметки, а не из демо-списка (его на витрине нет). */
+  let TOTAL_PAGES = remote
+    ? Math.max(1, parseInt(stage.dataset.pages, 10) || 1)
+    : Math.max(1, Math.ceil(COLORS.length / PER_PAGE));
   let remotePalette = stage.dataset.palette || (remote && remote.palette) || '';
   const remoteProduct = stage.dataset.product || '';
   const remoteVariation = stage.dataset.variation || '';
@@ -242,6 +246,22 @@
   }
 
   /* ---------- Оттенки из реестра WordPress ---------- */
+  function loadError(shown) {
+    if (!grid) return;
+    let note = grid.parentNode.querySelector('.viz-load-error');
+    if (!shown) {
+      if (note) note.remove();
+      return;
+    }
+    if (!note) {
+      note = document.createElement('p');
+      note.className = 'viz-load-error';
+      note.setAttribute('role', 'status');
+      grid.parentNode.insertBefore(note, grid);
+    }
+    note.textContent = 'Не удалось загрузить оттенки. Проверьте соединение и обновите страницу.';
+  }
+
   function loadColors() {
     if (!remote) return;
 
@@ -257,7 +277,11 @@
     fetch(url, { credentials: 'same-origin' })
       .then((response) => response.json())
       .then((json) => {
-        if (!json || !json.success || !json.data) return;
+        if (!json || !json.success || !json.data) {
+          loadError(true);
+          return;
+        }
+        loadError(false);
         COLORS.length = 0;
         json.data.items.forEach((item) => COLORS.push(item));
         TOTAL_PAGES = Math.max(1, json.data.max_pages || 1);
@@ -268,7 +292,7 @@
         renderSwatches();
         renderPager();
       })
-      .catch(() => {});
+      .catch(() => loadError(true));
   }
 
   const searchInput = root.querySelector('.viz-search__input');

@@ -12,6 +12,9 @@ function weiss_content_defaults() {
 		'email'           => 'info@ooonort.ru',
 		'seller_name'     => 'ООО «Фаер Гвард»',
 		'seller_address'  => '',
+		'seller_inn'      => '',
+		'seller_ogrn'     => '',
+		'seller_kpp'      => '',
 		'social_max'      => 'https://max.ru',
 		'social_telegram' => 'https://t.me/weisscolor',
 		'social_whatsapp' => 'https://wa.me/79502553015',
@@ -74,8 +77,7 @@ function weiss_content_defaults() {
 }
 
 /** Значение настройки; пустое поле означает значение из макета. */
-function weiss_opt( $key ) {
-	$defaults = weiss_content_defaults();
+function weiss_opt( $key ) {	$defaults = weiss_content_defaults();
 	$values   = get_option( 'weiss_content', array() );
 	$value    = isset( $values[ $key ] ) ? $values[ $key ] : '';
 	if ( '' === trim( (string) $value ) ) {
@@ -101,6 +103,20 @@ function weiss_phone() {
 		'href'  => weiss_opt( 'phone_href' ),
 		'label' => weiss_opt( 'phone_label' ),
 	);
+}
+
+/**
+ * Канал связи: сохранённое пустое поле скрывает кнопку, а значение по
+ * умолчанию подставляется только пока поле ни разу не сохраняли (ТЗ 3.1).
+ */
+function weiss_social( $key ) {
+	$values = get_option( 'weiss_content', array() );
+	if ( is_array( $values ) && array_key_exists( $key, $values ) ) {
+		return trim( (string) $values[ $key ] );
+	}
+
+	$defaults = weiss_content_defaults();
+	return isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
 }
 
 /** Адрес для уведомлений о заказах: менеджер, а не администратор сайта. */
@@ -186,7 +202,10 @@ function weiss_content_page() {
 				weiss_content_row( 'phone_href', 'Ссылка телефона (tel:)', $d['phone_href'] );
 				weiss_content_row( 'email', 'E-mail магазина', $d['email'], 'email' );
 				weiss_content_row( 'seller_name', 'Наименование продавца', $d['seller_name'] );
-				weiss_content_row( 'seller_address', 'Адрес продавца', $d['seller_address'] );
+				weiss_content_row( 'seller_address', 'Адрес продавца', $d['seller_address'], 'text', 'Юридический адрес: показывается на «Контактах» и в записи о продавце.' );
+				weiss_content_row( 'seller_inn', 'ИНН', $d['seller_inn'] );
+				weiss_content_row( 'seller_ogrn', 'ОГРН / ОГРНИП', $d['seller_ogrn'] );
+				weiss_content_row( 'seller_kpp', 'КПП', $d['seller_kpp'] );
 				weiss_content_row( 'orders_email', 'E-mail менеджера для заказов', $d['orders_email'], 'email', 'На этот адрес приходят уведомления о новых заказах. Пусто — адрес администратора сайта.' );
 				?>
 			</table>

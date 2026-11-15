@@ -49,21 +49,24 @@
 				<a class="header__phone" href="<?php echo esc_url( $weiss_phone['href'] ); ?>" translate="no"><?php echo wp_kses_post( $weiss_phone['label'] ); ?></a>
 
 				<ul class="socials" aria-label="Связаться в мессенджере">
-					<li>
-						<a href="<?php echo esc_url( weiss_opt( 'social_max' ) ); ?>" aria-label="MAX" rel="noopener">
-							<span class="socials__icon socials__icon--max" aria-hidden="true"></span>
-						</a>
-					</li>
-					<li>
-						<a href="<?php echo esc_url( weiss_opt( 'social_telegram' ) ); ?>" aria-label="Telegram" rel="noopener">
-							<span class="socials__icon socials__icon--telegram" aria-hidden="true"></span>
-						</a>
-					</li>
-					<li>
-						<a href="<?php echo esc_url( weiss_opt( 'social_whatsapp' ) ); ?>" aria-label="WhatsApp" rel="noopener">
-							<span class="socials__icon socials__icon--whatsapp" aria-hidden="true"></span>
-						</a>
-					</li>
+					<?php
+					$weiss_socials = array(
+						'max'      => array( 'social_max', 'MAX' ),
+						'telegram' => array( 'social_telegram', 'Telegram' ),
+						'whatsapp' => array( 'social_whatsapp', 'WhatsApp' ),
+					);
+					foreach ( $weiss_socials as $weiss_icon => $weiss_channel ) :
+						$weiss_url = weiss_social( $weiss_channel[0] );
+						if ( '' === $weiss_url ) {
+							continue;
+						}
+						?>
+						<li>
+							<a href="<?php echo esc_url( $weiss_url ); ?>" aria-label="<?php echo esc_attr( $weiss_channel[1] ); ?>" rel="noopener">
+								<span class="socials__icon socials__icon--<?php echo esc_attr( $weiss_icon ); ?>" aria-hidden="true"></span>
+							</a>
+						</li>
+					<?php endforeach; ?>
 				</ul>
 
 				<button class="btn btn--outline header__cta" type="button" data-modal-open="callback-dialog">

@@ -96,7 +96,8 @@ foreach ( $weiss_items as $weiss_item ) {
 </div>
 
 <section class="container c-hero" aria-label="Визуализация цвета">
-	<figure class="c-hero__photo">
+	<?php /* В color-room.png стены прозрачные: цвет заливки фигуры виден сквозь них (ТЗ 5.5). */ ?>
+	<figure class="c-hero__photo" style="background-color:<?php echo esc_attr( $weiss_color->hex ); ?>">
 		<img src="<?php echo esc_url( weiss_asset( 'img/color-room.png' ) ); ?>" width="1073" height="479"
 			alt="Интерьер с цветом <?php echo esc_attr( $weiss_palette . ' ' . $weiss_code ); ?>" fetchpriority="high" decoding="async">
 	</figure>
@@ -119,7 +120,9 @@ foreach ( $weiss_items as $weiss_item ) {
 			</p>
 		</div>
 
-		<a class="btn btn--teal c-hero__cta" href="<?php echo esc_url( $weiss_sampler ); ?>">Заказать пробный образец 300 мл</a>
+		<?php if ( weiss_sampler_allows( $weiss_color ) ) : ?>
+			<a class="btn btn--teal c-hero__cta" href="<?php echo esc_url( $weiss_sampler ); ?>">Заказать пробный образец 300 мл</a>
+		<?php endif; ?>
 	</div>
 </section>
 

@@ -5,7 +5,7 @@
  * но не получает доступ к настройкам сайта, темам, плагинам и пользователям.
  */
 
-define( 'WEISS_ROLES_VERSION', '2' );
+define( 'WEISS_ROLES_VERSION', '3' );
 
 /** Права на обращения: у типа записи собственный набор (см. inc/leads.php). */
 function weiss_lead_caps() {
@@ -52,7 +52,14 @@ function weiss_manager_extra_caps() {
 
 	return array_merge( $content, array(
 		'edit_theme_options',
+		/* ТЗ 10.1: пользователи — не торговая функция; скрытого пункта меню мало,
+		   право нельзя оставлять, иначе оно доступно по прямому адресу */
 		'list_users',
+		'edit_users',
+		'create_users',
+		'delete_users',
+		'promote_users',
+		'remove_users',
 		'manage_links',
 		'moderate_comments',
 		'manage_categories',
