@@ -3,6 +3,8 @@
  * Тема Weiss Color: точка входа.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 define( 'WEISS_VERSION', '0.1.0' );
 define( 'WEISS_DIR', get_template_directory() );
 define( 'WEISS_URI', get_template_directory_uri() );

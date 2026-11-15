@@ -102,8 +102,20 @@ add_action( 'admin_post_weiss_export', function () {
 	exit;
 } );
 
+/**
+ * Текст покупателя не должен выполняться как формула при открытии CSV
+ * в Excel (ТЗ 11.3). Значения с «=», «+», «-», «@» экранируем апострофом.
+ */
+function weiss_export_cell( $value ) {
+	$value = (string) $value;
+	if ( '' !== $value && in_array( $value[0], array( '=', '+', '-', '@', "\t", "\r" ), true ) ) {
+		return "'" . $value;
+	}
+	return $value;
+}
+
 function weiss_export_csv_row( $out, $row ) {
-	fputcsv( $out, $row, ';', '"', '' );
+	fputcsv( $out, array_map( 'weiss_export_cell', $row ), ';', '"', '' );
 }
 
 function weiss_export_orders( $out ) {
@@ -117,74 +129,84 @@ function weiss_export_orders( $out ) {
 		'Комментарий', 'Согласие', 'Письмо покупателю',
 	) );
 
-	$orders = wc_get_orders( array(
-		'limit'   => -1,
-		'orderby' => 'date',
-		'order'   => 'DESC',
-		'type'    => 'shop_order',
-	) );
+	/* Заказы выгружаем порциями: на большом магазине весь список в памяти
+	   не помещается и экспорт падает. */
+	$page  = 1;
+	$limit = 200;
 
-	foreach ( $orders as $order ) {
-		$invoice = (array) $order->get_meta( '_weiss_invoice' );
-		$base    = array(
-			$order->get_order_number(),
-			$order->get_date_created() ? $order->get_date_created()->date( 'd.m.Y H:i' ) : '',
-			wc_get_order_status_name( $order->get_status() ),
-			$order->is_paid() ? 'оплачен' : 'не оплачен',
-			$order->get_payment_method_title(),
-			$order->get_transaction_id(),
-		);
-		$tail = array(
-			$order->get_formatted_billing_full_name(),
-			$order->get_billing_phone(),
-			$order->get_billing_email(),
-			$order->get_meta( '_weiss_region' ) ?: $order->get_billing_state(),
-			trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
-			( $invoice['payer'] ?? '' ) === 'ip' ? 'ИП' : ( $invoice ? 'Юрлицо' : '' ),
-			$invoice['org'] ?? '',
-			$invoice['inn'] ?? '',
-			$invoice['kpp'] ?? '',
-			$invoice['ogrn'] ?? '',
-			$invoice['email'] ?? '',
-			$order->get_customer_note(),
-			$order->get_meta( '_weiss_consent' ) ? 'да, ' . $order->get_meta( '_weiss_consent' ) : 'нет',
-			$order->get_meta( '_weiss_mail_sent' ) === 'no' ? 'ошибка' : 'отправлено',
-		);
+	do {
+		$orders = wc_get_orders( array(
+			'limit'   => $limit,
+			'page'    => $page,
+			'orderby' => 'date',
+			'order'   => 'DESC',
+			'type'    => 'shop_order',
+		) );
 
-		$items = $order->get_items();
-		if ( ! $items ) {
-			$items = array( null );
-		}
+		foreach ( $orders as $order ) {
+			$invoice = (array) $order->get_meta( '_weiss_invoice' );
+			$base    = array(
+				$order->get_order_number(),
+				$order->get_date_created() ? $order->get_date_created()->date( 'd.m.Y H:i' ) : '',
+				wc_get_order_status_name( $order->get_status() ),
+				$order->is_paid() ? 'оплачен' : 'не оплачен',
+				$order->get_payment_method_title(),
+				$order->get_transaction_id(),
+			);
+			$tail = array(
+				$order->get_formatted_billing_full_name(),
+				$order->get_billing_phone(),
+				$order->get_billing_email(),
+				$order->get_meta( '_weiss_region' ) ?: $order->get_billing_state(),
+				trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
+				( $invoice['payer'] ?? '' ) === 'ip' ? 'ИП' : ( $invoice ? 'Юрлицо' : '' ),
+				$invoice['org'] ?? '',
+				$invoice['inn'] ?? '',
+				$invoice['kpp'] ?? '',
+				$invoice['ogrn'] ?? '',
+				$invoice['email'] ?? '',
+				$order->get_customer_note(),
+				$order->get_meta( '_weiss_consent' ) ? 'да, ' . $order->get_meta( '_weiss_consent' ) : 'нет',
+				$order->get_meta( '_weiss_mail_sent' ) === 'no' ? 'ошибка' : ( $order->get_meta( '_weiss_mail_sent' ) === 'sent' ? 'отправлено' : '—' ),
+			);
 
-		foreach ( $items as $item ) {
-			$line = array( '', '', '', 0, 0, 0 );
-			if ( $item ) {
-				$product = $item->get_product();
-				$line    = array(
-					$item->get_name(),
-					$product ? $product->get_sku() : '',
-					weiss_export_item_packaging( $item ),
-					(string) ( $item->get_meta( '_weiss_palette' ) ?: $item->get_meta( 'Палитра' ) ),
-					(string) ( $item->get_meta( '_weiss_code' ) ?: $item->get_meta( 'Цвет' ) ),
-					$item->get_quantity(),
-					wc_format_decimal( $order->get_item_subtotal( $item, false, false ), 2 ),
-					wc_format_decimal( $item->get_total(), 2 ),
-				);
+			$items = $order->get_items();
+			if ( ! $items ) {
+				$items = array( null );
 			}
 
-			weiss_export_csv_row( $out, array_merge(
-				$base,
-				$line,
-				array(
-					wc_format_decimal( $order->get_discount_total(), 2 ),
-					wc_format_decimal( $order->get_shipping_total(), 2 ),
-					wc_format_decimal( $order->get_total(), 2 ),
-					$order->get_currency(),
-				),
-				$tail
-			) );
+			foreach ( $items as $item ) {
+				$line = array( '', '', '', 0, 0, 0 );
+				if ( $item ) {
+					$product = $item->get_product();
+					$line    = array(
+						$item->get_name(),
+						$product ? $product->get_sku() : '',
+						weiss_export_item_packaging( $item ),
+						(string) ( $item->get_meta( '_weiss_palette' ) ?: $item->get_meta( 'Палитра' ) ),
+						(string) ( $item->get_meta( '_weiss_code' ) ?: $item->get_meta( 'Цвет' ) ),
+						$item->get_quantity(),
+						wc_format_decimal( $order->get_item_subtotal( $item, false, false ), 2 ),
+						wc_format_decimal( $item->get_total(), 2 ),
+					);
+				}
+
+				weiss_export_csv_row( $out, array_merge(
+					$base,
+					$line,
+					array(
+						wc_format_decimal( $order->get_discount_total(), 2 ),
+						wc_format_decimal( $order->get_shipping_total(), 2 ),
+						wc_format_decimal( $order->get_total(), 2 ),
+						$order->get_currency(),
+					),
+					$tail
+				) );
+			}
 		}
-	}
+
+		$page++;
+	} while ( count( $orders ) === $limit );
 }
 
 /** Фасовка позиции: значение атрибута «объём» или мета корзины. */

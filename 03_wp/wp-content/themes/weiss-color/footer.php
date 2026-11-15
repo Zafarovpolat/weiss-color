@@ -34,7 +34,7 @@
 		<div class="footer__bottom">
 			<div class="footer__legal">
 				<?php if ( 'coloring-guide' === weiss_screen() ) : ?>
-					<a class="footer__copy" href="<?php echo esc_url( weiss_page_url( 'legal' ) ); ?>">© Weiss Color, 2020–2025. Все права защищены.</a>
+					<a class="footer__copy" href="<?php echo esc_url( weiss_page_url( 'legal' ) ); ?>">© Weiss Color, 2020–<?php echo esc_html( gmdate( 'Y' ) ); ?>. Все права защищены.</a>
 				<?php else : ?>
 					<a class="footer__copy" href="<?php echo esc_url( weiss_page_url( 'legal' ) ); ?>">
 						Политика конфиденциальности и обработки персональных данных

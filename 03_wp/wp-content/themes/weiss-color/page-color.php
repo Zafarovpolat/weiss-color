@@ -9,6 +9,17 @@ $weiss_palette = isset( $_GET['palette'] ) ? sanitize_text_field( wp_unslash( $_
 $weiss_code    = isset( $_GET['code'] ) ? sanitize_text_field( wp_unslash( $_GET['code'] ) ) : '';
 $weiss_color   = ( $weiss_palette && $weiss_code ) ? weiss_color_get( $weiss_palette, $weiss_code ) : null;
 
+/* Несуществующий цвет — 404 (ТЗ 11.7). Раньше страница отдавала 200
+   с текстом «Цвет не найден», и поисковик индексировал пустые адреса. */
+if ( ! $weiss_color ) {
+	status_header( 404 );
+	nocache_headers();
+} else {
+	add_filter( 'get_canonical_url', function () use ( $weiss_color ) {
+		return weiss_color_url( $weiss_color->palette, $weiss_color->code );
+	}, 20 );
+}
+
 /* Подпись оттенка как в макете: марка палитры и код — «Цвет ACE PAINT F316».
    Коды ACE уже начинаются с марки («ACE A1-1») — её не повторяем. */
 $weiss_color_name = '';

@@ -8,9 +8,11 @@ $weiss_order = null;
 $weiss_order_id = isset( $_GET['order'] ) ? absint( $_GET['order'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification
 $weiss_key      = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 
-if ( $weiss_order_id ) {
+/* Ключ заказа обязателен: без него номера заказов идут подряд и чужой
+   заказ открывался бы простым перебором. Пустой ключ — не «свой» заказ. */
+if ( $weiss_order_id && '' !== $weiss_key ) {
 	$weiss_candidate = wc_get_order( $weiss_order_id );
-	if ( $weiss_candidate && ( '' === $weiss_key || hash_equals( $weiss_candidate->get_order_key(), $weiss_key ) ) ) {
+	if ( $weiss_candidate && hash_equals( $weiss_candidate->get_order_key(), $weiss_key ) ) {
 		$weiss_order = $weiss_candidate;
 	}
 }
@@ -19,9 +21,9 @@ if ( ! $weiss_order && function_exists( 'WC' ) && WC()->session ) {
 	$weiss_session_id  = absint( WC()->session->get( 'weiss_last_order_id' ) );
 	$weiss_session_key = (string) WC()->session->get( 'weiss_last_order_key' );
 
-	if ( $weiss_session_id ) {
+	if ( $weiss_session_id && '' !== $weiss_session_key ) {
 		$weiss_candidate = wc_get_order( $weiss_session_id );
-		if ( $weiss_candidate && ( '' === $weiss_session_key || hash_equals( $weiss_candidate->get_order_key(), $weiss_session_key ) ) ) {
+		if ( $weiss_candidate && hash_equals( $weiss_candidate->get_order_key(), $weiss_session_key ) ) {
 			$weiss_order = $weiss_candidate;
 		}
 	}

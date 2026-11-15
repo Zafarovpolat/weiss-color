@@ -165,6 +165,13 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 		}
 
 		$order->update_meta_data( '_weiss_sber_order_id', sanitize_text_field( $response['orderId'] ) );
+
+		/* Номер каждой попытки: уведомление по предыдущей попытке тоже
+		   должно найти заказ, а не только по последней. */
+		$attempts   = (array) $order->get_meta( '_weiss_sber_order_ids' );
+		$attempts[] = sanitize_text_field( $response['orderId'] );
+		$order->update_meta_data( '_weiss_sber_order_ids', array_values( array_unique( $attempts ) ) );
+
 		$order->update_meta_data( '_weiss_sber_order_number', $number );
 		$order->update_meta_data( '_weiss_sber_amount', $amount );
 		$order->delete_meta_data( '_weiss_sber_error' );
@@ -194,17 +201,24 @@ class Weiss_Gateway_Sberbank extends WC_Payment_Gateway {
 		}
 
 		$status = isset( $response['orderStatus'] ) ? (int) $response['orderStatus'] : -1;
-		$paid   = in_array( $status, array( 1, 2 ), true );
+		/* 2 — деньги списаны. 1 — только заблокированы: заказ не оплачен. */
+		$paid   = 2 === $status;
 		$amount = isset( $response['amount'] ) ? (int) $response['amount'] : 0;
+
+		if ( 1 === $status && ! $order->is_paid() ) {
+			$order->add_order_note( 'Сбербанк: сумма заблокирована, но ещё не списана (статус 1). Ожидается подтверждение платежа.' );
+			return false;
+		}
 
 		if ( $paid ) {
 			if ( $order->is_paid() ) {
 				return true;
 			}
 
-			/* Сумма от банка должна совпадать с заказом. */
+			/* Сумма от банка должна совпадать с заказом. Пустая или нулевая
+			   сумма — не подтверждение: оплату автоматически не закрываем. */
 			$expected = (int) round( (float) $order->get_total() * 100 );
-			if ( $amount && $amount !== $expected ) {
+			if ( $amount <= 0 || $amount !== $expected ) {
 				$order->add_order_note( 'Сбербанк: сумма платежа ' . wc_price( $amount / 100 ) . ' не совпадает с заказом ' . wc_price( $expected / 100 ) . '. Оплата не подтверждена автоматически.' );
 				return false;
 			}
@@ -257,7 +271,9 @@ add_filter( 'woocommerce_payment_gateways', function ( $gateways ) {
 
 /** Уведомление банка: статус подтверждается отдельным запросом к Сбербанку. */
 add_action( 'woocommerce_api_weiss_sberbank', function () {
-	$bank_order_id = isset( $_POST['mdOrder'] ) ? sanitize_text_field( wp_unslash( $_POST['mdOrder'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	/* Банк присылает уведомление POST, но при проверке из панели бывает GET:
+	   статус всё равно перезапрашивается у банка, поэтому способ не важен. */
+	$bank_order_id = isset( $_REQUEST['mdOrder'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['mdOrder'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 
 	if ( '' === $bank_order_id ) {
 		status_header( 400 );
@@ -270,6 +286,21 @@ add_action( 'woocommerce_api_weiss_sberbank', function () {
 		'meta_value' => $bank_order_id, // phpcs:ignore WordPress.DB.SlowDBQuery
 		'status'     => array_keys( wc_get_order_statuses() ),
 	) );
+
+	/* Платёж мог быть создан в предыдущей попытке: ищем по всем номерам. */
+	if ( ! $orders ) {
+		$orders = wc_get_orders( array(
+			'limit'      => 1,
+			'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery
+				array(
+					'key'     => '_weiss_sber_order_ids',
+					'value'   => '"' . $bank_order_id . '"',
+					'compare' => 'LIKE',
+				),
+			),
+			'status'     => array( 'pending', 'on-hold', 'failed' ),
+		) );
+	}
 
 	if ( ! $orders ) {
 		status_header( 404 );

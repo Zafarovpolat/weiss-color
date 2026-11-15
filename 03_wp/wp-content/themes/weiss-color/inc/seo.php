@@ -40,7 +40,20 @@ function weiss_is_service_page() {
 	if ( is_page( 'order-success' ) || is_page_template( 'page-order-success.php' ) ) {
 		return true;
 	}
+	/* Товар-пробник — служебная позиция для конфигуратора /sampler/. */
+	if ( is_singular( 'product' ) && weiss_is_sampler_product( get_queried_object_id() ) ) {
+		return true;
+	}
 	return is_search() || is_404();
+}
+
+/** Товар, через который оформляется пробник (метка _weiss_sampler). */
+function weiss_is_sampler_product( $product_id ) {
+	if ( ! function_exists( 'weiss_sampler_product' ) ) {
+		return false;
+	}
+	$sampler = weiss_sampler_product();
+	return $sampler && (int) $sampler->get_id() === (int) $product_id;
 }
 
 /** Страницы, которых не должно быть в карте сайта. */
@@ -104,6 +117,21 @@ add_filter( 'document_title_parts', function ( $parts ) {
 	return $parts;
 } );
 
+/**
+ * Служебные страницы WooCommerce созданы ядром с английскими названиями
+ * («Shop», «Cart», «My account»). У них русский заголовок вкладки (ТЗ 11.7).
+ */
+add_filter( 'document_title_parts', function ( $parts ) {
+	if ( function_exists( 'is_shop' ) && is_shop() ) {
+		$parts['title'] = 'Каталог продукции';
+	} elseif ( function_exists( 'is_cart' ) && is_cart() ) {
+		$parts['title'] = 'Корзина';
+	} elseif ( function_exists( 'is_account_page' ) && is_account_page() ) {
+		$parts['title'] = 'Личный кабинет';
+	}
+	return $parts;
+}, 20 );
+
 /* Панель: поля SEO у страниц, записей и товаров. */
 add_action( 'add_meta_boxes', function () {
 	foreach ( array( 'page', 'post', 'product' ) as $type ) {
@@ -149,6 +177,14 @@ add_filter( 'wp_sitemaps_posts_query_args', function ( $args, $post_type ) {
 			$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? $args['post__not_in'] : array(), $exclude );
 		}
 	}
+
+	if ( 'product' === $post_type ) {
+		$sampler = function_exists( 'weiss_sampler_product' ) ? weiss_sampler_product() : null;
+		if ( $sampler ) {
+			$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? $args['post__not_in'] : array(), array( $sampler->get_id() ) );
+		}
+	}
+
 	return $args;
 }, 10, 2 );
 

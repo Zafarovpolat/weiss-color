@@ -56,6 +56,35 @@ function weiss_filter_catalog_query( $query ) {
 add_action( 'pre_get_posts', 'weiss_filter_catalog_query' );
 
 /**
+ * Пустой диапазон цены не должен доходить до штатного фильтра WooCommerce:
+ * max_price=0 отсекает все товары. Свои поля тема отключает, но параметр
+ * может прийти из адреса, поэтому снимаем его до обработки запроса.
+ */
+add_action( 'pre_get_posts', function ( $query ) {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+	if ( ! $query->is_post_type_archive( 'product' ) && ! $query->is_tax( 'product_cat' ) ) {
+		return;
+	}
+	foreach ( array( 'min_price', 'max_price' ) as $key ) {
+		if ( isset( $_GET[ $key ] ) && (float) wp_unslash( $_GET[ $key ] ) <= 0 ) { // phpcs:ignore WordPress.Security.NonceVerification
+			unset( $_GET[ $key ] ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+	}
+}, 1 );
+
+/**
+ * Оформление идёт только через форму темы: она проверяет согласие,
+ * реквизиты, цвет и колеровку. Штатный маршрут Store API создавал заказ
+ * в обход этих проверок, поэтому закрыт (ТЗ 7.2, 11.3).
+ */
+add_filter( 'rest_endpoints', function ( $endpoints ) {
+	unset( $endpoints['/wc/store/v1/checkout'] );
+	return $endpoints;
+} );
+
+/**
  * Диапазон цены (ТЗ 4.2): товар попадает в выдачу, если хотя бы один
  * доступный вариант стоит в диапазоне, а не только минимальная цена
  * товара. Поэтому проверяем цену и у самого товара, и у его вариаций.
@@ -537,7 +566,10 @@ add_action( 'woocommerce_checkout_create_order', function ( $order, $data ) {
 		$order->update_meta_data( '_weiss_consent', current_time( 'mysql' ) );
 	}
 
-	if ( ! empty( $post['weiss_invoice'] ) && is_array( $post['weiss_invoice'] ) ) {
+	/* Реквизиты сохраняем только для оплаты по счёту: у карты и заявки
+	   на расчёт форма всё равно присылает пустой набор полей. */
+	if ( ! empty( $post['weiss_invoice'] ) && is_array( $post['weiss_invoice'] )
+		&& in_array( $order->get_payment_method(), array( 'bacs', 'weiss_quote' ), true ) ) {
 		$order->update_meta_data( '_weiss_invoice', array_map( 'wc_clean', $post['weiss_invoice'] ) );
 	}
 }, 10, 2 );
@@ -547,11 +579,11 @@ add_action( 'woocommerce_checkout_create_order', function ( $order, $data ) {
  * заменяем на неделю; после этого состав пересчитывается заново.
  */
 add_filter( 'wc_session_expiring', function () {
-	return time() + 7 * DAY_IN_SECONDS - HOUR_IN_SECONDS;
+	return 7 * DAY_IN_SECONDS - HOUR_IN_SECONDS;
 } );
 
 add_filter( 'wc_session_expiration', function () {
-	return time() + 7 * DAY_IN_SECONDS;
+	return 7 * DAY_IN_SECONDS;
 } );
 
 /**

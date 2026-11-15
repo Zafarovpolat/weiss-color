@@ -15,11 +15,25 @@
   const rangeMax = form.querySelector('[data-range-max]');
 
   /* Значения ползунков попадают в запрос только после того, как их тронули:
-     стартовые 700–12 000 из макета не должны фильтровать каталог сразу. */
+     стартовые 700–12 000 из макета не должны фильтровать каталог сразу.
+     Пока ползунок не тронут, скрытое поле отключено и не отправляет 0. */
   const syncPrices = () => {
-    if (rangeMin && priceMin && rangeMin.dataset.touched) priceMin.value = rangeMin.value;
-    if (rangeMax && priceMax && rangeMax.dataset.touched) priceMax.value = rangeMax.value;
+    if (rangeMin && priceMin) {
+      priceMin.disabled = !rangeMin.dataset.touched;
+      if (rangeMin.dataset.touched) priceMin.value = rangeMin.value;
+    }
+    if (rangeMax && priceMax) {
+      priceMax.disabled = !rangeMax.dataset.touched;
+      if (rangeMax.dataset.touched) priceMax.value = rangeMax.value;
+    }
   };
+
+  /* Фильтр из адреса уже применён — ползунки считаем тронутыми,
+     иначе следующая отправка потеряет диапазон. */
+  if (rangeMin && priceMin && priceMin.dataset.touched) rangeMin.dataset.touched = '1';
+  if (rangeMax && priceMax && priceMax.dataset.touched) rangeMax.dataset.touched = '1';
+
+  syncPrices();
 
   [rangeMin, rangeMax].forEach((input) => {
     if (input) input.addEventListener('input', () => {
@@ -43,8 +57,9 @@
     });
   });
 
-  /* Выбор сортировки сразу перестраивает выдачу (catalog.js уже обновил UI). */
-  const list = form.parentElement.querySelector('.sort__list');
+  /* Выбор сортировки сразу перестраивает выдачу (catalog.js уже обновил UI).
+     Список лежит в соседнем блоке .catalog__main, а не внутри формы. */
+  const list = document.querySelector('.sort__list');
   if (list && orderby) {
     list.addEventListener('click', (event) => {
       const option = event.target.closest('.sort__option');

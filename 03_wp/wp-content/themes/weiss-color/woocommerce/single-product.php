@@ -238,11 +238,13 @@ get_header();
 				<ul class="p-specs">
 					<?php foreach ( $weiss_product->get_attributes() as $weiss_attribute ) : ?>
 						<?php
-						/* Объёмы — это кнопки в герое, в таблицу характеристик не дублируем. */
-						if ( ! $weiss_attribute->get_visible() || $weiss_attribute->get_variation() ) {
+						/* Объёмы — это кнопки в герое, в таблицу характеристик не дублируем.
+						   «Краткое описание» — атрибут вывода, а не характеристика. */
+						$weiss_label = wc_attribute_label( $weiss_attribute->get_name(), $weiss_product );
+						if ( ! $weiss_attribute->get_visible() || $weiss_attribute->get_variation()
+							|| 'краткое описание' === mb_strtolower( $weiss_label ) ) {
 							continue;
 						}
-						$weiss_label = wc_attribute_label( $weiss_attribute->get_name(), $weiss_product );
 						if ( $weiss_attribute->is_taxonomy() ) {
 							$weiss_terms = wc_get_product_terms( $weiss_product->get_id(), $weiss_attribute->get_name(), array( 'fields' => 'names' ) );
 							$weiss_value = implode( ', ', $weiss_terms );

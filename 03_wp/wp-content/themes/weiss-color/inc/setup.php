@@ -140,3 +140,44 @@ remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10 );
 
 /** Свои стили вместо стилей WooCommerce: файлы этапа 1 уже описывают вид. */
 add_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
+
+/* -------------------------------------------------------------------------
+ * Защита (ТЗ 11.3): перечисление пользователей, XML-RPC, заголовки.
+ * ---------------------------------------------------------------------- */
+
+/** Гостю не отдаём список пользователей и логины администраторов. */
+add_filter( 'rest_endpoints', function ( $endpoints ) {
+	if ( is_user_logged_in() ) {
+		return $endpoints;
+	}
+	unset( $endpoints['/wp/v2/users'], $endpoints['/wp/v2/users/(?P<id>[\d]+)'] );
+	return $endpoints;
+} );
+
+/** ?author=1 раскрывал логин администратора: уводим на главную. */
+add_action( 'template_redirect', function () {
+	if ( is_admin() || is_user_logged_in() ) {
+		return;
+	}
+	if ( isset( $_GET['author'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		wp_safe_redirect( home_url( '/' ), 301 );
+		exit;
+	}
+}, 1 );
+
+/** XML-RPC не используется сайтом и служит только для подбора паролей. */
+add_filter( 'xmlrpc_enabled', '__return_false' );
+add_filter( 'xmlrpc_methods', function ( $methods ) {
+	unset( $methods['system.multicall'], $methods['wp.getUsersBlogs'], $methods['wp.getUsers'] );
+	return $methods;
+} );
+
+add_action( 'send_headers', function () {
+	if ( is_admin() ) {
+		return;
+	}
+	header( 'X-Content-Type-Options: nosniff' );
+	header( 'X-Frame-Options: SAMEORIGIN' );
+	header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+	header( 'Permissions-Policy: geolocation=(), microphone=(), camera=()' );
+} );

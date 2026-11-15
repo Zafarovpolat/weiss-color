@@ -64,14 +64,19 @@ add_action( 'init', 'weiss_colors_maybe_install', 1 );
  * @param string $path Путь к XLSX или CSV.
  * @return array|WP_Error
  */
-function weiss_colors_import_file( $path ) {
+function weiss_colors_import_file( $path, $ext = '' ) {
 	global $wpdb;
 
 	if ( ! is_readable( $path ) ) {
 		return new WP_Error( 'weiss_import_read', 'Файл не найден или недоступен для чтения.' );
 	}
 
-	$ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
+	/* У временного файла загрузки нет расширения: тип берём из имени файла,
+	   иначе XLSX читается как CSV и все строки отклоняются. */
+	if ( '' === $ext ) {
+		$ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
+	}
+	$ext = strtolower( (string) $ext );
 	$php = ini_get( 'memory_limit' );
 	$php = wp_convert_hr_to_bytes( $php );
 	if ( $php > 0 && $php < 512 * MB_IN_BYTES ) {
@@ -582,13 +587,15 @@ function weiss_color_preview_hexes( $palette, $limit = 6 ) {
 function weiss_shades_url( $palette = '', $page = 1, $search = '' ) {
 	$args = array();
 	if ( $palette ) {
-		$args['palette'] = $palette;
+		/* Названия палитр содержат «&» (Farrow&Ball): без кодирования
+		   ссылка распадается на два параметра и открывает чужую палитру. */
+		$args['palette'] = rawurlencode( $palette );
 	}
 	if ( $page > 1 ) {
 		$args['shade_page'] = (int) $page;
 	}
 	if ( '' !== $search ) {
-		$args['q'] = $search;
+		$args['q'] = rawurlencode( $search );
 	}
 	return add_query_arg( $args, weiss_page_url( 'shades' ) );
 }
@@ -597,8 +604,8 @@ function weiss_shades_url( $palette = '', $page = 1, $search = '' ) {
 function weiss_color_url( $palette, $code ) {
 	return add_query_arg(
 		array(
-			'palette' => $palette,
-			'code'    => $code,
+			'palette' => rawurlencode( $palette ),
+			'code'    => rawurlencode( $code ),
 		),
 		weiss_page_url( 'color' )
 	);
@@ -915,7 +922,7 @@ function weiss_colors_admin_page() {
 			if ( ! in_array( $ext, array( 'xlsx', 'csv' ), true ) ) {
 				$notice = 'Поддерживаются XLSX и CSV.';
 			} else {
-				$report = weiss_colors_import_file( $file['tmp_name'] );
+				$report = weiss_colors_import_file( $file['tmp_name'], $ext );
 				if ( is_wp_error( $report ) ) {
 					$notice = $report->get_error_message();
 				} else {

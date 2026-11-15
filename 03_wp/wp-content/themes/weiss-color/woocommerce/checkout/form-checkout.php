@@ -85,7 +85,7 @@ if ( '' !== $weiss_notice_text ) {
 
 				<label class="field">
 					<span class="field__label">E-mail*</span>
-					<input class="field__input" type="email" name="billing_email" autocomplete="email" inputmode="email" placeholder="info@ooo-nort.ru" required>
+					<input class="field__input" type="email" name="billing_email" autocomplete="email" inputmode="email" placeholder="info@ooonort.ru" required>
 				</label>
 			</div>
 		</section>
@@ -264,7 +264,7 @@ if ( '' !== $weiss_notice_text ) {
 
 			<label class="field comment-field">
 				<span class="visually-hidden">Комментарий к заказу</span>
-				<textarea class="field__input" name="order_comments" rows="2" maxlength="300" placeholder="Напишите комментарий, если нужно (напимер, удобное время доставки)"></textarea>
+				<textarea class="field__input" name="order_comments" rows="2" maxlength="300" placeholder="Напишите комментарий, если нужно (например, удобное время доставки)"></textarea>
 			</label>
 
 			<label class="consent">

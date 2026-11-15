@@ -145,6 +145,49 @@ function weiss_is_quote_checkout() {
 }
 
 /**
+ * Стоимость доставки в корзине и оформлении (ТЗ 7.2, 7.4). Без этого
+ * фильтра зона WooCommerce показывала 300 ₽ для любого региона, а верная
+ * сумма появлялась только в момент создания заказа.
+ */
+add_filter( 'woocommerce_package_rates', function ( $rates, $package ) {
+	$region = isset( $package['destination']['state'] ) ? (string) $package['destination']['state'] : '';
+
+	$goods = 0;
+	foreach ( $package['contents'] as $item ) {
+		$goods += (float) $item['line_total'];
+	}
+
+	foreach ( $rates as $rate ) {
+		if ( 0 === strpos( $rate->get_method_id(), 'local_pickup' ) ) {
+			continue;
+		}
+
+		if ( '' === $region ) {
+			$rate->set_cost( 0 );
+			$rate->set_label( 'Курьерская доставка — рассчитывается при оформлении' );
+			continue;
+		}
+
+		$tariff = weiss_delivery_tariff( $region );
+		if ( null === $tariff['cost'] ) {
+			$rate->set_cost( 0 );
+			$rate->set_label( 'Курьерская доставка — расчёт после оформления' );
+			continue;
+		}
+
+		$cost = (float) $tariff['cost'];
+		if ( $tariff['free_from'] && $goods >= $tariff['free_from'] ) {
+			$cost = 0;
+		}
+
+		$rate->set_cost( $cost );
+		$rate->set_label( $cost > 0 ? 'Курьерская доставка' : 'Курьерская доставка — бесплатно' );
+	}
+
+	return $rates;
+}, 20, 2 );
+
+/**
  * Стоимость доставки заказа: цена из таблицы или 0 для заявки на расчёт.
  * Вызывается при создании заказа, чтобы сумма не зависела от браузера.
  */
@@ -348,8 +391,12 @@ function weiss_delivery_admin_page() {
 	?>
 	<div class="wrap">
 		<h1>Тарифы доставки</h1>
-		<form method="post" action="options.php">
-			<?php settings_fields( 'weiss_delivery' ); ?>
+		<?php if ( isset( $_GET['updated'] ) ) : ?>
+			<div class="notice notice-success is-dismissible"><p>Тарифы сохранены.</p></div>
+		<?php endif; ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="weiss_delivery_save">
+			<?php wp_nonce_field( 'weiss_delivery_save' ); ?>
 			<p>По одной строке на регион: <code>Регион | Стоимость, ₽ | Срок | Бесплатно от, ₽</code>. Список регионов на оформлении заказа строится из этой таблицы.</p>
 			<p>Четвёртое поле — порог бесплатной доставки: он сравнивается с суммой товаров после скидки. Пустое поле — бесплатной доставки в регионе нет.</p>
 			<p>Пустая стоимость — регион без тарифа: заказ оформляется как заявка на расчёт, деньги не списываются, менеджер присылает итог и ссылку на оплату.</p>
@@ -366,4 +413,24 @@ add_action( 'admin_init', function () {
 		'sanitize_callback' => 'sanitize_textarea_field',
 		'default'           => weiss_delivery_tariffs_default(),
 	) );
+} );
+
+/**
+ * Тарифы правит менеджер: у него есть manage_woocommerce, а options.php
+ * требует manage_options и отклонял сохранение. Поэтому своя обработка.
+ */
+add_action( 'admin_post_weiss_delivery_save', function () {
+	if ( ! current_user_can( 'manage_woocommerce' ) ) {
+		wp_die( 'Недостаточно прав для изменения тарифов.' );
+	}
+
+	check_admin_referer( 'weiss_delivery_save' );
+
+	update_option( 'weiss_delivery_tariffs', sanitize_textarea_field( wp_unslash( $_POST['weiss_delivery_tariffs'] ?? '' ) ) );
+
+	wp_safe_redirect( add_query_arg( array(
+		'page'    => 'weiss-delivery',
+		'updated' => '1',
+	), admin_url( 'admin.php' ) ) );
+	exit;
 } );

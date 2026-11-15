@@ -136,8 +136,10 @@ get_header();
 					<span>до <output><?php echo esc_html( weiss_price_number( $weiss_view_max ) ); ?></output> ₽</span>
 				</p>
 
-				<input type="hidden" name="min_price" value="<?php echo esc_attr( $weiss_min ); ?>" data-price-input="min">
-				<input type="hidden" name="max_price" value="<?php echo esc_attr( $weiss_max ); ?>" data-price-input="max">
+				<input type="hidden" name="min_price" value="<?php echo esc_attr( $weiss_min ); ?>" data-price-input="min"
+				       <?php echo $weiss_min > 0 ? 'data-touched="1"' : 'disabled'; ?>>
+				<input type="hidden" name="max_price" value="<?php echo esc_attr( $weiss_max ); ?>" data-price-input="max"
+				       <?php echo $weiss_max > 0 ? 'data-touched="1"' : 'disabled'; ?>>
 			</div>
 
 			<input type="hidden" name="orderby" value="<?php echo esc_attr( $weiss_orderby ); ?>" data-orderby-input>

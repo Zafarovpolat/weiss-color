@@ -133,7 +133,9 @@ $weiss_items = $order->get_items();
 
 	<?php
 	$weiss_invoice = (array) $order->get_meta( '_weiss_invoice' );
-	if ( $weiss_invoice ) :
+	/* Реквизиты относятся только к оплате по счёту: у карты и заявки на
+	   расчёт этого блока нет, даже если поля формы пришли пустыми (ТЗ 8.2). */
+	if ( $weiss_invoice && in_array( $order->get_payment_method(), array( 'bacs', 'weiss_quote' ), true ) ) :
 		$weiss_invoice_labels = array(
 			'payer'   => 'Плательщик',
 			'org'     => 'Организация',
