@@ -198,7 +198,10 @@ function weiss_wc_manager_route_allowed( $route, $method ) {
 	$route  = (string) $route;
 	$method = strtoupper( (string) $method );
 
-	if ( preg_match( '#^/wc-analytics/settings(/|$)#', $route ) ) {
+	/* Служебные пространства WooCommerce Admin: /wc-admin/options меняет
+	   настройки магазина, рядом — установка плагинов, онбординг и
+	   аналитика. Менеджеру они не нужны (замечание 95). */
+	if ( preg_match( '#^/(wc-admin|wc-admin-email|wc-analytics|wc-telemetry|wc-push-notifications|wccom-site|wc/private)(/|$)#', $route ) ) {
 		return false;
 	}
 	if ( ! preg_match( '#^/wc/v\d+/([a-z_]+)#', $route, $match ) ) {

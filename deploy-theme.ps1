@@ -181,7 +181,11 @@ if ($Prune) {
         }
 
         foreach ($name in $names) {
-            $relative = "$dirName/$name"
+            # Beget в ListDirectory отдаёт полный путь («js/zoom-mode.js»),
+            # поэтому берём только имя файла, иначе получается js/js/... и 550.
+            $leaf = [System.IO.Path]::GetFileName(($name -replace '\\', '/'))
+            if (-not $leaf) { continue }
+            $relative = "$dirName/$leaf"
             if ($local.ContainsKey($relative)) { continue }
             if (@('.js', '.css') -notcontains [System.IO.Path]::GetExtension($name).ToLower()) { continue }
 
