@@ -22,7 +22,7 @@ main {
   position: relative;
   /* фото макета ниже верхней кромки героя на 8px */
   min-height: calc(29.6484375 * var(--u));
-  background: #f3f3f5 url("../assets/img/product-hero.png") calc(50% + 0.0390625 * var(--u)) calc(0.3125 * var(--u)) / cover no-repeat;
+  background: #f3f3f5 url("../assets/img/product-hero.jpg") calc(50% + 0.0390625 * var(--u)) calc(0.3125 * var(--u)) / cover no-repeat;
 }
 
 .p-hero__inner {
