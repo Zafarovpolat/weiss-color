@@ -6,14 +6,14 @@
    ========================================================================== */
 
 .pcard-page {
-  min-height: 100vh;
+  min-height: calc(100vh / var(--wc-zoom, 1));
   background: #f2f3f5;
 }
 
 .pcard-page__center {
   display: grid;
   place-items: start center;
-  min-height: 100vh;
+  min-height: calc(100vh / var(--wc-zoom, 1));
   padding: clamp(16px, 2.34vw, 60px) clamp(12px, 1vw, 26px);
 }
 

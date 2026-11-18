@@ -197,7 +197,7 @@
 .guide-modal {
   width: 100%;
   max-width: 100%;
-  max-height: calc(100dvh - 32px);
+  max-height: calc((100dvh - 32px) / var(--wc-zoom, 1));
   margin: auto;
   padding: 0;
   border: 0;

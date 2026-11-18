@@ -10,7 +10,7 @@
 .payment-page {
   display: grid;
   place-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh / var(--wc-zoom, 1));
   padding: clamp(16px, 1.95vw, 50px) clamp(12px, 1vw, 26px);
   background: #f2f3f5;
 }

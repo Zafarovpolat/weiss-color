@@ -10,7 +10,7 @@
 .mcard-demo {
   display: grid;
   place-items: center;
-  min-height: 100dvh;
+  min-height: calc(100dvh / var(--wc-zoom, 1));
   padding: clamp(16px, 2vw, 40px);
   background: #e7e9ee;
 }
@@ -118,7 +118,7 @@
 dialog.mcard-add {
   width: min(916px, 94vw);
   max-width: min(916px, 94vw);
-  max-height: 92dvh;
+  max-height: calc(92dvh / var(--wc-zoom, 1));
   margin: auto;
   overflow-y: auto;
   border: 0;
@@ -374,7 +374,7 @@ dialog.mcard-add:focus-visible { outline: none; }
 .cookie-demo {
   display: flex;
   align-items: flex-end;
-  min-height: 100dvh;
+  min-height: calc(100dvh / var(--wc-zoom, 1));
   padding: clamp(16px, 1.17vw, 30px);
   background: #dfe1e5;
 }
@@ -510,7 +510,7 @@ dialog.mcard-add:focus-visible { outline: none; }
 dialog.mcard-callback {
   width: min(1691px, 96vw);
   max-width: min(1691px, 96vw);
-  max-height: 92dvh;
+  max-height: calc(92dvh / var(--wc-zoom, 1));
   margin: auto;
   padding: 0;
   overflow-y: auto;

@@ -40,6 +40,12 @@ html {
    отдаём замороженному макету — он на эти 10px просто чуть уже окна. */
 :root { --canvas-extra: 0px; }
 
+/* Масштаб полотна выше 2560 задаёт js/fit-height.js (zoom > 1). vh при этом
+   считается от окна без масштаба, поэтому 100vh превращался в «окно × zoom»
+   и на весь экран появлялся пустой низ с прокруткой. Все размеры «в высоту
+   экрана» делим на этот масштаб; до него (и при zoom ≤ 1) переменная = 1. */
+:root { --wc-zoom: 1; }
+
 @media (min-width: 2560px) {
   :root { --canvas-extra: max(0px, calc((100% - 2560px) / 2)); }
 }
@@ -63,8 +69,8 @@ body {
   /* Подвал прижимается к низу, если контента меньше высоты экрана */
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: calc(100vh / var(--wc-zoom));
+  min-height: calc(100dvh / var(--wc-zoom));
 }
 
 main { flex: 1 0 auto; }
