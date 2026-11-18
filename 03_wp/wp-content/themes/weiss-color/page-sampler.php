@@ -68,7 +68,7 @@ $weiss_back = $weiss_color
 
       <div class="sampler-photo">
         <div class="sampler-photo__can">
-          <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/img/sampler-can.png" width="389" height="534"
+          <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/img/sampler-can.png" width="470" height="700"
                alt="Баночка пробного образца краски 300 мл в цвете <?php echo esc_attr( $weiss_color_label ); ?>" loading="lazy">
         </div>
       </div>

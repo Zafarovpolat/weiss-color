@@ -66,62 +66,21 @@
   display: grid;
   place-items: center;
   min-height: clamp(240px, 29.4vw, 753px);
-  /* в макете фон «пола» — не плоская заливка, а мягкий градиент сверху вниз */
-  background: linear-gradient(156deg, #eceff0, #d5d7d9);
+  /* фото банки идёт как есть, со своим фоном — панель продолжает его белый */
+  background: #fff;
   border-radius: 2px;
 }
 
-/* тень — как у банки на карточке товара: лежит на «полу» у днища и уходит
-   вбок/вниз, а не ореолом вокруг всей банки (drop-shadow давал обводку) */
 .sampler-photo__can {
-  position: relative;
   width: fit-content;
   display: flex;
   align-items: flex-start;
 }
 
-/* контактная тень у днища — тонкая полоска под банкой */
-.sampler-photo__can::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  left: 4%;
-  bottom: 0.4%;
-  width: 92%;
-  height: 4.5%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at 50% 50%,
-    rgba(31, 41, 55, 0.2),
-    rgba(31, 41, 55, 0) 72%
-  );
-  filter: blur(6px);
-}
-
-/* падающая тень — как у банки на карточке товара: лежит на «полу» справа
-   от днища и уходит вниз, а не ореолом вокруг всей банки */
-.sampler-photo__can::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  left: 86%;
-  bottom: -2.5%;
-  width: 30%;
-  height: 15%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at 50% 50%,
-    rgba(31, 41, 55, 0.42),
-    rgba(31, 41, 55, 0.16) 50%,
-    rgba(31, 41, 55, 0) 82%
-  );
-  filter: blur(8px);
-}
-
+/* банка в кадре занимает 388 px из 470 — ширину фото подбираем так,
+   чтобы сама банка оставалась 392 px при 2560 */
 .sampler-photo__can img {
-  position: relative;
-  z-index: 1;
-  width: clamp(140px, 15.3vw, 392px);
+  width: clamp(169px, 18.5vw, 470px);
   height: auto;
 }
 
