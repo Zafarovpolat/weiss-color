@@ -111,11 +111,11 @@
   border-radius: 50%;
   background: radial-gradient(
     ellipse at 50% 50%,
-    rgba(31, 41, 55, 0.32),
-    rgba(31, 41, 55, 0.12) 50%,
+    rgba(31, 41, 55, 0.42),
+    rgba(31, 41, 55, 0.16) 50%,
     rgba(31, 41, 55, 0) 82%
   );
-  filter: blur(10px);
+  filter: blur(8px);
 }
 
 .sampler-photo__can img {
