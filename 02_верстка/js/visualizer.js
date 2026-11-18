@@ -40,12 +40,42 @@
   // Маски грузим заранее: иначе при смене сцены слой краски на миг
   // показывается без маски — весь кадр, включая мебель.
   const maskPreloads = [];
+  /* Фотографии сцен по 0,5–1 МБ: качаем заранее, но после текущего кадра,
+     чтобы переключение не ждало загрузку. */
+  const scenePreloads = new Map();
+  function preloadScenes() {
+    thumbs.forEach((thumb) => {
+      const src = thumb.dataset.img;
+      if (!src || scenePreloads.has(src)) return;
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
+      scenePreloads.set(src, img);
+    });
+  }
+  function whenIdle(fn) {
+    if ('requestIdleCallback' in window) requestIdleCallback(fn, { timeout: 2000 });
+    else setTimeout(fn, 300);
+  }
   thumbs.forEach((thumb) => {
     if (!thumb.dataset.mask) return;
     const img = new Image();
     img.src = thumb.dataset.mask;
     maskPreloads.push(img);
   });
+  /* Слой краски показываем только когда сама фотография отрисована:
+     иначе на белом фоне видна одна маска — «контур» вместо интерьера. */
+  if (hero && heroImg) {
+    if (heroImg.complete && heroImg.naturalWidth) {
+      hero.classList.add('viz-hero--ready');
+      whenIdle(preloadScenes);
+    } else {
+      heroImg.addEventListener('load', () => {
+        hero.classList.add('viz-hero--ready');
+        whenIdle(preloadScenes);
+      }, { once: true });
+    }
+  }
 
   /* ---------- Перекраска стен ---------- */
   function hexToRgb(hex) {
@@ -159,6 +189,19 @@
     });
   }
 
+  function showScene(thumb) {
+    const src = thumb.dataset.img;
+    const alt = thumb.dataset.alt;
+    const mask = thumb.dataset.mask;
+
+    if (src && heroImg.getAttribute('src') !== src) heroImg.src = src;
+    if (alt) heroImg.alt = alt;
+    if (mask && hero) hero.style.setProperty('--viz-mask', 'url("' + mask + '")');
+
+    wall = WALL_RGB[thumb.dataset.scene] || [255, 255, 255];
+    applyColor(currentHex);
+  }
+
   function setScene(index) {
     if (!thumbs.length) return;
     // без прокрутки по кругу: на краях соответствующая стрелка скрыта
@@ -170,15 +213,26 @@
 
     const thumb = thumbs[scene];
     const src = thumb.dataset.img;
-    const alt = thumb.dataset.alt;
-    const mask = thumb.dataset.mask;
+    if (!src || heroImg.getAttribute('src') === src) {
+      showScene(thumb);
+      return;
+    }
 
-    if (src && heroImg.getAttribute('src') !== src) heroImg.src = src;
-    if (alt) heroImg.alt = alt;
-    if (mask && hero) hero.style.setProperty('--viz-mask', 'url("' + mask + '")');
-
-    wall = WALL_RGB[thumb.dataset.scene] || [255, 255, 255];
-    applyColor(currentHex);
+    /* Фотографию меняем только после декодирования: пока кадр качается,
+       на белом фоне остаётся один слой краски — «контур» вместо мебели. */
+    let pre = scenePreloads.get(src);
+    if (!pre) {
+      pre = new Image();
+      pre.decoding = 'async';
+      pre.src = src;
+      scenePreloads.set(src, pre);
+    }
+    const show = () => {
+      if (thumbs[scene] === thumb) showScene(thumb);
+    };
+    if (pre.decode) pre.decode().then(show, show);
+    else if (pre.complete && pre.naturalWidth) show();
+    else pre.addEventListener('load', show, { once: true });
   }
 
   thumbs.forEach((thumb, index) => {

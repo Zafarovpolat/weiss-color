@@ -63,6 +63,24 @@ if ( $weiss_code ) {
 
 $weiss_brand = weiss_palette_brand( $weiss_palette );
 
+/* Стену окрашиваем уже в разметке: иначе после перезагрузки цвет
+   появляется только после ответа AJAX. Яркость стены «детской» — 251. */
+$weiss_initial_hex = '';
+foreach ( $weiss_viz['items'] as $weiss_row ) {
+	if ( $weiss_row->code === $weiss_active_code ) {
+		$weiss_initial_hex = ltrim( $weiss_row->hex, '#' );
+		break;
+	}
+}
+$weiss_initial_paint = '';
+if ( preg_match( '/^[0-9a-fA-F]{6}$/', $weiss_initial_hex ) ) {
+	$weiss_channels = array();
+	foreach ( str_split( $weiss_initial_hex, 2 ) as $weiss_pair ) {
+		$weiss_channels[] = min( 255, (int) round( hexdec( $weiss_pair ) * 255 / 251 ) );
+	}
+	$weiss_initial_paint = 'rgb(' . implode( ', ', $weiss_channels ) . ')';
+}
+
 /* Пробник передаёт выбранный цвет (ТЗ, п.6.6). */
 $weiss_sampler_url = add_query_arg(
 	array_filter(
@@ -160,9 +178,9 @@ $weiss_sampler_url = add_query_arg(
 
         <!-- ============ Правая колонка: визуализатор ============ -->
         <div class="viz-right">
-          <figure class="viz-hero">
+          <figure class="viz-hero" style="--viz-mask:url('<?php echo esc_url( WEISS_URI ); ?>/assets/masks/scene-kids.png')">
             <img class="viz-hero__img" src="<?php echo esc_url( WEISS_URI ); ?>/assets/img/scene-kids.png" width="1334" height="746" alt="Интерьер детской, окрашенной в выбранный оттенок">
-            <span class="viz-hero__paint" aria-hidden="true"></span>
+            <span class="viz-hero__paint" aria-hidden="true"<?php echo $weiss_initial_paint ? ' style="background:' . esc_attr( $weiss_initial_paint ) . '"' : ''; ?>></span>
 
             <ul class="viz-thumbs" aria-label="Превью интерьеров">
               <li><button class="viz-thumb" type="button" data-scene="living"

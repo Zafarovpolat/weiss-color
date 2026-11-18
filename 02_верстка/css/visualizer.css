@@ -361,6 +361,13 @@
   mix-blend-mode: multiply;
   pointer-events: none;
   transition: background-color 0.25s ease;
+  /* пока фото сцены не отрисовано, краска не видна: иначе на белом фоне
+     остаётся один контур маски */
+  opacity: 0;
+}
+
+.viz-hero--ready .viz-hero__paint {
+  opacity: 1;
 }
 
 /* Лента превью интерьеров — поверх фото, справа снизу */
