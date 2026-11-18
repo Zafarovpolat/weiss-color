@@ -71,12 +71,58 @@
   border-radius: 2px;
 }
 
-/* тень под банкой в макете мягкая и слабая: плотнее у дна, к 40 px почти
-   исчезает — два слоя: контактный и широкий рассеянный */
-.sampler-photo img {
+/* тень — как у банки на карточке товара: лежит на «полу» у днища и уходит
+   вбок/вниз, а не ореолом вокруг всей банки (drop-shadow давал обводку) */
+.sampler-photo__can {
+  position: relative;
+  width: fit-content;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* контактная тень у днища — тонкая полоска под банкой */
+.sampler-photo__can::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 4%;
+  bottom: 0.4%;
+  width: 92%;
+  height: 4.5%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(31, 41, 55, 0.2),
+    rgba(31, 41, 55, 0) 72%
+  );
+  filter: blur(6px);
+}
+
+/* падающая тень — как у банки на карточке товара: лежит на «полу» справа
+   от днища и уходит вниз, а не ореолом вокруг всей банки */
+.sampler-photo__can::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 86%;
+  bottom: -2.5%;
+  width: 30%;
+  height: 15%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(31, 41, 55, 0.32),
+    rgba(31, 41, 55, 0.12) 50%,
+    rgba(31, 41, 55, 0) 82%
+  );
+  filter: blur(10px);
+}
+
+.sampler-photo__can img {
+  position: relative;
+  z-index: 1;
   width: clamp(140px, 15.3vw, 392px);
   height: auto;
-  filter: drop-shadow(0 3px 6px rgba(45, 50, 55, 0.06)) drop-shadow(0 12px 34px rgba(45, 50, 55, 0.09));
 }
 
 /* --- Правая колонка --- */
@@ -171,7 +217,7 @@
 .sampler-benefit {
   display: grid;
   /* ширина колонки иконки — по самой иконке: в макете они разного размера
-     (веер 38, дом 40, грузовик 61 при 2560) */
+     (веер 40, дом 44, грузовик 63 при 2560) */
   grid-template-columns: auto minmax(0, 1fr);
   gap: clamp(6px, 0.55vw, 14px);
   align-items: start;
@@ -183,12 +229,12 @@
 }
 
 .sampler-benefit img {
-  width: clamp(26px, 1.48vw, 39px);
+  width: clamp(26px, 1.52vw, 40px);
   height: auto;
 }
 
-.sampler-benefit:nth-child(2) img { width: clamp(29px, 1.63vw, 43px); }
-.sampler-benefit:nth-child(3) img { width: clamp(37px, 2.34vw, 61px); }
+.sampler-benefit:nth-child(2) img { width: clamp(29px, 1.67vw, 44px); }
+.sampler-benefit:nth-child(3) img { width: clamp(37px, 2.39vw, 63px); }
 
 /* --- Цена и наличие --- */
 
@@ -356,9 +402,9 @@
     margin-top: 6.71cqw;
   }
   .sampler-benefit { gap: 3.04cqw; font-size: 2.28cqw; }
-  .sampler-benefit img { width: 4.94cqw; }
-  .sampler-benefit:nth-child(2) img { width: 5.44cqw; }
-  .sampler-benefit:nth-child(3) img { width: 7.72cqw; }
+  .sampler-benefit img { width: 5.06cqw; }
+  .sampler-benefit:nth-child(2) img { width: 5.57cqw; }
+  .sampler-benefit:nth-child(3) img { width: 7.97cqw; }
 
   .sampler-price-row { margin-top: 9.49cqw; }
   .sampler-price { font-size: 5.95cqw; }

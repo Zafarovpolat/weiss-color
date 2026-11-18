@@ -67,8 +67,10 @@ $weiss_back = $weiss_color
            style="background:<?php echo esc_attr( $weiss_hex ); ?>"></div>
 
       <div class="sampler-photo">
-        <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/img/sampler-can.png" width="392" height="531"
-             alt="Баночка пробного образца краски 300 мл в цвете <?php echo esc_attr( $weiss_color_label ); ?>" loading="lazy">
+        <div class="sampler-photo__can">
+          <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/img/sampler-can.png" width="392" height="531"
+               alt="Баночка пробного образца краски 300 мл в цвете <?php echo esc_attr( $weiss_color_label ); ?>" loading="lazy">
+        </div>
       </div>
 
       <aside class="sampler-aside" aria-labelledby="sampler-title">
@@ -81,20 +83,20 @@ $weiss_back = $weiss_color
 
         <ul class="sampler-benefits">
           <li class="sampler-benefit">
-            <!-- веер цветовых карточек (обводка снята с макета) -->
-            <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/icons/sampler-swatches.svg" width="39" height="39"
+            <!-- веер цветовых карточек -->
+            <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/icons/sampler-swatches.svg" width="40" height="40"
                  alt="" aria-hidden="true" loading="lazy">
             <span>Реальный цвет<br>в вашем интерьере</span>
           </li>
           <li class="sampler-benefit">
-            <!-- дом с окном и малярной кистью (обводка снята с макета) -->
-            <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/icons/sampler-brush.svg" width="43" height="40"
+            <!-- дом с окном и малярной кистью -->
+            <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/icons/sampler-brush.svg" width="44" height="40"
                  alt="" aria-hidden="true" loading="lazy">
             <span>Удобно<br>тестировать</span>
           </li>
           <li class="sampler-benefit">
-            <!-- грузовик с линиями скорости (обводка снята с макета) -->
-            <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/icons/sampler-truck.svg" width="61" height="37"
+            <!-- грузовик с линиями скорости -->
+            <img src="<?php echo esc_url( WEISS_URI ); ?>/assets/icons/sampler-truck.svg" width="63" height="33"
                  alt="" aria-hidden="true" loading="lazy">
             <span>Доставка по России</span>
           </li>
