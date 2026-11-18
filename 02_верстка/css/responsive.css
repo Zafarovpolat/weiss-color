@@ -346,8 +346,10 @@
     gap: 0;
     height: calc(4.296875 * var(--u));
     min-height: 0;
-    /* поля PSD: логотип на ink 64, корзина заканчивается на 2461 */
-    padding: 0 calc(3.8671875 * var(--u)) 0 calc(2.34375 * var(--u));
+    /* поля одинаковые. В макете справа 99 против 60 слева — на ноутбуках
+       это читается как смещение, поэтому макетные значения оставлены
+       только от 2550 (см. блок «Шире макета» в конце файла). */
+    padding: 0 calc(2.34375 * var(--u));
   }
 
   .logo {
@@ -431,7 +433,8 @@
     gap: 0;
     height: calc(3.75 * var(--u));
     min-height: 0;
-    padding: 0 calc(7.7734375 * var(--u)) 0 calc(2.34375 * var(--u));
+    /* поля одинаковые, макетные 60/199 — только от 2550 */
+    padding: 0 calc(2.34375 * var(--u));
   }
   .footer__logo img { width: calc(7.7734375 * var(--u)); height: auto; }
   .footer__nav {
@@ -503,8 +506,7 @@
     grid-template-columns: minmax(240px, 411px) minmax(0, 1fr);
     gap: 0;
     align-items: start;
-    /* в макете правый отступ секции меньше левого (135 против 224) */
-    padding-right: clamp(48px, 5.27vw, 135px);
+    /* поля одинаковые (макетные 135 справа — только от 2550) */
   }
   /* PSD-границы текста — tight-bbox: компенсируем ведущие браузера,
      чтобы ink совпадал с макетом (y=1120/1121) */
@@ -751,6 +753,8 @@ dialog.mcard:not([open]) { display: none; }
   .site-header,
   .site-footer { --u: 25.6px; }
 
+  /* На макетном полотне поля снова такие, как в PSD: 60/99 в шапке
+     и 60/199 в подвале. Ниже 2550 они одинаковые. */
   .header__inner {
     padding-left: calc(2.34375 * var(--u) + var(--canvas-extra));
     padding-right: calc(3.8671875 * var(--u) + var(--canvas-extra));
@@ -760,4 +764,7 @@ dialog.mcard:not([open]) { display: none; }
     padding-left: calc(2.34375 * var(--u) + var(--canvas-extra));
     padding-right: calc(7.7734375 * var(--u) + var(--canvas-extra));
   }
+
+  /* В макете правый отступ блока преимуществ меньше левого (135 против 224) */
+  .benefits__inner { padding-right: clamp(48px, 5.27vw, 135px); }
 }

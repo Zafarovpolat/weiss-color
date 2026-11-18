@@ -62,12 +62,20 @@ main {
 .contacts-page > .crumbs,
 .contacts-page > .crumbs a { color: #95969b; }
 
-/* Боковые поля макета: 222px слева и 404px справа при 2560. Шире макета
-   полотно центрируем — прибавка одинаковая с обеих сторон. */
+/* Боковые поля одинаковые: 222px при 2560. В макете справа 404, но этот
+   перекос виден на любой ширине, поэтому макетное значение включается
+   только на самом полотне (2550+, см. блок ниже). */
 .contacts-page > .crumbs,
 .contacts-page > .contacts-layout {
-  padding-inline: calc(8.671875 * var(--u) + var(--canvas-extra))
-    calc(15.78125 * var(--u) + var(--canvas-extra));
+  padding-inline: calc(8.671875 * var(--u) + var(--canvas-extra));
+}
+
+/* Шире макета — ровно как в PSD: 222 слева и 404 справа */
+@media (min-width: 2550px) {
+  .contacts-page > .crumbs,
+  .contacts-page > .contacts-layout {
+    padding-right: calc(15.78125 * var(--u) + var(--canvas-extra));
+  }
 }
 
 /* Композиция макета прижата к верху: крошки сразу под шапкой, под панелью

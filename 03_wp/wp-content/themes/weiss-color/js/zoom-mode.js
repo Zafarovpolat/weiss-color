@@ -31,28 +31,40 @@
   var MAX_OVERFLOW = 0.12;
   var de = document.documentElement;
   var timer = 0;
+  var applied = 0;
 
-  function fit() {
+  /* natural — натуральная высота страницы при zoom: 1. На повторных
+     пересчётах берём её из текущего scrollHeight, чтобы не сбрасывать
+     масштаб в 1: сброс сам по себе давал видимый рывок. */
+  function fit(first) {
     if (de.classList.contains('zoom-09')) return;
-    if (window.innerWidth < 2550) { de.style.zoom = ''; return; }
-    de.style.zoom = '1';
-    var height = de.scrollHeight;
+    if (window.innerWidth < 2550) { de.style.zoom = ''; applied = 0; return; }
+
+    if (first) de.style.zoom = '1';
+    var natural = first ? de.scrollHeight : de.scrollHeight / (applied || 1);
     var viewport = window.innerHeight;
     /* 2px запаса нужны и когда страница влезает ровно впритык: при нулевом
        запасе полоса прокрутки от округления появлялась, отнимала ширину,
        страница становилась выше — и скролл начинал мигать. */
     var target = viewport - 2;
-    if (!height || height <= target) return;
-    if ((height - viewport) / height > MAX_OVERFLOW) return;
+
+    var zoom = 1;
+    if (!natural) return;
+    if (natural > target && (natural - viewport) / natural <= MAX_OVERFLOW) {
+      zoom = Math.max(MIN_ZOOM, target / natural);
+    }
+    /* Пересчёт после шрифтов и картинок меняет масштаб на доли процента —
+       такой рывок не виден, но перерисовывать из-за него не нужно. */
+    if (!first && Math.abs(zoom - applied) < 0.01) return;
+
     /* После масштабирования текст может перенестись иначе; 1–2 поправки
        доводят страницу до высоты окна. */
-    var zoom = Math.min(1, target / height);
     for (var i = 0; i < 3; i++) {
-      zoom = Math.max(MIN_ZOOM, zoom);
       de.style.zoom = zoom.toFixed(3);
+      applied = zoom;
       var got = de.scrollHeight;
-      if (got <= target + 1) return;
-      var next = zoom * target / got;
+      if (got <= target + 1 || zoom === 1) return;
+      var next = Math.max(MIN_ZOOM, zoom * target / got);
       if (next >= zoom - 0.0005) return;
       zoom = next;
     }
@@ -60,13 +72,16 @@
 
   function schedule() {
     clearTimeout(timer);
-    timer = setTimeout(fit, 100);
+    timer = setTimeout(function () { fit(false); }, 100);
   }
 
+  /* Первый пересчёт — сразу после разбора документа, без задержки:
+     раньше он срабатывал через 100 мс после DOMContentLoaded, то есть уже
+     после первой отрисовки, и страница на глазах уменьшалась на 10%. */
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', schedule);
+    document.addEventListener('DOMContentLoaded', function () { fit(true); }, { once: true });
   } else {
-    schedule();
+    fit(true);
   }
   window.addEventListener('load', schedule);
   window.addEventListener('resize', schedule);

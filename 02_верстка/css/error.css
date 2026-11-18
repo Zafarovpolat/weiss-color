@@ -10,9 +10,15 @@
   flex-direction: column;
   justify-content: flex-start;
   min-height: clamp(600px, 48.05vw, 1230px);
-  padding: clamp(24px, 4.84vw, 124px) clamp(16px, 8.79vw, 225px)
-    clamp(24px, 2.4vw, 62px) clamp(16px, 14.18vw, 363px);
+  /* поля одинаковые (макетные 363/225 — только от 2550, см. блок ниже) */
+  padding: clamp(24px, 4.84vw, 124px) clamp(16px, 14.18vw, 363px)
+    clamp(24px, 2.4vw, 62px);
   background: #f4f5f7 url("../assets/img/404-bg.jpg") right bottom / cover no-repeat;
+}
+
+/* На макетном полотне — поля PSD: 363 слева и 225 справа */
+@media (min-width: 2550px) {
+  .error-page { padding-right: 225px; }
 }
 
 .error-page__eyebrow {
