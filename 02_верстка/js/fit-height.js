@@ -7,10 +7,15 @@
    при пропорциональном --u html zoom не меняет высоту. Длинные страницы
    (каталог, корзина) не трогаем — у них запас больше 12 %.
 
-   Скрипт подключается в конце <body> обычным блокирующим тегом: он
-   выполняется ещё до первой отрисовки, поэтому страница сразу появляется
-   в нужном масштабе. Пересчёт после загрузки шрифтов и картинок меняет
-   масштаб только если разница больше 2 % — иначе это был бы видимый рывок. */
+   Скрипт стоит в конце <body>, но браузер успевает отрисовать первый экран
+   раньше, чем парсер дойдёт до него (замер: отрисовка на 552 мс, масштаб на
+   708 мс) — и страница один раз «прыгает». Поэтому в <head> печатается
+   правило html{visibility:hidden} (только от 2550px), а здесь страница
+   показывается уже с нужным масштабом. Через 2 с её на всякий случай
+   открывает CSS-анимация, если скрипт не загрузился.
+
+   Пересчёт после загрузки шрифтов и картинок меняет масштаб только если
+   разница больше 2 % — иначе это был бы видимый рывок. */
 (function () {
   var MIN_ZOOM = 0.875;
   var MAX_OVERFLOW = 0.12;
@@ -18,6 +23,10 @@
   var de = document.documentElement;
   var applied = 0;
   var timer = 0;
+
+  function reveal() {
+    de.style.visibility = 'visible';
+  }
 
   /* natural — натуральная высота страницы при zoom: 1. На повторных
      пересчётах берём её из текущего scrollHeight, чтобы не сбрасывать
@@ -62,8 +71,13 @@
     timer = setTimeout(function () { fit(false); }, 100);
   }
 
-  fit(true);
-  window.addEventListener('load', schedule);
-  window.addEventListener('resize', schedule);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+  try {
+    if (window.CSS && CSS.supports && !CSS.supports('zoom', '0.9')) return;
+    fit(true);
+    window.addEventListener('load', schedule);
+    window.addEventListener('resize', schedule);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+  } finally {
+    reveal();
+  }
 })();

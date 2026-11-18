@@ -10,6 +10,12 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <!-- До подгонки по высоте страницу не показываем: браузер иначе рисует её
+       в 1:1 и через мгновение «прыгает» (замер: отрисовка на 552 мс,
+       масштаб на 708 мс). Показ страхует CSS-анимация через 2 с.
+       Ниже 2550 подгонки нет, поэтому правило работает только от 2550px. -->
+  <style>@media (min-width:2550px){html{visibility:hidden;animation:weiss-reveal 0s 2s forwards}}@keyframes weiss-reveal{to{visibility:visible}}</style>
+  <noscript><style>@media (min-width:2550px){html{visibility:visible!important;animation:none}}</style></noscript>
   <script src="../js/zoom-mode.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Реквизиты для оплаты — Weiss Color</title>

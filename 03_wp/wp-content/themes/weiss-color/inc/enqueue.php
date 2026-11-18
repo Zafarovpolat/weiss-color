@@ -67,8 +67,8 @@ function weiss_enqueue_assets() {
 	   страницы 02_верстка подключают в <head>. */
 	wp_enqueue_script( 'weiss-zoom-mode', WEISS_URI . '/js/zoom-mode.js', array(), weiss_file_version( 'js/zoom-mode.js' ), false );
 
-	/* Подгонка полотна по высоте окна — в подвале без defer, чтобы масштаб
-	   выставился до первой отрисовки (см. комментарий в js/fit-height.js). */
+	/* Подгонка полотна по высоте окна — в подвале без defer. Первую отрисовку
+	   до неё не пускает правило из weiss_fit_guard(), см. ниже. */
 	wp_enqueue_script( 'weiss-fit-height', WEISS_URI . '/js/fit-height.js', array(), weiss_file_version( 'js/fit-height.js' ), true );
 
 	/* Скрипты: общие — всем, остальные по экрану. */
@@ -190,3 +190,18 @@ function weiss_preload_fonts() {
 	<?php
 }
 add_action( 'wp_head', 'weiss_preload_fonts', 1 );
+
+/**
+ * Пока js/fit-height.js не выставил масштаб, страницу не показываем: браузер
+ * успевает отрисовать первый экран раньше конца <body> (замер: отрисовка на
+ * 552 мс, масштаб на 708 мс) и страница один раз «прыгает». Показ страхует
+ * CSS-анимация через 2 с — на случай, если скрипт не загрузился. Ниже 2550
+ * подгонки нет, поэтому правило действует только от 2550px.
+ */
+function weiss_fit_guard() {
+	?>
+	<style>@media (min-width:2550px){html{visibility:hidden;animation:weiss-reveal 0s 2s forwards}}@keyframes weiss-reveal{to{visibility:visible}}</style>
+	<noscript><style>@media (min-width:2550px){html{visibility:visible!important;animation:none}}</style></noscript>
+	<?php
+}
+add_action( 'wp_head', 'weiss_fit_guard', 2 );
