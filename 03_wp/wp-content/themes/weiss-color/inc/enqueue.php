@@ -63,11 +63,13 @@ function weiss_enqueue_assets() {
 	   02_верстка/css. */
 	wp_enqueue_style( 'weiss-wp', WEISS_URI . '/css/wp.css', array( $last ), weiss_file_version( 'css/wp.css' ) );
 
-	/* Демо-масштаб и подгонка полотна по высоте окна — тот же js/zoom-mode.js,
-	   который статические страницы 02_верстка подключают в <head>. Без него
-	   на 2560 страница выше окна и прокручивается, тогда как на Vercel
-	   ужимается до одного экрана. */
+	/* Демо-масштаб (?zoom=09) — тот же js/zoom-mode.js, который статические
+	   страницы 02_верстка подключают в <head>. */
 	wp_enqueue_script( 'weiss-zoom-mode', WEISS_URI . '/js/zoom-mode.js', array(), weiss_file_version( 'js/zoom-mode.js' ), false );
+
+	/* Подгонка полотна по высоте окна — в подвале без defer, чтобы масштаб
+	   выставился до первой отрисовки (см. комментарий в js/fit-height.js). */
+	wp_enqueue_script( 'weiss-fit-height', WEISS_URI . '/js/fit-height.js', array(), weiss_file_version( 'js/fit-height.js' ), true );
 
 	/* Скрипты: общие — всем, остальные по экрану. */
 	$js = array(
