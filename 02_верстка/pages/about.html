@@ -11,10 +11,12 @@
   <meta charset="UTF-8">
   <!-- До подгонки по высоте страницу не показываем: браузер иначе рисует её
        в 1:1 и через мгновение «прыгает» (замер: отрисовка на 552 мс,
-       масштаб на 708 мс). Показ страхует CSS-анимация через 2 с.
-       Ниже 2550 подгонки нет, поэтому правило работает только от 2550px. -->
-  <style>@media (min-width:2550px){html{visibility:hidden;animation:weiss-reveal 0s 2s forwards}}@keyframes weiss-reveal{to{visibility:visible}}</style>
-  <noscript><style>@media (min-width:2550px){html{visibility:visible!important;animation:none}}</style></noscript>
+       масштаб на 708 мс). Показ страхуют load и таймер на 4 с — на случай,
+       если скрипт не загрузился. Ниже 2550 подгонки нет. -->
+  <style>@media (min-width:2550px){html{visibility:hidden}}</style>
+  <script>(function(){window.__wcFit=0;function r(){if(!window.__wcFit)document.documentElement.style.visibility="visible"}addEventListener("load",r);setTimeout(r,4000)})();</script>
+  <noscript><style>@media (min-width:2550px){html{visibility:visible!important}}</style></noscript>
+  <link rel="preload" as="script" href="../js/fit-height.js">
   <script src="../js/zoom-mode.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>О компании — Weiss Color</title>

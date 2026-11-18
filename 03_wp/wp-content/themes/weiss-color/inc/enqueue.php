@@ -194,14 +194,18 @@ add_action( 'wp_head', 'weiss_preload_fonts', 1 );
 /**
  * Пока js/fit-height.js не выставил масштаб, страницу не показываем: браузер
  * успевает отрисовать первый экран раньше конца <body> (замер: отрисовка на
- * 552 мс, масштаб на 708 мс) и страница один раз «прыгает». Показ страхует
- * CSS-анимация через 2 с — на случай, если скрипт не загрузился. Ниже 2550
- * подгонки нет, поэтому правило действует только от 2550px.
+ * 552 мс, масштаб на 708 мс) и страница один раз «прыгает». Если скрипт не
+ * загрузится, страницу откроют load и таймер на 4 с. Ниже 2550 подгонки нет,
+ * поэтому правило действует только от 2550px. Скрипт предзагружаем, чтобы
+ * он выполнился сразу, как только парсер дойдёт до него.
  */
 function weiss_fit_guard() {
+	$src = WEISS_URI . '/js/fit-height.js?ver=' . weiss_file_version( 'js/fit-height.js' );
 	?>
-	<style>@media (min-width:2550px){html{visibility:hidden;animation:weiss-reveal 0s 2s forwards}}@keyframes weiss-reveal{to{visibility:visible}}</style>
-	<noscript><style>@media (min-width:2550px){html{visibility:visible!important;animation:none}}</style></noscript>
+	<style>@media (min-width:2550px){html{visibility:hidden}}</style>
+	<script>(function(){window.__wcFit=0;function r(){if(!window.__wcFit)document.documentElement.style.visibility="visible"}addEventListener("load",r);setTimeout(r,4000)})();</script>
+	<noscript><style>@media (min-width:2550px){html{visibility:visible!important}}</style></noscript>
+	<link rel="preload" as="script" href="<?php echo esc_url( $src ); ?>">
 	<?php
 }
 add_action( 'wp_head', 'weiss_fit_guard', 2 );
