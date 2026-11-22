@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Главная 2560×1440 — до и после</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #eceef1;
+    color: #1f2328;
+    font: 16px/1.5 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  .wrap { max-width: 1800px; margin: 0 auto; padding: 40px 48px 80px; }
+  h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.2; }
+  h2 { margin: 56px 0 8px; font-size: 26px; }
+  p { margin: 8px 0; max-width: 1100px; }
+  .note { color: #5b6470; }
+  .draft {
+    display: inline-block; margin-bottom: 18px; padding: 4px 10px;
+    border: 1px solid #c4cad2; border-radius: 99px;
+    font-size: 13px; letter-spacing: .02em; color: #5b6470;
+  }
+  table { border-collapse: collapse; margin: 18px 0 8px; background: #fff; }
+  th, td { padding: 9px 18px; border-bottom: 1px solid #e3e6ea; text-align: left; font-variant-numeric: tabular-nums; }
+  th { font-weight: 600; background: #f6f7f9; }
+  td.num { text-align: right; }
+  .accent { color: #7e5337; font-weight: 600; }
+  figure { margin: 26px 0 0; }
+  .frame { position: relative; background: #fff; border: 1px solid #d2d7dd; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .frame img { display: block; width: 100%; height: auto; }
+  .band {
+    position: absolute; top: 0; bottom: 0;
+    background: repeating-linear-gradient(135deg, rgba(196,58,58,.20) 0 10px, rgba(196,58,58,.08) 10px 20px);
+    pointer-events: none;
+  }
+  .band--l { left: 0; }
+  .band--r { right: 0; }
+  figcaption { margin-top: 10px; font-size: 15px; color: #3d444d; }
+  figcaption b { color: #111; }
+  .tag {
+    display: inline-block; margin-right: 8px; padding: 2px 9px; border-radius: 4px;
+    font-size: 13px; font-weight: 600; vertical-align: 1px;
+  }
+  .tag--was { background: #f3dfc9; color: #6b4322; }
+  .tag--now { background: #d8ead9; color: #2f5b33; }
+  .tag--mock { background: #e2e6ea; color: #39424c; }
+  .legend { display: flex; gap: 22px; flex-wrap: wrap; margin: 14px 0 0; font-size: 14px; color: #5b6470; }
+  .legend span::before {
+    content: ""; display: inline-block; width: 14px; height: 14px; margin-right: 7px;
+    vertical-align: -2px; border: 1px solid rgba(196,58,58,.5);
+    background: repeating-linear-gradient(135deg, rgba(196,58,58,.20) 0 4px, rgba(196,58,58,.08) 4px 8px);
+  }
+  a { color: #7e5337; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="draft">Черновик для согласования · страница не индексируется</span>
+  <h1>Главная страница: контейнер на мониторе 2560×1440</h1>
+  <p>Окно <b>2544×1300</b> — это Chrome, развёрнутый на весь экран монитора 2560×1440:
+     рамка окна забирает 16px по ширине, а вкладки, адресная строка и панель Windows — около 140px по высоте.
+     Именно так сайт видит клиент.</p>
+  <p class="note">Красной штриховкой отмечены боковые поля — расстояние от края окна до контента.</p>
+
+  <table>
+    <tr><th></th><th>Макет</th><th>Было</th><th>Стало</th></tr>
+    <tr><td>Окно браузера</td><td class="num">2560×1440</td><td class="num">2544×1300</td><td class="num">2544×1300</td></tr>
+    <tr><td>Контейнер</td><td class="num">2560</td><td class="num">2304</td><td class="num accent">2529</td></tr>
+    <tr><td>Поле слева</td><td class="num">224</td><td class="num">336</td><td class="num accent">221</td></tr>
+    <tr><td>Поле справа</td><td class="num">224</td><td class="num">351</td><td class="num accent">236</td></tr>
+    <tr><td>Контент</td><td class="num">2112</td><td class="num">1856</td><td class="num accent">2086</td></tr>
+    <tr><td>Прокрутка</td><td class="num">нет</td><td class="num">нет</td><td class="num">нет</td></tr>
+  </table>
+  <p class="note">Поля 221 вместо 224 — это 8,75 % от ширины окна без полосы прокрутки (2529px). Правое поле на 15px больше, потому что полоса прокрутки браузера стоит справа.</p>
+
+  <div class="legend"><span>Боковое поле</span></div>
+
+  <h2>Было / стало в одном окне</h2>
+
+  <figure>
+    <div class="frame">
+      <img src="2-before.jpg" width="2544" height="1300" alt="Главная до правки, окно 2544 на 1300">
+      <span class="band band--l" style="width:13.21%"></span>
+      <span class="band band--r" style="width:13.80%"></span>
+    </div>
+    <figcaption><span class="tag tag--was">Было</span>
+      Контейнер 2304px: на экране оставалось по 336px слева и 351px справа. Прокрутки нет, но контейнер уже макета.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="frame">
+      <img src="3-after.jpg" width="2544" height="1300" alt="Главная после правки, окно 2544 на 1300">
+      <span class="band band--l" style="width:8.70%"></span>
+      <span class="band band--r" style="width:9.29%"></span>
+    </div>
+    <figcaption><span class="tag tag--now">Стало</span>
+      Контейнер 2529px — вся ширина окна: поля 221px слева и 236px справа, как 8,75 % макета. Прокрутки нет.</figcaption>
+  </figure>
+
+  <h2>Полный экран — 1:1 с макетом</h2>
+  <figure>
+    <div class="frame">
+      <img src="4-full.jpg" width="2560" height="1440" alt="Главная в полный экран, окно 2560 на 1440">
+      <span class="band band--l" style="width:8.75%"></span>
+      <span class="band band--r" style="width:8.75%"></span>
+    </div>
+    <figcaption><span class="tag tag--now">Стало</span>
+      Окно 2560×1440 (полный экран, F11): контейнер 2560px, контент 2112px, поля 224px — пиксель в пиксель с макетом, без прокрутки.</figcaption>
+  </figure>
+
+  <figure style="margin-top:52px">
+    <div class="frame">
+      <img src="1-mock.jpg" width="2560" height="1440" alt="Макет главной страницы 2560 на 1440">
+      <span class="band band--l" style="width:8.75%"></span>
+      <span class="band band--r" style="width:8.75%"></span>
+    </div>
+    <figcaption><span class="tag tag--mock">Макет</span>
+      Эталон 2560×1440: поля 224px, контент 2112px.</figcaption>
+  </figure>
+
+  <p style="margin-top:40px" class="note">Проверить самому: <a href="https://weiss-color.vercel.app/" target="_blank" rel="noopener">weiss-color.vercel.app</a> — в окне на весь экран и в полном экране (F11).</p>
+  <p class="note">Снимки сделаны в Chrome 158, масштаб системы 100 %, без панели закладок. 23.11.2026.</p>
+</div>
+</body>
+</html>

@@ -26,7 +26,8 @@
    страницу открывает встроенный в <head> таймер (window.__wcFit).
 
    Пересчёт после загрузки шрифтов и картинок возвращает масштаб вверх
-   только при разнице больше 2 % — иначе это был бы видимый рывок.
+   всегда, если страница снова влезает: иначе транзиентная высота при
+   загрузке оставляла страницу ужатой (2560×1440 показывал 0,985).
    Уменьшение применяется всегда: иначе оставался скролл на 20px. */
 (function () {
   var BASE = 2560;
@@ -76,9 +77,20 @@
     return h;
   }
 
-  /* natural — натуральная высота страницы при zoom: 1. На повторных
-     пересчётах берём её из текущего scrollHeight, чтобы не сбрасывать
-     масштаб в 1: сброс сам по себе давал видимый рывок. */
+  /* Натуральная высота при zoom 1. При меньшем масштабе 100vh растягивает
+     body до окна, и scrollHeight / applied завышает высоту: страница на
+     2560×1440, транзиентно выросшая при загрузке шрифтов, ужималась до
+     0,985 и уже не возвращалась в 1:1. Меряем честно: ставим zoom 1,
+     читаем scrollHeight (это форсирует раскладку) и возвращаем масштаб.
+     Между вызовами отрисовки нет — рывка не видно. */
+  function naturalZoom1() {
+    var keep = applied;
+    if (keep !== 1) setZoom(1, mode);
+    var h = naturalHeight();
+    if (keep !== 1) setZoom(keep, mode);
+    return h;
+  }
+
   function fit(first) {
     if (de.classList.contains('zoom-09')) return;
 
@@ -117,7 +129,7 @@
     }
 
     if (mode !== 'height') setZoom(1, 'height');
-    var natural = first ? naturalHeight() : naturalHeight() / (applied || 1);
+    var natural = naturalZoom1();
     var viewport = window.innerHeight;
     /* 1px запаса вместо 2: при 2560×1440 страница ровно 1440px, и лишний
        запас ужимал её до 0,998 — это и было «контейнер не равен макету». */
@@ -131,21 +143,24 @@
 
     var zoom = 1;
     if (!natural) return;
-    if (natural > target + 1 && (nearMock || (natural - viewport) / natural <= MAX_OVERFLOW)) {
+    if (natural > viewport && (nearMock || (natural - viewport) / natural <= MAX_OVERFLOW)) {
       zoom = Math.max(floor, target / natural);
     }
     /* Уменьшение применяем всегда, даже на 1–2 %: иначе оставался скролл
-       на 20px, который порог 2 % считал «мелким рывком». Порог оставляем
-       только для возврата масштаба вверх — там он и нужен. */
-    if (!first && zoom >= applied - 0.0005 && Math.abs(zoom - applied) < RETRY_DELTA) return;
+       на 20px, который порог 2 % считал «мелким рывком». Возврат вверх не
+       глушим: после загрузки шрифтов страница снова влезает в 1:1, а порог
+       2 % оставлял её ужатой навсегда. Порог — только для мелкого дожатия
+       вниз, чтобы пересчёт не дёргал страницу на пиксель. */
+    if (!first && zoom < applied && applied - zoom < RETRY_DELTA) return;
+    if (!first && Math.abs(zoom - applied) < 0.0005) return;
 
-    /* После масштабирования текст может перенестись иначе; 1–2 поправки
-       доводят страницу до высоты окна. */
+    /* После масштабирования ширина раскладки меняется, но на ≥2560 размеры
+       заморожены, поэтому натуральная высота при 1:1 не меняется — вторая
+       поправка нужна только на случай дробного округления. */
     for (var i = 0; i < 3; i++) {
       setZoom(zoom, 'height');
-      var got = naturalHeight();
-      if (got <= target + 1 || zoom === 1) return;
-      var next = Math.max(floor, zoom * target / got);
+      if (natural * zoom <= target + 1 || zoom === 1) return;
+      var next = Math.max(floor, target / natural);
       if (next >= zoom - 0.0005) return;
       zoom = next;
     }

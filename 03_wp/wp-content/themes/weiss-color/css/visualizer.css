@@ -15,7 +15,8 @@
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
-  max-width: calc(2112px + 2 * var(--container-pad));
+  width: 100%;
+  max-width: var(--canvas-max);
   margin-inline: auto;
   padding-block: clamp(40px, 3.75vw, 96px) 0;
   padding-inline: var(--container-pad);
