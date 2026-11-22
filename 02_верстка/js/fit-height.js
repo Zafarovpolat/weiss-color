@@ -134,13 +134,15 @@
       setZoom(wide, 'wide');
       var limit = window.innerHeight - 2;
       var height = de.scrollHeight;
-      /* Ужимаем по высоте только до читаемого масштаба. Длинная страница
-         (каталог, корзина) при полной ширине выше окна в разы — её не
-         трогаем, она скроллится как обычно. */
-      if (height > limit && wide * limit / height >= MIN_ZOOM) {
+      /* На широком окне, ужатом по высоте, полотно переходит в fit-fill:
+         шапка и подвал перестают масштабироваться, и влезть помогает тот же
+         запас, что и в режиме высоты — до 0,75 для одноэкранных страниц
+         (иначе 2936×1300 не влезал на 11px при полу 0,875). */
+      var floor2 = height / wide <= BASE_H * 1.25 ? MIN_NEAR : MIN_ZOOM;
+      if (height > limit && wide * limit / height >= floor2) {
         /* После масштаба разметка может перестроиться — 1–2 поправки. */
-        for (var k = 0; k < 3 && height > limit; k++) {
-          setZoom(Math.max(MIN_ZOOM, applied * limit / height), 'wide');
+        for (var k = 0; k < 4 && height > limit; k++) {
+          setZoom(Math.max(floor2, applied * limit / height), 'wide');
           height = de.scrollHeight;
         }
       }
@@ -150,9 +152,11 @@
     if (mode !== 'height') setZoom(1, 'height');
     var natural = naturalZoom1();
     var viewport = window.innerHeight;
-    /* 1px запаса вместо 2: при 2560×1440 страница ровно 1440px, и лишний
-       запас ужимал её до 0,998 — это и было «контейнер не равен макету». */
-    var target = viewport - 1;
+    /* 2px запаса: при дробном масштабе сотые доли пикселя переполнения
+       оставляли полосу прокрутки, хотя scrollHeight уже округлялся до
+       clientHeight. При 2560×1440 запас не действует — страница ровно
+       1440px не ужимается вовсе (natural > viewport ложно). */
+    var target = viewport - 2;
 
     /* Однокранная страница (главная) — всё, что близко к макетным 1440px.
        Её ужимаем до окна при любом запасе, длинные страницы (каталог,
@@ -173,13 +177,15 @@
     if (!first && zoom < applied && applied - zoom < RETRY_DELTA) return;
     if (!first && Math.abs(zoom - applied) < 0.0005) return;
 
-    /* После масштабирования ширина раскладки меняется, но на ≥2560 размеры
-       заморожены, поэтому натуральная высота при 1:1 не меняется — вторая
-       поправка нужна только на случай дробного округления. */
-    for (var i = 0; i < 3; i++) {
+    /* В режиме fit-fill шапка и подвал остаются макетными (110/96px) и не
+       ужимаются вместе с полотном, поэтому natural * zoom занижает реальную
+       высоту на их долю. Меряем фактическую высоту после каждого масштаба:
+       de.scrollHeight — уже в экранных пикселях. */
+    for (var i = 0; i < 4; i++) {
       setZoom(zoom, 'height');
-      if (natural * zoom <= target + 1 || zoom === 1) return;
-      var next = Math.max(floor, target / natural);
+      var actual = de.scrollHeight;
+      if (actual <= target + 1 || zoom === 1) return;
+      var next = Math.max(floor, zoom * target / actual);
       if (next >= zoom - 0.0005) return;
       zoom = next;
     }
