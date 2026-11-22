@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Шапка: прыжок логотипа между страницами — до и после</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #eceef1; color: #1f2328;
+    font: 16px/1.55 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  .wrap { max-width: 1800px; margin: 0 auto; padding: 40px 48px 80px; }
+  h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.2; }
+  h2 { margin: 44px 0 8px; font-size: 24px; }
+  p { margin: 8px 0; max-width: 1100px; }
+  .note { color: #5b6470; }
+  .draft {
+    display: inline-block; margin-bottom: 18px; padding: 4px 10px;
+    border: 1px solid #c4cad2; border-radius: 99px;
+    font-size: 13px; letter-spacing: .02em; color: #5b6470;
+  }
+  table { border-collapse: collapse; margin: 18px 0 8px; background: #fff; }
+  th, td { padding: 9px 18px; border-bottom: 1px solid #e3e6ea; text-align: left; font-variant-numeric: tabular-nums; }
+  th { font-weight: 600; background: #f6f7f9; }
+  td.num { text-align: right; }
+  .accent { color: #7e5337; font-weight: 600; }
+  figure { margin: 26px 0 0; }
+  .frame { background: #fff; border: 1px solid #d2d7dd; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .frame img { display: block; width: 100%; height: auto; }
+  figcaption { margin-top: 8px; color: #5b6470; font-size: 14px; }
+  code { padding: 1px 5px; background: #e4e7eb; border-radius: 4px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="draft">черновик для проверки · noindex</span>
+  <h1>Шапка: почему логотип «скакал» между страницами</h1>
+
+  <p>Каждая страница подгоняется под высоту окна своим масштабом
+    (на 2600×1300 — от 0,88 до 1,01). Шапка и подвал были заданы в
+    фиксированных пикселях, поэтому умножались на масштаб каждой страницы:
+    логотип на главной выходил 177,7 px и стоял в 68 px от края, на контактах —
+    202,9 px и 75,6 px. На страницах, которым ужимать нечего, шапка не
+    менялась — отсюда «есть страницы, где это не наблюдается».</p>
+
+  <p>Теперь в режиме подгонки шапка и подвал считаются в процентах окна,
+    как поля контента: <code>--u: 1cqw</code> вместо 25,6 px. Масштаб
+    страницы на них больше не влияет.</p>
+
+  <h2>2600×1300, логотип в шапке</h2>
+  <table>
+    <thead>
+      <tr><th>Страница</th><th class="num">До: x</th><th class="num">До: ширина</th><th class="num">После: x</th><th class="num">После: ширина</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Главная (масштаб 0,884)</td><td class="num">68,0</td><td class="num">177,7</td><td class="num accent">75,2</td><td class="num accent">201,8</td></tr>
+      <tr><td>Контакты (масштаб 1,009)</td><td class="num">75,6</td><td class="num">202,9</td><td class="num accent">75,2</td><td class="num accent">201,8</td></tr>
+      <tr><td>Каталог (масштаб 0,909)</td><td class="num">69,5</td><td class="num">182,7</td><td class="num accent">75,2</td><td class="num accent">201,8</td></tr>
+      <tr><td>Остальные 17 страниц</td><td class="num">68,0–75,6</td><td class="num">177,7–202,9</td><td class="num accent">75,2</td><td class="num accent">201,8</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note">Проверено на 20 страницах в окнах 2560×1440, 2560×1300,
+    2600×1300, 2544×1300, 2936×1560, 2936×1300, 3840×2065 и 1920×1080:
+    внутри одного окна логотип и левое поле одинаковы на всех страницах.
+    На 2560×1440 всё как в макете: логотип 201 px в 60 px от края.
+    Страницы «Счёт» и «Оплата» (включая «Оплату картой») идут без шапки по макету.</p>
+
+  <figure>
+    <div class="frame"><img src="header-jump.png" alt="Верх страницы: до и после, главная и контакты"></div>
+    <figcaption>Полосы сверху вниз: до — главная, после — главная, до — контакты,
+      после — контакты. До: логотип и отступ отличаются. После: совпадают.</figcaption>
+  </figure>
+</div>
+</body>
+</html>
