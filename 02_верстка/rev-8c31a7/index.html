@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Шапка: прыжок логотипа между страницами — до и после</title>
+<title>Проверка: шапка и карточка 04 — до и после</title>
 <style>
   :root { color-scheme: light; }
   * { box-sizing: border-box; }
@@ -32,12 +32,15 @@
   .frame img { display: block; width: 100%; height: auto; }
   figcaption { margin-top: 8px; color: #5b6470; font-size: 14px; }
   code { padding: 1px 5px; background: #e4e7eb; border-radius: 4px; font-size: 14px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .pair figure { margin-top: 0; }
+  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <span class="draft">черновик для проверки · noindex</span>
-  <h1>Шапка: почему логотип «скакал» между страницами</h1>
+  <h1>Проверка: шапка и карточка 04</h1>
 
   <p>Каждая страница подгоняется под высоту окна своим масштабом
     (на 2600×1300 — от 0,88 до 1,01). Шапка и подвал были заданы в
@@ -94,6 +97,38 @@
 
   <p class="note">Если шрифты не загрузятся, страница всё равно откроется —
     через 2 с после запуска скрипта и не позже 4 с по таймеру в head.</p>
+
+  <h2>Карточка 04 «Профессиональная консультация»: перенос текста</h2>
+
+  <p>В карточке 04 принудительные переносы стояли не там, где в макете:
+    после «профессиональный» и после «сделать». Браузер получал строку
+    «предоставить профессиональный» — она шире колонки (275 px при 2560),
+    поэтому переносилась ещё раз, и текст занимал 6 строк вместо 5.</p>
+
+  <p>Теперь переносы остались только после «готовы» и после «совет»,
+    остальное ложится само — как в макете, 5 строк.</p>
+
+  <figure>
+    <div class="frame"><img src="card4-mock.png" alt="Макет: карточки 03 и 04"></div>
+    <figcaption>Макет 2560: «Наши эксперты всегда готовы» / «предоставить» /
+      «профессиональный совет» / «и помочь при выборе, сделать» / «правильный выбор».</figcaption>
+  </figure>
+
+  <div class="pair">
+    <figure>
+      <div class="frame"><img src="card4-before.png" alt="Карточка 04 до исправления: шесть строк"></div>
+      <figcaption>До: 6 строк</figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><img src="card4-after.png" alt="Карточка 04 после исправления: пять строк"></div>
+      <figcaption>После: 5 строк, как в макете</figcaption>
+    </figure>
+  </div>
+
+  <p class="note">Проверено на стенде в окнах 2558×1303 и 2560×1440 —
+    строки совпадают с макетом. В более узком окне 1920×1080 все четыре
+    карточки получают на строку больше — колонки там пропорционально уже;
+    это одинаково для всех карточек, не только для 04.</p>
 </div>
 </body>
 </html>
