@@ -23,8 +23,10 @@
    раньше, чем парсер дойдёт до него (замер: отрисовка на 552 мс, масштаб на
    708 мс) — и страница один раз «прыгает». Поэтому в <head> печатается
    правило html{visibility:hidden} (только от 2550px), а здесь страница
-   показывается уже с нужным масштабом. Если этот файл не загрузится,
-   страницу открывает встроенный в <head> таймер (window.__wcFit).
+   показывается уже с нужным масштабом. Ждём fonts.ready: до шрифтов
+   запасной шрифт даёт другую высоту, и показ с последующим пересчётом
+   выглядел как рывок. Если этот файл не загрузится, страницу открывает
+   встроенный в <head> таймер (window.__wcFit).
 
    Пересчёт после загрузки шрифтов и картинок возвращает масштаб вверх
    всегда, если страница снова влезает: иначе транзиентная высота при
@@ -196,13 +198,27 @@
     timer = setTimeout(function () { fit(false); }, 100);
   }
 
+  /* Показываем страницу только с окончательным масштабом. До загрузки
+     шрифтов раскладка выше: запасной шрифт даёт другие переносы, первый
+     замер ставит, например, 0,98, а после шрифтов настоящие 1,0 — видимый
+     пересчёт читается как прыжок логотипа и полей. Поэтому reveal — после
+     fonts.ready; картинки высоту не меняют, у всех заданы width/height.
+     Таймер 2 с страхует, если шрифты не придут. */
+  function settle() {
+    fit(false);
+    reveal();
+  }
+
+  window.__wcFitInit = 1;
   try {
-    if (window.CSS && CSS.supports && !CSS.supports('zoom', '0.9')) return;
+    if (window.CSS && CSS.supports && !CSS.supports('zoom', '0.9')) { reveal(); return; }
     fit(true);
     window.addEventListener('load', schedule);
     window.addEventListener('resize', schedule);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
-  } finally {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle, settle);
+    else settle();
+    setTimeout(settle, 2000);
+  } catch (e) {
     reveal();
   }
 })();

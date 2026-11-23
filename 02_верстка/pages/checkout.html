@@ -10,11 +10,11 @@
 <head>
   <meta charset="UTF-8">
   <!-- До подгонки по высоте страницу не показываем: браузер иначе рисует её
-       в 1:1 и через мгновение «прыгает» (замер: отрисовка на 552 мс,
-       масштаб на 708 мс). Показ страхуют load и таймер на 4 с — на случай,
-       если скрипт не загрузился. Ниже 2550 подгонки нет. -->
+       в 1:1 и через мгновение «прыгает». Скрипт fit-height показывает
+       страницу после загрузки шрифтов, уже с окончательным масштабом; если
+       он не запустился — страхуют load и таймер на 4 с. Ниже 2550 подгонки нет. -->
   <style>@media (min-width:2550px){html{visibility:hidden}}</style>
-  <script>(function(){window.__wcFit=0;function r(){if(!window.__wcFit)document.documentElement.style.visibility="visible"}addEventListener("load",r);setTimeout(r,4000)})();</script>
+  <script>(function(){window.__wcFit=0;function r(){if(!window.__wcFit)document.documentElement.style.visibility="visible"}addEventListener("load",function(){if(!window.__wcFitInit)r()});setTimeout(r,4000)})();</script>
   <noscript><style>@media (min-width:2550px){html{visibility:visible!important}}</style></noscript>
   <link rel="preload" as="script" href="../js/fit-height.js">
   <script src="../js/zoom-mode.js"></script>
