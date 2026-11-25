@@ -39,12 +39,6 @@ main {
   padding-inline: calc(8.671875 * var(--u));
 }
 
-/* крошки — общий вид из components.css (13–15px); в макете 16.5px */
-.p-hero__breadcrumbs {
-  font-size: calc(0.61953125 * var(--u));
-  font-weight: var(--fw-medium);
-}
-
 /* текущая страница красится общим правилом .breadcrumbs [aria-current] */
 
 .p-hero__grid {

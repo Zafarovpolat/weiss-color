@@ -41,11 +41,6 @@ main {
   background: #f0eff2 url("../assets/img/about-hero.png") right calc(-0.1171875 * var(--u)) top 51.8% / auto 117.4% no-repeat;
 }
 
-/* Крошки: макетный кегль 16.5 при 2560 (общий clamp даёт 15) */
-.about-page .crumbs {
-  font-size: max(13px, calc(0.64453125 * var(--u)));
-}
-
 /* Крошки: отступ до заголовка (в макете 22px при ширине 2560) */
 .about-page .crumbs span[aria-current] {
   display: inline-block;

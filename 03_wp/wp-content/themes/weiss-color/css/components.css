@@ -303,6 +303,9 @@
 .breadcrumbs {
   font-size: clamp(13px, 0.59vw, 15px);
   line-height: 1.4;
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
+  word-spacing: normal;
   /* цвет уходит на разделители — это текстовые узлы между ссылками */
   color: #95969b;
 }

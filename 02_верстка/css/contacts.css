@@ -50,14 +50,6 @@ main {
   background: #f0eff2 url("../assets/img/contacts-bg.png") calc(-0.35 * var(--u)) calc(-4.035 * var(--u)) / 100% auto no-repeat;
 }
 
-/* Крошки макета: 15.9px/16.67, medium, с расширенными пробелами вокруг «>». */
-.contacts-page > .crumbs {
-  font-size: calc(0.62109375 * var(--u));
-  line-height: 1.3;
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.029em;
-  word-spacing: 0.2em;
-}
 /* макет: и ссылка, и разделитель — #95969b */
 .contacts-page > .crumbs,
 .contacts-page > .crumbs a { color: #95969b; }

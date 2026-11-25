@@ -111,7 +111,7 @@ get_header();
 
 <section class="p-hero" aria-labelledby="product-title">
 	<div class="container p-hero__inner">
-		<nav class="breadcrumbs p-hero__breadcrumbs" aria-label="Хлебные крошки">
+		<nav class="breadcrumbs" aria-label="Хлебные крошки">
 			<ol class="breadcrumbs__list">
 				<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a></li>
 				<li class="breadcrumbs__sep" aria-hidden="true">&gt;</li>
