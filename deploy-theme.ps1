@@ -15,7 +15,8 @@ param(
     [switch]$WhatIf,
     [switch]$Backup,
     [switch]$Prune,
-    [string[]]$Extra = @()
+    [string[]]$Extra = @(),
+    [string[]]$Only = @()
 )
 
 $ErrorActionPreference = 'Stop'
@@ -50,10 +51,18 @@ $extensions = if ($All) { @() } else { @('.php', '.css', '.js') }
 $extraSet = @{}
 foreach ($item in $Extra) { $extraSet[($item -replace '/', '\')] = $true }
 
-$files = Get-ChildItem -LiteralPath $theme -Recurse -File | Where-Object {
+$files = @(Get-ChildItem -LiteralPath $theme -Recurse -File | Where-Object {
     if ($All) { $true }
     elseif ($extensions -contains $_.Extension.ToLower()) { $true }
     else { $extraSet.ContainsKey($_.FullName.Substring($theme.Length + 1)) }
+})
+
+# -Only — выгрузить только перечисленные файлы (пути от корня темы).
+if ($Only.Count -gt 0) {
+    $onlySet = @{}
+    foreach ($item in $Only) { $onlySet[($item -replace '/', '\')] = $true }
+    $files = @($files | Where-Object { $onlySet.ContainsKey($_.FullName.Substring($theme.Length + 1)) })
+    if ($files.Count -eq 0) { throw "No files match -Only: $($Only -join ', ')" }
 }
 
 Write-Host ("Theme: {0}" -f $theme)
