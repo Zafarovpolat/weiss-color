@@ -141,8 +141,13 @@ main {
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
-.p-volumes__item:hover {
-  border-color: var(--color-ink);
+/* Макет: при наведении кнопка объёма выглядит как выбранная — светлая
+   коричневая рамка и тёплый фон (скриншоты клиента 2026-11-27: «первая
+   активная, вторая не активная»). Раньше ховер чернил рамку в тёмный. */
+.p-volumes__item:hover,
+.p-volumes__item:focus-visible {
+  border-color: #b19480;
+  background: #faf8f6;
 }
 
 .p-volumes__item[aria-pressed="true"] {
