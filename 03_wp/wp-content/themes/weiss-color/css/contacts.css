@@ -148,7 +148,9 @@ main {
     calc(1.5234375 * var(--u)) calc(4.4140625 * var(--u));
   background: #f7f7f9;
   border-radius: 6px;
-  box-shadow: 0 12px 36px rgba(23, 30, 49, 0.06);
+  /* тень макета: плотная у кромки, гаснет к 25px; доли --u, чтобы
+     на 2560 оставалась макетной, а на ноутбуке — пропорционально мягче */
+  box-shadow: 0 calc(0.625 * var(--u)) calc(1.5625 * var(--u)) rgba(23, 30, 49, 0.16);
 }
 
 .contacts-form-card__title {
@@ -535,4 +537,14 @@ main {
     background-size: 2560px auto;
     background-position: calc(-0.35 * var(--u)) calc(-4.035 * var(--u));
   }
+}
+
+/* Fit-fill (широкое окно, полотно поджато по высоте): --canvas-extra = 0,
+   и текст идёт от края окна, а фото выше остаётся отцентровано в 2560 —
+   ветка «отклеивалась» от левого края на ~160px. Возвращаем слой на всю
+   ширину, снимок — макетные 2560px от левого края. */
+html.fit-fill .contacts-page::before {
+  left: 0;
+  right: 0;
+  background-size: 2560px auto;
 }
