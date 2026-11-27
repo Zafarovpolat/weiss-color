@@ -391,8 +391,8 @@ html.fit-fill .buy-hero {
    на макетной позиции. На узких экранах крошки встают в поток и тоже
    выравниваются по общему контейнеру. */
 .buy-hero .crumbs--overlay {
-  /* на 7px выше макетной доли — просьба клиента 2026-11-27 (2 + 5) */
-  top: calc(1.484375 * var(--u) - 7px);
+  /* на 11px выше макетной доли — просьба клиента 2026-11-27 (2 + 5 + 4) */
+  top: calc(1.484375 * var(--u) - 11px);
   left: calc(var(--container-pad) + var(--canvas-extra));
   right: calc(var(--container-pad) + var(--canvas-extra));
 }
