@@ -121,6 +121,14 @@
 @font-face {
   font-family: "Tinos";
   font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/tinos-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0030-0039;
+}
+@font-face {
+  font-family: "Tinos";
+  font-style: normal;
   font-weight: 700;
   font-display: swap;
   src: url("../assets/fonts/tinos-cyrillic-700-normal.woff2") format("woff2");

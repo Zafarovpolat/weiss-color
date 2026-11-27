@@ -31,11 +31,13 @@ Sovest подключён из файлов, переданных заказчи
 от Google. Метрики совпадают: обе гарнитуры дают 0,5 em на цифру, то есть при кегле 45,83 px
 пара цифр занимает 45,8 px — ровно как в макете (в PSD блок `04` = 47×31 при том же кегле).
 Поэтому номера встают на те же места, ничего не разъезжается.
+Для `.benefits__num` сделан отдельный вес 500 только для цифр — промежуточный между Regular 400 и Bold 700.
 
-Файлы: `assets/fonts/tinos-cyrillic-400-normal.woff2` (12 КБ) и `tinos-latin-400-normal.woff2` (17 КБ),
-лицензия рядом — `assets/fonts/LICENSE-Tinos.txt`.
+Файлы: `assets/fonts/tinos-cyrillic-400-normal.woff2`, `tinos-latin-400-normal.woff2`,
+`tinos-latin-500-normal.woff2` (цифры), а также исходные `tinos-*-700-normal.woff2`.
+Лицензия рядом — `assets/fonts/LICENSE-Tinos.txt`.
 Токен: `--font-num: "Tinos", "Times New Roman", Times, Georgia, serif;`
-Используется в `.benefits__num` (номера 01–09).
+`.benefits__num` использует `font-weight: 500`.
 
 Порядок в стеке важен: если у пользователя стоит настоящий Times New Roman, он возьмётся первым
 только при отсутствии Tinos; Tinos у нас self-host, поэтому он и будет использован всегда —
@@ -81,7 +83,7 @@ SHA-256 woff2 совпадает с `assets/fonts/sovest-500-normal.woff2` ба�
 |---|---|---|---|---|
 | Montserrat | 400, 500, 600, 700 | 8 woff2 (кириллица + латиница на каждый вес) | SIL OFL 1.1 | `assets/fonts/montserrat-*` |
 | Open Sans | 400, 600 | 4 woff2 | SIL OFL 1.1 | `assets/fonts/open-sans-*` |
-| Tinos | 400 | 2 woff2 | Apache 2.0 | `assets/fonts/tinos-*` + `LICENSE-Tinos.txt` |
+| Tinos | 400, 500 (цифры), 700 | 5 woff2 | Apache 2.0 | `assets/fonts/tinos-*` + `LICENSE-Tinos.txt` |
 | Sovest | 500 | woff2 + ttf | передан заказчиком | `assets/fonts/sovest-500-normal.*` |
 
 Итого **~250 КБ** шрифтов на весь сайт, все — self-host, без обращений к Google Fonts CDN

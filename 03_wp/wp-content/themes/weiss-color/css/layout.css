@@ -389,7 +389,7 @@
   font-family: var(--font-num);
   font-variant-numeric: lining-nums;
   font-size: var(--fs-num);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-medium);
   line-height: 0.73;
   white-space: nowrap;
   color: var(--color-ink-deep);
