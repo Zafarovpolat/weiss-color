@@ -119,7 +119,7 @@ main {
   display: grid;
   /* иконки из макета разной ширины (38–64px), поэтому колонка по контенту */
   grid-template-columns: auto minmax(0, 1fr);
-  gap: calc(0.9375 * var(--u) * var(--vs, 1));
+  gap: calc(0.9375 * var(--u));
   align-items: start;
 }
 
