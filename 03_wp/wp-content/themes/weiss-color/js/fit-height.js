@@ -100,6 +100,7 @@
         de.classList.remove('fit-fill');
         applied = 0;
       }
+      de.style.removeProperty('--vs');
       return;
     }
 
@@ -109,8 +110,72 @@
     var heightZoom = (window.innerHeight - avail * CHROME_RATIO) / MAIN_MAX;
     var zoom = Math.max(MIN_ZOOM, Math.min(wide, heightZoom) - 0.0005);
 
-    if (!first && Math.abs(zoom - applied) < 0.0005) return;
+    if (!first && Math.abs(zoom - applied) < 0.0005) { squeeze(); return; }
     setZoom(zoom);
+    squeeze();
+  }
+
+  /* Вертикальная усадка коротких страниц в fit-fill.
+     Ширина полотна в этом режиме равна окну, поэтому «Где купить»,
+     «О компании», «Инструкция колеровки» и «Контакты» выше окна. Ширину не
+     трогаем, а сжимаем их вертикальный «воздух» — отступы блоков и высоты
+     героев — общим множителем --vs, пока main не встанет в окно. Страницы,
+     которым усадка не нужна или которые законно прокручиваются, множитель
+     не используют (var(--vs, 1) стоит только в их css), поэтому прочим
+     страницам переменная не мешает.
+
+     Цель — низ подвала ровно по нижней кромке окна (как у корзины и
+     каталога). Высота страницы от --vs почти линейна, но в правилах есть
+     max()/min() с полами, поэтому после первой оценки уточняем по факту.
+     Меряем честную высоту содержимого: main растягивается флексом до низа
+     окна, поэтому на время замера снимаем растяжку (flex: 0 0 auto) — иначе
+     высоты ниже окна не отличить друг от друга. */
+  function squeeze() {
+    var main = document.querySelector('main');
+    if (!main || !de.classList.contains('fit-fill')) {
+      de.style.removeProperty('--vs');
+      return;
+    }
+    var head = document.querySelector('.site-header');
+    var foot = document.querySelector('.site-footer');
+    var chrome = (head ? head.getBoundingClientRect().height : 0) +
+                 (foot ? foot.getBoundingClientRect().height : 0);
+    var avail = de.clientHeight - chrome;
+    var prevFlex = main.style.flex;
+
+    main.style.flex = '0 0 auto';
+    function height(vs) {
+      if (vs == null) de.style.removeProperty('--vs');
+      else de.style.setProperty('--vs', String(vs));
+      return main.getBoundingClientRect().height;
+    }
+    var result = null;
+    try {
+      var h1 = height(null);
+      if (h1 > avail - 1) {
+        /* Страница, не использующая --vs, от неё не меняется — выходим сразу:
+           длинные страницы (юридические и т.п.) прокручиваются как раньше. */
+        if (height(0) < h1 - 1) {
+          /* Бисекция, а не оценка по наклону: в правилах есть max() с полами
+             (минвысоты карточек и героя), и высота от --vs меняется кусками. */
+          var lo = 0.3;
+          var hi = 1;
+          if (height(lo) <= avail - 1) {
+            for (var i = 0; i < 7; i++) {
+              var mid = (lo + hi) / 2;
+              if (height(mid) <= avail - 1) lo = mid;
+              else hi = mid;
+            }
+            result = Math.floor(lo * 10000) / 10000;
+          } else {
+            result = lo;
+          }
+        }
+      }
+    } finally {
+      main.style.flex = prevFlex;
+      height(result);
+    }
   }
 
   function schedule() {

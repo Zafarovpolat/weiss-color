@@ -27,15 +27,20 @@ main {
   html:not(.fit-fill) main { --u: 25.6px; }
 }
 
+/* --vs — вертикальная усадка в fit-fill (js/fit-height.js подбирает её так,
+   чтобы страница встала в окно без прокрутки). Ширина и кегли не меняются,
+   сжимается только вертикальный воздух; вне fit-fill множитель = 1. */
+
 .buy-hero {
   position: relative;
-  min-height: max(420px, calc(34.6875 * var(--u)));
+  min-height: max(420px, calc(34.6875 * var(--u) * var(--vs, 1)));
   /* В макете контент этой страницы начинается с x≈306 при 2560,
      а не с общего 224 — это 11.95% ширины (было: container-pad + 3.2vw). */
   /* верх 67px: при шапке 110px ink-бокс строки заголовка встаёт на макетный
      y198, кнопки карточек — на y519 (было 64px, всё выходило на 3px выше).
      Низ уменьшен на те же 3px, чтобы высота героя осталась 888px. */
-  padding-block: max(24px, calc(2.6171875 * var(--u))) max(24px, calc(2.0703125 * var(--u)));
+  padding-block: max(24px, calc(2.6171875 * var(--u) * var(--vs, 1)))
+    max(24px, calc(2.0703125 * var(--u) * var(--vs, 1)));
   padding-inline: calc(11.953125 * var(--u) + var(--canvas-extra));
   /* фото макета содержит и карточки, и блок преимуществ — показываем только
      верхние 923px (небо + интерьер + банка), остальное собираем разметкой.
@@ -63,7 +68,7 @@ main {
 
 .buy-hero__lead {
   max-width: max(280px, calc(31.25 * var(--u)));
-  margin: max(14px, calc(1.4453125 * var(--u))) 0 0;
+  margin: max(14px, calc(1.4453125 * var(--u) * var(--vs, 1))) 0 0;
   font-size: max(16px, calc(1.09375 * var(--u)));
   /* межстрочный по макету 37px */
   line-height: 1.3214;
@@ -80,7 +85,7 @@ main {
      десктопном масштабе, включая зум 0.9. */
   grid-template-columns: repeat(4, minmax(0, calc(15 * var(--u))));
   gap: max(8px, calc(0.625 * var(--u)));
-  margin-top: max(20px, calc(1.7578125 * var(--u)));
+  margin-top: max(20px, calc(1.7578125 * var(--u) * var(--vs, 1)));
   padding: 0;
   list-style: none;
 }
@@ -91,9 +96,9 @@ main {
 .buy-card {
   display: flex;
   flex-direction: column;
-  min-height: calc(16.5625 * var(--u));
-  padding: max(16px, calc(1.171875 * var(--u))) max(16px, calc(1.40625 * var(--u)))
-    max(16px, calc(1.5234375 * var(--u))) max(16px, calc(1.40625 * var(--u)));
+  min-height: calc(16.5625 * var(--u) * var(--vs, 1));
+  padding: max(16px, calc(1.171875 * var(--u) * var(--vs, 1))) max(16px, calc(1.40625 * var(--u)))
+    max(16px, calc(1.5234375 * var(--u) * var(--vs, 1))) max(16px, calc(1.40625 * var(--u)));
   background: var(--color-white);
 }
 
@@ -123,7 +128,7 @@ main {
 .buy-logo--ym { max-width: 110.3%; }
 
 .buy-card__name {
-  margin: max(16px, calc(1.3671875 * var(--u))) 0 0;
+  margin: max(16px, calc(1.3671875 * var(--u) * var(--vs, 1))) 0 0;
   font-size: max(17px, calc(1.015625 * var(--u)));
   line-height: 1.2;
   font-weight: var(--fw-semibold);
@@ -131,7 +136,7 @@ main {
 }
 
 .buy-card__text {
-  margin: max(10px, calc(1.171875 * var(--u))) 0 0;
+  margin: max(10px, calc(1.171875 * var(--u) * var(--vs, 1))) 0 0;
   /* растр макета: строки шириной 292/266/151 и межстрочный 26px —
      это 18.2px при line-height 1.43, а не 20px, как было по PSD-тегам */
   font-size: max(14px, calc(0.7109375 * var(--u)));
@@ -222,7 +227,7 @@ main {
      низ текста на y1277 при низе полосы y1343. Отступы одинаковые (65.25),
      чтобы содержимое стояло по центру полосы: при разных полях flex-центровка
      страницы (page-grow) сдвигала блок вниз на 4px. */
-  padding-block: calc(2.548828125 * var(--u));
+  padding-block: calc(2.548828125 * var(--u) * var(--vs, 1));
   padding-inline: calc(11.953125 * var(--u) + var(--canvas-extra));
 }
 
@@ -250,7 +255,7 @@ main {
 }
 
 .buy-features__lead {
-  margin: max(10px, calc(0.78125 * var(--u))) 0 0;
+  margin: max(10px, calc(0.78125 * var(--u) * var(--vs, 1))) 0 0;
   max-width: max(240px, calc(13.046875 * var(--u)));
   /* макет: 3 строки, строки шириной 309/327/195, межстрочный 26px */
   font-size: max(14px, calc(0.71484375 * var(--u)));
@@ -269,7 +274,7 @@ main {
   /* Разделитель в макете — ровно 200px у всех трёх колонок (y1065..1264),
      то есть длиннее текста; высота задана, иначе линия шла по высоте
      содержимого и колонки получались разной длины (134/134/162). */
-  min-height: calc(7.8125 * var(--u));
+  min-height: calc(7.8125 * var(--u) * var(--vs, 1));
   /* Растр макета: разделитель 2px цвета #c2c7cb (194,199,203), а не
      1px #848ea0 — прежний цвет в полтора раза темнее макетного. */
   background: linear-gradient(#c2c7cb, #c2c7cb) no-repeat left 0 / 2px 100%;
@@ -302,7 +307,7 @@ main {
 .buy-feature__title {
   /* в макете текстовая колонка начинается на 3px ниже верха иконки:
      закрепки строк 18px/25px дают в браузере другой верхний полуинтервал */
-  margin: calc(0.1171875 * var(--u)) 0 0;
+  margin: max(0px, calc(0.1171875 * var(--u) * var(--vs, 1))) 0 0;
   /* макет: 18px, межстрочный 25px. По растру это Bold с плотным трекингом
      0.25px: Semibold с 0.5px давал ink 1011 при макетных 1192 и более
      светлые буквы (mean 86 против 74). Bold с 0.014em — ink 1172 и те же
@@ -316,7 +321,7 @@ main {
 }
 
 .buy-feature__text {
-  margin: max(8px, calc(0.859375 * var(--u))) 0 0;
+  margin: max(8px, calc(0.859375 * var(--u) * var(--vs, 1))) 0 0;
   /* воздух справа, чтобы текст не упирался в край колонки */
   padding-right: 15px;
   /* макет: 18.2px, строки 352/174 и 289/148, межстрочный 27.5px */

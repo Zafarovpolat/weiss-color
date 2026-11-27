@@ -28,8 +28,10 @@ main {
      в собственных свойствах main единица cqw считается от вьюпорта, а не от
      полотна, и при html{zoom:.9} на 1920 отступ выходил на 10% меньше
      макетного. Процент же считается от ширины полотна; от 2560 замораживаем
-     его макетным значением в px, иначе при 2936 композиция уезжала вниз. */
-  padding-block: min(1.6796875%, 43px) min(1.484375%, 38px);
+     его макетным значением в px, иначе при 2936 композиция уезжала вниз.
+     --vs — вертикальная усадка fit-fill из js/fit-height.js (вне его = 1). */
+  padding-block: calc(min(1.6796875%, 43px) * var(--vs, 1))
+    calc(min(1.484375%, 38px) * var(--vs, 1));
   position: relative;
   /* колонка: при запасе высоты группа «крошки + контент» встаёт по центру */
   display: flex;
@@ -72,7 +74,7 @@ main {
   justify-content: space-between;
   column-gap: calc(1.875 * var(--u));
   align-items: start;
-  margin-top: calc(1.14453125 * var(--u));
+  margin-top: calc(1.14453125 * var(--u) * var(--vs, 1));
 }
 
 .contacts-text {
@@ -86,7 +88,7 @@ main {
 /* --- Левая колонка --- */
 
 .contacts-title {
-  margin: calc(6.09765625 * var(--u)) 0 0 calc(-0.15625 * var(--u));
+  margin: calc(6.09765625 * var(--u) * var(--vs, 1)) 0 0 calc(-0.15625 * var(--u));
   font-size: calc(2.08984375 * var(--u));
   line-height: calc(2.12421875 * var(--u));
   font-weight: var(--fw-medium);
@@ -96,7 +98,7 @@ main {
 }
 
 .contacts-org {
-  margin: calc(1.9140625 * var(--u)) 0 0;
+  margin: calc(1.9140625 * var(--u) * var(--vs, 1)) 0 0;
   font-size: calc(0.9765625 * var(--u));
   line-height: calc(1.5625 * var(--u));
   font-weight: var(--fw-medium);
@@ -112,7 +114,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 0;
-  margin: calc(1.640625 * var(--u)) 0 0;
+  margin: calc(1.640625 * var(--u) * var(--vs, 1)) 0 0;
   font-size: calc(1.09375 * var(--u));
   line-height: calc(1.5625 * var(--u));
   font-weight: var(--fw-medium);
@@ -127,7 +129,7 @@ main {
 .contacts-list a:hover { color: var(--color-brown); }
 
 .contacts-place {
-  margin: calc(1.640625 * var(--u)) 0 0;
+  margin: calc(1.640625 * var(--u) * var(--vs, 1)) 0 0;
   /* перенос строк — как в макете: <br> в разметке, без ограничения ширины */
   font-size: calc(0.9765625 * var(--u));
   line-height: calc(1.5625 * var(--u));
@@ -144,8 +146,8 @@ main {
   width: 100%;
   max-width: calc(33.4375 * var(--u));
   justify-self: end;
-  padding: calc(2.1484375 * var(--u)) calc(4.453125 * var(--u))
-    calc(1.5234375 * var(--u)) calc(4.4140625 * var(--u));
+  padding: calc(2.1484375 * var(--u) * var(--vs, 1)) calc(4.453125 * var(--u))
+    calc(1.5234375 * var(--u) * var(--vs, 1)) calc(4.4140625 * var(--u));
   background: #f7f7f9;
   border-radius: 6px;
   /* тень макета: плотная у кромки, гаснет к 25px; доли --u, чтобы
@@ -165,7 +167,7 @@ main {
 }
 
 .contacts-form-card__lead {
-  margin: calc(1.11328125 * var(--u)) 0 0;
+  margin: calc(1.11328125 * var(--u) * var(--vs, 1)) 0 0;
   font-size: calc(0.79296875 * var(--u));
   line-height: calc(0.8265625 * var(--u));
   font-weight: var(--fw-medium);
@@ -177,8 +179,8 @@ main {
 .contacts-form {
   display: flex;
   flex-direction: column;
-  gap: calc(0.91796875 * var(--u));
-  margin-top: calc(1.7515625 * var(--u));
+  gap: calc(0.91796875 * var(--u) * var(--vs, 1));
+  margin-top: calc(1.7515625 * var(--u) * var(--vs, 1));
 }
 
 .contacts-form .field__input,
