@@ -373,17 +373,18 @@ main {
 }
 
 /* --- Крошки (ТЗ 3.1) ---
-   В верхнем отступе героя, на линии левого края заголовка; композиция
-   макета не сдвигается. На узких экранах встают в поток. */
+   По общему контейнеру страниц, как на остальных внутренних страницах;
+   заголовок героя остаётся на макетной позиции. На узких экранах крошки
+   встают в поток и тоже выравниваются по общему контейнеру. */
 .buy-hero .crumbs--overlay {
   top: calc(0.55 * var(--u));
-  left: calc(11.953125 * var(--u) + var(--canvas-extra));
+  left: calc(var(--container-pad) + var(--canvas-extra));
   right: calc(var(--container-pad) + var(--canvas-extra));
 }
 
 @media (max-width: 767px) {
   .buy-hero .crumbs--overlay {
     position: static;
-    margin: 0 0 10px;
+    margin: 0 calc(var(--container-pad) - 11.953125 * var(--u)) 10px;
   }
 }
