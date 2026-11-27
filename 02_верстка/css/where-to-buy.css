@@ -371,3 +371,19 @@ main {
 @media (min-width: 2560px) {
   .buy-hero { background-size: 2560px auto; }
 }
+
+/* --- Крошки (ТЗ 3.1) ---
+   В верхнем отступе героя, на линии левого края заголовка; композиция
+   макета не сдвигается. На узких экранах встают в поток. */
+.buy-hero .crumbs--overlay {
+  top: calc(0.55 * var(--u));
+  left: calc(11.953125 * var(--u) + var(--canvas-extra));
+  right: calc(var(--container-pad) + var(--canvas-extra));
+}
+
+@media (max-width: 767px) {
+  .buy-hero .crumbs--overlay {
+    position: static;
+    margin: 0 0 10px;
+  }
+}

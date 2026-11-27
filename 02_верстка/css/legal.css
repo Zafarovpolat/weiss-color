@@ -234,3 +234,22 @@ main {
 
   .legal-section__text { font-size: 14px; }
 }
+
+/* --- Крошки (ТЗ 3.1) ---
+   Лежат в верхнем отступе полосы: заголовок и полоса остаются на макетных
+   позициях. На 1024 и ниже встают в поток над заголовком. */
+.legal-hero .crumbs--overlay {
+  /* .legal-hero > * делает детей relative; крошкам нужен absolute, иначе
+     они встают в поток и наезжают на надзаголовок. */
+  position: absolute;
+  top: calc(0.9 * var(--u));
+  left: calc(var(--container-pad) + var(--canvas-extra));
+  right: calc(var(--container-pad) + var(--canvas-extra));
+}
+
+@media (max-width: 1024px) {
+  .legal-hero .crumbs--overlay {
+    position: static;
+    margin: 0 0 14px;
+  }
+}

@@ -17,6 +17,7 @@ body.page-fill main {
 .selector-page {
   display: flex;
   flex-direction: column;
+  position: relative;
   background: #000000;
 }
 
@@ -120,5 +121,37 @@ body.page-fill main {
 
   .pselect__option {
     height: clamp(40px, 5vw, 48px);
+  }
+}
+
+/* Крошки (ТЗ 3.1): на чёрной сцене, текущая страница светлее, чтобы
+   читалась; сама сцена с компонентом остаётся по центру. */
+.selector-page .crumbs--overlay {
+  top: clamp(16px, 1.5vw, 38px);
+  left: clamp(16px, 2vw, 40px);
+  right: clamp(16px, 2vw, 40px);
+}
+
+.selector-page .crumbs--overlay [aria-current] {
+  color: #e6e6ea;
+}
+
+.selector-page .crumbs--overlay a { color: #9c9da2; }
+
+.selector-page .crumbs--overlay a:hover { color: var(--color-brown); }
+
+/* На узких экранах раскрытый список занимает почти всю сцену: крошки
+   встают в поток над компонентом, иначе список их перекрывает. */
+@media (max-width: 1024px) {
+  .selector-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .selector-page .crumbs--overlay {
+    position: static;
+    align-self: stretch;
   }
 }

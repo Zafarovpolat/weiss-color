@@ -20,6 +20,21 @@
   margin-inline: auto;
   padding-block: clamp(40px, 3.75vw, 96px) 0;
   padding-inline: var(--container-pad);
+  position: relative;
+}
+
+/* Крошки (ТЗ 3.1) — в верхнем отступе, заголовок остаётся на макетном y */
+.viz-main .crumbs--overlay {
+  top: clamp(10px, 0.55vw, 14px);
+  left: var(--container-pad);
+  right: var(--container-pad);
+}
+
+@media (max-width: 767px) {
+  .viz-main .crumbs--overlay {
+    position: static;
+    margin-bottom: 12px;
+  }
 }
 
 /* --- Заголовок и подсказка --- */

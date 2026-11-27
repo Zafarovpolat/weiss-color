@@ -7,6 +7,7 @@
 .guide-page {
   display: flex;
   flex-direction: column;
+  position: relative;
   background: #f8f8fa;
   container-type: inline-size;
   --u: 1cqw;
@@ -366,5 +367,19 @@
 
   .guide-step__img {
     margin-top: 12px;
+  }
+}
+
+/* Крошки (ТЗ 3.1): в верхнем отступе страницы, по левому краю карточки.
+   Карточка остаётся центрированной по макету. */
+.guide-page > .crumbs--overlay {
+  top: max(10px, calc(0.55 * var(--u)));
+  left: max(var(--container-pad), calc((100% - 71.171875 * var(--u)) / 2));
+}
+
+@media (max-width: 1024px) {
+  .guide-page > .crumbs--overlay {
+    position: static;
+    margin-bottom: 14px;
   }
 }
